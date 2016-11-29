@@ -3,6 +3,7 @@ package com.theplatform.module.docker;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.DockerRequestException;
+import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
@@ -213,12 +214,27 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             else if (nameSuffix != null)
             {
                 dockerClient.stopContainer(getName(nameSuffix), secodsToWaitBeforeKill);
+                dockerClient.removeContainer(getName(nameSuffix));
             }
         }
         catch (DockerException | InterruptedException e)
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getStandardOutput(String nameSuffix)
+    {
+        String output = null;
+        try (LogStream stream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
+        {
+            output = stream.readFully();
+        }
+        catch (InterruptedException | DockerException e)
+        {
+            logger.error("Error getting standard output from container [" + getName(nameSuffix) + "] ", e);
+        }
+        return output;
     }
 
     @Override
