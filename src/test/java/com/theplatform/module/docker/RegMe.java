@@ -2,6 +2,7 @@ package com.theplatform.module.docker;
 
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
+import com.theplatform.module.docker.client.DockerContainerRegulatorClient;
 import com.theplatform.module.docker.elastic.RegulatorFactory;
 import com.theplatform.module.docker.elastic.demand.DemandFactory;
 import com.theplatform.module.docker.elastic.demand.RealTimeProxyConfig;

@@ -4,6 +4,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
+import com.theplatform.module.docker.client.DockerContainerRegulatorClient;
 import com.theplatform.module.docker.elastic.InstanceRegulator;
 import com.theplatform.module.docker.elastic.RegulatorFactory;
 import com.theplatform.module.docker.elastic.RegulatorState;

@@ -1,7 +1,7 @@
 package com.theplatform.module.docker.elastic;
 
 import com.spotify.docker.client.DockerClient;
-import com.theplatform.module.docker.DockerContainerRegulatorClient;
+import com.theplatform.module.docker.client.DockerContainerRegulatorClient;
 
 /**
  *

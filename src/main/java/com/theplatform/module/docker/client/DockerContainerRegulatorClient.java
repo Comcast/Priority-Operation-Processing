@@ -1,4 +1,4 @@
-package com.theplatform.module.docker;
+package com.theplatform.module.docker.client;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
@@ -34,6 +34,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     private String logLevel;
     private String heapSize;
     private String networkMode = "bridge";
+    private List<String> commands;
 
     public void setNetworkMode(String networkMode)
     {
@@ -95,10 +96,14 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         this.containerNamePrefix = containerNamePrefix;
     }
 
-
     public void setDockerClient(DockerClient dockerClient)
     {
         this.dockerClient = dockerClient;
+    }
+
+    public void setCommands(List<String> commands)
+    {
+        this.commands = commands;
     }
 
     @Override
@@ -114,19 +119,24 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             HostConfig hostConfig = hostConfigBuilder.binds(configVolume).build();
             containerBuilder = containerBuilder.hostConfig(hostConfig);
         }
+
         List<String> envs = new LinkedList<>();
         if (logLevel != null)
         {
             envs.add("LOG_LEVEL=" + logLevel);
         }
-        if(heapSize != null)
+        if (heapSize != null)
         {
             envs.add("JAVA_HEAP=" + heapSize);
         }
-
-        if(envs.size() > 0)
+        if (envs.size() > 0)
         {
             containerBuilder = containerBuilder.env(envs);
+        }
+
+        if (commands != null && commands.size() > 0)
+        {
+            containerBuilder = containerBuilder.cmd(commands);
         }
 
         String containerName = getName(nameSuffix);
@@ -235,6 +245,18 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             logger.error("Error getting standard output from container [" + getName(nameSuffix) + "] ", e);
         }
         return output;
+    }
+
+    public void waitForInstance(String nameSuffix)
+    {
+        try
+        {
+            dockerClient.waitContainer(getName(nameSuffix));
+        }
+        catch (InterruptedException | DockerException e)
+        {
+            logger.error("Error waiting for container to finish [" + getName(nameSuffix) + "] ", e);
+        }
     }
 
     @Override

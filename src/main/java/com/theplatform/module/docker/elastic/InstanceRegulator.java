@@ -1,6 +1,6 @@
 package com.theplatform.module.docker.elastic;
 
-import com.theplatform.module.docker.DockerContainerRegulatorClient;
+import com.theplatform.module.docker.client.DockerContainerRegulatorClient;
 import com.theplatform.module.docker.elastic.demand.HandlerDemandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
