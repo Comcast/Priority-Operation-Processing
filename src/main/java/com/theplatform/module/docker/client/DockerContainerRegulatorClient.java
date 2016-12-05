@@ -30,7 +30,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     private String imageName;
     private int secodsToWaitBeforeKill = 3;
     private int secodsToWaitBeforeKillAll = 10;
-    private String configVolume;
+    private List<String> volumeMappings;
     private String logLevel;
     private String heapSize;
     private String networkMode = "bridge";
@@ -42,6 +42,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     }
 
     /**
+     * Each String element of the list is:
      * FORMAT = "local:container"
      * ie.    = "/host/location/which/is/local:/now/inside/container
      * This example would take a directory
@@ -49,11 +50,11 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
      * and make it available inside a docker container at
      * /now/inside/container
      *
-     * @param configVolume volume binding
+     * @param configVolumes volume bindings
      */
-    public void setConfigVolume(String configVolume)
+    public void setVolumeMappings(List<String> configVolumes)
     {
-        this.configVolume = configVolume;
+        this.volumeMappings = volumeMappings;
     }
 
     /**
@@ -112,11 +113,11 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         logger.debug("Starting new instance");
 
         ContainerConfig.Builder containerBuilder = ContainerConfig.builder();
-        if (configVolume != null)
+        if (volumeMappings != null && volumeMappings.size() > 0)
         {
             HostConfig.Builder hostConfigBuilder = HostConfig.builder();
             hostConfigBuilder.networkMode(networkMode);
-            HostConfig hostConfig = hostConfigBuilder.binds(configVolume).build();
+            HostConfig hostConfig = hostConfigBuilder.binds(volumeMappings).build();
             containerBuilder = containerBuilder.hostConfig(hostConfig);
         }
 

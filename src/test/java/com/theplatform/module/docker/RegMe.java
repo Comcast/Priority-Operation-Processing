@@ -9,6 +9,8 @@ import com.theplatform.module.docker.elastic.demand.RealTimeProxyConfig;
 import com.theplatform.module.docker.elastic.demand.S3DemandClient;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 /**
  *
  */
@@ -43,7 +45,7 @@ public class RegMe
         DockerContainerRegulatorClient dockerContainerRegulatorClient = RegulatorFactory
             .getDockerContainerRegulatorClient(dockerClient, "fhc", "docker-lab.repo.theplatform.com/fhc:1.0.3");
         dockerContainerRegulatorClient.setLogLevel("DEBUG");
-        dockerContainerRegulatorClient.setConfigVolume("/app/config:/app/config");
+        dockerContainerRegulatorClient.setVolumeMappings(Collections.singletonList("/app/config:/app/config"));
         dockerContainerRegulatorClient.setHeapSize("256m");
         dockerContainerRegulatorClient.setSecodsToWaitBeforeKill(3);
         dockerContainerRegulatorClient.setSecodsToWaitBeforeKillAll(10);
