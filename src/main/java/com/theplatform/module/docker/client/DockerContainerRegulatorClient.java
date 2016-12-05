@@ -50,9 +50,9 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
      * and make it available inside a docker container at
      * /now/inside/container
      *
-     * @param configVolumes volume bindings
+     * @param volumeMappings volume bindings
      */
-    public void setVolumeMappings(List<String> configVolumes)
+    public void setVolumeMappings(List<String> volumeMappings)
     {
         this.volumeMappings = volumeMappings;
     }
