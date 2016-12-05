@@ -45,7 +45,7 @@ public class RegMe
         DockerContainerRegulatorClient dockerContainerRegulatorClient = RegulatorFactory
             .getDockerContainerRegulatorClient(dockerClient, "fhc", "docker-lab.repo.theplatform.com/fhc:1.0.3");
         dockerContainerRegulatorClient.setLogLevel("DEBUG");
-        dockerContainerRegulatorClient.setVolumeMappings(Collections.singletonList("/app/config:/app/config"));
+        dockerContainerRegulatorClient.setVolumeMappings(Collections.singleton("/app/config:/app/config"));
         dockerContainerRegulatorClient.setHeapSize("256m");
         dockerContainerRegulatorClient.setSecodsToWaitBeforeKill(3);
         dockerContainerRegulatorClient.setSecodsToWaitBeforeKillAll(10);

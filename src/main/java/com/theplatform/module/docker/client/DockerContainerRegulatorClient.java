@@ -13,8 +13,7 @@ import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -30,7 +29,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     private String imageName;
     private int secodsToWaitBeforeKill = 3;
     private int secodsToWaitBeforeKillAll = 10;
-    private List<String> volumeMappings;
+    private Set<String> volumeMappings;
     private String logLevel;
     private String heapSize;
     private String networkMode = "bridge";
@@ -52,7 +51,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
      *
      * @param volumeMappings volume bindings
      */
-    public void setVolumeMappings(List<String> volumeMappings)
+    public void setVolumeMappings(Set<String> volumeMappings)
     {
         this.volumeMappings = volumeMappings;
     }
@@ -117,7 +116,8 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         {
             HostConfig.Builder hostConfigBuilder = HostConfig.builder();
             hostConfigBuilder.networkMode(networkMode);
-            HostConfig hostConfig = hostConfigBuilder.binds(volumeMappings).build();
+            ArrayList<String> volumes = new ArrayList<>(volumeMappings);
+            HostConfig hostConfig = hostConfigBuilder.binds(volumes).build();
             containerBuilder = containerBuilder.hostConfig(hostConfig);
         }
 
