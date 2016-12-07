@@ -4,10 +4,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.DockerRequestException;
 import com.spotify.docker.client.LogStream;
-import com.spotify.docker.client.messages.Container;
-import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.*;
 import com.theplatform.module.docker.elastic.InstanceRegulator;
 import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
 import org.slf4j.Logger;
@@ -171,7 +168,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
 
     private String getName(String nameSuffix)
     {
-        return containerNamePrefix + "_" + nameSuffix;
+        return containerNamePrefix + nameSuffix;
     }
 
     @Override
@@ -252,7 +249,11 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     {
         try
         {
-            dockerClient.waitContainer(getName(nameSuffix));
+            ContainerExit containerExit = dockerClient.waitContainer(getName(nameSuffix));
+            if (containerExit != null)
+            {
+                logger.info("Container finished with status code: " + containerExit.statusCode());
+            }
         }
         catch (InterruptedException | DockerException e)
         {
