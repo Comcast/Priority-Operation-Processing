@@ -5,12 +5,14 @@ import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.DockerRequestException;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.messages.*;
-import com.theplatform.module.docker.elastic.InstanceRegulator;
 import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -18,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class DockerContainerRegulatorClient implements InstanceRegulatorClient
 {
-    private static Logger logger = LoggerFactory.getLogger(InstanceRegulator.class);
+    private static Logger logger = LoggerFactory.getLogger(DockerContainerRegulatorClient.class);
 
     private ConcurrentLinkedQueue<String> names = new ConcurrentLinkedQueue<>();
     private DockerClient dockerClient;

@@ -50,12 +50,6 @@
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.10.77</version>
-            <!-- Compatible with apache httpclient 4.3.6-->
-        </dependency>
 
         <!-- Testing dependencies -->
         <dependency>
