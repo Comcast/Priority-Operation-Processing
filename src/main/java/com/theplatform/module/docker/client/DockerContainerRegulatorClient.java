@@ -1,11 +1,10 @@
 package com.theplatform.module.docker.client;
 
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.DockerRequestException;
-import com.spotify.docker.client.LogStream;
+import com.google.common.base.Charsets;
+import com.spotify.docker.client.*;
 import com.spotify.docker.client.messages.*;
 import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
+import com.theplatform.module.docker.exception.DfhDockerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,15 +235,42 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     public String getStandardOutput(String nameSuffix)
     {
         String output = null;
-        try (LogStream stream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
+        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
         {
-            output = stream.readFully();
+            output = logStream.readFully();
         }
         catch (InterruptedException | DockerException e)
         {
             logger.error("Error getting standard output from container [" + getName(nameSuffix) + "] ", e);
         }
         return output;
+    }
+
+    public List<String> getStandardOutput(String nameSuffix, long linesToSkip)
+    {
+        List<String> lines = new ArrayList<>();
+
+        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
+        {
+            while (logStream.hasNext())
+            {
+                if (linesToSkip > 0)
+                {
+                    logStream.next();
+                    linesToSkip--;
+                }
+                else
+                {
+                    lines.add(Charsets.UTF_8.decode(((LogMessage)logStream.next()).content()).toString());
+                }
+            }
+        }
+        catch (InterruptedException | DockerException e)
+        {
+            logger.error("Error getting standard output from container [" + getName(nameSuffix) + "] ", e);
+        }
+
+        return lines;
     }
 
     public void waitForInstance(String nameSuffix)
@@ -260,6 +286,19 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         catch (InterruptedException | DockerException e)
         {
             logger.error("Error waiting for container to finish [" + getName(nameSuffix) + "] ", e);
+        }
+    }
+
+    public boolean isInstanceRunning(String nameSuffix) throws DfhDockerException
+    {
+        try
+        {
+            return dockerClient.inspectContainer(getName(nameSuffix)).state().running();
+        }
+        catch (InterruptedException | DockerException e)
+        {
+            logger.error("Exception while inspecting container for running status [" + getName(nameSuffix) + "] ", e);
+            throw new DfhDockerException(e);
         }
     }
 
