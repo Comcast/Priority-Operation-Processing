@@ -144,6 +144,11 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         ContainerCreation cc = null;
         try
         {
+            // Image pull won't happen automatically, we have to do it explicitly
+            // Version should be in the imageName
+            pull(imageName);
+
+            // Now that the correct version of the image is available, we should be able to create a container
             cc = dockerClient.createContainer(containerConfig, containerName);
             dockerClient.startContainer(cc.id());
             return true;
@@ -165,6 +170,18 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             }
         }
         return false;
+    }
+
+    private void pull(String imageName)
+    {
+        try
+        {
+            dockerClient.pull(imageName);
+        }
+        catch (DockerException | InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getName(String nameSuffix)
