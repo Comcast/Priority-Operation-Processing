@@ -141,6 +141,8 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         String containerName = getName(nameSuffix);
         ContainerConfig containerConfig = containerBuilder.image(imageName).hostname(containerName).build();
 
+        logger.debug("ContainerConfig {} ", containerConfig.toString());
+
         ContainerCreation cc = null;
         try
         {
