@@ -32,6 +32,28 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     private String heapSize;
     private String networkMode = "bridge";
     private List<String> commands;
+    private boolean isEchoTest = false;
+    private String entryPoint = null;
+
+    public void setEchoTest(boolean echoTest)
+    {
+        isEchoTest = echoTest;
+    }
+
+    public boolean isEchoTest()
+    {
+        return isEchoTest;
+    }
+
+    public String getEntryPoint()
+    {
+        return entryPoint;
+    }
+
+    public void setEntryPoint(String entryPoint)
+    {
+        this.entryPoint = entryPoint;
+    }
 
     public void setNetworkMode(String networkMode)
     {
@@ -117,6 +139,16 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             ArrayList<String> volumes = new ArrayList<>(volumeMappings);
             HostConfig hostConfig = hostConfigBuilder.binds(volumes).build();
             containerBuilder = containerBuilder.hostConfig(hostConfig);
+        }
+
+        if(isEchoTest)
+        {
+            containerBuilder.entrypoint("echo");
+        }
+
+        if(entryPoint != null && entryPoint.length() > 0)
+        {
+            containerBuilder.entrypoint(entryPoint);
         }
 
         List<String> envs = new LinkedList<>();
