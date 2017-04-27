@@ -34,6 +34,18 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     private List<String> commands;
     private boolean isEchoTest = false;
     private String entryPoint = null;
+    private boolean isSkipPull = false;
+
+
+    public boolean isSkipPull()
+    {
+        return isSkipPull;
+    }
+
+    public void setSkipPull(boolean skipPull)
+    {
+        isSkipPull = skipPull;
+    }
 
     public void setEchoTest(boolean echoTest)
     {
@@ -180,7 +192,10 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         {
             // Image pull won't happen automatically, we have to do it explicitly
             // Version should be in the imageName
-            pull(imageName);
+            if(!isSkipPull)
+            {
+                pull(imageName);
+            }
 
             // Now that the correct version of the image is available, we should be able to create a container
             cc = dockerClient.createContainer(containerConfig, containerName);
