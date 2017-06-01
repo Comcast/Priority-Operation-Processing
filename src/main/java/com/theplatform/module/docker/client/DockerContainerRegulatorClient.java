@@ -2,6 +2,8 @@ package com.theplatform.module.docker.client;
 
 import com.google.common.base.Charsets;
 import com.spotify.docker.client.*;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.exceptions.DockerRequestException;
 import com.spotify.docker.client.messages.*;
 import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
 import com.theplatform.module.docker.exception.DfhDockerException;
@@ -301,7 +303,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     public String getStandardOutput(String nameSuffix)
     {
         String output = null;
-        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
+        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParam.stdout(), DockerClient.LogsParam.stderr()))
         {
             output = logStream.readFully();
         }
@@ -316,7 +318,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
     {
         List<String> lines = new ArrayList<>();
 
-        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParameter.STDOUT, DockerClient.LogsParameter.STDERR))
+        try (LogStream logStream = dockerClient.logs(getName(nameSuffix), DockerClient.LogsParam.stdout(), DockerClient.LogsParam.stderr()))
         {
             while (logStream.hasNext())
             {
