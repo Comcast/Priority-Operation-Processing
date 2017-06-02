@@ -12,7 +12,7 @@
     <parent>
         <groupId>com.theplatform</groupId>
         <artifactId>theplatform</artifactId>
-        <version>4.3.10</version>
+        <version>4.3.11</version>
     </parent>
 
     <name>DFH Docker Module</name>
