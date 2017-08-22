@@ -341,7 +341,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         return lines;
     }
 
-    public void waitForInstance(String nameSuffix)
+    public int waitForInstance(String nameSuffix)
     {
         try
         {
@@ -349,11 +349,18 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
             if (containerExit != null)
             {
                 logger.info("Container finished with status code: " + containerExit.statusCode());
+                return containerExit.statusCode();
             }
+            else {
+                throw new RuntimeException("Container finished without a status code.");
+            }
+
+
         }
         catch (InterruptedException | DockerException e)
         {
             logger.error("Error waiting for container to finish [" + getName(nameSuffix) + "] ", e);
+            throw new RuntimeException(e);
         }
     }
 
