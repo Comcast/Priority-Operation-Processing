@@ -5,7 +5,7 @@
 
     <groupId>com.theplatform.modules</groupId>
     <artifactId>pl-dfh-docker</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <parent>
         <groupId>com.theplatform</groupId>
