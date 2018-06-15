@@ -1,11 +1,11 @@
-package com.theplatform.dfh.processor.api;
+package com.theplatform.dfh.cp.api;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.theplatform.dfh.processor.api.output.Output;
-import com.theplatform.dfh.processor.api.output.OutputStreams;
-import com.theplatform.dfh.processor.api.source.SourceStreams;
-import com.theplatform.dfh.processor.api.source.Sources;
+import com.theplatform.dfh.cp.api.output.Output;
+import com.theplatform.dfh.cp.api.output.OutputStreams;
+import com.theplatform.dfh.cp.api.source.SourceStreams;
+import com.theplatform.dfh.cp.api.source.Sources;
 
 import java.util.List;
 

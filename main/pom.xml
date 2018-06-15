@@ -8,8 +8,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.processor.api</groupId>
-    <artifactId>pl-dfh-processor-api</artifactId>
+    <groupId>com.theplatform.dfh.cp.api</groupId>
+    <artifactId>pl-dfh-cp-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Content Processing API</name>
@@ -92,7 +92,7 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.processor.app.App</Main-Class>
+                                        <Main-Class>App</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>

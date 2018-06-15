@@ -1,8 +1,8 @@
-package com.theplatform.dfh.processor.api;
+package com.theplatform.dfh.cp.api;
 
-import com.theplatform.dfh.processor.api.output.Video;
-import com.theplatform.dfh.processor.api.source.Source;
-import com.theplatform.dfh.processor.api.source.Sources;
+import com.theplatform.dfh.cp.api.output.Video;
+import com.theplatform.dfh.cp.api.source.Sources;
+import com.theplatform.dfh.cp.api.source.Source;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;

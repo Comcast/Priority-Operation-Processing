@@ -1,4 +1,4 @@
-package com.theplatform.dfh.processor.api.output;
+package com.theplatform.dfh.cp.api.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
