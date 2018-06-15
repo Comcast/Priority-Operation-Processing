@@ -1,0 +1,77 @@
+{
+  "sources": {
+    "video": [
+      {
+        "url": "/mount/path/filename.mov",
+        "username": "myid",
+        "password": "mypassword"
+      }
+    ],
+    "text": [
+      {
+        "url": "/mount/path/filename-en.srt",
+        "username": "myid",
+        "password": "mypassword",
+        "languageCode": "en",
+        "intent": "closedCaptions"
+      },
+      {
+        "url": "/mount/path/filename-es.srt",
+        "username": "myid",
+        "password": "mypassword",
+        "languageCode": "es",
+        "intent": "subtitles"
+      }
+    ]
+  },
+  "sourceStreams": {
+    "video": [
+      {
+        "source":  "/sources/video/0" ,
+        "trackId": "/sources/video/0"
+      }
+    ],
+    "audio": [
+      {
+        "trackId": "/sources/audio/0"
+      },
+      {
+        "trackId": "/sources/audio/1"
+      }
+    ]
+  },
+  "outputStreams": {
+    "video": [
+      {
+        "sourceStream": {"$ref": "#/sourceStreams/video"},
+        "width": 1920,
+        "height": 1020,
+        "bitrate": 8000000,
+        "codec": "h264",
+        "profile": "high",
+        "level": "4.1"
+      },
+      {
+        "sourceStream": "sourceStreams.video[0]",
+        "width": 1280,
+        "height": 720,
+        "bitrate": 2400000,
+        "codec": "h264",
+        "profile": "high",
+        "level": "4.0"
+      }
+    ],
+    "audio": [
+      {
+        "sourceStream": "sourceStreams.audio[0]",
+        "bitrate": 128000,
+        "language": "English"
+      },
+      {
+        "sourceStream": "sourceStreams.audio[0]",
+        "bitrate": 128000,
+        "language": "English"
+      }
+    ]
+  }
+}
