@@ -4,7 +4,8 @@
       {
         "url": "/mount/path/filename.mov",
         "username": "myid",
-        "password": "mypassword"
+        "password": "mypassword",
+        "metadata": {"externalId": "http://myexternalId/35235"}
       }
     ],
     "text": [
@@ -73,5 +74,17 @@
         "language": "English"
       }
     ]
-  }
+  } ,
+  "outputs": [
+    {
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_278000.mp4",
+      "videoOutputStreams": [ "/outputStreams/video[0]" ],
+      "audioOutputStreams": [ "/outputStreams/audio[0]" ],
+      "metadata": { "externalId": "http://myexternalId/8980t5ee4" }
+    },
+    {
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.mp4",
+      "videoOutputStreams": [  "/outputStreams/video[1]" ]
+    }
+    ]
 }

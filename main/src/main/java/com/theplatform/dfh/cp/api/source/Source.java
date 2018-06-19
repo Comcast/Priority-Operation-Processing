@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.api.source;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.net.URL;
+import java.util.Map;
 
 public class Source
 {
@@ -23,6 +23,12 @@ public class Source
      * Password: Credentials to access the source
      */
     private String password;
+
+    /**
+     * Name value pairs for things like 'externalId'
+     */
+    private Map<String, String> metadata;
+
 
     @JsonProperty
     public String getLabel()
@@ -70,5 +76,15 @@ public class Source
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public Map<String, String> getMetadata()
+    {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata)
+    {
+        this.metadata = metadata;
     }
 }

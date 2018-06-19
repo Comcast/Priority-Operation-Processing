@@ -9,14 +9,19 @@ import com.theplatform.dfh.cp.api.source.Sources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 public class Job
 {
-    URI jobId;
-    Sources sources;
-    SourceStreams sourceStreams;
-    OutputStreams outputStreams;
-    List<Output> outputs;
+    private URI jobId;
+    private Sources sources;
+    private SourceStreams sourceStreams;
+    private OutputStreams outputStreams;
+    private List<Output> outputs;
+    /**
+     * Name value pairs for things like 'externalId'
+     */
+    private Map<String, String> metadata;
 
     public Job()
     {
@@ -80,5 +85,17 @@ public class Job
     public void setOutputs(List<Output> outputs)
     {
         this.outputs = outputs;
+    }
+
+    @JsonProperty
+    public Map<String, String> getMetadata()
+    {
+        return metadata;
+    }
+
+    @JsonProperty
+    public void setMetadata(Map<String, String> metadata)
+    {
+        this.metadata = metadata;
     }
 }

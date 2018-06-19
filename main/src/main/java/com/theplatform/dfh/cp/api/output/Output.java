@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.api.output;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 
 public class Output
 {
@@ -27,7 +28,7 @@ public class Output
     /**
      * Referencing video stream to use.
      */
-    private String videoOutputStream;
+    private List<String> videoOutputStreams;
 
     /**
      * Referencing audio streams to use.
@@ -43,6 +44,10 @@ public class Output
      * Protection key information
      */
     private String protectionScheme;
+    /**
+     * Name value pairs for things like 'externalId'
+     */
+    private Map<String, String> metadata;
 
     @JsonProperty
     public String getUrl()
@@ -93,15 +98,15 @@ public class Output
     }
 
     @JsonProperty
-    public String getVideoOutputStream()
+    public List<String> getVideoOutputStreams()
     {
-        return videoOutputStream;
+        return videoOutputStreams;
     }
 
     @JsonProperty
-    public void setVideoOutputStream(String videoOutputStream)
+    public void setVideoOutputStreams(List<String> videoOutputStreams)
     {
-        this.videoOutputStream = videoOutputStream;
+        this.videoOutputStreams = videoOutputStreams;
     }
 
     @JsonProperty
@@ -138,5 +143,17 @@ public class Output
     public void setProtectionScheme(String protectionScheme)
     {
         this.protectionScheme = protectionScheme;
+    }
+
+    @JsonProperty
+    public Map<String, String> getMetadata()
+    {
+        return metadata;
+    }
+
+    @JsonProperty
+    public void setMetadata(Map<String, String> metadata)
+    {
+        this.metadata = metadata;
     }
 }
