@@ -7,10 +7,12 @@ import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.source.SourceStreams;
 import com.theplatform.dfh.cp.api.source.Sources;
 
+import java.net.URI;
 import java.util.List;
 
 public class Job
 {
+    URI jobId;
     Sources sources;
     SourceStreams sourceStreams;
     OutputStreams outputStreams;
@@ -18,6 +20,18 @@ public class Job
 
     public Job()
     {
+    }
+
+    @JsonProperty
+    public URI getJobId()
+    {
+        return jobId;
+    }
+
+    @JsonProperty
+    public void setJobId(URI jobId)
+    {
+        this.jobId = jobId;
     }
 
     @JsonProperty
