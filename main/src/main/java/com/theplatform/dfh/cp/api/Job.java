@@ -14,6 +14,7 @@ import java.util.Map;
 public class Job
 {
     private URI jobId;
+    private URI externalId;
     private Sources sources;
     private SourceStreams sourceStreams;
     private OutputStreams outputStreams;
@@ -37,6 +38,18 @@ public class Job
     public void setJobId(URI jobId)
     {
         this.jobId = jobId;
+    }
+
+    @JsonProperty
+    public URI getExternalId()
+    {
+        return externalId;
+    }
+
+    @JsonProperty
+    public void setExternalId(URI externalId)
+    {
+        this.externalId = externalId;
     }
 
     @JsonProperty
