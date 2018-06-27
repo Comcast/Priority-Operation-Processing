@@ -16,13 +16,13 @@ public class SourceStream
 
 
     @JsonProperty
-    public String getSource()
+    public String getSourceRef()
     {
         return sourceReference;
     }
 
     @JsonProperty
-    public void setSource(String sourceReference)
+    public void setSourceRef(String sourceReference)
     {
         this.sourceReference = sourceReference;
     }

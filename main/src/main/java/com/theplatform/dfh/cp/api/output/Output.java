@@ -28,17 +28,17 @@ public class Output
     /**
      * Referencing video stream to use.
      */
-    private List<String> videoOutputStreams;
+    private List<String> videoOutputStreamRefs;
 
     /**
      * Referencing audio streams to use.
      */
-    private List<String> audioOutputStreams;
+    private List<String> audioOutputStreamRefs;
 
     /**
      * Text output streams to use.
      */
-    private List<String> textOutputStreams;
+    private List<String> textOutputStreamRefs;
 
     /**
      * Protection key information
@@ -98,39 +98,39 @@ public class Output
     }
 
     @JsonProperty
-    public List<String> getVideoOutputStreams()
+    public List<String> getVideoOutputStreamRefs()
     {
-        return videoOutputStreams;
+        return videoOutputStreamRefs;
     }
 
     @JsonProperty
-    public void setVideoOutputStreams(List<String> videoOutputStreams)
+    public void setVideoOutputStreamRefs(List<String> videoOutputStreamRefs)
     {
-        this.videoOutputStreams = videoOutputStreams;
+        this.videoOutputStreamRefs = videoOutputStreamRefs;
     }
 
     @JsonProperty
-    public List<String> getAudioOutputStreams()
+    public List<String> getAudioOutputStreamsRef()
     {
-        return audioOutputStreams;
+        return audioOutputStreamRefs;
     }
 
     @JsonProperty
-    public void setAudioOutputStreams(List<String> audioOutputStreams)
+    public void setAudioOutputStreamRefs(List<String> audioOutputStreamRefs)
     {
-        this.audioOutputStreams = audioOutputStreams;
+        this.audioOutputStreamRefs = audioOutputStreamRefs;
     }
 
     @JsonProperty
-    public List<String> getTextOutputStreams()
+    public List<String> getTextOutputStreamRefs()
     {
-        return textOutputStreams;
+        return textOutputStreamRefs;
     }
 
     @JsonProperty
-    public void setTextOutputStreams(List<String> textOutputStreams)
+    public void setTextOutputStreamRefs(List<String> textOutputStreamRefs)
     {
-        this.textOutputStreams = textOutputStreams;
+        this.textOutputStreamRefs = textOutputStreamRefs;
     }
 
     @JsonProperty

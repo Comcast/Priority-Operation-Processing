@@ -9,13 +9,13 @@ public class Audio
     private String language;
 
     @JsonProperty
-    public String getSourceStream()
+    public String getSourceStreamRef()
     {
         return sourceStreamReference;
     }
 
     @JsonProperty
-    public void setSourceStream(String sourceStreamReference)
+    public void setSourceStreamRef(String sourceStreamReference)
     {
         this.sourceStreamReference = sourceStreamReference;
     }

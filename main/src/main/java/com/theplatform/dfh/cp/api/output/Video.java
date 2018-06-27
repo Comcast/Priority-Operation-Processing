@@ -11,12 +11,12 @@ public class Video
     private String profile;
     private String level;
 
-    public String getSourceStreamReference()
+    public String getSourceStreamRef()
     {
         return sourceStreamReference;
     }
 
-    public void setSourceStreamReference(String sourceStreamReference)
+    public void setSourceStreamRef(String sourceStreamReference)
     {
         this.sourceStreamReference = sourceStreamReference;
     }
