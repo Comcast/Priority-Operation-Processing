@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.api;
 
+import com.fasterxml.jackson.databind.jsontype.impl.AsExistingPropertyTypeSerializer;
 import com.theplatform.dfh.cp.api.output.Video;
 import com.theplatform.dfh.cp.api.source.Sources;
 import com.theplatform.dfh.cp.api.source.Source;
@@ -23,6 +24,9 @@ public class JsonUnmarshallingTest
         verifyVideo(sources.getVideo().get(0), "/mount/path/filename.mov", "myid", "mypassword");
         verifyText(sources.getText().get(0), "/mount/path/filename-en.srt", "myid", "mypassword");
         verifyText(sources.getText().get(1), "/mount/path/filename-es.srt", "myid", "mypassword");
+        Assert.assertNotNull(job.getSourceStreams().getVideo().get(0).getTrackId());
+        Assert.assertNotNull(job.getSourceStreams().getVideo().get(0).getSourceRef());
+        Assert.assertEquals(job.getSourceStreams().getVideo().get(0).getTrackId(), new Integer(0));
         Assert.assertNotNull(job.getSourceStreams());
         Assert.assertNotNull(job.getSourceStreams().getVideo());
         Assert.assertNotNull(job.getOutputStreams());

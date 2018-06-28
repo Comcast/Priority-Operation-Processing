@@ -12,7 +12,7 @@ public class SourceStream
     /**
      * TrackId [TranscodingAPI]: Path to the desired track (based on MediaInfo results). E.g. “Audio[2]”
      */
-    private String trackId;
+    private Integer trackId;
 
 
     @JsonProperty
@@ -29,13 +29,13 @@ public class SourceStream
 
 
     @JsonProperty
-    public String getTrackId()
+    public Integer getTrackId()
     {
         return trackId;
     }
 
     @JsonProperty
-    public void setTrackId(String trackId)
+    public void setTrackId(Integer trackId)
     {
         this.trackId = trackId;
     }

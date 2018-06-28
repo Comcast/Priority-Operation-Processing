@@ -28,23 +28,23 @@
   "sourceStreams": {
     "video": [
       {
-        "source":  "/sources/video/0" ,
-        "trackId": "/sources/video/0"
+        "sourceRef":  "/sources/video/0" ,
+        "trackId": 0
       }
     ],
     "audio": [
       {
-        "trackId": "/sources/audio/0"
+        "trackId": 0
       },
       {
-        "trackId": "/sources/audio/1"
+        "trackId": 1
       }
     ]
   },
   "outputStreams": {
     "video": [
       {
-        "sourceStream": {"$ref": "#/sourceStreams/video"},
+        "sourceStreamRef": "/sourceStreams/video[0]",
         "width": 1920,
         "height": 1020,
         "bitrate": 8000000,
@@ -53,7 +53,7 @@
         "level": "4.1"
       },
       {
-        "sourceStream": "sourceStreams.video[0]",
+        "sourceStreamRef": "sourceStreams.video[0]",
         "width": 1280,
         "height": 720,
         "bitrate": 2400000,
@@ -64,12 +64,12 @@
     ],
     "audio": [
       {
-        "sourceStream": "sourceStreams.audio[0]",
+        "sourceStreamRef": "sourceStreams.audio[0]",
         "bitrate": 128000,
         "language": "English"
       },
       {
-        "sourceStream": "sourceStreams.audio[0]",
+        "sourceStreamRef": "sourceStreams.audio[0]",
         "bitrate": 128000,
         "language": "English"
       }
@@ -78,13 +78,13 @@
   "outputs": [
     {
       "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_278000.mp4",
-      "videoOutputStreams": [ "/outputStreams/video[0]" ],
-      "audioOutputStreams": [ "/outputStreams/audio[0]" ],
+      "videoOutputStreamRefs": [ "/outputStreams/video[0]" ],
+      "audioOutputStreamRefs": [ "/outputStreams/audio[0]" ],
       "metadata": { "externalId": "http://myexternalId/8980t5ee4" }
     },
     {
       "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.mp4",
-      "videoOutputStreams": [  "/outputStreams/video[1]" ]
+      "videoOutputStreamRefs": [  "/outputStreams/video[1]" ]
     }
     ]
 }
