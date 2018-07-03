@@ -2,29 +2,25 @@ package com.theplatform.dfh.cp.api.source;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.theplatform.dfh.cp.api.AbstractStream;
 
-public class SourceStream
+public class SourceStream extends AbstractStream
 {
     /**
-     * Source [TranscodingAPI]: Array Reference or Label Reference to the source (file) to use
-     */
-    private String sourceReference;
-    /**
-     * TrackId [TranscodingAPI]: Path to the desired track (based on MediaInfo results). E.g. “Audio[2]”
+     * TrackId [TranscodingAPI]: Path to the desired track (based on MediaInfo results). E.g. “AudioStream[2]”
      */
     private Integer trackId;
-
 
     @JsonProperty
     public String getSourceRef()
     {
-        return sourceReference;
+        return getReference();
     }
 
     @JsonProperty
     public void setSourceRef(String sourceReference)
     {
-        this.sourceReference = sourceReference;
+        setReference(sourceReference);
     }
 
 

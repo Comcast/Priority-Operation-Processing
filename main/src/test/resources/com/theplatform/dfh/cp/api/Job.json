@@ -1,59 +1,67 @@
 {
-  "sources": {
-    "video": [
-      {
-        "url": "/mount/path/filename.mov",
-        "username": "myid",
-        "password": "mypassword",
-        "metadata": {"externalId": "http://myexternalId/35235"}
-      }
-    ],
-    "text": [
-      {
-        "url": "/mount/path/filename-en.srt",
-        "username": "myid",
-        "password": "mypassword",
+  "sources": [
+    {
+      "type" : "video",
+      "url": "/mount/path/filename.mov",
+      "username": "myid",
+      "password": "mypassword",
+      "params": {"externalId": "http://myexternalId/35235"}
+    },
+    {
+      "type": "text",
+      "url": "/mount/path/filename-en.srt",
+      "username": "myid",
+      "password": "mypassword",
+      "params": {
         "languageCode": "en",
         "intent": "closedCaptions"
-      },
-      {
-        "url": "/mount/path/filename-es.srt",
-        "username": "myid",
-        "password": "mypassword",
+      }
+    },
+    {
+      "type": "text",
+      "url": "/mount/path/filename-es.srt",
+      "username": "myid",
+      "password": "mypassword",
+      "params": {
         "languageCode": "es",
         "intent": "subtitles"
       }
-    ]
-  },
-  "sourceStreams": {
-    "video": [
-      {
-        "sourceRef":  "/sources/video/0" ,
-        "trackId": 0
-      }
-    ],
-    "audio": [
-      {
-        "trackId": 0
-      },
-      {
-        "trackId": 1
-      }
-    ]
-  },
-  "outputStreams": {
-    "video": [
-      {
-        "sourceStreamRef": "/sourceStreams/video[0]",
+    }
+  ],
+  "sourceStreams": [
+    {
+      "type": "video",
+      "sourceRef":  "/sources/0" ,
+      "trackId": 0
+    },
+    {
+      "type": "audio",
+      "sourceRef":  "/sources/0" ,
+      "trackId": 0
+    },
+    {
+      "type": "audio",
+      "sourceRef":  "/sources/0" ,
+      "trackId": 1
+    }
+  ],
+  "outputStreams": [
+    {
+      "type": "video",
+      "sourceStreamRef": "/sourceStreams/0",
+      "params": {
         "width": 1920,
         "height": 1020,
         "bitrate": 8000000,
         "codec": "h264",
         "profile": "high",
         "level": "4.1"
-      },
-      {
-        "sourceStreamRef": "sourceStreams.video[0]",
+      }
+    },
+    {
+      "type": "video",
+      "sourceStreamRef": "sourceStreams.video[0]",
+      "params": {
         "width": 1280,
         "height": 720,
         "bitrate": 2400000,
@@ -61,30 +69,48 @@
         "profile": "high",
         "level": "4.0"
       }
-    ],
-    "audio": [
-      {
-        "sourceStreamRef": "sourceStreams.audio[0]",
-        "bitrate": 128000,
-        "language": "English"
-      },
-      {
-        "sourceStreamRef": "sourceStreams.audio[0]",
+    },
+    {
+      "type": "audio",
+      "sourceStreamRef": "sourceStreams/0",
+      "params": {
         "bitrate": 128000,
         "language": "English"
       }
-    ]
-  } ,
-  "outputs": [
-    {
-      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_278000.mp4",
-      "videoOutputStreamRefs": [ "/outputStreams/video[0]" ],
-      "audioOutputStreamRefs": [ "/outputStreams/audio[0]" ],
-      "metadata": { "externalId": "http://myexternalId/8980t5ee4" }
     },
     {
-      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.mp4",
-      "videoOutputStreamRefs": [  "/outputStreams/video[1]" ]
+      "type": "audio",
+      "sourceStreamRef": "sourceStreams.audio[0]",
+      "params": {
+        "bitrate": 128000,
+        "language": "English"
+      }
     }
-    ]
+  ],
+  "outputs": [
+    {
+      "type": "video",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_278000.mp4",
+      "outputStreamRefs": [
+        "/outputStreams/0",
+        "/outputStreams/2"
+      ],
+      "params": { "externalId": "http://myexternalId/8980t5ee4" }
+    },
+    {
+      "type": "video",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.mp4",
+      "outputStreamRefs": [  "/outputStreams/1" ]
+    },
+    {
+      "type": "image",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.jpg",
+      "outputStreamRefs": [  "/outputStreams/1" ],
+      "params": {
+        "adjustment": "24%",
+        "startTime": 8943058203892,
+        "cropHeight": "240px"
+      }
+    }
+  ]
 }

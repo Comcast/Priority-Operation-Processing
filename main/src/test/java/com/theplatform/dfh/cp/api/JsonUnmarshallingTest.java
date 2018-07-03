@@ -1,14 +1,14 @@
 package com.theplatform.dfh.cp.api;
 
-import com.fasterxml.jackson.databind.jsontype.impl.AsExistingPropertyTypeSerializer;
-import com.theplatform.dfh.cp.api.output.Video;
-import com.theplatform.dfh.cp.api.source.Sources;
-import com.theplatform.dfh.cp.api.source.Source;
+import com.theplatform.dfh.cp.api.output.OutputStream;
+import com.theplatform.dfh.cp.api.output.VideoParam;
+import com.theplatform.dfh.cp.api.source.TextResource;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JsonUnmarshallingTest
 {
@@ -16,42 +16,41 @@ public class JsonUnmarshallingTest
     @Test
     public void testJsonToSources() throws Exception
     {
-        Job job = (Job)JsonUtil.toObject(getStringFromResourceFile("Job.json"), Job.class);
+        TransformJob job = (TransformJob)JsonUtil.toObject(getStringFromResourceFile("Job.json"), TransformJob.class);
         Assert.assertNotNull(job);
-        Sources sources = job.getSources();
-        Assert.assertNotNull(sources);
-        Assert.assertNotNull(sources.getVideo());
-        verifyVideo(sources.getVideo().get(0), "/mount/path/filename.mov", "myid", "mypassword");
-        verifyText(sources.getText().get(0), "/mount/path/filename-en.srt", "myid", "mypassword");
-        verifyText(sources.getText().get(1), "/mount/path/filename-es.srt", "myid", "mypassword");
-        Assert.assertNotNull(job.getSourceStreams().getVideo().get(0).getTrackId());
-        Assert.assertNotNull(job.getSourceStreams().getVideo().get(0).getSourceRef());
-        Assert.assertEquals(job.getSourceStreams().getVideo().get(0).getTrackId(), new Integer(0));
+        List<FileResource> videoSources = job.getVideoSources();
+        List<FileResource> textSources = job.getTextSources();
+        Assert.assertNotNull(videoSources);
+        verifyVideo(videoSources.get(0), "/mount/path/filename.mov", "myid", "mypassword");
+        verifyText((TextResource)textSources.get(0), "/mount/path/filename-en.srt", "myid", "mypassword");
+        verifyText((TextResource)textSources.get(1), "/mount/path/filename-es.srt", "myid", "mypassword");
+        Assert.assertNotNull(job.getSourceStreams().get(0).getTrackId());
+        Assert.assertNotNull(job.getSourceStreams().get(0).getSourceRef());
+        Assert.assertEquals(job.getSourceStreams().get(0).getTrackId(), new Integer(0));
         Assert.assertNotNull(job.getSourceStreams());
-        Assert.assertNotNull(job.getSourceStreams().getVideo());
         Assert.assertNotNull(job.getOutputStreams());
-        Assert.assertNotNull(job.getOutputStreams().getVideo());
-        Assert.assertNotNull(job.getOutputStreams().getAudio());
-        verifyVideo(job.getOutputStreams().getVideo().get(0),  1920, 1020, 8000000L);
-        verifyVideo(job.getOutputStreams().getVideo().get(1),  1280, 720, 2400000L);
+        verifyVideo(job.getOutputStreams().get(0),  1920, 1020, 8000000L);
+        verifyVideo(job.getOutputStreams().get(1),  1280, 720, 2400000L);
     }
 
-    private void verifyVideo(Source source, String expectedURL, String expectedUsername, String expectedPassword)
+    private void verifyVideo(FileResource source, String expectedURL, String expectedUsername, String expectedPassword)
     {
         verifySource(source, expectedURL, expectedUsername, expectedPassword);
     }
-    private void verifyText(Source source, String expectedURL, String expectedUsername, String expectedPassword)
+    private void verifyText(TextResource source, String expectedURL, String expectedUsername, String expectedPassword)
     {
+        Assert.assertNotNull(source.getIntent());
         verifySource(source, expectedURL, expectedUsername, expectedPassword);
     }
-    private void verifyVideo(Video dataObject, Integer width, Integer height, Long bitrate)
+    private void verifyVideo(OutputStream dataObject, Integer width, Integer height, Long bitrate)
     {
         Assert.assertNotNull(dataObject);
-        Assert.assertEquals(dataObject.getBitrate(), bitrate);
-        Assert.assertEquals(dataObject.getWidth(), width);
-        Assert.assertEquals(dataObject.getHeight(), height);
+        ParamsMap params = dataObject.getParams();
+        Assert.assertEquals(params.getLong(VideoParam.bitrate), bitrate);
+        Assert.assertEquals(params.getInt(VideoParam.width), width);
+        Assert.assertEquals(params.getInt(VideoParam.height), height);
     }
-    private void verifySource(Source source, String expectedURL, String expectedUsername, String expectedPassword)
+    private void verifySource(FileResource source, String expectedURL, String expectedUsername, String expectedPassword)
     {
        Assert.assertNotNull(source);
        Assert.assertEquals(source.getUrl(), expectedURL);

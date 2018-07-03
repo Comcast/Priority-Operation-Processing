@@ -10,7 +10,7 @@ package com.theplatform.dfh.cp.api.progress;
  * State in which the job is running it's operations
  * Run.queued : Queued for run execution
  * Run.executing : Executing operations (Encodings, packagings...)
- * Run.complete : Job is complete
+ * Run.complete : TransformJob is complete
  */
 public enum JobStatus
 {
