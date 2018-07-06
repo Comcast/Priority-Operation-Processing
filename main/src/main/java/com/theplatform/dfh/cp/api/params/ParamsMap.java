@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.api.params;
 
 import java.util.HashMap;
 
-public class ParamsMap extends HashMap
+public class ParamsMap extends HashMap<String, Object>
 {
 
     public String getString(final ParamKey fieldEnum)
@@ -15,7 +15,7 @@ public class ParamsMap extends HashMap
     {
         Object value = get(name);
         if(value == null) return null;
-        return name.toString();
+        return value.toString();
     }
     public Long getLong(ParamKey fieldEnum)
     {
@@ -32,6 +32,14 @@ public class ParamsMap extends HashMap
             return (Integer) param;
 
         return Integer.parseInt(param.toString());
+    }
+    public Boolean getBoolean(ParamKey fieldEnum)
+    {
+        Object param = get(fieldEnum.getKey());
+        if(param instanceof Boolean)
+            return (Boolean) param;
+
+        return Boolean.parseBoolean(param.toString());
     }
     public Object get(final ParamKey key)
     {
