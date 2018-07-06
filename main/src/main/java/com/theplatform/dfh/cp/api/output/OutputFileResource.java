@@ -1,34 +1,27 @@
 package com.theplatform.dfh.cp.api.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.theplatform.dfh.cp.api.FileResource;
-import com.theplatform.dfh.cp.api.TargetResource;
+import com.theplatform.dfh.cp.api.AbstractFileResource;
 
 import java.util.List;
 
-public class OutputResource extends TargetResource
+public class OutputFileResource extends AbstractFileResource
 {
     /**
      * Referencing streams to use.
      */
     private List<String> outputStreamRefs;
 
-
-    /**
-     * Protection key information
-     */
-    private String protectionScheme;
-
     @JsonProperty
     public String getFormat()
     {
-        return getParams().getString(OutputParams.format);
+        return getParams().getString(OutputParamKey.format);
     }
 
     @JsonProperty
     public void setFormat(String format)
     {
-        getParams().put(OutputParams.format, format);
+        getParams().put(OutputParamKey.format, format);
     }
 
     @JsonProperty
@@ -46,13 +39,13 @@ public class OutputResource extends TargetResource
     @JsonProperty
     public String getProtectionScheme()
     {
-        return protectionScheme;
+        return getParams().getString(OutputParamKey.protectionScheme);
     }
 
     @JsonProperty
     public void setProtectionScheme(String protectionScheme)
     {
-        this.protectionScheme = protectionScheme;
+        getParams().put(OutputParamKey.protectionScheme, protectionScheme);
     }
 
 }

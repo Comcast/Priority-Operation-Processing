@@ -1,7 +1,5 @@
 package com.theplatform.dfh.cp.api;
 
-import com.theplatform.dfh.cp.api.source.TextResource;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,12 +10,12 @@ public class FileResourceByTypeMap
 
     public List<FileResource> getTextResources()
     {
-        return fileResourceByType.get(FileResourceType.text.name());
+        return fileResourceByType.get(FileResourceType.TEXT.name().toLowerCase());
     }
 
     public List<FileResource> getVideoResources()
     {
-        return fileResourceByType.get(FileResourceType.video.name());
+        return fileResourceByType.get(FileResourceType.VIDEO.name().toLowerCase());
     }
 
     public FileResourceByTypeMap(List<? extends FileResource> resources)
@@ -33,21 +31,13 @@ public class FileResourceByTypeMap
         {
             FileResource source = resources.get(index);
             source.setIndex(index);
-            FileResourceType enumType = FileResourceType.parse(source.getType());
             List<FileResource> fileReferencesForType = fileResourceByType.get(source.getType());
             if(fileReferencesForType == null)
             {
                 fileReferencesForType = new ArrayList<>();
                 fileResourceByType.put(source.getType(), fileReferencesForType);
             }
-            if(enumType == FileResourceType.text)
-            {
-                fileReferencesForType.add(new TextResource(source));
-            }
-            else
-            {
-                fileReferencesForType.add(source);
-            }
+            fileReferencesForType.add(source);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.api;
 
+import com.theplatform.dfh.cp.api.params.ParamsMap;
+
 public interface FileResource
 {
     public int getIndex();

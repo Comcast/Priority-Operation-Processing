@@ -1,12 +1,13 @@
 package com.theplatform.dfh.cp.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 
-public class TargetResource implements FileResource
+public class AbstractFileResource implements FileResource
 {
     private int index;
-    private String type = FileResourceType.unknown.name();
+    private String type = FileResourceType.UNKNOWN.name();
     private String url;
     private String label;
     private String username;
