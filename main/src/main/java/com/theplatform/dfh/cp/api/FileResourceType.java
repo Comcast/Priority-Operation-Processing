@@ -1,18 +1,40 @@
 package com.theplatform.dfh.cp.api;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public enum FileResourceType
 {
-    VIDEO,
-    AUDIO,
-    TEXT,
-    IMAGE,
-    PACKAGE,
-    UNKNOWN;
+    MEZZANINE("mezzanine"),
+    TEXT_TRACK_SIDECAR("text track sidecar"),
+    AUDIO_TRACK("audio track"),
+    IMAGE("image"),
+    MP4("mp4"),
+    HLS("hls"),
+    DASH("dash"),
+    SMOOTH("smooth"),
+    FILMSTRIP("filmstrip"),
+    UNKNOWN("unknown");
 
-    public static FileResourceType parse(String name)
+    private String label;
+    FileResourceType(String label)
     {
-        if(name == null)
+        this.label = label;
+    }
+
+    public String getLabel()
+    {
+        return label;
+    }
+    public static FileResourceType parse(String label)
+    {
+        if(label == null)
             return FileResourceType.UNKNOWN;
-        return FileResourceType.valueOf(name);
+        List<FileResourceType> fileResourceTypeList =
+            Stream.of(FileResourceType.values())
+            .filter(type -> type.getLabel().equals(label))
+            .collect(Collectors.toList());
+        return fileResourceTypeList != null ? fileResourceTypeList.get(0) : FileResourceType.UNKNOWN;
     }
 }

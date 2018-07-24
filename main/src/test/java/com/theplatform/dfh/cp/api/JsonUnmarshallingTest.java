@@ -19,19 +19,19 @@ public class JsonUnmarshallingTest
     {
         TransformJob job = (TransformJob)JsonUtil.toObject(getStringFromResourceFile("Job.json"), TransformJob.class);
         Assert.assertNotNull(job);
-        List<FileResource> videoSources = job.getVideoSources();
-        List<FileResource> textSources = job.getTextSources();
+        List<FileResource> videoSources = job.getResourcesByType(FileResourceType.MEZZANINE.getLabel());
+        List<FileResource> textSources = job.getResourcesByType(FileResourceType.TEXT_TRACK_SIDECAR.getLabel());
         Assert.assertNotNull(videoSources);
         verifyVideo(videoSources.get(0), "/mount/path/filename.mov", "myid", "mypassword");
         verifyText(textSources.get(0), "/mount/path/filename-en.srt", "myid", "mypassword");
         verifyText(textSources.get(1), "/mount/path/filename-es.srt", "myid", "mypassword");
-        Assert.assertNotNull(job.getSourceStreams().get(0).getTrackId());
-        Assert.assertNotNull(job.getSourceStreams().get(0).getSourceRef());
-        Assert.assertEquals(job.getSourceStreams().get(0).getTrackId(), new Integer(0));
-        Assert.assertNotNull(job.getSourceStreams());
+        Assert.assertNotNull(job.getInputStreams().getAudio().get(0).getParams().get("trackId"));
+        Assert.assertNotNull(job.getInputStreams().getAudio().get(0).getInputRef());
+        Assert.assertEquals(job.getInputStreams().getAudio().get(0).getParams().get("trackId"), new Integer(0));
+        Assert.assertNotNull(job.getInputStreams());
         Assert.assertNotNull(job.getOutputStreams());
-        verifyVideo(job.getOutputStreams().get(0),  1920, 1020, 8000000L);
-        verifyVideo(job.getOutputStreams().get(1),  1280, 720, 2400000L);
+        verifyVideo(job.getOutputStreams().getVideo().get(0),  1920, 1020, 8000000L);
+        verifyVideo(job.getOutputStreams().getVideo().get(1),  1280, 720, 2400000L);
     }
 
     private void verifyVideo(FileResource source, String expectedURL, String expectedUsername, String expectedPassword)
@@ -55,8 +55,8 @@ public class JsonUnmarshallingTest
     {
        Assert.assertNotNull(source);
        Assert.assertEquals(source.getUrl(), expectedURL);
-       Assert.assertEquals(source.getUsername(), expectedUsername);
-       Assert.assertEquals(source.getPassword(), expectedPassword);
+       Assert.assertEquals(source.getCredentials().getUsername(), expectedUsername);
+       Assert.assertEquals(source.getCredentials().getPassword(), expectedPassword);
     }
     protected String getStringFromResourceFile(String file) throws IOException
     {

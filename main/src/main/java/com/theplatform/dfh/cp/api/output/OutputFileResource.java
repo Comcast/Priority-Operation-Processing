@@ -13,18 +13,6 @@ public class OutputFileResource extends AbstractFileResource
     private List<String> outputStreamRefs;
 
     @JsonProperty
-    public String getFormat()
-    {
-        return getParams().getString(OutputParamKey.format);
-    }
-
-    @JsonProperty
-    public void setFormat(String format)
-    {
-        getParams().put(OutputParamKey.format, format);
-    }
-
-    @JsonProperty
     public List<String> getOutputStreamRefs()
     {
         return outputStreamRefs;
@@ -34,18 +22,6 @@ public class OutputFileResource extends AbstractFileResource
     public void setOutputStreamRefs(List<String> outputStreamRefs)
     {
         this.outputStreamRefs = outputStreamRefs;
-    }
-
-    @JsonProperty
-    public String getProtectionScheme()
-    {
-        return getParams().getString(OutputParamKey.protectionScheme);
-    }
-
-    @JsonProperty
-    public void setProtectionScheme(String protectionScheme)
-    {
-        getParams().put(OutputParamKey.protectionScheme, protectionScheme);
     }
 
 }

@@ -1,92 +1,103 @@
 {
-  "sources": [
+  "inputs": [
     {
-      "type" : "video",
+      "type" : "mezzanine",
       "url": "/mount/path/filename.mov",
-      "username": "myid",
-      "password": "mypassword",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
       "params": {"externalId": "http://myexternalId/35235"}
     },
     {
-      "type": "text",
+      "type": "text track sidecar",
       "url": "/mount/path/filename-en.srt",
-      "username": "myid",
-      "password": "mypassword",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
       "params": {
         "languageCode": "en",
         "intent": "closedCaptions"
       }
     },
     {
-      "type": "text",
+      "type": "text track sidecar",
       "url": "/mount/path/filename-es.srt",
-      "username": "myid",
-      "password": "mypassword",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
       "params": {
         "languageCode": "es",
         "intent": "subtitles"
       }
     }
   ],
-  "sourceStreams": [
-    {
-      "type": "video",
-      "sourceRef":  "/sources/0" ,
-      "trackId": 0
-    },
-    {
-      "type": "audio",
-      "sourceRef":  "/sources/0" ,
-      "trackId": 0
-    },
-    {
-      "type": "audio",
-      "sourceRef":  "/sources/0" ,
-      "trackId": 1
-    }
-  ],
-  "outputStreams": [
-    {
-      "type": "video",
-      "sourceStreamRef": "/sourceStreams/0",
-      "params": {
-        "width": 1920,
-        "height": 1020,
-        "bitrate": 8000000,
-        "codec": "h264",
-        "profile": "high",
-        "level": "4.1"
+  "inputStreams": {
+    "video": [
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 0 }
       }
-    },
-    {
-      "type": "video",
-      "sourceStreamRef": "sourceStreams.video[0]",
-      "params": {
-        "width": 1280,
-        "height": 720,
-        "bitrate": 2400000,
-        "codec": "h264",
-        "profile": "high",
-        "level": "4.0"
+    ],
+    "audio": [
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 0 }
+      },
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 1 }
       }
-    },
-    {
-      "type": "audio",
-      "sourceStreamRef": "sourceStreams/0",
-      "params": {
-        "bitrate": 128000,
-        "language": "English"
+    ]
+  },
+  "outputStreams": {
+    "video": [
+      {
+        "inputStreamRef": "/inputStreams/0",
+        "params": {
+          "width": 1920,
+          "height": 1020,
+          "bitrate": 8000000,
+          "codec": "h264",
+          "profile": "high",
+          "level": "4.1"
+        }
+      },
+      {
+        "type": "video",
+        "inputStreamRef": "inputStreams.video[0]",
+        "params": {
+          "width": 1280,
+          "height": 720,
+          "bitrate": 2400000,
+          "codec": "h264",
+          "profile": "high",
+          "level": "4.0"
+        }
       }
-    },
-    {
-      "type": "audio",
-      "sourceStreamRef": "sourceStreams.audio[0]",
-      "params": {
-        "bitrate": 128000,
-        "language": "English"
+    ],
+    "audio": [
+      {
+        "inputStreamRef": "inputStreams/0",
+        "params": {
+          "bitrate": 128000,
+          "language": "English"
+        }
+      },
+      {
+        "inputStreamRef": "inputStreams.audio[0]",
+        "params": {
+          "bitrate": 128000,
+          "language": "English"
+        }
       }
-    }
-  ],
+    ]
+  },
   "outputs": [
     {
       "type": "video",

@@ -8,14 +8,9 @@ public class FileResourceByTypeMap
 {
     private HashMap<String, List<FileResource>> fileResourceByType = new HashMap<>();
 
-    public List<FileResource> getTextResources()
+    public List<FileResource> getResourceByType(String type)
     {
-        return fileResourceByType.get(FileResourceType.TEXT.name().toLowerCase());
-    }
-
-    public List<FileResource> getVideoResources()
-    {
-        return fileResourceByType.get(FileResourceType.VIDEO.name().toLowerCase());
+        return fileResourceByType.get(type);
     }
 
     public FileResourceByTypeMap(List<? extends FileResource> resources)

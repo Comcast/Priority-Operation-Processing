@@ -1,11 +1,13 @@
 package com.theplatform.dfh.cp.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
 import com.theplatform.dfh.cp.api.output.OutputStream;
+import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.source.SourceFileResource;
-import com.theplatform.dfh.cp.api.source.SourceStream;
+import com.theplatform.dfh.cp.api.input.InputFileResource;
+import com.theplatform.dfh.cp.api.input.InputStream;
 
 import java.net.URI;
 import java.util.List;
@@ -25,13 +27,13 @@ public abstract class AbstractTransform
         this.jobId = jobId;
     }
     /**
-     * Sources: This includes URLs, creds,
+     * Inputs: This includes URLs, creds,
      * and key metadata for the media files that DFH will process (VIDEO, AUDIO, TEXT tracks, etc.)
      * and metadata that serves as an input to DFH (e.g. chapter info for Ad Conditioning)
      */
-    private List<SourceFileResource> sources;
-    private List<SourceStream> sourceStreams;
-    private List<OutputStream> outputStreams;
+    private List<InputFileResource> inputs;
+    private InputStreams inputStreams;
+    private OutputStreams outputStreams;
     private List<OutputFileResource> outputs;
     /**
      * Name value pairs for things like 'externalId'
@@ -49,38 +51,38 @@ public abstract class AbstractTransform
     }
 
     @JsonProperty
-    public List<SourceFileResource> getSources()
+    public List<InputFileResource> getInputs()
     {
-        return sources;
+        return inputs;
     }
 
     @JsonProperty
-    public void setSources(List<SourceFileResource> sources)
+    public void setInputs(List<InputFileResource> inputs)
     {
-        this.sources = sources;
-        fileReferencesByType = new FileResourceByTypeMap(sources);
+        this.inputs = inputs;
+        fileReferencesByType = new FileResourceByTypeMap(inputs);
     }
 
     @JsonProperty
-    public List<SourceStream> getSourceStreams()
+    public InputStreams getInputStreams()
     {
-        return sourceStreams;
+        return inputStreams;
     }
 
     @JsonProperty
-    public void setSourceStreams(List<SourceStream> sourceStreams)
+    public void setInputStreams(InputStreams inputStreams)
     {
-        this.sourceStreams = sourceStreams;
+        this.inputStreams = inputStreams;
     }
 
     @JsonProperty
-    public List<OutputStream> getOutputStreams()
+    public OutputStreams getOutputStreams()
     {
         return outputStreams;
     }
 
     @JsonProperty
-    public void setOutputStreams(List<OutputStream> outputStreams)
+    public void setOutputStreams(OutputStreams outputStreams)
     {
         this.outputStreams = outputStreams;
     }
@@ -110,14 +112,9 @@ public abstract class AbstractTransform
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public List<FileResource> getVideoSources()
+    public List<FileResource> getResourcesByType(String type)
     {
-        return (fileReferencesByType != null) ? fileReferencesByType.getVideoResources() : null;
-    }
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public List<FileResource> getTextSources()
-    {
-        return (fileReferencesByType != null) ? fileReferencesByType.getTextResources() : null;
+        return (fileReferencesByType != null) ? fileReferencesByType.getResourceByType(type) : null;
     }
 
     public void setParam(String name, Object value)
