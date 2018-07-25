@@ -9,13 +9,13 @@ import com.theplatform.dfh.cp.api.Credentials;
 public class OutputStream extends AbstractStream
 {
     @JsonProperty
-    public String getSourceStreamReference()
+    public String getOutputRef()
     {
         return getReference();
     }
 
     @JsonProperty
-    public void setSourceStreamReference(String sourceStreamReference)
+    public void setOutputRef(String sourceStreamReference)
     {
         setReference(sourceStreamReference);
     }
