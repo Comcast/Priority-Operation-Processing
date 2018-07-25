@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+// TODO: exception handling, eval if this is anything more than prototype code
+
+/**
+ *
+ */
 public class JsonHelper
 {
     private static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -46,6 +51,40 @@ public class JsonHelper
             return (T)objectMapper.readValue(json, clazz);
         }
         catch(IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the JSON representation of the specified object
+     * @param object Object to get the JSON string of
+     * @return The resulting String
+     */
+    public static String getJSONString(Object object)
+    {
+        try
+        {
+            return objectMapper.writeValueAsString(object);
+        }
+        catch(JsonProcessingException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the JSON representation of the specified object
+     * @param object Object to get the JSON string of
+     * @return The resulting String
+     */
+    public static String getPrettyJSONString(Object object)
+    {
+        try
+        {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        }
+        catch(JsonProcessingException e)
         {
             throw new RuntimeException(e);
         }
