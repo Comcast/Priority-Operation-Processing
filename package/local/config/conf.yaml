@@ -1,0 +1,20 @@
+kubeConfig:
+  pullAlways: true
+  kubernetesMasterUrl: https://api.alpha.k8s.aort.theplatform.com
+  kubeneratesNameSpace: dfh
+  nfsMountPaths: ['/testFiles', '/media_test01', '/media_symlib']
+  cpuRequestCount: 1000m
+  cpuMinimumRequestCount: 1000m
+  memoryRequestCount: 1000m
+  aliveCheckLinking: false
+  nfsServer: fs-21cc1888.efs.us-west-2.amazonaws.com
+
+encoderLauncherConfiguration:
+  namePrefix: dfhfeh
+  imageName: docker-lab.repo.theplatform.com/feh:1.0.1
+  configMapVolumeSourceName: lab-main-t-aor-feh-fun2
+  retryDelayMilliSecs: 3000
+
+imageExecutionDetails:
+  arguments:
+    - spring-cpae-main.xml
