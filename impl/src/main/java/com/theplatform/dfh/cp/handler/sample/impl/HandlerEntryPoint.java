@@ -26,4 +26,9 @@ public class HandlerEntryPoint
         reporterSet.reportProgress(inputObject);
         reporterSet.reportSuccess("All Done!");
     }
+
+    public void setReporterSet(ReporterSet reporterSet)
+    {
+        this.reporterSet = reporterSet;
+    }
 }
