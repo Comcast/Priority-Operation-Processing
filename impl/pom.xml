@@ -21,9 +21,27 @@
         <handler-base.version>1.0.0-SNAPSHOT</handler-base.version>
         <sample-handler-api.version>1.0.0-SNAPSHOT</sample-handler-api.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
+        <json-field-translator.version>1.0.0-SNAPSHOT</json-field-translator.version>
+        <environment-field-retriever.version>1.0.0-SNAPSHOT</environment-field-retriever.version>
+        <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
+            <version>${kubernetes-reporter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-field-retriever-environment</artifactId>
+            <version>${environment-field-retriever.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-field-translator-json</artifactId>
+            <version>${json-field-translator.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-sample-api</artifactId>
@@ -109,7 +127,7 @@
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.sample.impl.HandlerEntry</Main-Class>
+                                        <Main-Class>com.theplatform.dfh.cp.handler.sample.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>
