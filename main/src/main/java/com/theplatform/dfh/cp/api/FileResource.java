@@ -8,8 +8,8 @@ public interface FileResource
     public void setIndex(int index);
     public String getLabel();
     public void setLabel(String label);
-    public Credentials getCredentials();
-    public void setCredentials(Credentials credentials);
+    public ParamsMap getCredentials();
+    public void setCredentials(ParamsMap credentials);
     public String getType();
     public void setType(String type);
     public String getUrl();

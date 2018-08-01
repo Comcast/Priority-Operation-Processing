@@ -10,7 +10,7 @@ public class AbstractFileResource implements FileResource
     private String type = FileResourceType.UNKNOWN.name();
     private String url;
     private String label;
-    private Credentials credentials;
+    private ParamsMap credentials = new ParamsMap();
     private ParamsMap params = new ParamsMap();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -38,13 +38,13 @@ public class AbstractFileResource implements FileResource
     }
 
     @JsonProperty
-    public Credentials getCredentials()
+    public ParamsMap getCredentials()
     {
         return credentials;
     }
 
     @JsonProperty
-    public void setCredentials(Credentials credentials)
+    public void setCredentials(ParamsMap credentials)
     {
         this.credentials = credentials;
     }

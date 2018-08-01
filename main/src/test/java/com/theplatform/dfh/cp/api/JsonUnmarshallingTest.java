@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.cp.api.output.OutputStream;
+import com.theplatform.dfh.cp.api.params.CredentialParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.params.TextParamKey;
 import com.theplatform.dfh.cp.api.params.VideoParamKey;
@@ -55,8 +56,8 @@ public class JsonUnmarshallingTest
     {
        Assert.assertNotNull(source);
        Assert.assertEquals(source.getUrl(), expectedURL);
-       Assert.assertEquals(source.getCredentials().getUsername(), expectedUsername);
-       Assert.assertEquals(source.getCredentials().getPassword(), expectedPassword);
+       Assert.assertEquals(source.getCredentials().get(CredentialParamKey.username), expectedUsername);
+       Assert.assertEquals(source.getCredentials().get(CredentialParamKey.password), expectedPassword);
     }
     protected String getStringFromResourceFile(String file) throws IOException
     {
