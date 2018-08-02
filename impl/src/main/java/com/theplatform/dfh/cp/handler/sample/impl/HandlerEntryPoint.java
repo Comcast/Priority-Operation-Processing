@@ -11,24 +11,21 @@ import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 public class HandlerEntryPoint
 {
     private ReporterSet reporterSet = new KubernetesReporterSet();
-    private FieldTranslator fieldTranslator;
+    private JsonFieldTranslator fieldTranslator;
 
-    public HandlerEntryPoint(FieldTranslator fieldTranslator)
+    public HandlerEntryPoint(JsonFieldTranslator fieldTranslator)
     {
         this.fieldTranslator = fieldTranslator;
     }
 
     public static void main(String[] args)
     {
-        new HandlerEntryPoint(new JsonFieldTranslator(new EnvironmentFieldRetriever(), SampleInput.class)).execute();
+        new HandlerEntryPoint(new JsonFieldTranslator(new EnvironmentFieldRetriever())).execute();
     }
 
     public void execute()
     {
-        // TODO consider the importance of the getPayloadObject method...
-        SampleInput sampleInput = fieldTranslator.getPayloadObject();
-        // VS.
-        sampleInput = fieldTranslator.getObject(HandlerField.PAYLOAD, SampleInput.class);
+        SampleInput sampleInput = fieldTranslator.getObject(HandlerField.PAYLOAD, SampleInput.class);
 
         reporterSet.reportProgress(sampleInput);
         reporterSet.reportProgress(sampleInput);
