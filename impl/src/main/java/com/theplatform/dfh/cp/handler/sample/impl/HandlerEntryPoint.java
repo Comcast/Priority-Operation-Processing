@@ -22,7 +22,7 @@ public class HandlerEntryPoint
     /**
      * Local/IDEA non-docker execution prerequisites:
      * - debugging/running with a local-only build use these args (will definitely need to adjust the payload.json accordingly):
-     * -launcherType local -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
+     * -launchType local -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
      *
      * @param args command line args
      */
