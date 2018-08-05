@@ -1,16 +1,29 @@
 package com.theplatform.dfh.cp.handler.sample.api;
 
+import com.theplatform.dfh.cp.api.params.ParamsMap;
+
 public class SampleInput
 {
-    private String sampleField;
+    private String action;
+    private ParamsMap paramsMap;
 
-    public String getSampleField()
+    public String getAction()
     {
-        return sampleField;
+        return action;
     }
 
-    public void setSampleField(String sampleField)
+    public void setAction(String action)
     {
-        this.sampleField = sampleField;
+        this.action = action;
+    }
+
+    public ParamsMap getParamsMap()
+    {
+        return paramsMap;
+    }
+
+    public void setParamsMap(ParamsMap paramsMap)
+    {
+        this.paramsMap = paramsMap;
     }
 }
