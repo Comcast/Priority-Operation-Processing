@@ -20,8 +20,8 @@
         <logging-extension.version>1.2.0</logging-extension.version>
         <handler-base.version>1.0.0-SNAPSHOT</handler-base.version>
         <sample-handler-api.version>1.0.0-SNAPSHOT</sample-handler-api.version>
+        <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
-        <json-field-translator.version>1.0.0-SNAPSHOT</json-field-translator.version>
         <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
         <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
         <handler-field-api.version>1.0.0-SNAPSHOT</handler-field-api.version>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-cp-json-helper</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${json-helper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
