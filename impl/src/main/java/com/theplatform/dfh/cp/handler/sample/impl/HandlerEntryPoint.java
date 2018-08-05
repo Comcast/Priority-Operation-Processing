@@ -5,18 +5,20 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.ReporterSet;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporterSet;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
+import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
+import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContextFactory;
+import com.theplatform.dfh.cp.handler.sample.impl.processor.SampleActionProcessor;
 import com.theplatform.dfh.cp.jsonhelper.JsonHelper;
 
 public class HandlerEntryPoint
 {
-    private ReporterSet reporterSet = new KubernetesReporterSet();
     private LaunchDataWrapper launchDataWrapper;
-    private JsonHelper jsonHelper;
+    private OperationContextFactory operationContextFactory;
 
     public HandlerEntryPoint(String[] args)
     {
         launchDataWrapper = new DefaultLaunchDataWrapper(args);
-        jsonHelper = new JsonHelper();
+        operationContextFactory = new OperationContextFactory();
     }
 
     /**
@@ -29,23 +31,15 @@ public class HandlerEntryPoint
     public static void main(String[] args)
     {
         // just for convenience...
-        System.out.println(System.getProperty("user.dir"));
+        //System.out.println(System.getProperty("user.dir"));
 
         new HandlerEntryPoint(args).execute();
     }
 
     public void execute()
     {
-        SampleInput sampleInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
-
-        reporterSet.reportProgress(sampleInput);
-        reporterSet.reportProgress(sampleInput);
-        reporterSet.reportSuccess("All Done!");
-    }
-
-    public void setReporterSet(ReporterSet reporterSet)
-    {
-        this.reporterSet = reporterSet;
+        OperationContext operationContext = operationContextFactory.getOperationConfiguration(launchDataWrapper);
+        new SampleActionProcessor(launchDataWrapper, operationContext).execute();
     }
 
     public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
@@ -53,8 +47,8 @@ public class HandlerEntryPoint
         this.launchDataWrapper = launchDataWrapper;
     }
 
-    public void setJsonHelper(JsonHelper jsonHelper)
+    public void setOperationContextFactory(OperationContextFactory operationContextFactory)
     {
-        this.jsonHelper = jsonHelper;
+        this.operationContextFactory = operationContextFactory;
     }
 }
