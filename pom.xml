@@ -21,7 +21,6 @@
         <mockito.version>1.9.5</mockito.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>1.0.5</failsafe.version>
-        <field-retriever-api.version>1.0.0-SNAPSHOT</field-retriever-api.version>
         <commons-cli.version>1.4</commons-cli.version>
     </properties>
     
