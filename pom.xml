@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+    <artifactId>pl-dfh-cp-endpoint-base</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>TransformRequest endpoint implementation</name>
+
+    <properties>
+        <scheduling.persistence.api.version>1.0.0</scheduling.persistence.api.version>
+        <endpoint-api.version>1.0.0-SNAPSHOT</endpoint-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+            <version>${endpoint-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.schedule</groupId>
+            <artifactId>pl-dfh-schedule-persistence-api</artifactId>
+            <version>${scheduling.persistence.api.version}</version>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+</project>
