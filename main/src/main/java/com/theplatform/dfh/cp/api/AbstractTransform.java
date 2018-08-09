@@ -14,18 +14,18 @@ import java.util.List;
 
 public abstract class AbstractTransform
 {
-    private URI jobId;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private URI id;
+
     public URI getId()
     {
-        return jobId;
+        return id;
     }
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public void setId(URI jobId)
+    public void setId(URI id)
     {
-        this.jobId = jobId;
+        this.id = id;
     }
+
     /**
      * Inputs: This includes URLs, creds,
      * and key metadata for the media files that DFH will process (VIDEO, AUDIO, TEXT tracks, etc.)
