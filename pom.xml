@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+    <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Base AWS Endpoint</name>
+
+    <properties>
+        <aws.java.jdk>1.11.100</aws.java.jdk>
+        <aws.lambda.version>1.1.0</aws.lambda.version>
+        <endpoint-agenda.version>1.0.0-SNAPSHOT</endpoint-agenda.version>
+        <dfh.schedule.persistence.aws.version>1.0.0</dfh.schedule.persistence.aws.version>
+        <dfh.schedule.status.version.version>1.0.0</dfh.schedule.status.version.version>
+        <cp-endpoint-base>1.0.0-SNAPSHOT</cp-endpoint-base>
+        <commons-text.version>1.4</commons-text.version>
+    </properties>
+
+    <dependencies>
+        <!-- AWS Dependencies -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws.java.jdk}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws.lambda.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-lambda</artifactId>
+            <version>${aws.java.jdk}</version>
+        </dependency>
+
+        <!-- DFH Dependencies -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-base</artifactId>
+            <version>${cp-endpoint-base}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.schedule</groupId>
+            <artifactId>pl-dfh-schedule-persistence-impl-dynamodb</artifactId>
+            <version>${dfh.schedule.persistence.aws.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.schedule</groupId>
+            <artifactId>pl-dfh-schedule-status-version</artifactId>
+            <version>${dfh.schedule.status.version.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
+        </dependency>
+    </dependencies>
+</project>
