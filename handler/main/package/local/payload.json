@@ -1,0 +1,15 @@
+{
+  "id": "theAgenda",
+  "params": {
+    "param.1": "one",
+    "param.2": "two"
+  },
+  "operations": [
+    {
+      "id": "analysis"
+    },
+    {
+      "id": "accelerateFilter"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="sampleHandlerServiceLog" class="ch.qos.logback.classic.net.SyslogAppender">
+        <filter class="com.theplatform.module.logging.extension.logback.filter.LevelMatchFilter" />
+        <syslogHost>syslog.splunk</syslogHost>
+        <facility>local0</facility>
+        <port>514</port>
+        <throwableExcluded>true</throwableExcluded>
+        <!-- WARNING: THE HARD CODED CLUSTER MUST BE RESOLVED ?? -->
+        <suffixPattern>dfhsamp - service [idxFields@24131 index="service" cluster="lab-main-t-aor-fph-fun1"] %d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}:
+            %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n%xException</suffixPattern>
+    </appender>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="httpclient.wire.header" level="ERROR" />
+    <logger name="com.theplatform.web.marshalling" level="ERROR" />
+    <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
+
+    <root level="${LogLevel:-DEBUG}">
+        <appender-ref ref="STDOUT" />
+        <!--<appender-ref ref="sampleHandlerServiceLog" />-->
+    </root>
+
+</configuration>
