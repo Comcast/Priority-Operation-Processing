@@ -1,0 +1,23 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.processor</groupId>
+        <artifactId>pl-dfh-processor-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.api.app</groupId>
+    <artifactId>pl-dfh-cp-handler-executor-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Executor Handler Parent</name>
+
+    <modules>
+        <module>api/main</module>
+        <module>handler/main/impl</module>
+        <module>handler/main/package</module>
+    </modules>
+
+</project>
