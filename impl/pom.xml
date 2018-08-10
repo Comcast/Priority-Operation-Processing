@@ -22,9 +22,7 @@
         <sample-handler-api.version>1.0.0-SNAPSHOT</sample-handler-api.version>
         <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
-        <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
         <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
-        <handler-field-api.version>1.0.0-SNAPSHOT</handler-field-api.version>
     </properties>
     
     <dependencies>
@@ -35,18 +33,8 @@
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-field-api</artifactId>
-            <version>${handler-field-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
             <version>${kubernetes-reporter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-field-retriever</artifactId>
-            <version>${field-retriever.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>

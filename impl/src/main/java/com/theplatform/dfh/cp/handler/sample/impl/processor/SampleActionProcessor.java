@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
+import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
@@ -13,7 +14,7 @@ import com.theplatform.dfh.cp.jsonhelper.JsonHelper;
 /**
  * Basic processor for running mediainfo and requesting the output is parsed
  */
-public class SampleActionProcessor
+public class SampleActionProcessor implements HandlerProcessor<Void>
 {
     private LaunchDataWrapper launchDataWrapper;
     private OperationContext operationContext;
@@ -31,7 +32,7 @@ public class SampleActionProcessor
     /**
      * Executes the necessary steps to get the MediaProperties for the file
      */
-    public void execute()
+    public Void execute()
     {
         SampleInput handlerInput;
         ActionParameters actionParameters;
@@ -62,6 +63,7 @@ public class SampleActionProcessor
         }
 
         reporter.reportSuccess("All done!");
+        return null;
     }
 
     public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)

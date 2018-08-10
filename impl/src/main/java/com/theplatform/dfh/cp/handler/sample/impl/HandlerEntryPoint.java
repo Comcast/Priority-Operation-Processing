@@ -1,24 +1,18 @@
 package com.theplatform.dfh.cp.handler.sample.impl;
 
+import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
+import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.ReporterSet;
-import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporterSet;
-import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContextFactory;
 import com.theplatform.dfh.cp.handler.sample.impl.processor.SampleActionProcessor;
-import com.theplatform.dfh.cp.jsonhelper.JsonHelper;
 
-public class HandlerEntryPoint
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, SampleActionProcessor>
 {
-    private LaunchDataWrapper launchDataWrapper;
-    private OperationContextFactory operationContextFactory;
-
     public HandlerEntryPoint(String[] args)
     {
-        launchDataWrapper = new DefaultLaunchDataWrapper(args);
-        operationContextFactory = new OperationContextFactory();
+        super(args);
     }
 
     /**
@@ -36,19 +30,21 @@ public class HandlerEntryPoint
         new HandlerEntryPoint(args).execute();
     }
 
-    public void execute()
+    @Override
+    protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
-        OperationContext operationContext = operationContextFactory.getOperationConfiguration(launchDataWrapper);
-        new SampleActionProcessor(launchDataWrapper, operationContext).execute();
+        return new DefaultLaunchDataWrapper(args);
     }
 
-    public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
+    @Override
+    protected BaseOperationContextFactory<OperationContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
     {
-        this.launchDataWrapper = launchDataWrapper;
+        return new OperationContextFactory(launchDataWrapper);
     }
 
-    public void setOperationContextFactory(OperationContextFactory operationContextFactory)
+    @Override
+    protected SampleActionProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, OperationContext operationContext)
     {
-        this.operationContextFactory = operationContextFactory;
+        return new SampleActionProcessor(launchDataWrapper, operationContext);
     }
 }
