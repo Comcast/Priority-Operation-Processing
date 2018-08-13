@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class persistenceObjectClazz;
     private ObjectPersisterFactory<T> objectPersisterFactory;
@@ -53,10 +54,12 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
     
     /**
      * Gets the path parameter name based on the url -- https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
-     *     // TODO: consider standardizing this to just be 'id'
      * @return String containing the path parameter name.
      */
-    protected abstract String getPathParameterName();
+    protected String getPathParameterName()
+    {
+        return DEFAULT_PATH_PARAMETER_NAME;
+    }
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
