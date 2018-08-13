@@ -1,9 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.DockerAgendaExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.KubernetesAgendaExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.LocalAgendaExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporterSet;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
@@ -24,12 +21,12 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
         switch (getExternalLaunchType())
         {
             case local:
-                return new OperationContext(new LocalAgendaExecutorFactory(), new LogReporter());
+                return new OperationContext(new LogReporter());
             case docker:
-                return new OperationContext(new DockerAgendaExecutorFactory(), new LogReporter());
+                return new OperationContext(new LogReporter());
             case kubernetes:
             default:
-                return new OperationContext(new KubernetesAgendaExecutorFactory(), new KubernetesReporterSet());
+                return new OperationContext(new KubernetesReporterSet());
         }
     }
 }
