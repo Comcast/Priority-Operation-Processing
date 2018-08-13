@@ -56,7 +56,7 @@
                 <artifactId>docker-image-plugin</artifactId>
                 <version>1.0.0</version>
                 <configuration>
-                    <ccdsService>cphs</ccdsService>
+                    <ccdsService>fhsamp</ccdsService>
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
                     <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
