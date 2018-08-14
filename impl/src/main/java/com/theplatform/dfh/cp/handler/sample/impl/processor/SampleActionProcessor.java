@@ -45,6 +45,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
 
         try
         {
+            logger.warn("Reading payload");
             logger.info("Reading payload");
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
             // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)
