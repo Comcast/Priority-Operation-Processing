@@ -59,6 +59,8 @@ public class PodConfig
     // The timeout for starting a pod
     private Long podScheduledTimeoutMs;
 
+    private long podStdoutTimeout;
+
     private Integer podRetryCount = 1;
     private int retryDelayMilliSecs = RETRY_DELAY;
 
@@ -242,6 +244,16 @@ public class PodConfig
     public void setPodScheduledTimeoutMs(Long podScheduledTimeoutMs)
     {
         this.podScheduledTimeoutMs = podScheduledTimeoutMs;
+    }
+
+    public long getPodStdoutTimeout()
+    {
+        return podStdoutTimeout;
+    }
+
+    public void setPodStdoutTimeout(long podStdoutTimeout)
+    {
+        this.podStdoutTimeout = podStdoutTimeout;
     }
 
     public Integer getPodRetryCount()
