@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyProvider;
 import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
@@ -10,12 +11,16 @@ import com.theplatform.dfh.cp.handler.sample.impl.action.BaseAction;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.exception.DfhSampleException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Basic processor for running mediainfo and requesting the output is parsed
+ * Basic processor for running the sample action and requesting the output is parsed
  */
 public class SampleActionProcessor implements HandlerProcessor<Void>
 {
+    private static Logger logger = LoggerFactory.getLogger(SampleActionProcessor.class);
+
     private LaunchDataWrapper launchDataWrapper;
     private OperationContext operationContext;
     private JsonHelper jsonHelper;
@@ -30,7 +35,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
     }
 
     /**
-     * Executes the necessary steps to get the MediaProperties for the file
+     * Executes the necessary steps to perform the action
      */
     public Void execute()
     {
@@ -40,6 +45,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
 
         try
         {
+            logger.info("Reading payload");
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
             // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)
             actionParameters = jsonHelper.getObjectFromMap(handlerInput.getParamsMap(), ActionParameters.class);
@@ -55,6 +61,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
         BaseAction baseAction = actionMap.getAction(handlerInput.getAction());
         if(baseAction != null)
         {
+            logger.info("Performing Action: {}", handlerInput.getAction());
             baseAction.performAction(reporter, actionParameters);
         }
         else

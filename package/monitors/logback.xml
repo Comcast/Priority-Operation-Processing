@@ -27,7 +27,7 @@
 
     <root level="${LogLevel:-DEBUG}">
         <appender-ref ref="STDOUT" />
-        <!--<appender-ref ref="sampleHandlerServiceLog" />-->
+        <appender-ref ref="sampleHandlerServiceLog" />
     </root>
 
 </configuration>
