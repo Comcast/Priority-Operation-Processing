@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.handler.sample.impl.action.ActionMap;
 import com.theplatform.dfh.cp.handler.sample.impl.action.BaseAction;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.exception.DfhSampleException;
-import com.theplatform.dfh.cp.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
 /**
  * Basic processor for running mediainfo and requesting the output is parsed
