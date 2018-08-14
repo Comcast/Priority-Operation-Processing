@@ -61,7 +61,6 @@
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
                     <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
                     <appMainClass>Must.Be.Here.Due.To.Plugin</appMainClass>
-                    <applicationCommand></applicationCommand>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>
