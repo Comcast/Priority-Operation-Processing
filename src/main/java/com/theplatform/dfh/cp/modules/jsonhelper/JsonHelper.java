@@ -1,14 +1,15 @@
-package com.theplatform.dfh.cp.jsonhelper;
+package com.theplatform.dfh.cp.modules.jsonhelper;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
-
-// TODO: exception handling, eval if this is anything more than prototype code
 
 /**
  *
@@ -29,17 +30,17 @@ public class JsonHelper
      * @param <T>
      * @return The object or null (if not found)
      */
-    public <T> T getObjectFromRef(JsonNode rootNode, String ref, Class clazz)
+    public <T> T getObjectFromRef(JsonNode rootNode, String ref, Class<T> clazz)
     {
         JsonNode jsonNode = rootNode.at(ref);
         if(jsonNode.isMissingNode()) return null;
         try
         {
-            return (T)objectMapper.treeToValue(jsonNode, clazz);
+            return objectMapper.treeToValue(jsonNode, clazz);
         }
         catch(JsonProcessingException e)
         {
-            throw new RuntimeException(e);
+            throw new JsonHelperException(String.format("Failed to map ref %1$s to object %2$s.", ref, clazz.getSimpleName()), e);
         }
     }
 
@@ -50,9 +51,9 @@ public class JsonHelper
      * @param <T> The template object type
      * @return The object
      */
-    public <T> T getObjectFromMap(Map<String, Object> map, Class clazz)
+    public <T> T getObjectFromMap(Map<String, Object> map, Class<T> clazz)
     {
-        return (T)objectMapper.convertValue(map, clazz);
+        return objectMapper.convertValue(map, clazz);
     }
 
     /**
@@ -62,15 +63,15 @@ public class JsonHelper
      * @param <T>
      * @return The object or null (if not found)
      */
-    public <T> T getObjectFromString(String json, Class clazz)
+    public <T> T getObjectFromString(String json, Class<T> clazz)
     {
         try
         {
-            return (T)objectMapper.readValue(json, clazz);
+            return objectMapper.readValue(json, clazz);
         }
         catch(IOException e)
         {
-            throw new RuntimeException(e);
+            throw new JsonHelperException(String.format("Failed to map json to object %2$s.", clazz.getSimpleName(), e));
         }
     }
 
@@ -87,7 +88,7 @@ public class JsonHelper
         }
         catch(JsonProcessingException e)
         {
-            throw new RuntimeException(e);
+            throw new JsonHelperException("Failed to map object to json.", e);
         }
     }
 
@@ -104,7 +105,37 @@ public class JsonHelper
         }
         catch(JsonProcessingException e)
         {
-            throw new RuntimeException(e);
+            throw new JsonHelperException("Failed to map object to json.", e);
         }
+    }
+
+    /**
+     * Sets the value of the specified node to the string indicated
+     * @param rootNode The root JsonNode
+     * @param jsonPtrExpr The JsonPtr to the field to set
+     * @param value The value to set on the node
+     */
+    public void setNodeValue(JsonNode rootNode, String jsonPtrExpr, String value)
+    {
+        if(StringUtils.isBlank(jsonPtrExpr)
+            || StringUtils.equals(jsonPtrExpr,"/")
+            || StringUtils.endsWith(jsonPtrExpr, "/"))
+        {
+            throw new JsonHelperException("jsonPtrExpr must be a subnode.");
+        }
+
+        JsonPointer valueNodePointer = JsonPointer.compile(jsonPtrExpr);
+        JsonPointer containerPointer = valueNodePointer.head();
+        JsonNode parentJsonNode = rootNode.at(containerPointer);
+
+        if (parentJsonNode.isMissingNode() || !parentJsonNode.isObject())
+        {
+            throw new JsonHelperException(String.format("Failed to find node at ref %1$s", jsonPtrExpr));
+        }
+
+        ((ObjectNode) parentJsonNode)
+            .put(
+                jsonPtrExpr.substring(jsonPtrExpr.lastIndexOf('/') + 1),
+                value);
     }
 }
