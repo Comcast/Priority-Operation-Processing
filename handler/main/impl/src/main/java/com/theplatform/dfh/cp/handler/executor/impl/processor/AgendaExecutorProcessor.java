@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
 /**
  * Basic processor for running mediainfo and requesting the output is parsed
