@@ -125,15 +125,18 @@ public class Fabric8Helper
 
         List<String> volumeNames = new ArrayList<>();
 
-        for (String volumePath : podConfig.getNfsDetails().getNfsMountPaths())
+        if (podConfig.getNfsDetails() != null && podConfig.getNfsDetails().getNfsMountPaths() != null)
         {
-            String volumeName = generateUUID();
-            volumeNames.add(volumeName);
-            containerSpec
-                .addNewVolumeMount()
-                .withName(volumeName)
-                .withMountPath(volumePath)
-                .endVolumeMount();
+            for (String volumePath : podConfig.getNfsDetails().getNfsMountPaths())
+            {
+                String volumeName = generateUUID();
+                volumeNames.add(volumeName);
+                containerSpec
+                    .addNewVolumeMount()
+                    .withName(volumeName)
+                    .withMountPath(volumePath)
+                    .endVolumeMount();
+            }
         }
         containerSpec
             .withNewResources()
@@ -142,7 +145,7 @@ public class Fabric8Helper
             .endResources();
 
         AliveCheckDetails aliveCheckDetails = podConfig.getAliveCheckDetails();
-        if (aliveCheckDetails.getAliveCheckLinking())
+        if (aliveCheckDetails != null && aliveCheckDetails.getAliveCheckLinking())
         {
             logger.info("Adding alive check linking");
             try

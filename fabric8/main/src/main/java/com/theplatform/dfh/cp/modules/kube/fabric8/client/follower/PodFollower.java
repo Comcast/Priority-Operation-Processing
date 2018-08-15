@@ -17,13 +17,12 @@ public interface PodFollower<C extends PodPushClient>
     /**
      * Synchronous "blocking" call.  You may call this multiple times (in different threads) and that is safe.
      *
-     * @param pushBasedPodClient a k8 client wrapped to make push event handling easy.
      * @param podConfig details specific to a particular od
      * @param executionConfig details specific to a particular execution
      * @param logLineObserver a logLine observer that will be attached to the stdout stream of the pod started.
      * @return the LastPhase (success or failure) from the pod being followed.
      */
-    public FinalPodPhaseInfo startAndFollowPod(C pushBasedPodClient, PodConfig podConfig, ExecutionConfig executionConfig,
+    public FinalPodPhaseInfo startAndFollowPod(PodConfig podConfig, ExecutionConfig executionConfig,
         LogLineObserver logLineObserver);
 
     public LogLineObserver getDefaultLogLineObserver(ExecutionConfig executionConfig);

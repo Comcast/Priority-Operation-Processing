@@ -58,7 +58,7 @@ public class PodWatcherImplTest
         impl.setScheduledLatch(sched);
         impl.setFinishedLatch(fin);
         impl.setLogLineAccumulator(accumulator);
-        PodResource podClient = mock(PodResource.class);
+        PodResource<Pod, DoneablePod> podClient = (PodResource<Pod, DoneablePod>) mock(PodResource.class);
         impl.setPodClient(podClient);
         impl.setWatch(mock(Watch.class));
 

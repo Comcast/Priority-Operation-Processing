@@ -2,16 +2,21 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client.follower;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodNotScheduledException;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserverImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper.getFabric8Config;
 
 /**
  * A PodFollower is capable of following multiple pods, one per invocation of "startAndFollowPod(...)"
@@ -30,8 +37,16 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     public static final int MAX_INACTIVITY_BEFORE_LOG_RESET = 20;
     private static Logger logger = LoggerFactory.getLogger(PodFollowerImpl.class);
 
+    private PodPushClientFactoryImpl podPushClientFactory = new PodPushClientFactoryImpl();
+    private PodPushClient podPushClient;
+
+    public PodFollowerImpl(KubeConfig kubeConfig)
+    {
+        podPushClient = podPushClientFactory.getClient(kubeConfig);
+    }
+
     @Override
-    public FinalPodPhaseInfo startAndFollowPod(PodPushClient wrapperClient, PodConfig podConfig, ExecutionConfig executionConfig,
+    public FinalPodPhaseInfo startAndFollowPod(PodConfig podConfig, ExecutionConfig executionConfig,
         LogLineObserver logLineObserver)
     {
         String podName = executionConfig.getName();
@@ -41,10 +56,9 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         {
             CountDownLatch podScheduled = new CountDownLatch(1);
             CountDownLatch podFinishedSuccessOrFailure = new CountDownLatch(1);
-            LogLineAccumulator logLineAccumulator = new LogLineAccumulatorImpl();
 
             // START POD
-            podWatcher = wrapperClient
+            podWatcher = podPushClient
                 .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure);
 
             // CHECK POD: SCHEDULED
@@ -80,7 +94,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
                 {
                     logger.debug("Pod {} reaping enabled.", podName);
                     logger.info("Pod {} being removed with with pod phase {}", podName, finalPhase);
-                    wrapperClient.deletePod(podName);
+                    podPushClient.deletePod(podName);
                 }
             }
             catch (Exception e)
