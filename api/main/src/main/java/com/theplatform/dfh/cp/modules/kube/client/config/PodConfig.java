@@ -47,10 +47,10 @@ public class PodConfig
     // if true, a new volume (named log) is specified with an empty directory (fabric8)
     private boolean defaultEmptyDirLogging = false;
 
-    // the max cpu request value
+    // the maximum cpu request value
     private String cpuMaxRequestCount;
     // the minimum cpu request value
-    private String cpuMinimumRequestCount;
+    private String cpuMinRequestCount;
 
     // the minimum memory amount
     private String memoryRequestCount; // todo can this be an int of long?
@@ -213,14 +213,14 @@ public class PodConfig
         return this;
     }
 
-    public String getCpuMinimumRequestCount()
+    public String getCpuMinRequestCount()
     {
-        return cpuMinimumRequestCount;
+        return cpuMinRequestCount;
     }
 
-    public PodConfig setCpuMinimumRequestCount(String cpuMinimumRequestCount)
+    public PodConfig setCpuMinRequestCount(String cpuMinRequestCount)
     {
-        this.cpuMinimumRequestCount = cpuMinimumRequestCount;
+        this.cpuMinRequestCount = cpuMinRequestCount;
         return this;
     }
 

@@ -197,4 +197,9 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         );
         return logLineObserver;
     }
+
+    public PodPushClient getPodPushClient()
+    {
+        return podPushClient;
+    }
 }

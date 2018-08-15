@@ -26,4 +26,6 @@ public interface PodFollower<C extends PodPushClient>
         LogLineObserver logLineObserver);
 
     public LogLineObserver getDefaultLogLineObserver(ExecutionConfig executionConfig);
+
+    public PodPushClient getPodPushClient();
 }

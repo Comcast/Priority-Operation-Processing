@@ -63,7 +63,7 @@ public class HiLowCpuRequestModulator implements CpuRequestModulator
     {
         HiLowCpuRequestModulator modulator = new HiLowCpuRequestModulator();
         modulator.setMaximumCpuRequest(podConfig.getCpuMaxRequestCount());
-        modulator.setMinimumCpuRequest(podConfig.getCpuMinimumRequestCount());
+        modulator.setMinimumCpuRequest(podConfig.getCpuMinRequestCount());
         return modulator;
     }
 }
