@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class JsonReferenceReplacer
 {
-    private static final String DEFAULT_REFERENCE_PREFIX = "\\$\\$";
+    private static final String DEFAULT_REFERENCE_PREFIX = "$$";
     private static final String DEFAULT_REFERENCE_SEPARATOR = "::";
     private static final String JACKSON_PATH_SEPARATOR = "/";
     public static final String REFERENCE_GROUP = "reference";
@@ -36,10 +36,11 @@ public class JsonReferenceReplacer
     {
         CONTEXT_REFERENCE_PREFIX = referencePrefix;
         CONTEXT_REFERENCE_SEPARATOR = referenceSeparator;
+        // the quote replacements escape any special characters (like $)
         String pattern = String.format("%1$s(?<%2$s>.+?)(%3$s(?<%4$s>.+))?",
-            CONTEXT_REFERENCE_PREFIX,
+            Matcher.quoteReplacement(CONTEXT_REFERENCE_PREFIX),
             REFERENCE_GROUP,
-            CONTEXT_REFERENCE_SEPARATOR,
+            Matcher.quoteReplacement(CONTEXT_REFERENCE_SEPARATOR),
             PATH_GROUP);
         referencePattern = Pattern.compile(pattern);
     }
