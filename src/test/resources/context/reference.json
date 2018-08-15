@@ -1,0 +1,7 @@
+{
+  "someitem":
+  {
+    "field1":"$$encode.1",
+    "field2":"$$analysis.1"
+  }
+}

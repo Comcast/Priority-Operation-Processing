@@ -1,0 +1,18 @@
+{
+  "someitem":
+  {
+    "field1":{
+      "stats":
+      {
+        "encodeTime":4560
+      }
+    },
+    "field2":{
+      "streamProperties":
+      {
+        "width":720,
+        "height":480
+      }
+    }
+  }
+}
