@@ -19,9 +19,10 @@ public class NfsDetails
         return nfsServer;
     }
 
-    public void setNfsServer(String nfsServer)
+    public NfsDetails setNfsServer(String nfsServer)
     {
         this.nfsServer = nfsServer;
+        return this;
     }
 
     public String getNfsServerPath()
@@ -29,9 +30,10 @@ public class NfsDetails
         return nfsServerPath;
     }
 
-    public void setNfsServerPath(String nfsServerPath)
+    public NfsDetails setNfsServerPath(String nfsServerPath)
     {
         this.nfsServerPath = nfsServerPath;
+        return this;
     }
 
     public String[] getNfsMountPaths()
@@ -39,9 +41,10 @@ public class NfsDetails
         return nfsMountPaths;
     }
 
-    public void setNfsMountPaths(String[] nfsMountPaths)
+    public NfsDetails setNfsMountPaths(String[] nfsMountPaths)
     {
         this.nfsMountPaths = nfsMountPaths;
+        return this;
     }
 
     public Boolean getNfsReadOnly()
@@ -49,8 +52,9 @@ public class NfsDetails
         return nfsReadOnly;
     }
 
-    public void setNfsReadOnly(Boolean nfsReadOnly)
+    public NfsDetails setNfsReadOnly(Boolean nfsReadOnly)
     {
         this.nfsReadOnly = nfsReadOnly;
+        return this;
     }
 }

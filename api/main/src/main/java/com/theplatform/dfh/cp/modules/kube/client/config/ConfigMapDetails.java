@@ -20,9 +20,10 @@ public class ConfigMapDetails {
         return mapKey;
     }
 
-    public void setMapKey(String mapKey)
+    public ConfigMapDetails setMapKey(String mapKey)
     {
         this.mapKey = mapKey;
+        return this;
     }
 
     public String getMapPath()
@@ -30,9 +31,10 @@ public class ConfigMapDetails {
         return mapPath;
     }
 
-    public void setMapPath(String mapPath)
+    public ConfigMapDetails setMapPath(String mapPath)
     {
         this.mapPath = mapPath;
+        return this;
     }
 
     public String getVolumeSourceName()
@@ -40,9 +42,10 @@ public class ConfigMapDetails {
         return volumeSourceName;
     }
 
-    public void setVolumeSourceName(String volumeSourceName)
+    public ConfigMapDetails setVolumeSourceName(String volumeSourceName)
     {
         this.volumeSourceName = volumeSourceName;
+        return this;
     }
 
     public String getVolumeName()
@@ -50,9 +53,10 @@ public class ConfigMapDetails {
         return volumeName;
     }
 
-    public void setVolumeName(String volumeName)
+    public ConfigMapDetails setVolumeName(String volumeName)
     {
         this.volumeName = volumeName;
+        return this;
     }
 
     public String getVolumeMountPath()
@@ -60,8 +64,9 @@ public class ConfigMapDetails {
         return volumeMountPath;
     }
 
-    public void setVolumeMountPath(String volumeMountPath)
+    public ConfigMapDetails setVolumeMountPath(String volumeMountPath)
     {
         this.volumeMountPath = volumeMountPath;
+        return this;
     }
 }

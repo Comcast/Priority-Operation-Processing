@@ -19,9 +19,11 @@ public class AliveCheckDetails {
         return aliveCheckHost;
     }
 
-    public void setAliveCheckHost(String aliveCheckHost)
+    public AliveCheckDetails setAliveCheckHost(String aliveCheckHost)
     {
+
         this.aliveCheckHost = aliveCheckHost;
+        return this;
     }
 
     public String getAlivePath()
@@ -29,9 +31,10 @@ public class AliveCheckDetails {
         return alivePath;
     }
 
-    public void setAlivePath(String alivePath)
+    public AliveCheckDetails setAlivePath(String alivePath)
     {
         this.alivePath = alivePath;
+        return this;
     }
 
     public int getAlivePort()
@@ -39,9 +42,10 @@ public class AliveCheckDetails {
         return alivePort;
     }
 
-    public void setAlivePort(int alivePort)
+    public AliveCheckDetails setAlivePort(int alivePort)
     {
         this.alivePort = alivePort;
+        return this;
     }
 
     public Boolean getAliveCheckLinking()
@@ -49,9 +53,10 @@ public class AliveCheckDetails {
         return aliveCheckLinking;
     }
 
-    public void setAliveCheckLinking(Boolean aliveCheckLinking)
+    public AliveCheckDetails setAliveCheckLinking(Boolean aliveCheckLinking)
     {
         this.aliveCheckLinking = aliveCheckLinking;
+        return this;
     }
 
     public Integer getAliveCheckInterval()
@@ -59,9 +64,10 @@ public class AliveCheckDetails {
         return aliveCheckInterval;
     }
 
-    public void setAliveCheckInterval(Integer aliveCheckInterval)
+    public AliveCheckDetails setAliveCheckInterval(Integer aliveCheckInterval)
     {
         this.aliveCheckInterval = aliveCheckInterval;
+        return this;
     }
 
     public Integer getAliveCheckFailureThreshold()
@@ -69,8 +75,9 @@ public class AliveCheckDetails {
         return aliveCheckFailureThreshold;
     }
 
-    public void setAliveCheckFailureThreshold(Integer aliveCheckFailureThreshold)
+    public AliveCheckDetails setAliveCheckFailureThreshold(Integer aliveCheckFailureThreshold)
     {
         this.aliveCheckFailureThreshold = aliveCheckFailureThreshold;
+        return this;
     }
 }

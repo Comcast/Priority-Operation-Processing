@@ -16,7 +16,7 @@ public class ExecutionConfig
     private String externalId = UUID.randomUUID().toString();
     private String externalGroupId = UUID.randomUUID().toString();   // todo where is this used
 
-    private String name;    // todo have Launcher set this as the podConfig prefix + a random UUID
+    private String name = UUID.randomUUID().toString();    // todo have Launcher set this as the podConfig prefix + a random UUID
 
     private Map<String, String> envVars = new HashMap<>();
 
@@ -33,9 +33,10 @@ public class ExecutionConfig
         return externalId;
     }
 
-    public void setExternalId(String externalId)
+    public ExecutionConfig setExternalId(String externalId)
     {
         this.externalId = externalId;
+        return this;
     }
 
     public String getExternalGroupId()
@@ -43,9 +44,10 @@ public class ExecutionConfig
         return externalGroupId;
     }
 
-    public void setExternalGroupId(String externalGroupId)
+    public ExecutionConfig setExternalGroupId(String externalGroupId)
     {
         this.externalGroupId = externalGroupId;
+        return this;
     }
 
     public String getName()
@@ -53,9 +55,10 @@ public class ExecutionConfig
         return name;
     }
 
-    public void setName(String name)
+    public ExecutionConfig setName(String name)
     {
         this.name = name;
+        return this;
     }
 
     public Map<String, String> getEnvVars()
@@ -63,14 +66,16 @@ public class ExecutionConfig
         return envVars;
     }
 
-    public void setEnvVars(Map<String, String> envVars)
+    public ExecutionConfig setEnvVars(Map<String, String> envVars)
     {
         this.envVars = envVars;
+        return this;
     }
 
-    public void addEnvVar(String name, String value)
+    public ExecutionConfig addEnvVar(String name, String value)
     {
         envVars.put(name, value);
+        return this;
     }
 
     public boolean hasEnvVars()
@@ -83,9 +88,10 @@ public class ExecutionConfig
         return memoryRequestCount;
     }
 
-    public void setMemoryRequestCount(String memoryRequestCount)
+    public ExecutionConfig setMemoryRequestCount(String memoryRequestCount)
     {
         this.memoryRequestCount = memoryRequestCount;
+        return this;
     }
 
     public CpuRequestModulator getCpuRequestModulator()
@@ -93,9 +99,10 @@ public class ExecutionConfig
         return cpuRequestModulator;
     }
 
-    public void setCpuRequestModulator(CpuRequestModulator cpuRequestModulator)
+    public ExecutionConfig setCpuRequestModulator(CpuRequestModulator cpuRequestModulator)
     {
         this.cpuRequestModulator = cpuRequestModulator;
+        return this;
     }
 
     public LogLineAccumulator getLogLineAccumulator()
@@ -103,9 +110,10 @@ public class ExecutionConfig
         return logLineAccumulator;
     }
 
-    public void setLogLineAccumulator(LogLineAccumulator logLineAccumulator)
+    public ExecutionConfig setLogLineAccumulator(LogLineAccumulator logLineAccumulator)
     {
         this.logLineAccumulator = logLineAccumulator;
+        return this;
     }
 
     // todo getter for the payload in an implementation of this config: HandlerExecutionConfig?

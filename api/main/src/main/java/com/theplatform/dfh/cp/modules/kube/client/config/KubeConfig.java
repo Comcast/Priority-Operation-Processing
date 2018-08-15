@@ -19,9 +19,10 @@ public class KubeConfig
         return masterUrl;
     }
 
-    public void setMasterUrl(String masterUrl)
+    public KubeConfig setMasterUrl(String masterUrl)
     {
         this.masterUrl = masterUrl;
+        return this;
     }
 
     public String getNameSpace()
@@ -29,9 +30,10 @@ public class KubeConfig
         return nameSpace;
     }
 
-    public void setNameSpace(String nameSpace)
+    public KubeConfig setNameSpace(String nameSpace)
     {
         this.nameSpace = nameSpace;
+        return this;
     }
 
     public String getCertificateAuthorityPath()
@@ -39,9 +41,10 @@ public class KubeConfig
         return certificateAuthorityPath;
     }
 
-    public void setCertificateAuthorityPath(String certificateAuthorityPath)
+    public KubeConfig setCertificateAuthorityPath(String certificateAuthorityPath)
     {
         this.certificateAuthorityPath = certificateAuthorityPath;
+        return this;
     }
 
     public String getCertificatePath()
@@ -49,9 +52,10 @@ public class KubeConfig
         return certificatePath;
     }
 
-    public void setCertificatePath(String certificatePath)
+    public KubeConfig setCertificatePath(String certificatePath)
     {
         this.certificatePath = certificatePath;
+        return this;
     }
 
     public String getKeyPath()
@@ -59,9 +63,10 @@ public class KubeConfig
         return keyPath;
     }
 
-    public void setKeyPath(String keyPath)
+    public KubeConfig setKeyPath(String keyPath)
     {
         this.keyPath = keyPath;
+        return this;
     }
 
     public String getCaCertData()
@@ -69,9 +74,10 @@ public class KubeConfig
         return caCertData;
     }
 
-    public void setCaCertData(String caCertData)
+    public KubeConfig setCaCertData(String caCertData)
     {
         this.caCertData = caCertData;
+        return this;
     }
 
     public String getOauthToken()
@@ -79,8 +85,9 @@ public class KubeConfig
         return oauthToken;
     }
 
-    public void setOauthToken(String oauthToken)
+    public KubeConfig setOauthToken(String oauthToken)
     {
         this.oauthToken = oauthToken;
+        return this;
     }
 }

@@ -14,6 +14,11 @@ public class PodConfig
 {
     private static final int RETRY_DELAY = 3000;
 
+                                        //  Sec  MILLI  Min
+    private long DEFAULT_SCHEDULED_TIMEOUT = 60 * 1000 * 5;
+                                                   //  Sec  MILLI  Min
+    private static final long DEFAULT_STDOUT_TIMEOUT = 60 * 1000 * 2;
+
 
     // The prefix for the launched kubernetes pod
     private String namePrefix;
@@ -57,9 +62,9 @@ public class PodConfig
     private Boolean pullAlways = false;
 
     // The timeout for starting a pod
-    private Long podScheduledTimeoutMs;
+    private Long podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
 
-    private long podStdoutTimeout;
+    private Long podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
 
     private Integer podRetryCount = 1;
     private int retryDelayMilliSecs = RETRY_DELAY;
@@ -76,9 +81,10 @@ public class PodConfig
         return namePrefix;
     }
 
-    public void setNamePrefix(String namePrefix)
+    public PodConfig setNamePrefix(String namePrefix)
     {
         this.namePrefix = namePrefix;
+        return this;
     }
 
     public String getImageName()
@@ -86,9 +92,10 @@ public class PodConfig
         return imageName;
     }
 
-    public void setImageName(String imageName)
+    public PodConfig setImageName(String imageName)
     {
         this.imageName = imageName;
+        return this;
     }
 
     public String getLogLineExpectation()
@@ -96,9 +103,10 @@ public class PodConfig
         return logLineExpectation;
     }
 
-    public void setLogLineExpectation(String logLineExpectation)
+    public PodConfig setLogLineExpectation(String logLineExpectation)
     {
         this.logLineExpectation = logLineExpectation;
+        return this;
     }
 
     public String getEndOfLogIdentifier()
@@ -106,9 +114,10 @@ public class PodConfig
         return endOfLogIdentifier;
     }
 
-    public void setEndOfLogIdentifier(String endOfLogIdentifier)
+    public PodConfig setEndOfLogIdentifier(String endOfLogIdentifier)
     {
         this.endOfLogIdentifier = endOfLogIdentifier;
+        return this;
     }
 
     public boolean isEndOfLogIdentifierEmpty()
@@ -121,9 +130,10 @@ public class PodConfig
         return enableOutputScraping;
     }
 
-    public void setEnableOutputScraping(boolean enableOutputScraping)
+    public PodConfig setEnableOutputScraping(boolean enableOutputScraping)
     {
         this.enableOutputScraping = enableOutputScraping;
+        return this;
     }
 
     public String[] getArguments()
@@ -131,9 +141,10 @@ public class PodConfig
         return arguments;
     }
 
-    public void setArguments(String[] arguments)
+    public PodConfig setArguments(String[] arguments)
     {
         this.arguments = arguments;
+        return this;
     }
 
     public Map<String, String> getEnvVars()
@@ -141,14 +152,16 @@ public class PodConfig
         return envVars;
     }
 
-    public void setEnvVars(Map<String, String> envVars)
+    public PodConfig setEnvVars(Map<String, String> envVars)
     {
         this.envVars = envVars;
+        return this;
     }
 
-    public void addEnvVars(String name, String value)
+    public PodConfig addEnvVars(String name, String value)
     {
         envVars.put(name, value);
+        return this;
     }
 
     public boolean useTaintedNodes()
@@ -156,9 +169,10 @@ public class PodConfig
         return useTaintedNodes;
     }
 
-    public void setUseTaintedNodes()
+    public PodConfig setUseTaintedNodes()
     {
         this.useTaintedNodes = useTaintedNodes;
+        return this;
     }
 
     public String getServiceAccountName()
@@ -166,9 +180,10 @@ public class PodConfig
         return serviceAccountName;
     }
 
-    public void setServiceAccountName(String serviceAccountName)
+    public PodConfig setServiceAccountName(String serviceAccountName)
     {
         this.serviceAccountName = serviceAccountName;
+        return this;
     }
 
     public boolean hasServiceAccountName()
@@ -181,9 +196,10 @@ public class PodConfig
         return defaultEmptyDirLogging;
     }
 
-    public void setDefaultEmptyDirLogging(boolean defaultEmptyDirLogging)
+    public PodConfig setDefaultEmptyDirLogging(boolean defaultEmptyDirLogging)
     {
         this.defaultEmptyDirLogging = defaultEmptyDirLogging;
+        return this;
     }
 
     public String getCpuMaxRequestCount()
@@ -191,9 +207,10 @@ public class PodConfig
         return cpuMaxRequestCount;
     }
 
-    public void setCpuMaxRequestCount(String cpuMaxRequestCount)
+    public PodConfig setCpuMaxRequestCount(String cpuMaxRequestCount)
     {
         this.cpuMaxRequestCount = cpuMaxRequestCount;
+        return this;
     }
 
     public String getCpuMinimumRequestCount()
@@ -201,9 +218,10 @@ public class PodConfig
         return cpuMinimumRequestCount;
     }
 
-    public void setCpuMinimumRequestCount(String cpuMinimumRequestCount)
+    public PodConfig setCpuMinimumRequestCount(String cpuMinimumRequestCount)
     {
         this.cpuMinimumRequestCount = cpuMinimumRequestCount;
+        return this;
     }
 
     public String getMemoryRequestCount()
@@ -211,9 +229,10 @@ public class PodConfig
         return memoryRequestCount;
     }
 
-    public void setMemoryRequestCount(String memoryRequestCount)
+    public PodConfig setMemoryRequestCount(String memoryRequestCount)
     {
         this.memoryRequestCount = memoryRequestCount;
+        return this;
     }
 
     public Boolean getReapCompletedPods()
@@ -221,9 +240,10 @@ public class PodConfig
         return reapCompletedPods;
     }
 
-    public void setReapCompletedPods(Boolean reapCompletedPods)
+    public PodConfig setReapCompletedPods(Boolean reapCompletedPods)
     {
         this.reapCompletedPods = reapCompletedPods;
+        return this;
     }
 
     public Boolean getPullAlways()
@@ -231,9 +251,10 @@ public class PodConfig
         return pullAlways;
     }
 
-    public void setPullAlways(Boolean pullAlways)
+    public PodConfig setPullAlways(Boolean pullAlways)
     {
         this.pullAlways = pullAlways;
+        return this;
     }
 
     public Long getPodScheduledTimeoutMs()
@@ -241,9 +262,10 @@ public class PodConfig
         return podScheduledTimeoutMs;
     }
 
-    public void setPodScheduledTimeoutMs(Long podScheduledTimeoutMs)
+    public PodConfig setPodScheduledTimeoutMs(Long podScheduledTimeoutMs)
     {
         this.podScheduledTimeoutMs = podScheduledTimeoutMs;
+        return this;
     }
 
     public long getPodStdoutTimeout()
@@ -251,9 +273,10 @@ public class PodConfig
         return podStdoutTimeout;
     }
 
-    public void setPodStdoutTimeout(long podStdoutTimeout)
+    public PodConfig setPodStdoutTimeout(long podStdoutTimeout)
     {
         this.podStdoutTimeout = podStdoutTimeout;
+        return this;
     }
 
     public Integer getPodRetryCount()
@@ -261,9 +284,10 @@ public class PodConfig
         return podRetryCount;
     }
 
-    public void setPodRetryCount(Integer podRetryCount)
+    public PodConfig setPodRetryCount(Integer podRetryCount)
     {
         this.podRetryCount = podRetryCount;
+        return this;
     }
 
     public int getRetryDelayMilliSecs()
@@ -271,9 +295,10 @@ public class PodConfig
         return retryDelayMilliSecs;
     }
 
-    public void setRetryDelayMilliSecs(int retryDelayMilliSecs)
+    public PodConfig setRetryDelayMilliSecs(int retryDelayMilliSecs)
     {
         this.retryDelayMilliSecs = retryDelayMilliSecs;
+        return this;
     }
 
     public List<Class<? extends Throwable>> getNonRetryableExceptions()
@@ -281,9 +306,10 @@ public class PodConfig
         return nonRetryableExceptions;
     }
 
-    public void setNonRetryableExceptions(List<Class<? extends Throwable>> nonRetryableExceptions)
+    public PodConfig setNonRetryableExceptions(List<Class<? extends Throwable>> nonRetryableExceptions)
     {
         this.nonRetryableExceptions = nonRetryableExceptions;
+        return this;
     }
 
     public List<Class<? extends Throwable>> getRetryableExceptions()
@@ -291,9 +317,10 @@ public class PodConfig
         return retryableExceptions;
     }
 
-    public void setRetryableExceptions(List<Class<? extends Throwable>> retryableExceptions)
+    public PodConfig setRetryableExceptions(List<Class<? extends Throwable>> retryableExceptions)
     {
         this.retryableExceptions = retryableExceptions;
+        return this;
     }
 
     public boolean hasConfigMap()
@@ -306,9 +333,10 @@ public class PodConfig
         return configMapDetails;
     }
 
-    public void setConfigMapDetails(ConfigMapDetails configMapDetails)
+    public PodConfig setConfigMapDetails(ConfigMapDetails configMapDetails)
     {
         this.configMapDetails = configMapDetails;
+        return this;
     }
 
     public AliveCheckDetails getAliveCheckDetails()
@@ -316,9 +344,10 @@ public class PodConfig
         return aliveCheckDetails;
     }
 
-    public void setAliveCheckDetails(AliveCheckDetails aliveCheckDetails)
+    public PodConfig setAliveCheckDetails(AliveCheckDetails aliveCheckDetails)
     {
         this.aliveCheckDetails = aliveCheckDetails;
+        return this;
     }
 
     public NfsDetails getNfsDetails()
@@ -326,8 +355,9 @@ public class PodConfig
         return nfsDetails;
     }
 
-    public void setNfsDetails(NfsDetails nfsDetails)
+    public PodConfig setNfsDetails(NfsDetails nfsDetails)
     {
         this.nfsDetails = nfsDetails;
+        return this;
     }
 }
