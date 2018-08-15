@@ -2,28 +2,30 @@ package com.theplatform.dfh.cp.handler.sample.api;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
+import java.util.List;
+
 public class SampleInput
 {
-    private String action;
-    private ParamsMap paramsMap;
+    private List<SampleAction> actions;
+    private ParamsMap resultPayload;
 
-    public String getAction()
+    public List<SampleAction> getActions()
     {
-        return action;
+        return actions;
     }
 
-    public void setAction(String action)
+    public void setActions(List<SampleAction> actions)
     {
-        this.action = action;
+        this.actions = actions;
     }
 
-    public ParamsMap getParamsMap()
+    public ParamsMap getResultPayload()
     {
-        return paramsMap;
+        return resultPayload;
     }
 
-    public void setParamsMap(ParamsMap paramsMap)
+    public void setResultPayload(ParamsMap resultPayload)
     {
-        this.paramsMap = paramsMap;
+        this.resultPayload = resultPayload;
     }
 }
