@@ -2,9 +2,9 @@ package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyProvider;
 import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
+import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 import com.theplatform.dfh.cp.handler.sample.impl.action.ActionMap;
 import com.theplatform.dfh.cp.handler.sample.impl.action.BaseAction;
@@ -13,6 +13,8 @@ import com.theplatform.dfh.cp.handler.sample.impl.exception.DfhSampleException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Basic processor for running the sample action and requesting the output is parsed
@@ -40,17 +42,13 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
     public Void execute()
     {
         SampleInput handlerInput;
-        ActionParameters actionParameters;
+
         Reporter reporter = operationContext.getReporter();
 
         try
         {
-            logger.warn("Reading payload");
-            logger.info("Reading payload");
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
             // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)
-            actionParameters = jsonHelper.getObjectFromMap(handlerInput.getParamsMap(), ActionParameters.class);
-
         }
         catch(Exception e)
         {
@@ -59,19 +57,28 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
 
         reporter.reportProgress(handlerInput);
 
-        BaseAction baseAction = actionMap.getAction(handlerInput.getAction());
+        List<SampleAction> sampleActionList = handlerInput.getActions();
+        // TODO: foreach exception handling check / test
+        if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
+
+        // the result is always the payload indicated on the input
+        reporter.reportSuccess(handlerInput.getResultPayload());
+        return null;
+    }
+
+    public void performAction(SampleAction sampleAction, Reporter reporter)
+    {
+        BaseAction baseAction = actionMap.getAction(sampleAction.getAction());
+        ActionParameters actionParameters = jsonHelper.getObjectFromMap(sampleAction.getParamsMap(), ActionParameters.class);
         if(baseAction != null)
         {
-            logger.info("Performing Action: {}", handlerInput.getAction());
+            logger.info("Performing Action: {}", sampleAction.getAction());
             baseAction.performAction(reporter, actionParameters);
         }
         else
         {
-            throw new DfhSampleException(String.format("Invalid action specified: %1$s", handlerInput.getAction()));
+            throw new DfhSampleException(String.format("Invalid action specified: %1$s", sampleAction.getAction()));
         }
-
-        reporter.reportSuccess("All done!");
-        return null;
     }
 
     public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
