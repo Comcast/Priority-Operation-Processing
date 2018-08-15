@@ -36,6 +36,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class persistenceObjectClazz;
     private ObjectPersisterFactory<T> objectPersisterFactory;
+    private JsonNode rootRequestNode;
 
     // TODO: wrapper class for all the json parsing
 
@@ -64,12 +65,12 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
         ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        // this is immediately made available for subclasses
+        rootRequestNode = objectMapper.readTree(inputStream);
 
-        JsonNode rootNode = objectMapper.readTree(inputStream);
+        logObject("request: ", rootRequestNode);
 
-        logObject("request: ", rootNode);
-
-        JsonNode httpMethodNode = rootNode.at("/httpMethod");
+        JsonNode httpMethodNode = rootRequestNode.at("/httpMethod");
         if(httpMethodNode.isMissingNode())
         {
             logger.info("Method not found!");
@@ -83,15 +84,15 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
         {
             case "GET":
-                responseObject = requestProcessor.handleGET(getIdFromPathParameter(rootNode));
+                responseObject = requestProcessor.handleGET(getIdFromPathParameter(rootRequestNode));
                 if(responseObject == null) httpStatusCode = 404;
                 break;
             case "POST":
-                String bodyJson = StringEscapeUtils.unescapeJson(rootNode.at("/body").asText());
+                String bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
                 responseObject = requestProcessor.handlePOST((T)objectMapper.readValue(bodyJson, persistenceObjectClazz));
                 break;
             case "DELETE":
-                requestProcessor.handleDelete(getIdFromPathParameter(rootNode));
+                requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
                 break;
             default:
                 // todo: some bad response code
@@ -105,6 +106,13 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
         writer.write(response);
         writer.close();
+    }
+
+    public String getRequestEntry(String jsonPtrExpr, String defaultValue)
+    {
+        JsonNode node = rootRequestNode.at(jsonPtrExpr);
+        if(node.isMissingNode()) return null;
+        return node.asText(defaultValue);
     }
 
     public String getIdFromPathParameter(JsonNode rootNode)
