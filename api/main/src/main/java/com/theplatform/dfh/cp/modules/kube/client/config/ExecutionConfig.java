@@ -16,7 +16,7 @@ public class ExecutionConfig
     private String externalId = UUID.randomUUID().toString();
     private String externalGroupId = UUID.randomUUID().toString();   // todo where is this used
 
-    private String name = UUID.randomUUID().toString();    // todo have Launcher set this as the podConfig prefix + a random UUID
+    private String name;
 
     private Map<String, String> envVars = new HashMap<>();
 
@@ -27,6 +27,17 @@ public class ExecutionConfig
     private CpuRequestModulator cpuRequestModulator;        // todo should this be on the PodConfig?
 
     private LogLineAccumulator logLineAccumulator;
+
+    public ExecutionConfig()
+    {
+        this("");
+    }
+
+    // if we ever need anything else from the podConfig, just make a factory and get rid of this
+    public ExecutionConfig(String namePrefix)
+    {
+        this.name = namePrefix + UUID.randomUUID().toString();
+    }
 
     public String getExternalId()
     {
@@ -80,7 +91,7 @@ public class ExecutionConfig
 
     public boolean hasEnvVars()
     {
-        return envVars == null || envVars.isEmpty();
+        return envVars != null && !envVars.isEmpty();
     }
 
     public String getMemoryRequestCount()

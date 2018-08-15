@@ -152,6 +152,11 @@ public class PodConfig
         return envVars;
     }
 
+    public boolean hasEnvVars()
+    {
+        return envVars != null && !envVars.isEmpty();
+    }
+
     public PodConfig setEnvVars(Map<String, String> envVars)
     {
         this.envVars = envVars;

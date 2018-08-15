@@ -99,9 +99,14 @@ public class Fabric8Helper
             .withArgs(podConfig.getArguments())
             .withVolumeMounts();
 
-        if (executionConfig.hasEnvVars())
+        if (podConfig.hasEnvVars())
         {
             Map<String, String> envVars = podConfig.getEnvVars();
+            envVars.forEach((k, v) -> containerSpec.addNewEnv().withName(k).withValue(v).endEnv());
+        }
+        if (executionConfig.hasEnvVars())
+        {
+            Map<String, String> envVars = executionConfig.getEnvVars();
             envVars.forEach((k, v) -> containerSpec.addNewEnv().withName(k).withValue(v).endEnv());
         }
 
