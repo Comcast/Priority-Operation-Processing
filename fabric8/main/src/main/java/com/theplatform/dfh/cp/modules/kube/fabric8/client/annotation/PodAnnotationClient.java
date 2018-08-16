@@ -6,7 +6,7 @@ import java.util.Map;
 
 
 /**
- *  Edit and access annotations for a given kubernetes pod
+ *  Access and add annotations for a given kubernetes pod
  */
 public class PodAnnotationClient
 {
@@ -14,7 +14,7 @@ public class PodAnnotationClient
     private String podName;
     private DefaultKubernetesClient fabric8Client;
 
-    PodAnnotationClient(DefaultKubernetesClient fabric8Client, String podName)
+    public PodAnnotationClient(DefaultKubernetesClient fabric8Client, String podName)
     {
         this.fabric8Client = fabric8Client;
         this.podName = podName;
