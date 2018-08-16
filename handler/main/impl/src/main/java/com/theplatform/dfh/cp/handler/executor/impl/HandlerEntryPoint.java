@@ -2,15 +2,15 @@ package com.theplatform.dfh.cp.handler.executor.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.context.OperationContext;
-import com.theplatform.dfh.cp.handler.executor.impl.context.OperationContextFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.AgendaExecutorProcessor;
+import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
+import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContextFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.SequentialAgendaProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, AgendaExecutorProcessor>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<HandlerContext, SequentialAgendaProcessor>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -41,14 +41,14 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, A
     }
 
     @Override
-    protected BaseOperationContextFactory<OperationContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<HandlerContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
     {
-        return new OperationContextFactory(launchDataWrapper);
+        return new HandlerContextFactory(launchDataWrapper);
     }
 
     @Override
-    protected AgendaExecutorProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, OperationContext operationContext)
+    protected SequentialAgendaProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, HandlerContext handlerContext)
     {
-        return new AgendaExecutorProcessor(launchDataWrapper, operationContext);
+        return new SequentialAgendaProcessor(launchDataWrapper, handlerContext);
     }
 }

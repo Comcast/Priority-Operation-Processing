@@ -6,10 +6,41 @@
   },
   "operations": [
     {
-      "id": "analysis"
+      "id": "01",
+      "name": "analysis.1",
+      "type": "awesome",
+      "payload":{
+        "outputOverride":{
+          "details":
+          {
+            "format":"mp4",
+            "bitrate": 4000
+          },
+          "specialinfo":"theSecret"
+        }
+      }
     },
     {
-      "id": "accelerateFilter"
+      "id": "02",
+      "name": "analysis.2",
+      "type": "unicorn",
+      "payload":{
+        "prior_details": "$$analysis.1.out",
+        "prior_bitrate": "$$analysis.1.out::/details/bitrate/",
+        "prior_specialinfo": "$$analysis.1.out::/specialinfo",
+        "outputOverride":{
+          "destination":"/files/cat.mp4"
+        }
+      }
+    },
+    {
+      "id": "03",
+      "name": "analysis.3",
+      "type": "unicorn",
+      "payload":{
+        "prior_details": "$$analysis.1.out::/details",
+        "prior_destination": "$$analysis.2.out::/destination"
+      }
     }
   ]
 }
