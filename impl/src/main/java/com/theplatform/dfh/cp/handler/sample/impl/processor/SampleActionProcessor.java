@@ -48,7 +48,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
         try
         {
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
-            // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)
         }
         catch(Exception e)
         {
@@ -69,6 +68,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
     public void performAction(SampleAction sampleAction, Reporter reporter)
     {
         BaseAction baseAction = actionMap.getAction(sampleAction.getAction());
+        // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)
         ActionParameters actionParameters = jsonHelper.getObjectFromMap(sampleAction.getParamsMap(), ActionParameters.class);
         if(baseAction != null)
         {
