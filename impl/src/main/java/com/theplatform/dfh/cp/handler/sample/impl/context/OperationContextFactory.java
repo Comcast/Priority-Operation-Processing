@@ -51,6 +51,6 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
             new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)),
             launchDataWrapper.getEnvironmentRetriever().getField(Fabric8Helper.MY_POD_NAME))
         );
-        return new OperationContext(new KubernetesReporterSet());
+        return new OperationContext(reporterSet);
     }
 }
