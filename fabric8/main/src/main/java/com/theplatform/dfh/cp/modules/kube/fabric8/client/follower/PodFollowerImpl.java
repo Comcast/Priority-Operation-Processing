@@ -15,8 +15,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserve
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,16 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         podPushClient = podPushClientFactory.getClient(kubeConfig);
     }
 
+    /**
+     * Synchronous "blocking" call.  You may call this multiple times (in different threads) and that is safe.
+     * Create the Pod and don't return until it's finished executing. If podConfig.reapCompletedPods is true,
+     * Pod will be deleted.
+     *
+     * @param podConfig details specific to a particular od
+     * @param executionConfig details specific to a particular execution
+     * @param logLineObserver a logLine observer that will be attached to the stdout stream of the pod started.
+     * @return the LastPhase (success or failure) from the pod being followed.
+     */
     @Override
     public FinalPodPhaseInfo startAndFollowPod(PodConfig podConfig, ExecutionConfig executionConfig,
         LogLineObserver logLineObserver)

@@ -72,6 +72,7 @@ public class Fabric8Helper
         return configBuilder.build();
     }
 
+    // TODO split this into ContainerSpec and PodSpec builders 
     public static Pod getPodSpec(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
         Map<String, String> labels = new HashMap<>();
@@ -143,6 +144,10 @@ public class Fabric8Helper
                     .endVolumeMount();
             }
         }
+
+        if (executionConfig.getCpuRequestModulator() == null)
+            throw new IllegalArgumentException("Mulst provide a CpuRequestModulator on ExecutionConfig.");
+
         containerSpec
             .withNewResources()
             .addToRequests("cpu", new Quantity(executionConfig.getCpuRequestModulator().getCpuRequest()))
@@ -209,7 +214,7 @@ public class Fabric8Helper
             items.add(keyToPath);
 
             source.setItems(items);
-            source.setName(configMapDetails.getVolumeName());
+            source.setName(configMapDetails.getVolumeSourceName());
             podSpec.addNewVolume().withName(configMapDetails.getVolumeName()).withConfigMap(source)
                 .endVolume();
         }

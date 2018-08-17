@@ -59,6 +59,13 @@ public class PodPushClientImpl implements PodPushClient
         fabric8Client.close();
     }
 
+    /**
+     * Asynchronous method. Starts a Pod and returns a Watcher that can provide details for the running Pod
+     * @param podConfig
+     * @param executionConfig
+     * @param podScheduled Always set this count to 1. Countdown is called when pod has been scheduled.
+     * @param podFinishedSuccessOrFailure Always set this count to 1. Countdown is called when pod has completed
+     */
     public PodWatcher start(PodConfig podConfig, ExecutionConfig executionConfig,
         CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure)
     {
