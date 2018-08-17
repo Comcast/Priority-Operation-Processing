@@ -8,7 +8,6 @@ import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
@@ -55,7 +54,7 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
         kubeConfig.setMasterUrl(launchDataWrapper.getEnvironmentRetriever().getField("K8_MASTER_URL"));
 
         reporterSet.add(new KubernetesReporter(
-            new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)),
+            kubeConfig,
             launchDataWrapper.getEnvironmentRetriever().getField(Fabric8Helper.MY_POD_NAME))
         );
         return new OperationContext(reporterSet);
