@@ -214,7 +214,7 @@ public class Fabric8Helper
             items.add(keyToPath);
 
             source.setItems(items);
-            source.setName(configMapDetails.getVolumeSourceName());
+            source.setName(configMapDetails.getConfigMapName());
             podSpec.addNewVolume().withName(configMapDetails.getVolumeName()).withConfigMap(source)
                 .endVolume();
         }

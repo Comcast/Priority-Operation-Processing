@@ -9,7 +9,7 @@ public class ConfigMapDetails {
     // The map value on a fabric8 KeyToPath when setting up a configmap for the pod
     private String mapPath;
     // The name of the fabric8 ConfigMapVolumeSource
-    private String volumeSourceName;
+    private String configMapName;
     // The volume name when setting up the config map
     private String volumeName;
     // The mount path to attach the volume created with the above settings
@@ -37,14 +37,14 @@ public class ConfigMapDetails {
         return this;
     }
 
-    public String getVolumeSourceName()
+    public String getConfigMapName()
     {
-        return volumeSourceName;
+        return configMapName;
     }
 
-    public ConfigMapDetails setVolumeSourceName(String volumeSourceName)
+    public ConfigMapDetails setConfigMapName(String configMapName)
     {
-        this.volumeSourceName = volumeSourceName;
+        this.configMapName = configMapName;
         return this;
     }
 
