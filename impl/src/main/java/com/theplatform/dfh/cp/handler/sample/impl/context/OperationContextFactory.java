@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 
 /**
@@ -41,6 +42,14 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
         reporterSet.add(new LogReporter());
 
         KubeConfig kubeConfig = new KubeConfig();
+
+        OAuthCredentialCapture oauthCredentialCapture = new OAuthCredentialCapture().init();
+        if (oauthCredentialCapture.isOAuthAvailable())
+        {
+            kubeConfig.setCaCertData(oauthCredentialCapture.getOauthCert());
+            kubeConfig.setOauthToken(oauthCredentialCapture.getOauthToken());
+        }
+
         // hard coded for now... (the master url should probably come from a config map, through pass through is nice...)
         kubeConfig.setNameSpace("dfh");
         kubeConfig.setMasterUrl(launchDataWrapper.getEnvironmentRetriever().getField("K8_MASTER_URL"));
