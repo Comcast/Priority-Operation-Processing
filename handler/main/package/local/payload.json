@@ -7,39 +7,59 @@
   "operations": [
     {
       "id": "01",
-      "name": "analysis.1",
-      "type": "awesome",
-      "payload":{
-        "outputOverride":{
-          "details":
+      "name": "sample.1",
+      "type": "sample",
+      "payload": {
+        "actions": [
           {
-            "format":"mp4",
-            "bitrate": 4000
-          },
-          "specialinfo":"theSecret"
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 4000,
+              "logMessage": "This is a custom log message"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "firstAction"
         }
       }
     },
     {
       "id": "02",
-      "name": "analysis.2",
-      "type": "unicorn",
-      "payload":{
-        "prior_details": "$$analysis.1.out",
-        "prior_bitrate": "$$analysis.1.out::/details/bitrate/",
-        "prior_specialinfo": "$$analysis.1.out::/specialinfo",
-        "outputOverride":{
-          "destination":"/files/cat.mp4"
+      "name": "sample.2",
+      "type": "sample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 2000,
+              "logMessage": "$$sample.1.out::/actionData"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "secondAction"
         }
       }
     },
     {
       "id": "03",
-      "name": "analysis.3",
-      "type": "unicorn",
-      "payload":{
-        "prior_details": "$$analysis.1.out::/details",
-        "prior_destination": "$$analysis.2.out::/destination"
+      "name": "sample.3",
+      "type": "sample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 1000,
+              "logMessage": "$$sample.2.out::/actionData"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "thirdAction"
+        }
       }
     }
   ]

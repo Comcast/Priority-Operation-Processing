@@ -2,27 +2,42 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.filehandler.k8.PodFollower;
-import com.theplatform.dfh.filehandler.k8.PodPushClient;
+import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class KubernetesOperationExecutor extends BaseOperationExecutor
 {
-    private String dockerImageName;
-    protected PodFollower<PodPushClient> follower;
-    protected PodPushClient client;
+    private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutor.class);
 
-    public KubernetesOperationExecutor(Operation operation)
+    protected KubeConfig kubeConfig;
+    protected PodConfig podConfig;
+    protected ExecutionConfig executionConfig;
+    protected PodFollower<PodPushClient> follower;
+
+    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
         super(operation);
-    }
-
-    public KubernetesOperationExecutor setDockerImageName(String dockerImageName)
-    {
-        this.dockerImageName = dockerImageName;
-        return this;
+        this.kubeConfig = kubeConfig;
+        this.podConfig = podConfig;
+        this.executionConfig = executionConfig;
+        this.follower = new PodFollowerImpl<>(this.kubeConfig);
     }
 
     private Consumer<String> getLineConsumer(final List<String> linesForProcessing)
@@ -54,58 +69,83 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         this.follower = follower;
     }
 
-    public void setClient(PodPushClient client)
+    public void setKubeConfig(KubeConfig kubeConfig)
     {
-        this.client = client;
+        this.kubeConfig = kubeConfig;
+    }
+
+    public void setPodConfig(PodConfig podConfig)
+    {
+        this.podConfig = podConfig;
+    }
+
+    public void setExecutionConfig(ExecutionConfig executionConfig)
+    {
+        this.executionConfig = executionConfig;
     }
 
     @Override
     public String execute(String payload)
-    {/*
-        String[] mediaInfoCommands = new String[] { "--Output=XML", "-f", getFilePath() };
-        logger.info("Using kube w/image {}", dockerImageName);
+    {
+        logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
-        ImageExecutionDetails imageExecutionDetails = new ImageExecutionDetails().setImageName(dockerImageName)
-            .setArguments(mediaInfoCommands).setNamePrefix(CONTAINER_NAME_PREFIX).setEndOfLogIdentifier(
-                MEDIAINFO_END_OF_XML);
-        logger.debug("Executing mediaInfo w/details {}", imageExecutionDetails);
-        String podName = imageExecutionDetails.getName();
-        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(imageExecutionDetails);
+        executionConfig.getEnvVars().put(
+            "PAYLOAD", payload
+        );
 
-        logger.info("Getting progress until the pod {} is finished.", podName);
+        executionConfig.setName(podConfig.getNamePrefix() + UUID.randomUUID().toString());
+
+        // TODO we need to get the annotations before reaping... probably should build that into the follower
+        podConfig.setReapCompletedPods(false);
+
+        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
+
+        logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
         StringBuilder allStdout = new StringBuilder();
-        List<String> linesForProcessing = new LinkedList<>();
-        logLineObserver.addConsumer(getConsumer(allStdout));
-        logLineObserver.addConsumer(getLineConsumer(linesForProcessing));
-
-        LastPhase lastPodPhase = null;
+        logLineObserver.addConsumer(new Consumer<String>()
+        {
+            @Override
+            public void accept(String s)
+            {
+                logger.info("STDOUT: {}", s);
+            }
+        });
+        FinalPodPhaseInfo lastPodPhase = null;
         try
         {
-            logger.info("Starting the pod with name {}", podName);
+            logger.info("Starting the pod with name {}", executionConfig.getName());
 
-            lastPodPhase = follower.startAndFollowPod(client, imageExecutionDetails, logLineObserver);
+            lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
 
-            logger.info("MediaInfo completed with pod status {}", lastPodPhase.phase.getLabel());
+            logger.info("Sample completed with pod status {}", lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
             {
                 if (lastPodPhase.phase.isFailed())
                 {
-                    logger.error("MediaInfo failed to produce metadata, output was : {}", allStdout);
-                    throw new AgendaExecutorException(allStdout.toString());
+                    logger.error("Sample failed to produce metadata, output was : {}", allStdout);
+                    throw new RuntimeException(allStdout.toString());
                 }
             }
 
             if (logger.isDebugEnabled())
             {
-                logger.debug("MediaInfo produced: {}", allStdout.toString());
+                logger.debug("Sample produced: {}", allStdout.toString());
             }
         }
         catch (Exception e)
         {
             String allStringMetadata = allStdout.toString();
             logger.error("Exception caught {}", allStringMetadata, e);
-            throw new AgendaExecutorException(allStringMetadata, e);
-        }*/
-        return null;
+            throw new RuntimeException(allStringMetadata, e);
+        }
+        logger.info("Done with execution of pod: {}", executionConfig.getName());
+
+        Map<String,String> podAnnotations = new PodAnnotationClient(new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)), executionConfig.getName())
+            .getPodAnnotations();
+        String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
+
+        follower.getPodPushClient().deletePod(executionConfig.getName());
+
+        return result;
     }
 }

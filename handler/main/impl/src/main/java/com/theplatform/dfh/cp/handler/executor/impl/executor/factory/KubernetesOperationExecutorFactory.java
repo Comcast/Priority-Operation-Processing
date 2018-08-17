@@ -1,17 +1,17 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.factory;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.base.perform.RetryableExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
-import com.theplatform.dfh.filehandler.k8.PodFollower;
-import com.theplatform.dfh.filehandler.k8.PodFollowerConfig;
-import com.theplatform.dfh.filehandler.k8.PodPushClient;
-import com.theplatform.dfh.filehandler.k8.config.KubeConfig;
-import com.theplatform.dfh.filehandler.k8.factory.PodClientFactory;
-import com.theplatform.dfh.filehandler.k8.modulation.CpuRequestModulation;
-import com.theplatform.dfh.filehandler.k8.modulation.CpuRequestModulator;
+
+import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,58 +24,46 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutorFactory.class);
 
-    private KubeConfig kubeConfig;
-    private PodClientFactory<CpuRequestModulator> podClientFactory;
     private int podRetryDelay = 2000;
-
-    public KubeConfig getKubeConfig()
-    {
-        return kubeConfig;
-    }
-
-    public void setKubeConfig(KubeConfig kubeConfig)
-    {
-        this.kubeConfig = kubeConfig;
-    }
-
-    public PodClientFactory<CpuRequestModulator> getPodClientFactory()
-    {
-        return podClientFactory;
-    }
-
-    public void setPodClientFactory(PodClientFactory<CpuRequestModulator> podClientFactory)
-    {
-        this.podClientFactory = podClientFactory;
-    }
 
     @Override
     public BaseOperationExecutor getOperationExecutor(HandlerContext handlerContext, Operation operation)
     {
-        String dockerImageName = handlerContext.getLaunchDataWrapper().getPropertyRetriever().getField("dockerImageName");
-        PodFollower<PodPushClient> follower = podClientFactory.getPodFollower();
-        PodFollowerConfig config = new PodFollowerConfig();
-        follower.withFollowerConfig(config);
-        PodPushClient wrapperClient = podClientFactory
-            .getClient(kubeConfig, kubeConfig.getPodRetryCount(), TimeUnit.MILLISECONDS, podRetryDelay);
-        wrapperClient.setCpuModulator(new CpuRequestModulator()
+        // TODO: decide how much needs to be setup here vs. in the kube executor itself
+
+        // TODO: this should come from the registry lookup
+        final String dockerImageName = "docker-lab.repo.theplatform.com/fhsamp:1.0.0";
+        // TODO: need a launchdatawrapper -> kubeconfig helper
+        KubeConfig kubeConfig = new KubeConfig()
+            .setMasterUrl(handlerContext.getLaunchDataWrapper().getEnvironmentRetriever().getField("K8_MASTER_URL"))
+            .setNameSpace("dfh");
+
+        PodConfig podConfig = new PodConfig()
+            .setServiceAccountName("ffmpeg-service")
+            .setMemoryRequestCount("1000m")
+            .setCpuMinRequestCount("1000m")
+            .setCpuMaxRequestCount("1000m")
+            .setPodScheduledTimeoutMs(600000L)
+            .setReapCompletedPods(true)
+            .setPullAlways(true) // for now
+            .setImageName(dockerImageName)
+            .setNamePrefix("dfh-samp");
+
+        // TODO: cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
+            .addEnvVar("LOG_LEVEL", "DEBUG")
+            .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
+
+        executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
-            @Override
-            public void setModulation(CpuRequestModulation cpuRequestModulation)
-            {
-
-            }
-
             @Override
             public String getCpuRequest()
             {
-                return kubeConfig.getCpuMinimumRequestCount();
+                return podConfig.getCpuMinRequestCount();
             }
         });
 
-        KubernetesOperationExecutor operationExecutor = new KubernetesOperationExecutor(operation);
-        operationExecutor.setFollower(follower);
-        operationExecutor.setClient(wrapperClient);
-        operationExecutor.setDockerImageName(dockerImageName);
-        return operationExecutor;
+
+        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig);
     }
 }

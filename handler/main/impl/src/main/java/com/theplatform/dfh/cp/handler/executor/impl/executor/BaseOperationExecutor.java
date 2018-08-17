@@ -11,13 +11,6 @@ import java.util.UUID;
  */
 public abstract class BaseOperationExecutor
 {
-    public static final int MAX_MILLISECONDS_TO_READ_PROGRESS = 60000;
-    protected static final String CONTAINER_NAME_PREFIX = "dfhmediainfo";
-    public static final double NO_PROGRESS = 0.0;
-    protected static final long POD_SCHEDULING_TIMEOUT_MS = 60000;
-    public static final String MEDIAINFO_END_OF_XML = "</Mediainfo>";
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
     protected Operation operation;
 
     public BaseOperationExecutor(Operation operation)

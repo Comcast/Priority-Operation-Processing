@@ -5,14 +5,19 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.KubernetesOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporterSet;
+import com.theplatform.dfh.cp.handler.reporter.api.ReporterSet;
+import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
 
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
  */
 public class HandlerContextFactory extends BaseOperationContextFactory<HandlerContext>
 {
+
     public HandlerContextFactory(LaunchDataWrapper launchDataWrapper)
     {
         super(launchDataWrapper);
@@ -21,6 +26,7 @@ public class HandlerContextFactory extends BaseOperationContextFactory<HandlerCo
     @Override
     public HandlerContext getOperationContext()
     {
+        // TODO: the reporter is based on local... the executor factories should be based on external
         switch (getExternalLaunchType())
         {
             case local:
@@ -30,7 +36,32 @@ public class HandlerContextFactory extends BaseOperationContextFactory<HandlerCo
                 throw new AgendaExecutorException("Docker is not supported for agenda execution.");
             case kubernetes:
             default:
-                return new HandlerContext(new KubernetesReporterSet(), launchDataWrapper, new KubernetesOperationExecutorFactory());
+                return new HandlerContext(new LogReporter()/*getKubernetesReporterSet()*/, launchDataWrapper, new KubernetesOperationExecutorFactory());
         }
+    }
+
+    public ReporterSet getKubernetesReporterSet()
+    {
+        ReporterSet reporterSet = new ReporterSet();
+        reporterSet.add(new LogReporter());
+
+        KubeConfig kubeConfig = new KubeConfig();
+
+        OAuthCredentialCapture oauthCredentialCapture = new OAuthCredentialCapture().init();
+        if (oauthCredentialCapture.isOAuthAvailable())
+        {
+            kubeConfig.setCaCertData(oauthCredentialCapture.getOauthCert());
+            kubeConfig.setOauthToken(oauthCredentialCapture.getOauthToken());
+        }
+
+        // hard coded for now... (the master url should probably come from a config map, through pass through is nice...)
+        kubeConfig.setNameSpace("dfh");
+        kubeConfig.setMasterUrl(launchDataWrapper.getEnvironmentRetriever().getField("K8_MASTER_URL"));
+
+        reporterSet.add(new KubernetesReporter(
+            kubeConfig,
+            launchDataWrapper.getEnvironmentRetriever().getField(Fabric8Helper.MY_POD_NAME))
+        );
+        return reporterSet;
     }
 }
