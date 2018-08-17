@@ -4,7 +4,9 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.KubernetesOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.LocalOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.factory.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.handler.reporter.api.ReporterSet;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
@@ -26,22 +28,41 @@ public class HandlerContextFactory extends BaseOperationContextFactory<HandlerCo
     @Override
     public HandlerContext getOperationContext()
     {
-        // TODO: the reporter is based on local... the executor factories should be based on external
+        Reporter reporter;
+        OperationExecutorFactory operationExecutorFactory;
+
+        switch(getLaunchType())
+        {
+            case local:
+            case docker:
+                reporter = new LogReporter();
+                break;
+            case kubernetes:
+            default:
+                reporter = getKubernetesReporterSet();
+                break;
+        }
+
         switch (getExternalLaunchType())
         {
             case local:
-                return new HandlerContext(new LogReporter(), launchDataWrapper, new LocalOperationExecutorFactory());
+                operationExecutorFactory = new LocalOperationExecutorFactory();
+                break;
             case docker:
                 // TODO: decide if we want to support docker ops execution...
                 throw new AgendaExecutorException("Docker is not supported for agenda execution.");
             case kubernetes:
             default:
-                return new HandlerContext(new LogReporter()/*getKubernetesReporterSet()*/, launchDataWrapper, new KubernetesOperationExecutorFactory());
+                operationExecutorFactory = new KubernetesOperationExecutorFactory();
+                break;
         }
+
+        return new HandlerContext(reporter, launchDataWrapper, operationExecutorFactory);
     }
 
     public ReporterSet getKubernetesReporterSet()
     {
+        // This is duplicated in the sample handler... undupe it!
         ReporterSet reporterSet = new ReporterSet();
         reporterSet.add(new LogReporter());
 
