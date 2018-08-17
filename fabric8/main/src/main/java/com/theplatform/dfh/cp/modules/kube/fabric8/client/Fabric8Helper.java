@@ -81,7 +81,9 @@ public class Fabric8Helper
         labels.put(EXTERNAL_ID, executionConfig.getExternalId());
         labels.put(EXTERNAL_GROUP_ID, executionConfig.getExternalGroupId());
 
-        NFSVolumeSource nfsVolumeSource = new NFSVolumeSource(
+        NFSVolumeSource nfsVolumeSource = podConfig.getNfsDetails() == null
+                                          ? null 
+                                          : new NFSVolumeSource(
             podConfig.getNfsDetails().getNfsServerPath(), podConfig.getNfsDetails().getNfsReadOnly(), podConfig.getNfsDetails().getNfsServer());
 
         final PodSpecFluent.ContainersNested<PodFluent.SpecNested<PodBuilder>> containerSpec = new PodBuilder()
