@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
 import com.theplatform.dfh.cp.handler.sample.api.SampleActions;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
+import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
@@ -23,6 +24,8 @@ public class KubernetesTest extends SampleHandlerTestBase
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesTest.class);
 
+    // This is a hard coded manual test!!! Enjoy!!
+
     @Test(enabled = false)
     public void run() throws Exception
     {
@@ -33,16 +36,30 @@ public class KubernetesTest extends SampleHandlerTestBase
         sampleAction.setParamsMap(paramsMap);
         SampleInput sampleInput = new SampleInput();
         sampleInput.setActions(Collections.singletonList(sampleAction));
+        ParamsMap resultMap = new ParamsMap();
+        resultMap.put("bitrate", 500);
+        resultMap.put("filename", "coolest_dog.mp4");
+        sampleInput.setResultPayload(resultMap);
 
         PodFollower<PodPushClient> follower = new PodFollowerImpl<PodPushClient>(kubeConfig);
 
         String payload = jsonHelper.getJSONString(sampleInput);
         logger.info("Payload: {}", payload);
 
+        podConfig.setConfigMapDetails(new ConfigMapDetails()
+            .setMapKey("external-properties")
+            .setMapPath("external.properties")
+            .setConfigMapName("lab-main-t-aor-feh-fun1")
+            .setVolumeName("config-volume")
+            .setVolumeMountPath("/config"));
+
+        // if this is not set the pod annotations cannot be written to
+        podConfig.setServiceAccountName("ffmpeg-service");
 
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("PAYLOAD", jsonHelper.getJSONString(sampleInput))
-            .addEnvVar("LOG_LEVEL", "DEBUG");
+            .addEnvVar("LOG_LEVEL", "DEBUG")
+            .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
@@ -53,6 +70,7 @@ public class KubernetesTest extends SampleHandlerTestBase
             }
         });
 
+        podConfig.setPullAlways(true);
         logger.debug("Executing mediaInfo w/details {}", executionConfig);
         String podName = executionConfig.getName();
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
