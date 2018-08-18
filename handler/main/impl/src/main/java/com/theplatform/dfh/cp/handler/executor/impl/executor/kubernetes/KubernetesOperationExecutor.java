@@ -144,9 +144,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             .getPodAnnotations();
         String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
 
-        logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), result);
-
-        follower.getPodPushClient().deletePod(executionConfig.getName());
+        //follower.getPodPushClient().deletePod(executionConfig.getName());
 
         return result;
     }
