@@ -1,21 +1,16 @@
-package com.theplatform.dfh.cp.handler.executor.impl.executor.factory;
+package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Factory for producing executors to get MediaProperties (via a mediainfo launch through kubernetes)

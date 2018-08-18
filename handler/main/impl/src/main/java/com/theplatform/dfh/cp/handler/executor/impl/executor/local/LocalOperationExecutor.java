@@ -1,10 +1,11 @@
-package com.theplatform.dfh.cp.handler.executor.impl.executor;
+package com.theplatform.dfh.cp.handler.executor.impl.executor.local;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class LocalOperationExecutor extends BaseOperationExecutor
     private static final Logger logger = LoggerFactory.getLogger(LocalOperationExecutor.class);
     private ObjectMapper objectMapper = new ObjectMapper();
     private JsonHelper jsonHelper;
-    private static final String OUTPUT_OVERRIDE_PTR = "/outputOverride";
+    private static final String OUTPUT_OVERRIDE_PTR = "/resultPayload";
 
     public LocalOperationExecutor(Operation operation)
     {
@@ -49,6 +50,8 @@ public class LocalOperationExecutor extends BaseOperationExecutor
         }
 
         String outputPayload = jsonHelper.getJSONString(outputNode);
+
+        logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
 
         return outputPayload;
     }
