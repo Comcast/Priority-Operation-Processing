@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Wrapper for the JsonReferenceReplacer. Maintains a context of the items added for future use when performing reference replacement.
@@ -21,7 +21,7 @@ public class JsonContext
 
     public JsonContext()
     {
-        contextMap = new HashMap<>();
+        contextMap = new ConcurrentHashMap<>();
         jsonReferenceReplacer = new JsonReferenceReplacer();
     }
 
