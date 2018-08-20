@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecut
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +64,12 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
     {
         try
         {
-            // TODO: this should return information about if all references have been resolved before continuing
-            String payload = handlerContext.getJsonContext().processReferences(operation.getPayload());
+            // TODO: Use the information about missing/invalid references.
+            ReferenceReplacementResult result = handlerContext.getJsonContext().processReferences(operation.getPayload());
 
             BaseOperationExecutor executor = handlerContext.getOperationExecutorFactory().getOperationExecutor(handlerContext, operation);
             String contextKey = operation.getName() + OUTPUT_SUFFIX;
-            String outputPayload = executor.execute(payload);
+            String outputPayload = executor.execute(result.getResult());
             logger.info("Persisting ContextKey: [{}] OperationId: [{}] with OUTPUT Payload: {}", contextKey, operation.getId(), outputPayload);
             handlerContext.getJsonContext().addData(contextKey, outputPayload);
         }
