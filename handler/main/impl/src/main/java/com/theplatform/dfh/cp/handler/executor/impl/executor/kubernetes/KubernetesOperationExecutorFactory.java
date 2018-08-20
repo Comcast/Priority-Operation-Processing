@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
@@ -29,13 +29,13 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
     }
 
     @Override
-    public BaseOperationExecutor getOperationExecutor(HandlerContext handlerContext, Operation operation)
+    public BaseOperationExecutor getOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
         // TODO: decide how much needs to be setup here vs. in the kube executor itself
 
         // TODO: need a launchdatawrapper -> kubeconfig helper
         KubeConfig kubeConfig = new KubeConfig()
-            .setMasterUrl(handlerContext.getLaunchDataWrapper().getEnvironmentRetriever().getField("K8_MASTER_URL"))
+            .setMasterUrl(executorContext.getLaunchDataWrapper().getEnvironmentRetriever().getField("K8_MASTER_URL"))
             .setNameSpace("dfh");
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(operation.getType());
