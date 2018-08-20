@@ -12,6 +12,15 @@ import java.util.regex.Matcher;
 
 public class JsonReferenceReplacerTest extends JsonReplacementTestBase
 {
+    final JsonNode SAMPLE_JSON_NODE;
+
+    public JsonReferenceReplacerTest() throws Exception
+    {
+        SAMPLE_JSON_NODE = objectMapper.readTree(
+        "[ { \"test\":\"a\" }, { \"test\":\"b\" } ]"
+        );
+    }
+
     private JsonReferenceReplacer jsonReferenceReplacer = new JsonReferenceReplacer();
 
     @DataProvider
@@ -44,23 +53,19 @@ public class JsonReferenceReplacerTest extends JsonReplacementTestBase
         JsonNode referencesNode = getJsonNodeFromFile("/testReferences.json");
         JsonNode expectedNode = getJsonNodeFromFile("/testExpectedResult.json");
 
-        JsonNode resultNode = jsonReferenceReplacer.replaceReferences
+        ReferenceReplacementResult result = jsonReferenceReplacer.replaceReferences
             (
                 referencesNode,
                 getParameterMap(paramsNode)
             );
 
         //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultNode));
-        Assert.assertEquals(resultNode, expectedNode);
+        Assert.assertEquals(objectMapper.readTree(result.getResult()), expectedNode);
     }
 
     @DataProvider
     public Object[][] getParameterTestValueProvider() throws Exception
     {
-        final JsonNode SAMPLE_JSON_NODE = objectMapper.readTree(
-            "[ { \"test\":\"a\" }, { \"test\":\"b\" } ]"
-        );
-
         return new Object[][]
             {
                 // missing param
@@ -95,7 +100,28 @@ public class JsonReferenceReplacerTest extends JsonReplacementTestBase
     @Test(dataProvider = "getParameterTestValueProvider")
     public void testGetParameterValue(Map<String, JsonNode> parameterMap, String parameter, String jsonPtrExpr, JsonNode expectedResult)
     {
-        Assert.assertEquals(jsonReferenceReplacer.getParameterValue(parameterMap, parameter, jsonPtrExpr), expectedResult);
+        ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
+        Assert.assertEquals(jsonReferenceReplacer.getParameterValue(parameterMap, parameter, jsonPtrExpr, referenceReplacementResult), expectedResult);
     }
 
+    @Test
+    public void testMissingReference()
+    {
+        final String REFERENCE_NAME = "badSample";
+        ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
+        jsonReferenceReplacer.getParameterValue(getSingleTestParamMap("sample", SAMPLE_JSON_NODE), REFERENCE_NAME, null, referenceReplacementResult);
+        Assert.assertTrue(referenceReplacementResult.getMissingReferences().contains(jsonReferenceReplacer.generateReference(REFERENCE_NAME, null)));
+        Assert.assertEquals(referenceReplacementResult.getInvalidReferences().size(), 0);
+    }
+
+    @Test
+    public void testInvalidReference()
+    {
+        final String REFERENCE_NAME = "sample";
+        final String INVALID_REFERENCE = "/unknown";
+        ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
+        jsonReferenceReplacer.getParameterValue(getSingleTestParamMap("sample", SAMPLE_JSON_NODE), REFERENCE_NAME, INVALID_REFERENCE, referenceReplacementResult);
+        Assert.assertTrue(referenceReplacementResult.getInvalidReferences().contains(jsonReferenceReplacer.generateReference(REFERENCE_NAME, INVALID_REFERENCE)));
+        Assert.assertEquals(referenceReplacementResult.getMissingReferences().size(), 0);
+    }
 }

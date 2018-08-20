@@ -37,9 +37,9 @@ public class JsonContext
         }
     }
 
-    public String processReferences(Object object)
+    public ReferenceReplacementResult processReferences(Object object)
     {
-        return jsonReferenceReplacer.replaceReferences(objectMapper.valueToTree(object), contextMap).toString();
+        return jsonReferenceReplacer.replaceReferences(objectMapper.valueToTree(object), contextMap);
     }
 
     protected Map<String, JsonNode> getContextMap()

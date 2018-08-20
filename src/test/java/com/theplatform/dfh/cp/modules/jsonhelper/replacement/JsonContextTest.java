@@ -22,7 +22,7 @@ public class JsonContextTest extends JsonReplacementTestBase
         JsonNode expectedNode = getJsonNodeFromFile("/context/expectedResult.json");
         jsonContext.addData(ENCODE, encodeOutput);
         jsonContext.addData(ANALYSIS, analysisOutput);
-        String result = jsonContext.processReferences(referenceNode);
-        Assert.assertEquals(objectMapper.readTree(result), expectedNode);
+        ReferenceReplacementResult result = jsonContext.processReferences(referenceNode);
+        Assert.assertEquals(objectMapper.readTree(result.getResult()), expectedNode);
     }
 }

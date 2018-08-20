@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 
 /**
  * Utility for traversing a Json structure and replacing references
+ *
+ * This uses recursion due to the need for the name of a node (which is not available once on the node for things like array entries)
+ * TODO: consider non-recursive...
  */
 public class JsonReferenceReplacer
 {
@@ -68,19 +71,20 @@ public class JsonReferenceReplacer
                ? ""
                : CONTEXT_REFERENCE_SEPARATOR + jsonPtrExpr);
     }
-
     /**
      * Replaces the references in the specified json structure
      * @param rootNode The root JsonNode to traverse for references
      * @param referenceMap The reference map to use for replacement.
      * @return
      */
-    public JsonNode replaceReferences(JsonNode rootNode, Map<String, JsonNode> referenceMap)
+    public ReferenceReplacementResult replaceReferences(JsonNode rootNode, Map<String, JsonNode> referenceMap)
     {
+        ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         StringSubstitutor strSubstitutor = new StringSubstitutor(referenceMap);
-        // Note: there is no parent to start with. (this should immediately traverse)
-        traverseNodeForTokenReplacement(rootNode, "/", null, referenceMap, strSubstitutor);
-        return rootNode;
+        // Note: there is no parent to start with. (this should traverse)
+        traverseNodeForTokenReplacement(rootNode, "/", null, referenceMap, strSubstitutor, referenceReplacementResult);
+        referenceReplacementResult.setResult(rootNode.toString());
+        return referenceReplacementResult;
     }
 
 
@@ -93,7 +97,7 @@ public class JsonReferenceReplacer
      * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      */
     private void traverseNodeForTokenReplacement(JsonNode node, String nodeId, JsonNode parentNode,
-        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor)
+        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report)
     {
         if(node.isArray())
         {
@@ -115,12 +119,13 @@ public class JsonReferenceReplacer
                         parentNode,
                         arrayNodeReplacer.configureArrayIndex(arrayNode, idx),
                         parameterMap,
-                        strSubstitutor);
+                        strSubstitutor,
+                        report);
                 }
                 // this else section is completely unsafe and likely to cause bugs (no type check and the null nodeId!)
                 else
                 {
-                    traverseNodeForTokenReplacement(objNode, null, node, parameterMap, strSubstitutor);
+                    traverseNodeForTokenReplacement(objNode, null, node, parameterMap, strSubstitutor, report);
                 }
             }
         }
@@ -132,7 +137,8 @@ public class JsonReferenceReplacer
                 parentNode,
                 objectNodeReplacer.configureField(parentNode, nodeId),
                 parameterMap,
-                strSubstitutor);
+                strSubstitutor,
+                report);
         }
         else if(node.isObject())
         {
@@ -140,7 +146,7 @@ public class JsonReferenceReplacer
             while(fieldIterator.hasNext())
             {
                 Map.Entry<String,JsonNode> entry = fieldIterator.next();
-                traverseNodeForTokenReplacement(entry.getValue(), entry.getKey(), node, parameterMap, strSubstitutor);
+                traverseNodeForTokenReplacement(entry.getValue(), entry.getKey(), node, parameterMap, strSubstitutor, report);
             }
         }
     }
@@ -153,7 +159,7 @@ public class JsonReferenceReplacer
      * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      */
     protected void performTokenReplacement(JsonNode node, String nodeId, JsonNode parentNode, JsonNodeReplacer jsonNodeReplacer,
-        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor)
+        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report)
     {
         final String nodeValue = node.asText();
         if (nodeValue != null)
@@ -166,7 +172,7 @@ public class JsonReferenceReplacer
                 String referencePath = matcher.group(PATH_GROUP);
 
                 //logger.debug("Checking for token [{}] in node [{}]", translatedValue, nodeId);
-                JsonNode parameterValue = getParameterValue(parameterMap, referenceName, referencePath);
+                JsonNode parameterValue = getParameterValue(parameterMap, referenceName, referencePath, report);
                 if (parameterValue != null)
                 {
                     if(parameterValue.isObject() || parameterValue.isArray())
@@ -175,7 +181,7 @@ public class JsonReferenceReplacer
                         //logger.debug("Object Replace: {} => {}", nodeValue, parameterValue);
                         jsonNodeReplacer.updateValue(parameterValue);
                         traverseNodeForTokenReplacement(
-                            parameterValue, nodeId, parentNode, parameterMap, strSubstitutor);
+                            parameterValue, nodeId, parentNode, parameterMap, strSubstitutor, report);
                     }
                     else if(parameterValue.isTextual() || parameterValue.isNumber())
                     {
@@ -205,8 +211,16 @@ public class JsonReferenceReplacer
      * @param jsonPtrExpr The json pointer expression
      * @return The JsonNode value or null if not found
      */
-    protected JsonNode getParameterValue(Map<String, JsonNode> parameterMap, String parameter, String jsonPtrExpr)
+    protected JsonNode getParameterValue(Map<String, JsonNode> parameterMap, String parameter, String jsonPtrExpr,
+        ReferenceReplacementResult report)
     {
+        if(!parameterMap.containsKey(parameter))
+        {
+            // this is a missing reference
+            report.addMissingReference(generateReference(parameter, jsonPtrExpr));
+            return null;
+        }
+
         JsonNode parameterValue = parameterMap.get(parameter);
         // at method does not appear to support the json pointer path '/'
         if(StringUtils.isBlank(jsonPtrExpr) || StringUtils.equals(jsonPtrExpr, JACKSON_PATH_SEPARATOR))
@@ -215,7 +229,13 @@ public class JsonReferenceReplacer
         }
 
         JsonNode atNode = parameterValue.at(StringUtils.prependIfMissing(jsonPtrExpr, JACKSON_PATH_SEPARATOR));
-        return atNode.isMissingNode() ? null : atNode;
+        if(atNode.isMissingNode())
+        {
+            // this is an invalid reference
+            report.addInvalidReference(generateReference(parameter, jsonPtrExpr));
+            return null;
+        }
+        return atNode;
     }
 
     public ArrayNodeReplacer getArrayNodeReplacer()
