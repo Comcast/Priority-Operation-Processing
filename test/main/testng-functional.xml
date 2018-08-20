@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="FileHandler Web Service Sanity Suite" configfailurepolicy="continue" parallel="false">
+    <listeners>
+        <listener class-name="com.theplatform.test.modules.listener.RetryTransformer" />
+    </listeners>
+
+    <!--
+    <test verbose="5" name="Mediainfo Analysis Handler Functional Test" annotations="JDK">
+        <packages>
+            <package name="com.theplatform.dfh.filehandler.mediainfo.test.*" />
+        </packages>
+    </test>
+    -->
+</suite>

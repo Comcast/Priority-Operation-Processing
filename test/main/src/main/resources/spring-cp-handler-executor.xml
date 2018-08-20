@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:${propFile:test.properties}" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+
+    <bean id="kubeConfig"
+          class="com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig">
+        <property name="nameSpace" value="${dfh.kubernetes.kubernatesNameSpace}" />
+        <property name="masterUrl" value="${dfh.kubernetes.kubernetesMasterUrl}" />
+    </bean>
+
+    <bean id="podConfig" class="com.theplatform.dfh.cp.modules.kube.client.config.PodConfig">
+        <property name="cpuMaxRequestCount" value="${dfh.kubernetes.cpuRequestCount}" />
+        <property name="cpuMinRequestCount" value="${dfh.kubernetes.cpuMinRequestCount}" />
+        <property name="memoryRequestCount" value="${dfh.kubernetes.memoryRequestCount}" />
+        <property name="reapCompletedPods" value="${dfh.kubernetes.reapCompletedPods}" />
+        <property name="podScheduledTimeoutMs" value="${dfh.kubernetes.podScheduledTimeoutMs}" />
+        <property name="aliveCheckDetails">
+            <bean class="com.theplatform.dfh.cp.modules.kube.client.config.AliveCheckDetails">
+                <property name="alivePath" value="${dfh.kubernetes.alivePath}" />
+                <property name="aliveCheckHost" value="${dfh.kubernetes.aliveCheckHost}" />
+                <property name="aliveCheckLinking" value="${dfh.kubernetes.aliveCheckLinking}" />
+                <property name="alivePort" value="${dfh.kubernetes.alivePort}" />
+            </bean>
+        </property>
+        <property name="pullAlways" value="true"/>
+        <property name="nfsDetails">
+            <bean class="com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails">
+                <property name="nfsMountPaths"><util:list value-type="java.lang.String"/></property>
+            </bean>
+        </property>
+        <property name="imageName" value="${dfh.imageName}"/>
+        <property name="namePrefix" value="${dfh.kubernetes.namePrefix}"/>
+    </bean>
+
+</beans>
