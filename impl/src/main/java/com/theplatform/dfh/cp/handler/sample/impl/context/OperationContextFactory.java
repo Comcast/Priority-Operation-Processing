@@ -25,9 +25,9 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
         switch (getLaunchType())
         {
             case local:
-                return new OperationContext(new LogReporter());
+                return new OperationContext(new LogReporter(), launchDataWrapper);
             case docker:
-                return new OperationContext(new LogReporter());
+                return new OperationContext(new LogReporter(), launchDataWrapper);
             case kubernetes:
             default:
                 return getKubernetesContext();
@@ -57,6 +57,6 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
             kubeConfig,
             launchDataWrapper.getEnvironmentRetriever().getField(Fabric8Helper.MY_POD_NAME))
         );
-        return new OperationContext(reporterSet);
+        return new OperationContext(reporterSet, launchDataWrapper);
     }
 }
