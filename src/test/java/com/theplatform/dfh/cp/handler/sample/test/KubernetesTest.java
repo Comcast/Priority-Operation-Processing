@@ -26,7 +26,7 @@ public class KubernetesTest extends SampleHandlerTestBase
 
     // This is a hard coded manual test!!! Enjoy!!
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void run() throws Exception
     {
         SampleAction sampleAction = new SampleAction();
