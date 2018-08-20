@@ -17,16 +17,16 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentia
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
  */
-public class HandlerContextFactory extends BaseOperationContextFactory<HandlerContext>
+public class ExecutorContextFactory extends BaseOperationContextFactory<ExecutorContext>
 {
 
-    public HandlerContextFactory(LaunchDataWrapper launchDataWrapper)
+    public ExecutorContextFactory(LaunchDataWrapper launchDataWrapper)
     {
         super(launchDataWrapper);
     }
 
     @Override
-    public HandlerContext getOperationContext()
+    public ExecutorContext getOperationContext()
     {
         Reporter reporter;
         OperationExecutorFactory operationExecutorFactory;
@@ -57,7 +57,7 @@ public class HandlerContextFactory extends BaseOperationContextFactory<HandlerCo
                 break;
         }
 
-        return new HandlerContext(reporter, launchDataWrapper, operationExecutorFactory);
+        return new ExecutorContext(reporter, launchDataWrapper, operationExecutorFactory);
     }
 
     public ReporterSet getKubernetesReporterSet()

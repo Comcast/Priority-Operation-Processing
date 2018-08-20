@@ -6,13 +6,16 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 
-public class HandlerContext extends BaseOperationContext
+/**
+ * Note: This was named this way to not have everything named Operation
+ */
+public class ExecutorContext extends BaseOperationContext
 {
     private OperationExecutorFactory operationExecutorFactory;
     private LaunchDataWrapper launchDataWrapper;
     private JsonContext jsonContext;
 
-    public HandlerContext(Reporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
+    public ExecutorContext(Reporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
     {
         super(reporter);
         this.operationExecutorFactory = operationExecutorFactory;

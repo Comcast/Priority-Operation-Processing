@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
-import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
@@ -22,13 +22,13 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
 
     private static final String OUTPUT_SUFFIX = ".out";
     private LaunchDataWrapper launchDataWrapper;
-    private HandlerContext handlerContext;
+    private ExecutorContext executorContext;
     private JsonHelper jsonHelper;
 
-    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, HandlerContext handlerContext)
+    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
         this.launchDataWrapper = launchDataWrapper;
-        this.handlerContext = handlerContext;
+        this.executorContext = executorContext;
         this.jsonHelper = new JsonHelper();
     }
 
@@ -42,7 +42,7 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         try
         {
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            handlerContext.getReporter().reportProgress(handlerInput);
+            executorContext.getReporter().reportProgress(handlerInput);
         }
         catch(Exception e)
         {
@@ -51,11 +51,11 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         try
         {
             handlerInput.getOperations().forEach(this::executeOperation);
-            handlerContext.getReporter().reportSuccess("Done!");
+            executorContext.getReporter().reportSuccess("Done!");
         }
         catch (AgendaExecutorException e)
         {
-            handlerContext.getReporter().reportFailure("", e);
+            executorContext.getReporter().reportFailure("", e);
         }
         return null;
     }
@@ -65,13 +65,13 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         try
         {
             // TODO: Use the information about missing/invalid references.
-            ReferenceReplacementResult result = handlerContext.getJsonContext().processReferences(operation.getPayload());
+            ReferenceReplacementResult result = executorContext.getJsonContext().processReferences(operation.getPayload());
 
-            BaseOperationExecutor executor = handlerContext.getOperationExecutorFactory().getOperationExecutor(handlerContext, operation);
+            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().getOperationExecutor(executorContext, operation);
             String contextKey = operation.getName() + OUTPUT_SUFFIX;
             String outputPayload = executor.execute(result.getResult());
             logger.info("Persisting ContextKey: [{}] OperationId: [{}] with OUTPUT Payload: {}", contextKey, operation.getId(), outputPayload);
-            handlerContext.getJsonContext().addData(contextKey, outputPayload);
+            executorContext.getJsonContext().addData(contextKey, outputPayload);
         }
         catch(Throwable t)
         {
@@ -84,9 +84,9 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         this.launchDataWrapper = launchDataWrapper;
     }
 
-    public void setHandlerContext(HandlerContext handlerContext)
+    public void setExecutorContext(ExecutorContext executorContext)
     {
-        this.handlerContext = handlerContext;
+        this.executorContext = executorContext;
     }
 
     public void setJsonHelper(JsonHelper jsonHelper)

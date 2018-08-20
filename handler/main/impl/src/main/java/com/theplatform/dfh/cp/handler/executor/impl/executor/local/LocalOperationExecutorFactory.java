@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.local;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
@@ -12,7 +12,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
 public class LocalOperationExecutorFactory implements OperationExecutorFactory
 {
     @Override
-    public BaseOperationExecutor getOperationExecutor(HandlerContext handlerContext, Operation operation)
+    public BaseOperationExecutor getOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
         return new LocalOperationExecutor(operation);
     }

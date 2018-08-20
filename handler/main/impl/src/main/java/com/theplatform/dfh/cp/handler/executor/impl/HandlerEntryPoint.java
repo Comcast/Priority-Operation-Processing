@@ -2,15 +2,15 @@ package com.theplatform.dfh.cp.handler.executor.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
-import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContextFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.SequentialAgendaProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<HandlerContext, SequentialAgendaProcessor>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, SequentialAgendaProcessor>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -42,14 +42,14 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<HandlerContext, Seq
     }
 
     @Override
-    protected BaseOperationContextFactory<HandlerContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<ExecutorContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
     {
-        return new HandlerContextFactory(launchDataWrapper);
+        return new ExecutorContextFactory(launchDataWrapper);
     }
 
     @Override
-    protected SequentialAgendaProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, HandlerContext handlerContext)
+    protected SequentialAgendaProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
-        return new SequentialAgendaProcessor(launchDataWrapper, handlerContext);
+        return new SequentialAgendaProcessor(launchDataWrapper, executorContext);
     }
 }
