@@ -26,6 +26,7 @@
         <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
         <executor-handler-api.version>1.0.0-SNAPSHOT</executor-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
+        <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
         <process-helper.version>1.0.0-SNAPSHOT</process-helper.version>
     </properties>
@@ -75,6 +76,12 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
+            <version>${podconfig-registry-client-api.version}</version>
         </dependency>
 
         <!-- Logging -->

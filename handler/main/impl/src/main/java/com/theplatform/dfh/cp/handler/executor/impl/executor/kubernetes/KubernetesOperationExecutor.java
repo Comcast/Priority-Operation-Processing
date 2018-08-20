@@ -17,7 +17,6 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -38,30 +37,6 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
         this.follower = new PodFollowerImpl<>(this.kubeConfig);
-    }
-
-    private Consumer<String> getLineConsumer(final List<String> linesForProcessing)
-    {
-        return new Consumer<String>()
-        {
-            @Override
-            public void accept(String s)
-            {
-                linesForProcessing.add(s);
-            }
-        };
-    }
-
-    private Consumer<String> getConsumer(final StringBuilder stdoutCapture)
-    {
-        return new Consumer<String>()
-        {
-            @Override
-            public void accept(String s)
-            {
-                stdoutCapture.append(s).append("\n");
-            }
-        };
     }
 
     public void setFollower(PodFollower<PodPushClient> follower)
@@ -89,13 +64,12 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
-        executionConfig.getEnvVars().put(
-            "PAYLOAD", payload
-        );
+        executionConfig.getEnvVars().put("PAYLOAD", payload);
 
+        // TODO: isn't this already happening somewhere?
         executionConfig.setName(podConfig.getNamePrefix() + UUID.randomUUID().toString());
 
-        // TODO we need to get the annotations before reaping... probably should build that into the follower
+        // TODO!! we need to get the annotations before reaping... probably should build that into the follower
         podConfig.setReapCompletedPods(false);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
@@ -117,19 +91,19 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
 
             lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
 
-            logger.info("Sample completed with pod status {}", lastPodPhase.phase.getLabel());
+            logger.info("{} completed with pod status {}", operation.getName(), lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
             {
                 if (lastPodPhase.phase.isFailed())
                 {
-                    logger.error("Sample failed to produce metadata, output was : {}", allStdout);
+                    logger.error("{} failed to produce metadata, output was : {}", operation.getName(), allStdout);
                     throw new RuntimeException(allStdout.toString());
                 }
             }
 
             if (logger.isDebugEnabled())
             {
-                logger.debug("Sample produced: {}", allStdout.toString());
+                logger.debug("{} produced: {}", operation.getName(), allStdout.toString());
             }
         }
         catch (Exception e)

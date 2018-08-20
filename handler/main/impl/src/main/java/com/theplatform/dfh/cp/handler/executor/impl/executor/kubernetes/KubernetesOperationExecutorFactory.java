@@ -2,13 +2,16 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.HandlerContext;
+import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
+import com.theplatform.dfh.cp.handler.executor.impl.podconfig.registry.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,33 +21,31 @@ import org.slf4j.LoggerFactory;
 public class KubernetesOperationExecutorFactory implements OperationExecutorFactory
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutorFactory.class);
+    private PodConfigRegistryClient podConfigRegistryClient;
 
-    private int podRetryDelay = 2000;
+    public KubernetesOperationExecutorFactory()
+    {
+        this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
+    }
 
     @Override
     public BaseOperationExecutor getOperationExecutor(HandlerContext handlerContext, Operation operation)
     {
         // TODO: decide how much needs to be setup here vs. in the kube executor itself
 
-        // TODO: this should come from the registry lookup
-        final String dockerImageName = "docker-lab.repo.theplatform.com/fhsamp:1.0.0";
         // TODO: need a launchdatawrapper -> kubeconfig helper
         KubeConfig kubeConfig = new KubeConfig()
             .setMasterUrl(handlerContext.getLaunchDataWrapper().getEnvironmentRetriever().getField("K8_MASTER_URL"))
             .setNameSpace("dfh");
 
-        PodConfig podConfig = new PodConfig()
-            .setServiceAccountName("ffmpeg-service")
-            .setMemoryRequestCount("1000m")
-            .setCpuMinRequestCount("1000m")
-            .setCpuMaxRequestCount("1000m")
-            .setPodScheduledTimeoutMs(600000L)
-            .setReapCompletedPods(true)
-            .setPullAlways(true) // for now
-            .setImageName(dockerImageName)
-            .setNamePrefix("dfh-samp");
+        PodConfig podConfig = podConfigRegistryClient.getPodConfig(operation.getType());
+
+        if(podConfig == null)
+            throw new AgendaExecutorException(
+                String.format("Unknown operation type found: %1$s on operation: %2$s", operation.getType(), operation.getName()));
 
         // TODO: cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
+        // TODO: values should be settings from the properties file
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("LOG_LEVEL", "DEBUG")
             .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
@@ -58,7 +59,11 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
             }
         });
 
-
         return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig);
+    }
+
+    public void setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)
+    {
+        this.podConfigRegistryClient = podConfigRegistryClient;
     }
 }
