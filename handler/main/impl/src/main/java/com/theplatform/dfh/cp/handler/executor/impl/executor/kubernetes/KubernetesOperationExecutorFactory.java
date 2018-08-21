@@ -31,7 +31,7 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
     }
 
     @Override
-    public BaseOperationExecutor getOperationExecutor(ExecutorContext executorContext, Operation operation)
+    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
         // TODO: decide how much needs to be setup here vs. in the kube executor itself
 

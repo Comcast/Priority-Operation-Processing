@@ -18,7 +18,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     }
 
     @Override
-    public ExecutorContext getOperationContext()
+    public ExecutorContext createOperationContext()
     {
         OperationExecutorFactory operationExecutorFactory;
 

@@ -5,5 +5,5 @@ import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 
 public interface OperationExecutorFactory
 {
-    BaseOperationExecutor getOperationExecutor(ExecutorContext executorContext, Operation operation);
+    BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation);
 }

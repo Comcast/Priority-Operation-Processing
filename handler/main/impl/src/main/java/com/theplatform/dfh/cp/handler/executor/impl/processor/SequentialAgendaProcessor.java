@@ -67,7 +67,7 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
             // TODO: Use the information about missing/invalid references.
             ReferenceReplacementResult result = executorContext.getJsonContext().processReferences(operation.getPayload());
 
-            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().getOperationExecutor(executorContext, operation);
+            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().createOperationExecutor(executorContext, operation);
             String contextKey = operation.getName() + OUTPUT_SUFFIX;
             String outputPayload = executor.execute(result.getResult());
             logger.info("Persisting ContextKey: [{}] OperationId: [{}] with OUTPUT Payload: {}", contextKey, operation.getId(), outputPayload);

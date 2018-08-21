@@ -12,7 +12,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
 public class LocalOperationExecutorFactory implements OperationExecutorFactory
 {
     @Override
-    public BaseOperationExecutor getOperationExecutor(ExecutorContext executorContext, Operation operation)
+    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
         return new LocalOperationExecutor(operation);
     }
