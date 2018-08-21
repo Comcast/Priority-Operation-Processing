@@ -20,7 +20,7 @@ public class OperationContextFactory extends BaseOperationContextFactory<Operati
     }
 
     @Override
-    public OperationContext getOperationContext()
+    public OperationContext createOperationContext()
     {
         switch (getLaunchType())
         {
