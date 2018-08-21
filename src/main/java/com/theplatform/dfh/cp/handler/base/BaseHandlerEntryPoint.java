@@ -26,7 +26,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         // get the operation specific context for running the overall process
         createHandlerProcessor(
             launchDataWrapper,
-            operationContextFactory.getOperationContext())
+            operationContextFactory.createOperationContext())
             .execute();
     }
 

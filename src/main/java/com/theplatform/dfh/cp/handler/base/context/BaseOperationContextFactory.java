@@ -46,5 +46,5 @@ public abstract class BaseOperationContextFactory<T extends BaseOperationContext
         this.launchDataWrapper = launchDataWrapper;
     }
 
-    public abstract T getOperationContext();
+    public abstract T createOperationContext();
 }
