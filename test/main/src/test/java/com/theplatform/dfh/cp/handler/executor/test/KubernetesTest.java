@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.test;
 
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
+import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
@@ -19,10 +20,10 @@ public class KubernetesTest extends ExecutorHandlerTestBase
 
     // This is a hard coded manual test!!! Enjoy!!
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void run() throws Exception
     {
-        PodFollower<PodPushClient> follower = new PodFollowerImpl<PodPushClient>(kubeConfig);
+        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig);
 
         // TODO: environment variable passing with the $$ is messed up (have to use $$$, pick a new char/flag/indicator OR base64 encode?)
         String payload = getStringFromResourceFile("/payload/sampleActions.json");
@@ -33,10 +34,16 @@ public class KubernetesTest extends ExecutorHandlerTestBase
 
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("PAYLOAD", payload)
-            .addEnvVar("LOG_LEVEL", "DEBUG")
-            .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
+            .addEnvVar("LOG_LEVEL", "DEBUG");
 
         podConfig.setArguments(new String[] {"-launchType", "local"});
+
+        podConfig.setConfigMapDetails(new ConfigMapDetails()
+            .setConfigMapName("lab-main-t-aor-fhexec-t01")
+            .setMapKey("external-properties")
+            .setMapPath("external.properties")
+            .setVolumeName("config-volume")
+            .setVolumeMountPath("/config"));
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
