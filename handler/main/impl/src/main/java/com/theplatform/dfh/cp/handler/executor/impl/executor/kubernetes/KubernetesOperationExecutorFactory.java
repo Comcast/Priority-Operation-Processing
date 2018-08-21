@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecut
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
 import com.theplatform.dfh.cp.handler.executor.impl.podconfig.registry.StaticPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
@@ -22,6 +23,7 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutorFactory.class);
     private PodConfigRegistryClient podConfigRegistryClient;
+    private KubeConfigFactory kubeConfigFactory;
 
     public KubernetesOperationExecutorFactory()
     {
@@ -33,10 +35,7 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
     {
         // TODO: decide how much needs to be setup here vs. in the kube executor itself
 
-        // TODO: need a launchdatawrapper -> kubeconfig helper
-        KubeConfig kubeConfig = new KubeConfig()
-            .setMasterUrl(executorContext.getLaunchDataWrapper().getEnvironmentRetriever().getField("K8_MASTER_URL"))
-            .setNameSpace("dfh");
+        KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(operation.getType());
 
@@ -62,8 +61,20 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
         return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig);
     }
 
-    public void setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)
+    public KubernetesOperationExecutorFactory setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)
     {
         this.podConfigRegistryClient = podConfigRegistryClient;
+        return this;
+    }
+
+    public KubeConfigFactory getKubeConfigFactory()
+    {
+        return kubeConfigFactory;
+    }
+
+    public KubernetesOperationExecutorFactory setKubeConfigFactory(KubeConfigFactory kubeConfigFactory)
+    {
+        this.kubeConfigFactory = kubeConfigFactory;
+        return this;
     }
 }

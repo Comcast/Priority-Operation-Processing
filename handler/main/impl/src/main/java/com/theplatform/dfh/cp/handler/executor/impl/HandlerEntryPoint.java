@@ -21,9 +21,13 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Se
     }
 
     /**
-     * TODO: this information may be out of date (fix when implementing)
-     * - debugging/running with a local-only build use these args (will definitely need to adjust the payload.json accordingly):
+     * Debugging/running with a local-only build use these args:
      * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
+     *
+     * Debugging running local with minikube for pod launches
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties -payloadFile ./handler/main/package/local/payload.json
+     *
+     * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
      *
      * @param args command line args

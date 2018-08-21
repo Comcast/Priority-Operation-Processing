@@ -18,7 +18,6 @@
         <testng.version>6.9.10</testng.version>
         <mockito.version>1.9.5</mockito.version>
         <logging-extension.version>1.2.0</logging-extension.version>
-        <handler-base.version>1.0.0-SNAPSHOT</handler-base.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
         <handler-field-api.version>1.0.0-SNAPSHOT</handler-field-api.version>
         <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
@@ -28,15 +27,10 @@
         <dfh-docker.version>1.0.1</dfh-docker.version>
         <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
-        <process-helper.version>1.0.0-SNAPSHOT</process-helper.version>
+        <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
     </properties>
     
     <dependencies>
-        <dependency>
-            <groupId>com.theplatform.dfh.handler</groupId>
-            <artifactId>pl-dfh-process-helper</artifactId>
-            <version>${process-helper.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-api</artifactId>
@@ -67,15 +61,15 @@
             <artifactId>pl-dfh-cp-handler-reporter-logger</artifactId>
             <version>${logger-reporter.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-base</artifactId>
-            <version>${handler-base.version}</version>
-        </dependency>
-        <dependency>
+         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <version>${handler-kubernetes-support.version}</version>
         </dependency>
 
         <dependency>

@@ -14,6 +14,7 @@ import java.io.IOException;
 
 /**
  * Local executor is just for testing/prototype. It does not perform any actual operations.
+ * The resultPayload is based on the input class of the sample handler.
  */
 public class LocalOperationExecutor extends BaseOperationExecutor
 {
