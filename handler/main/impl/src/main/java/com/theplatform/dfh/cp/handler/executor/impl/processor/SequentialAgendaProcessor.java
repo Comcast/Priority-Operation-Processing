@@ -57,6 +57,7 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         {
             executorContext.getReporter().reportFailure("", e);
         }
+        logger.info("ExecutorComplete");
         return null;
     }
 
