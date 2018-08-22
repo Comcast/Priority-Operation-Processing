@@ -27,15 +27,11 @@
         <puller-handler-api.version>1.0.0-SNAPSHOT</puller-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
-        <process-helper.version>1.0.0-SNAPSHOT</process-helper.version>
+        <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
+        <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
     </properties>
     
     <dependencies>
-        <dependency>
-            <groupId>com.theplatform.dfh.handler</groupId>
-            <artifactId>pl-dfh-process-helper</artifactId>
-            <version>${process-helper.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-api</artifactId>
@@ -75,6 +71,16 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <version>${handler-kubernetes-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
+            <version>${podconfig-registry-client-api.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -167,7 +173,7 @@
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.puller.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.theplatform.dfh.cp.handler.puller.impl.PullerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>

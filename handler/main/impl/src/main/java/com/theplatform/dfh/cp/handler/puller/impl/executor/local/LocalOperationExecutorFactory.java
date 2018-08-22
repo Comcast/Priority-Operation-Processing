@@ -1,19 +1,18 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.local;
 
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.puller.impl.context.HandlerContext;
-import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.handler.puller.impl.executor.OperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
+import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
+import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 
 /**
  * Factory for producing executors to get MediaProperties (via a mediainfo launch through a docker container).
  * This may only apply to functional tests.
  */
-public class LocalOperationExecutorFactory implements OperationExecutorFactory
+public class LocalOperationExecutorFactory implements LauncherFactory
 {
     @Override
-    public BaseOperationExecutor getOperationExecutor(HandlerContext handlerContext, Operation operation)
+    public BaseLauncher createLauncher(PullerContext handlerContext)
     {
-        return new LocalOperationExecutor(operation);
+        return new LocalOperationExecutor();
     }
 }
