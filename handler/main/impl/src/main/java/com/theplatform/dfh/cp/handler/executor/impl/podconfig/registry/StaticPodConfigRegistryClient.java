@@ -23,6 +23,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setPullAlways(false) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.0")
                 .setNamePrefix("dfh-samp")
+                .setEndOfLogIdentifier("SampleComplete")
         );
     }
 
