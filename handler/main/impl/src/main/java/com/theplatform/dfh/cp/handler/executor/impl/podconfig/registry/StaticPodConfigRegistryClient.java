@@ -20,7 +20,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
-                .setPullAlways(false) // for now
+                .setPullAlways(true) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.0")
                 .setNamePrefix("dfh-samp")
                 .setEndOfLogIdentifier("SampleComplete")
