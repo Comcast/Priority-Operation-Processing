@@ -33,8 +33,6 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
     @Override
     public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
-        // TODO: decide how much needs to be setup here vs. in the kube executor itself
-
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(operation.getType());
@@ -43,11 +41,10 @@ public class KubernetesOperationExecutorFactory implements OperationExecutorFact
             throw new AgendaExecutorException(
                 String.format("Unknown operation type found: %1$s on operation: %2$s", operation.getType(), operation.getName()));
 
-        // TODO: cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
+        // cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
         // TODO: values should be settings from the properties file
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
-            .addEnvVar("LOG_LEVEL", "DEBUG")
-            .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
+            .addEnvVar("LOG_LEVEL", "DEBUG");
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
