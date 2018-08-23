@@ -56,17 +56,17 @@ public class PodConfig
     private String memoryRequestCount; // todo can this be an int of long?
 
     // if enabled the pod follower will delete the pod at conclusion
-    private Boolean reapCompletedPods;
+    private boolean reapCompletedPods = false;
 
     // Indicates whether to pull the docker image(s) each execution (specifically setting the pull policy to Always)
-    private Boolean pullAlways = false;
+    private boolean pullAlways = false;
 
     // The timeout for starting a pod
-    private Long podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
+    private long podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
 
-    private Long podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
+    private long podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
 
-    private Integer podRetryCount = 1;
+    private int podRetryCount = 0;
     private int retryDelayMilliSecs = RETRY_DELAY;
 
     private List<Class<? extends Throwable>> nonRetryableExceptions;
@@ -174,7 +174,7 @@ public class PodConfig
         return useTaintedNodes;
     }
 
-    public PodConfig setUseTaintedNodes()
+    public PodConfig setUseTaintedNodes(boolean useTaintedNodes)
     {
         this.useTaintedNodes = useTaintedNodes;
         return this;

@@ -109,6 +109,15 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
             {
                 logger.error("Failure during follower completion.", e);
             }
+
+            try
+            {
+                podPushClient.close();
+            }
+            catch (Exception e)
+            {
+                logger.error("Fail to close PodPushClient.", e);
+            }
         }
         return finalPhase;
     }
