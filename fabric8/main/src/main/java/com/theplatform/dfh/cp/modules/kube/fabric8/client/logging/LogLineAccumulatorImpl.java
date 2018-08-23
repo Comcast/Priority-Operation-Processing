@@ -14,6 +14,7 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
     private final List<String> logs = Collections.synchronizedList(new LinkedList<String>());
     private Runnable onCompletion;
     private String completionIdentifier;
+    private boolean loggingComplete = true;
 
     public void appendLine(String s)
     {
@@ -36,9 +37,14 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
         }
     }
 
-    private boolean isLoggingCompletable(String s)
+    private void updateLoggingComplete(String s)
     {
-        return s != null && completionIdentifier != null && onCompletion != null && s.equals(completionIdentifier);
+        if( s != null
+            && completionIdentifier != null
+            && s.contains(completionIdentifier))
+        {
+            loggingComplete = true;
+        }
     }
 
     public List<String> takeAll()
@@ -49,12 +55,13 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
             logs.forEach(s ->
                 {
                     allLines.add(s);
-                    if (isLoggingCompletable(s))
-                    {
-                        finish();
-                    }
+                    updateLoggingComplete(s);
                 }
             );
+            if(loggingComplete && onCompletion != null)
+            {
+                finish();
+            }
             logs.clear();
         }
         return allLines;
