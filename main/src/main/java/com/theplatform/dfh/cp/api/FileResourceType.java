@@ -9,6 +9,7 @@ public enum FileResourceType
     MEZZANINE("mezzanine"),
     TEXT_TRACK_SIDECAR("text track sidecar"),
     AUDIO_TRACK("audio track"),
+    VIDEO_TRACK("video_track"),
     IMAGE("image"),
     MP4("mp4"),
     HLS("hls"),
