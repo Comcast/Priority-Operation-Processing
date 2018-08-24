@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.puller.impl.client;
+package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 
 public class DefaultAgendaClientFactory

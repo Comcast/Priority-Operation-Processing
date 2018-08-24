@@ -36,12 +36,10 @@ public class KubernetesLauncherFactory implements LauncherFactory
     @Override
     public BaseLauncher createLauncher(PullerContext pullerContext)
     {
-        // TODO: need a launchdatawrapper -> kubeconfig helper
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
 
-        // TODO: cannot set the payload yet, it is processed and passed into the puller by whatever HandlerProcessor implementation
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("LOG_LEVEL", "DEBUG");
 

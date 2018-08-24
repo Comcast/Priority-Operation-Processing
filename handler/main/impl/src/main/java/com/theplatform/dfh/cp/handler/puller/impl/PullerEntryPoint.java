@@ -2,9 +2,8 @@ package com.theplatform.dfh.cp.handler.puller.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.AgendaClient;
-import com.theplatform.dfh.cp.handler.puller.impl.client.DefaultAgendaClient;
-import com.theplatform.dfh.cp.handler.puller.impl.client.DefaultAgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;

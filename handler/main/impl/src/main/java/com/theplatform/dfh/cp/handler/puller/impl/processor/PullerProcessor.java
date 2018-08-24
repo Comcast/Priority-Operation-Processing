@@ -1,11 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
-import com.theplatform.dfh.cp.handler.puller.api.PullerHandlerInput;
-import com.theplatform.dfh.cp.handler.puller.impl.client.AgendaClient;
-import com.theplatform.dfh.cp.handler.puller.impl.client.DefaultAgendaClient;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
-import com.theplatform.dfh.cp.handler.puller.impl.exception.PullerException;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncher;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;

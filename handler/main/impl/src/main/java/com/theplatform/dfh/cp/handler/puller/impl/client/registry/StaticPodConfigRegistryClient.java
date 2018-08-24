@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.registry;
 
+import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 
@@ -35,6 +36,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setPullAlways(false) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.0")
                 .setNamePrefix("dfh-exec")
+                .setConfigMapDetails(new ConfigMapDetails()
+                    .setConfigMapName("lab-main-t-aor-fhexec-t01")
+                    .setMapKey("external-properties")
+                    .setMapPath("external.properties")
+                    .setVolumeName("config-volume")
+                    .setVolumeMountPath("/config"))
         );
     }
 
