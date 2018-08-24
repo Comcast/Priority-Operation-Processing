@@ -56,6 +56,7 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         catch (AgendaExecutorException e)
         {
             executorContext.getReporter().reportFailure("", e);
+            logger.error("", e);
         }
         logger.info("ExecutorComplete");
         return null;
