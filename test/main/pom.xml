@@ -16,35 +16,27 @@
     <description>Executor Functional Tests</description>
 
     <properties>
-        <executor-impl.version>1.0.0-SNAPSHOT</executor-impl.version>
+        <dfh-fabric8-kube-client.version>1.0.0-SNAPSHOT</dfh-fabric8-kube-client.version>
+        <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
+        <commons-io.version>2.5</commons-io.version>
         <spring-version>3.0.7.RELEASE</spring-version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <version>${json-helper.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
+            <version>${dfh-fabric8-kube-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.modules</groupId>
-            <artifactId>pl-dfh-docker</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-executor-impl</artifactId>
-            <version>${executor-impl.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.test.modules.listener</groupId>

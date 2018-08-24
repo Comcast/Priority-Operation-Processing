@@ -14,20 +14,20 @@ import org.testng.annotations.Test;
 
 import java.util.function.Consumer;
 
-public class KubernetesTest extends ExecutorHandlerTestBase
+/**
+ * Runs the executor in kubernetes with a basic set of sample actions
+ */
+public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
 {
-    private static Logger logger = LoggerFactory.getLogger(KubernetesTest.class);
+    private static Logger logger = LoggerFactory.getLogger(SampleAgendaExecutorTest.class);
 
-    // This is a hard coded manual test!!! Enjoy!!
-
-    @Test(enabled = false)
-    public void run() throws Exception
+    @Test
+    public void basicSampleExecutorTest() throws Exception
     {
         PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig);
 
         // TODO: environment variable passing with the $$ is messed up (have to use $$$, pick a new char/flag/indicator OR base64 encode?)
         String payload = getStringFromResourceFile("/payload/sampleActions.json");
-        logger.info("Payload: {}", payload);
 
         // if this is not set the pod annotations cannot be written to
         podConfig.setServiceAccountName("ffmpeg-service");
@@ -36,14 +36,6 @@ public class KubernetesTest extends ExecutorHandlerTestBase
             .addEnvVar("PAYLOAD", payload)
             .addEnvVar("LOG_LEVEL", "DEBUG");
 
-        podConfig.setArguments(new String[] {"-launchType", "local"});
-
-        podConfig.setConfigMapDetails(new ConfigMapDetails()
-            .setConfigMapName("lab-main-t-aor-fhexec-t01")
-            .setMapKey("external-properties")
-            .setMapPath("external.properties")
-            .setVolumeName("config-volume")
-            .setVolumeMountPath("/config"));
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
@@ -54,13 +46,11 @@ public class KubernetesTest extends ExecutorHandlerTestBase
             }
         });
 
-        podConfig.setPullAlways(false);
-        logger.debug("Executing mediaInfo w/details {}", executionConfig);
         String podName = executionConfig.getName();
-        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
         logger.info("Getting progress until the pod {} is finished.", podName);
         StringBuilder allStdout = new StringBuilder();
+        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
         logLineObserver.addConsumer(new Consumer<String>()
                                     {
                                         @Override
@@ -70,26 +60,26 @@ public class KubernetesTest extends ExecutorHandlerTestBase
                                         }
                                     });
 
-        FinalPodPhaseInfo lastPodPhase = null;
+        FinalPodPhaseInfo lastPodPhase;
         try
         {
             logger.info("Starting the pod with name {}", podName);
 
             lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
 
-            logger.info("Sample completed with pod status {}", lastPodPhase.phase.getLabel());
+            logger.info("Executor completed with pod status {}", lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
             {
                 if (lastPodPhase.phase.isFailed())
                 {
-                    logger.error("Sample failed to produce metadata, output was : {}", allStdout);
+                    logger.error("Executor failed to produce metadata, output was : {}", allStdout);
                     throw new RuntimeException(allStdout.toString());
                 }
             }
 
             if (logger.isDebugEnabled())
             {
-                logger.debug("Sample produced: {}", allStdout.toString());
+                logger.debug("Executor produced: {}", allStdout.toString());
             }
         }
         catch (Exception e)
