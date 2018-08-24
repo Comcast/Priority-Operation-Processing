@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.podconfig.registry;
 
+import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 
@@ -19,12 +20,30 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
-                .setReapCompletedPods(false)
+                .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.0")
                 .setNamePrefix("dfh-samp")
                 .setEndOfLogIdentifier("SampleComplete")
         );
+        podConfigMap.put("encode",
+            new PodConfig()
+                .setServiceAccountName("ffmpeg-service")
+                .setMemoryRequestCount("1000m")
+                .setCpuMinRequestCount("1000m")
+                .setCpuMaxRequestCount("1000m")
+                .setPodScheduledTimeoutMs(600000L)
+                .setReapCompletedPods(true)
+                .setPullAlways(true) // for now
+                .setImageName("docker-lab.repo.theplatform.com/fhef:1.0.0")
+                .setNamePrefix("dfh-encode")
+                .setEndOfLogIdentifier("ffmpeg_handler_end")
+                .setConfigMapDetails(new ConfigMapDetails()
+                    .setConfigMapName("lab-main-t-aor-fheff-t01")
+                    .setMapKey("external-properties")
+                    .setMapPath("external.properties")
+                    .setVolumeName("config-volume")
+                    .setVolumeMountPath("/config")));
     }
 
     @Override
