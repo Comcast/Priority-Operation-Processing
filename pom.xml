@@ -105,15 +105,6 @@
                     <forkCount>1</forkCount>
                     <!-- By default we skip IT tests -->
                     <skipTests>${skipITTests}</skipTests>
-                    <!-- system properties for cuanto -->
-                    <systemPropertyVariables>
-                        <cuanto.url>http://tpcuanto.qa.testlab.com</cuanto.url>
-                        <cuanto.projectkey>${cuanto.projectkey}</cuanto.projectkey>
-                        <cuanto.testrun.perThread>false</cuanto.testrun.perThread>
-                        <cuanto.testrun.create>true</cuanto.testrun.create>
-                        <cuanto.includeConfigDuration>true</cuanto.includeConfigDuration>
-                        <cuanto.env>${project.version}</cuanto.env>
-                    </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${test-suite}</suiteXmlFile>
                     </suiteXmlFiles>
