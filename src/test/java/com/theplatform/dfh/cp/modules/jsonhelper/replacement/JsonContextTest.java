@@ -25,4 +25,10 @@ public class JsonContextTest extends JsonReplacementTestBase
         ReferenceReplacementResult result = jsonContext.processReferences(referenceNode);
         Assert.assertEquals(objectMapper.readTree(result.getResult()), expectedNode);
     }
+
+    @Test
+    public void testNoData() throws Exception
+    {
+        jsonContext.addData("foo", null);
+    }
 }

@@ -29,7 +29,8 @@ public class JsonContext
     {
         try
         {
-            contextMap.put(contextId, objectMapper.readTree(jsonData));
+            
+            contextMap.put(contextId, objectMapper.readTree(jsonData == null ? "{}" : jsonData));
         }
         catch(IOException e)
         {
