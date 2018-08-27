@@ -20,6 +20,7 @@
         <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
         <commons-io.version>2.5</commons-io.version>
         <spring-version>3.0.7.RELEASE</spring-version>
+        <skipITTests>true</skipITTests>
     </properties>
 
     <dependencies>
@@ -82,5 +83,54 @@
             <version>3.9.1</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <!-- prevent surefire from running integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <includes>
+                        <include>**/unit/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Integration Test Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <!-- By default we skip IT tests -->
+                    <skipTests>${skipITTests}</skipTests>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${test-suite}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <includes>
+                        <include>**/*Test*.*</include>
+                    </includes>
+
+                    <testSourceDirectory>${basedir}/src/test/groovy</testSourceDirectory>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <reportsDirectory>${basedir}/target/${surefireReportDir}</reportsDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>integration-test</goal>
+                            <!--suppress MavenModelInspection -->
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

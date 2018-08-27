@@ -38,6 +38,7 @@
                 <property name="nfsMountPaths"><util:list value-type="java.lang.String"/></property>
             </bean>
         </property>
+        <property name="configMapDetails" ref="configMapDetails"/>
     </bean>
 
     <bean id="configMapDetails" class="com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails">
