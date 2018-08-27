@@ -66,9 +66,6 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
 
         executionConfig.getEnvVars().put("PAYLOAD", payload);
 
-        // TODO: isn't this already happening somewhere?
-        executionConfig.setName(podConfig.getNamePrefix() + UUID.randomUUID().toString());
-
         // TODO!! we need to get the annotations before reaping... probably should build that into the follower
         podConfig.setReapCompletedPods(true);
 
