@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodNotScheduledException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -26,8 +28,7 @@ import java.util.concurrent.TimeoutException;
 import static com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper.getFabric8Config;
 
 /**
- * A PodFollower is capable of following multiple pods, one per invocation of "startAndFollowPod(...)"
- * The only state kept at object-instance level is immutable and used for all pod executions.
+ * Convenient tool for starting off a pod and following it until it has completed.
  */
 public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 {
@@ -38,24 +39,32 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     private PodPushClientFactoryImpl podPushClientFactory = new PodPushClientFactoryImpl();
     private PodPushClient podPushClient;
 
-    public PodFollowerImpl(KubeConfig kubeConfig)
+    private PodAnnotationClient podAnnotationClient;
+    private Map<String, String> podAnnotations;
+    
+    private PodConfig podConfig;
+    private ExecutionConfig executionConfig;
+
+    public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
+        this.podConfig = podConfig;
+        this.executionConfig = executionConfig;
         podPushClient = podPushClientFactory.getClient(kubeConfig);
+        podAnnotationClient = new PodAnnotationClient(podPushClient.getFabric8Client(), executionConfig.getName());
     }
 
     /**
-     * Synchronous "blocking" call.  You may call this multiple times (in different threads) and that is safe.
+     * Synchronous "blocking" call.
      * Create the Pod and don't return until it's finished executing. If podConfig.reapCompletedPods is true,
      * Pod will be deleted.
      *
-     * @param podConfig details specific to a particular od
-     * @param executionConfig details specific to a particular execution
+     * NOTE: This method should only be called once.  There will be strange issues if it's called more than once.
+     *
      * @param logLineObserver a logLine observer that will be attached to the stdout stream of the pod started.
      * @return the LastPhase (success or failure) from the pod being followed.
      */
     @Override
-    public FinalPodPhaseInfo startAndFollowPod(PodConfig podConfig, ExecutionConfig executionConfig,
-        LogLineObserver logLineObserver)
+    public FinalPodPhaseInfo startAndFollowPod(LogLineObserver logLineObserver)
     {
         String podName = executionConfig.getName();
         PodWatcher podWatcher = null;
@@ -90,6 +99,15 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
             catch (Exception e)
             {
                 logger.error("log line observer failed to compelete", e);
+            }
+
+            try
+            {
+                podAnnotations = podAnnotationClient.getPodAnnotations();
+            }
+            catch (Exception e)
+            {
+                logger.error("Failure getting pod annotations", e);
             }
 
             try
@@ -218,5 +236,17 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     public PodPushClient getPodPushClient()
     {
         return podPushClient;
+    }
+
+    public Map<String, String> getPodAnnotations()
+    {
+        if (podAnnotations != null)
+        {
+            return podAnnotations;
+        }
+        else
+        {
+            return podAnnotationClient.getPodAnnotations();
+        }
     }
 }

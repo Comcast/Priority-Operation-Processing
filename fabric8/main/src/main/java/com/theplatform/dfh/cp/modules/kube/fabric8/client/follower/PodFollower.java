@@ -8,22 +8,15 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseI
 
 /**
  * Convenient tool for starting off a pod and following it until it has completed.
- *
- * A PodFollower is capable of following multiple pods, one per invocation of "startAndFollowPod(...)"
- * The only state kept at object-instance level is immutable and used for all pod executions.
  */
 public interface PodFollower<C extends PodPushClient>
 {
     /**
-     * Synchronous "blocking" call.  You may call this multiple times (in different threads) and that is safe.
-     *
-     * @param podConfig details specific to a particular od
-     * @param executionConfig details specific to a particular execution
+     * Synchronous "blocking" call.
      * @param logLineObserver a logLine observer that will be attached to the stdout stream of the pod started.
      * @return the LastPhase (success or failure) from the pod being followed.
      */
-    public FinalPodPhaseInfo startAndFollowPod(PodConfig podConfig, ExecutionConfig executionConfig,
-        LogLineObserver logLineObserver);
+    public FinalPodPhaseInfo startAndFollowPod(LogLineObserver logLineObserver);
 
     public LogLineObserver getDefaultLogLineObserver(ExecutionConfig executionConfig);
 
