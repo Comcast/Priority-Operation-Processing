@@ -67,6 +67,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     public FinalPodPhaseInfo startAndFollowPod(LogLineObserver logLineObserver)
     {
         String podName = executionConfig.getName();
+        podAnnotationClient.setPodName(podName);
         PodWatcher podWatcher = null;
         FinalPodPhaseInfo finalPhase = null;
         try
