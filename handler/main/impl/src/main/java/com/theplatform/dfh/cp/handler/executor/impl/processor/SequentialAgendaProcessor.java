@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SequentialAgendaProcessor implements HandlerProcessor<Void>
 {
-    private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutor.class);
+    private static Logger logger = LoggerFactory.getLogger(SequentialAgendaProcessor.class);
 
     private static final String OUTPUT_SUFFIX = ".out";
     private LaunchDataWrapper launchDataWrapper;
