@@ -24,8 +24,6 @@ public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
     @Test
     public void basicSampleExecutorTest() throws Exception
     {
-        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig);
-
         // TODO: environment variable passing with the $$ is messed up (have to use $$$, pick a new char/flag/indicator OR base64 encode?)
         String payload = getStringFromResourceFile("/payload/sampleActions.json");
 
@@ -48,6 +46,8 @@ public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
 
         String podName = executionConfig.getName();
 
+        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig);
+
         logger.info("Getting progress until the pod {} is finished.", podName);
         StringBuilder allStdout = new StringBuilder();
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
@@ -65,7 +65,7 @@ public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
         {
             logger.info("Starting the pod with name {}", podName);
 
-            lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+            lastPodPhase = follower.startAndFollowPod(logLineObserver);
 
             logger.info("Executor completed with pod status {}", lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())

@@ -36,7 +36,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
-        this.follower = new PodFollowerImpl<>(this.kubeConfig);
+        this.follower = new PodFollowerImpl<>(this.kubeConfig, this.podConfig, this.executionConfig);
     }
 
     public void setFollower(PodFollower<PodPushClient> follower)
@@ -89,7 +89,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         {
             logger.info("Starting the pod with name {}", executionConfig.getName());
 
-            lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+            lastPodPhase = follower.startAndFollowPod(logLineObserver);
 
             logger.info("{} completed with pod status {}", operation.getName(), lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
