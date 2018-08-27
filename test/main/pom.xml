@@ -84,10 +84,6 @@
                     <forkCount>1</forkCount>
                     <!-- By default we skip IT tests -->
                     <skipTests>${skipITTests}</skipTests>
-                    <!-- system properties for cuanto -->
-                    <suiteXmlFiles>
-                        <suiteXmlFile>${test-suite}</suiteXmlFile>
-                    </suiteXmlFiles>
                     <includes>
                         <include>**/*Test*.*</include>
                     </includes>
