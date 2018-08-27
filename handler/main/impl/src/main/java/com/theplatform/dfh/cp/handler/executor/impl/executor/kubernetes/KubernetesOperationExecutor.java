@@ -70,7 +70,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         executionConfig.setName(podConfig.getNamePrefix() + UUID.randomUUID().toString());
 
         // TODO!! we need to get the annotations before reaping... probably should build that into the follower
-        podConfig.setReapCompletedPods(false);
+        podConfig.setReapCompletedPods(true);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
@@ -114,12 +114,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         }
         logger.info("Done with execution of pod: {}", executionConfig.getName());
 
-        Map<String,String> podAnnotations = new PodAnnotationClient(new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)), executionConfig.getName())
-            .getPodAnnotations();
-        String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
-
-        follower.getPodPushClient().deletePod(executionConfig.getName());
-
-        return result;
+        Map<String,String> podAnnotations = follower.getPodAnnotations();
+        return podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
     }
 }
