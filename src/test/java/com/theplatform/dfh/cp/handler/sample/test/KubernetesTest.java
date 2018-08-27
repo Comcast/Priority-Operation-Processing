@@ -24,10 +24,8 @@ public class KubernetesTest extends SampleHandlerTestBase
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesTest.class);
 
-    // This is a hard coded manual test!!! Enjoy!!
-
     @Test
-    public void runBasicTest() throws Exception
+    public void runBasicTest()
     {
         SampleAction sampleAction = new SampleAction();
         sampleAction.setAction(SampleActions.log.name());
