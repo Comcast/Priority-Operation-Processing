@@ -6,6 +6,8 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 
+import java.util.Map;
+
 /**
  * Convenient tool for starting off a pod and following it until it has completed.
  */
@@ -21,4 +23,6 @@ public interface PodFollower<C extends PodPushClient>
     public LogLineObserver getDefaultLogLineObserver(ExecutionConfig executionConfig);
 
     public PodPushClient getPodPushClient();
+
+    public Map<String, String> getPodAnnotations();
 }
