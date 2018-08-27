@@ -148,7 +148,7 @@ public class Fabric8Helper
         }
 
         if (executionConfig.getCpuRequestModulator() == null)
-            throw new IllegalArgumentException("Mulst provide a CpuRequestModulator on ExecutionConfig.");
+            throw new IllegalArgumentException("Must provide a CpuRequestModulator on ExecutionConfig.");
 
         containerSpec
             .withNewResources()
