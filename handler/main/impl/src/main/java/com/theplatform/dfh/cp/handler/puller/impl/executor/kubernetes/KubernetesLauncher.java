@@ -38,7 +38,7 @@ public class KubernetesLauncher implements BaseLauncher
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
         this.podPushClient = new PodPushClientFactoryImpl().getClient(kubeConfig);
-        this.follower = new PodFollowerImpl<>(this.kubeConfig);
+        this.follower = new PodFollowerImpl<>(this.kubeConfig, podConfig, executionConfig);
     }
 
     private Consumer<String> getLineConsumer(final List<String> linesForProcessing)
@@ -120,7 +120,7 @@ public class KubernetesLauncher implements BaseLauncher
         {
             logger.info("Starting the pod with name {}", executionConfig.getName());
 
-            lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+            lastPodPhase = follower.startAndFollowPod(logLineObserver);
 
             logger.info("Executor completed with pod status {}", lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
