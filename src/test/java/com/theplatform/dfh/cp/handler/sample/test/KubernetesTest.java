@@ -26,8 +26,8 @@ public class KubernetesTest extends SampleHandlerTestBase
 
     // This is a hard coded manual test!!! Enjoy!!
 
-    @Test(enabled = true)
-    public void run() throws Exception
+    @Test
+    public void runBasicTest() throws Exception
     {
         SampleAction sampleAction = new SampleAction();
         sampleAction.setAction(SampleActions.log.name());
@@ -44,20 +44,9 @@ public class KubernetesTest extends SampleHandlerTestBase
         String payload = jsonHelper.getJSONString(sampleInput);
         logger.info("Payload: {}", payload);
 
-        podConfig.setConfigMapDetails(new ConfigMapDetails()
-            .setMapKey("external-properties")
-            .setMapPath("external.properties")
-            .setConfigMapName("lab-main-t-aor-feh-fun1")
-            .setVolumeName("config-volume")
-            .setVolumeMountPath("/config"));
-
-        // if this is not set the pod annotations cannot be written to
-        podConfig.setServiceAccountName("ffmpeg-service");
-
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("PAYLOAD", jsonHelper.getJSONString(sampleInput))
-            .addEnvVar("LOG_LEVEL", "DEBUG")
-            .addEnvVar("K8_MASTER_URL", kubeConfig.getMasterUrl());
+            .addEnvVar("LOG_LEVEL", "DEBUG");
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
