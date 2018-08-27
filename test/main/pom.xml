@@ -14,11 +14,18 @@
     <packaging>jar</packaging>
     <name>Kube Client Test</name>
 
+    <properties>
+        <kubeclient-version>1.0.0-SNAPSHOT</kubeclient-version>
+        <skipITTests>true</skipITTests>
+        <test-suite>testng.xml</test-suite>
+        <surefireReportDir>surefire-reports</surefireReportDir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${kubeclient-version}</version>
         </dependency>
 
         <!-- logging -->
@@ -38,8 +45,68 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <version>6.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.test.dfh.filemanager</groupId>
+            <artifactId>pl-dfh-filemanager-client</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.theplatform.test.modules</groupId>
+            <artifactId>pl-test-resource-reader</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <!-- prevent surefire from running integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <includes>
+                        <include>**/unit/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Integration Test Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <!-- By default we skip IT tests -->
+                    <skipTests>${skipITTests}</skipTests>
+                    <!-- system properties for cuanto -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${test-suite}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <includes>
+                        <include>**/*Test*.*</include>
+                    </includes>
+
+                    <testSourceDirectory>${basedir}/src/test/groovy</testSourceDirectory>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <reportsDirectory>${basedir}/target/${surefireReportDir}</reportsDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>integration-test</goal>
+                            <!--suppress MavenModelInspection -->
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

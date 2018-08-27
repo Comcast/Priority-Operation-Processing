@@ -1,10 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.test;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.AliveCheckDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.*;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
@@ -21,7 +18,6 @@ import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -47,45 +43,9 @@ import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultRe
 /**
  * Connect to a live K8 instance
  */
-public class LiveKubernetesTest
+public class LiveKubernetesTest extends KubeClientTestBase
 {
     private static Logger logger = LoggerFactory.getLogger(LiveKubernetesTest.class);
-
-    public final KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
-
-    public PodConfig quickPod;
-    public PodConfig longerExecutionPod;
-    public PodConfig longerExecutionSucceedsPod;
-    public PodConfig longerExecutionFailsFastPod;
-
-    @BeforeTest
-    void setUpPodConfigs()
-    {
-
-        quickPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/mediainfo:1.0")
-            .setNamePrefix("dfhk8clienttest")
-            .setArguments(new String[] { "--Output=XML", "-f", "/testFiles/vault/podtest.mp4" })
-            .setEndOfLogIdentifier("</Mediainfo>");
-
-        longerExecutionFailsFastPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-            .setNamePrefix("dfhffmpeg-test")
-            .setArguments(new String[] {
-                "-i", "shortInsideContainer.mp4", "shortInsideContainer.out.mp4", "-y", "-loglevel", "debug" });
-
-        longerExecutionSucceedsPod = getDefaultPodConfig()
-            .setImageName("bash")
-            .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
-            .setNamePrefix("dfh-sleep");
-
-        longerExecutionPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-            .setNamePrefix("dfhffmpeg-test")
-            .setArguments(new String[] {
-                "-i", "/var/tmp/shortInsideContainer.mp4", "/var/tmp/shortInsideContainer.out.mp4", "-y", "-loglevel",
-                "debug" });
-    }
 
     @Test
     public void testOath() throws Exception
@@ -96,15 +56,18 @@ public class LiveKubernetesTest
             kubeConfig.setCaCertData(readFile("/depot/DFH/git/ffmpeg.ca.cert"));
         }
 
+        PodConfig podConfig = quickPod;
+        podConfig.setNamePrefix("kubeclient-testoath");
+
         HiLowCpuRequestModulator hiLowCpuRequestModulator = getHiLowCpuRequestModulator();
 
-        ExecutionConfig executionConfig = new ExecutionConfig();
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
         executionConfig.setCpuRequestModulator(hiLowCpuRequestModulator);
 
-        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig);
+        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
 
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(quickPod, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
         Assert.assertTrue(lastPhase.phase.equals(PodPhase.SUCCEEDED));
     }
@@ -123,12 +86,14 @@ public class LiveKubernetesTest
     public void testNewClient(PodConfig podConfig, int exitCode, String testName)
         throws Exception
     {
-        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig);
         podConfig.setReapCompletedPods(true);
         podConfig.setNamePrefix(testName.toLowerCase());
         podConfig.setEndOfLogIdentifier("Splitting the commandline.");
-        ExecutionConfig executionConfig = new ExecutionConfig();
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
         executionConfig.setCpuRequestModulator(getHiLowCpuRequestModulator());
+
+        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
+
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
         logLineObserver.addConsumer(new Consumer<String>()
         {
@@ -139,7 +104,7 @@ public class LiveKubernetesTest
             }
         });
 
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
         if (exitCode != 0)
         {
@@ -151,18 +116,6 @@ public class LiveKubernetesTest
             Assert.assertEquals(lastPhase.phase.getLabel(), PodPhase.SUCCEEDED.getLabel(), testName);
         }
     }
-
-//    public PodPushClient getPodPushClient()
-//    {
-//        PodClientImplFactory factory = new PodClientImplFactory();
-//
-//        HiLowCpuRequestModulator hiLowCpuRequestModulator = getHiLowCpuRequestModulator();
-//
-//        kubeConfig.setAliveCheckLinking(false);
-//        PodPushClient wrapperClient = factory.getClient(kubeConfig, 0, TimeUnit.MILLISECONDS, 1);
-//        wrapperClient.setCpuModulator(hiLowCpuRequestModulator);
-//        return wrapperClient;
-//    }
 
     @Test
     public void testErrorMidExecution() throws Exception
@@ -181,10 +134,10 @@ public class LiveKubernetesTest
         podConfig.getAliveCheckDetails().setAliveCheckInterval(1);
         ///////////////////////////////////////////////////////////////////
 
-        ExecutionConfig executionConfig = new ExecutionConfig();
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
         executionConfig.setCpuRequestModulator(hiLowCpuRequestModulator);
 
-        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig);
+        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
 
         // Uncomment for blow-by-blow info
@@ -197,7 +150,7 @@ public class LiveKubernetesTest
 //            }
 //        });
 
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
         Assert.assertTrue(lastPhase.phase.isFailed());
         Assert.assertEquals(255, lastPhase.exitCode);
@@ -208,24 +161,24 @@ public class LiveKubernetesTest
     {
         HiLowCpuRequestModulator hiLowCpuRequestModulator = getHiLowCpuRequestModulator();
 
-        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig);
-
         class FollowerRunner implements Runnable
         {
             @Override
             public void run()
             {
-                PodConfig podConfig = copyPodConfig(longerExecutionPod);
+                PodConfig podConfig = longerExecutionPod;
                 // set a reasonalby short wait time for the testing purposes
                 podConfig.setPodScheduledTimeoutMs(20000L);
-                ExecutionConfig executionConfig = new ExecutionConfig();
+                ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
                 executionConfig.setCpuRequestModulator(hiLowCpuRequestModulator);
+
+                PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig);
 
                 FinalPodPhaseInfo finalPhase = null;
                 try
                 {
                     LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
-                    finalPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+                    finalPhase = follower.startAndFollowPod(logLineObserver);
                 }
                 catch (Exception e)
                 {
@@ -263,10 +216,10 @@ public class LiveKubernetesTest
         // WAY TOO LARGE TO SCHEUDLE
         hiLowCpuRequestModulator.setMinimumCpuRequest("64000m");
 
-        ExecutionConfig executionConfig = new ExecutionConfig();
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
         executionConfig.setCpuRequestModulator(hiLowCpuRequestModulator);
 
-        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig);
+        PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig);
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
 
         // set a reasonalby short wait time for the testing purposes
@@ -274,7 +227,7 @@ public class LiveKubernetesTest
         
         try
         {
-            FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+            FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
             Assert.fail("Should have failed to schedule");
         }
         catch (Exception e)
@@ -295,14 +248,16 @@ public class LiveKubernetesTest
         throws Exception
     {
         KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
-        PodFollower follower = new PodFollowerImpl(kubeConfig);
 
         quickPod.setReapCompletedPods(false);
         ExecutionConfig executionConfig = new ExecutionConfig(quickPod.getNamePrefix())
             .setCpuRequestModulator(new HiLowCpuRequestModulator());
+
+        PodFollower follower = new PodFollowerImpl(kubeConfig, quickPod, executionConfig);
+
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
 
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(quickPod, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
         Pod pod = getPod(follower, lastPhase.name);
         Assert.assertNotNull(pod);
@@ -317,14 +272,15 @@ public class LiveKubernetesTest
     public void testAllStdoutMaters_on_success_noInfiniteLoop() throws Exception
     {
         KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
-        PodFollower follower = new PodFollowerImpl(kubeConfig);
 
         ExecutionConfig executionConfig = new ExecutionConfig(longerExecutionSucceedsPod.getNamePrefix())
             .setCpuRequestModulator(new HiLowCpuRequestModulator());
 
+        PodFollower follower = new PodFollowerImpl(kubeConfig, longerExecutionSucceedsPod, executionConfig);
+
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
         longerExecutionSucceedsPod.setEndOfLogIdentifier("NEVER_FIND_ME_STDOUT");
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(longerExecutionSucceedsPod, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
         // just being able to exit is enough, for awhile this test case was an infinite loop.
     }
 
@@ -332,7 +288,6 @@ public class LiveKubernetesTest
     public void testAllStdoutMaters_on_failure_noInfiniteLoop() throws Exception
     {
         KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
-        PodFollower follower = new PodFollowerImpl(kubeConfig);
 
         longerExecutionSucceedsPod.setImageName("bash")
             .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 1"})
@@ -340,12 +295,14 @@ public class LiveKubernetesTest
         ExecutionConfig executionConfig = new ExecutionConfig(longerExecutionSucceedsPod.getNamePrefix())
             .setCpuRequestModulator(new HiLowCpuRequestModulator());
 
+        PodFollower follower = new PodFollowerImpl(kubeConfig, longerExecutionSucceedsPod, executionConfig);
+
         LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
         longerExecutionSucceedsPod.setEndOfLogIdentifier("NEVER_FIND_ME_STDOUT");
-        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(longerExecutionSucceedsPod, executionConfig, logLineObserver);
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
         // just being able to exit is enough, for awhile this test case was an infinite loop.
     }
-
+    
     public static String readFile(String path)
     {
         String content = null;
@@ -358,13 +315,6 @@ public class LiveKubernetesTest
             throw new RuntimeException(e);
         }
         return content;
-    }
-
-    public PodConfig copyPodConfig(PodConfig template)
-    {
-        return new PodConfig().setArguments(template.getArguments())
-            .setImageName(template.getImageName())
-            .setNamePrefix(template.getNamePrefix());
     }
 
     public Pod getPod(PodFollower follower, String podName)
