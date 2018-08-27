@@ -41,8 +41,6 @@ public class KubernetesTest extends SampleHandlerTestBase
         resultMap.put("filename", "coolest_dog.mp4");
         sampleInput.setResultPayload(resultMap);
 
-        PodFollower<PodPushClient> follower = new PodFollowerImpl<PodPushClient>(kubeConfig);
-
         String payload = jsonHelper.getJSONString(sampleInput);
         logger.info("Payload: {}", payload);
 
@@ -71,6 +69,9 @@ public class KubernetesTest extends SampleHandlerTestBase
         });
 
         podConfig.setPullAlways(true);
+
+        PodFollower<PodPushClient> follower = new PodFollowerImpl<PodPushClient>(kubeConfig, podConfig, executionConfig);
+
         logger.debug("Executing mediaInfo w/details {}", executionConfig);
         String podName = executionConfig.getName();
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
@@ -91,7 +92,7 @@ public class KubernetesTest extends SampleHandlerTestBase
         {
             logger.info("Starting the pod with name {}", podName);
 
-            lastPodPhase = follower.startAndFollowPod(podConfig, executionConfig, logLineObserver);
+            lastPodPhase = follower.startAndFollowPod(logLineObserver);
 
             logger.info("Sample completed with pod status {}", lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
