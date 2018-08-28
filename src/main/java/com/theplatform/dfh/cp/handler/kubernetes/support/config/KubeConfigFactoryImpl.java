@@ -21,8 +21,8 @@ public class KubeConfigFactoryImpl implements KubeConfigFactory
         FieldRetriever propertiesRetriever = launchDataWrapper.getPropertyRetriever();
 
         KubeConfig kubeConfig = new KubeConfig();
-        kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.MASTER_URL));
-        kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.NAMESPACE));
+        kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.masterUrl.getFieldName()));
+        kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.namespace.getFieldName()));
 
         if(loadAuthFromEnvironment)
         {

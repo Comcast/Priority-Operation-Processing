@@ -1,13 +1,15 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
-public enum KubeConfigField
+public enum NfsDetailsField
 {
-    masterUrl("cp.kubernetes.masterUrl"),
-    namespace("cp.kubernetes.namespace");
+    nfsServerPath("serverPath"),
+    nfsReadOnly("readOnly"),
+    nfsMountPaths("mountPaths"),
+    nfsServer("server");
 
     private final String fieldName;
 
-    KubeConfigField(String fieldName)
+    NfsDetailsField(String fieldName)
     {
         this.fieldName = fieldName;
     }
