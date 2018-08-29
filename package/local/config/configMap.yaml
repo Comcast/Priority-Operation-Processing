@@ -1,0 +1,22 @@
+# for use with minikube ONLY, lab has the configmap in github
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lab-main-t-aor-fhsamp-t01
+  namespace: dfh
+  labels:
+   environmentShortName: lab
+   serviceShortName: fhsamp
+   regionShortName: main
+   partitionShortName: t
+   clusterSuffix: t01
+   clusterTitle: lab-main-t-aor-fhsamp-t01
+  annotations:
+   cts/k8cluster: minikube
+data:
+  env-properties: |
+    JAVA_HEAP=256M
+    LOG_LEVEL=DEBUG
+    JAVA_EXTRA=-XX:MaxMetaspaceSize=256m
+  external-properties: |
+    dfh.kubernetes.kubernetesMasterUrl=https://192.168.99.100:8443
