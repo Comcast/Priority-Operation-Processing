@@ -14,7 +14,7 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
     private final List<String> logs = Collections.synchronizedList(new LinkedList<String>());
     private Runnable onCompletion;
     private String completionIdentifier;
-    private boolean loggingComplete = true;
+    private boolean loggingComplete = false;
 
     public void appendLine(String s)
     {
