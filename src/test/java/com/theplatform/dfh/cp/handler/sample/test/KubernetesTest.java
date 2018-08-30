@@ -55,8 +55,6 @@ public class KubernetesTest extends SampleHandlerTestBase
             }
         });
 
-        podConfig.setPullAlways(true);
-
         PodFollower<PodPushClient> follower = new PodFollowerImpl<PodPushClient>(kubeConfig, podConfig, executionConfig);
 
         logger.debug("Executing mediaInfo w/details {}", executionConfig);
