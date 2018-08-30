@@ -1,4 +1,6 @@
 # for use with minikube ONLY, lab has the configmap in github
+# we intentionally do NOT configure the kube master url
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,4 +21,3 @@ data:
     LOG_LEVEL=DEBUG
     JAVA_EXTRA=-XX:MaxMetaspaceSize=256m
   external-properties: |
-    dfh.kubernetes.kubernetesMasterUrl=https://192.168.99.100:8443

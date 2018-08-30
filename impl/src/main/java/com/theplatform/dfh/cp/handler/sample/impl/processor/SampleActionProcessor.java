@@ -62,7 +62,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
 
         // the result is always the payload indicated on the input
         reporter.reportSuccess(handlerInput.getResultPayload());
-        logger.info("SampleComplete");
         return null;
     }
 
