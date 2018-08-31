@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.modules.jsonhelper;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,16 @@ public class JsonHelper
         {
             throw new JsonHelperException(String.format("Failed to map ref %1$s to object %2$s.", ref, clazz.getSimpleName()), e);
         }
+    }
+
+    /**
+     * Creates a map from the specified object
+     * @return The object
+     */
+    public Map<String, Object> getMapFromObject(Object object)
+    {
+        return objectMapper.convertValue(object, new TypeReference<Map<String, Object>>() {});
+
     }
 
     /**

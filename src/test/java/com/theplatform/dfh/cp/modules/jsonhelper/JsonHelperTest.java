@@ -26,6 +26,16 @@ public class JsonHelperTest
     }
 
     @Test
+    public void testGetMapFromObject()
+    {
+        SampleObject sampleObject = new SampleObject().setId(OBJ_ID).setSubObject(new SampleObject().setId(SUB_ID));
+        Map<String, Object> objectMap = jsonHelper.getMapFromObject(sampleObject);
+        Assert.assertEquals(objectMap.get("id"), OBJ_ID);
+        Map<String, Object> subObjectMap = (Map<String, Object>) objectMap.get("subObject");
+        Assert.assertEquals(subObjectMap.get("id"), SUB_ID);
+    }
+
+    @Test
     public void testGetObjectFromMap()
     {
         Map<String, Object> objectMap = new HashMap<>();
