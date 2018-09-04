@@ -1,12 +1,13 @@
 package com.theplatform.dfh.cp.handler.sample.test;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.params.VideoStreamParams;
+import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParamKeys;
 import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
 import com.theplatform.dfh.cp.handler.sample.api.SampleActions;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
@@ -15,14 +16,17 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerIm
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class KubernetesTest extends SampleHandlerTestBase
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesTest.class);
+    private final String EXPECTED_ID = "theId";
 
     @Test
     public void runBasicTest()
@@ -34,10 +38,12 @@ public class KubernetesTest extends SampleHandlerTestBase
         sampleAction.setParamsMap(paramsMap);
         SampleInput sampleInput = new SampleInput();
         sampleInput.setActions(Collections.singletonList(sampleAction));
-        ParamsMap resultMap = new ParamsMap();
-        resultMap.put("bitrate", 500);
-        resultMap.put("filename", "coolest_dog.mp4");
-        sampleInput.setResultPayload(resultMap);
+        // just an example object to pass through
+        VideoStreamParams videoStreamParams = new VideoStreamParams();
+        videoStreamParams.setId(EXPECTED_ID);
+        ParamsMap resultParamsMap = new ParamsMap();
+        jsonHelper.getMapFromObject(videoStreamParams).forEach(resultParamsMap::put);
+        sampleInput.setResultPayload(resultParamsMap);
 
         String payload = jsonHelper.getJSONString(sampleInput);
         logger.info("Payload: {}", payload);
@@ -100,6 +106,12 @@ public class KubernetesTest extends SampleHandlerTestBase
             logger.error("Exception caught {}", allStringMetadata, e);
             throw new RuntimeException(allStringMetadata, e);
         }
+
+        Map<String, String> podAnnotations = follower.getPodAnnotations();
+        String successPayload = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
+        Assert.assertNotNull(successPayload, "Success payload was not populated by the handler!");
+        VideoStreamParams resultVideoStreamParams = jsonHelper.getObjectFromString(successPayload, VideoStreamParams.class);
+        Assert.assertEquals(resultVideoStreamParams.getId(), EXPECTED_ID);
         logger.info("Done");
     }
 }
