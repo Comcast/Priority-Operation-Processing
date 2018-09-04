@@ -36,7 +36,6 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class persistenceObjectClazz;
     private ObjectPersisterFactory<T> objectPersisterFactory;
-    private JsonNode rootRequestNode;
 
     // TODO: wrapper class for all the json parsing
 
@@ -51,7 +50,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected  abstract BaseRequestProcessor<T> getRequestProcessor(ObjectPersister<T> objectPersister);
+    protected  abstract BaseRequestProcessor<T> getRequestProcessor(JsonNode rootRequestNode, ObjectPersister<T> objectPersister);
     
     /**
      * Gets the path parameter name based on the url -- https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
@@ -66,7 +65,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
     {
         ServiceBuildPropertiesContainer.logServiceBuildString(logger);
         // this is immediately made available for subclasses
-        rootRequestNode = objectMapper.readTree(inputStream);
+        JsonNode rootRequestNode = objectMapper.readTree(inputStream);
 
         logObject("request: ", rootRequestNode);
 
@@ -78,7 +77,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
 
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister();
 
-        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(objectPersister);
+        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(rootRequestNode, objectPersister);
         Object responseObject = null;
         int httpStatusCode = 200;
         switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
@@ -108,7 +107,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         writer.close();
     }
 
-    public String getRequestEntry(String jsonPtrExpr, String defaultValue)
+    public String getRequestEntry(JsonNode rootRequestNode, String jsonPtrExpr, String defaultValue)
     {
         JsonNode node = rootRequestNode.at(jsonPtrExpr);
         if(node.isMissingNode()) return null;
