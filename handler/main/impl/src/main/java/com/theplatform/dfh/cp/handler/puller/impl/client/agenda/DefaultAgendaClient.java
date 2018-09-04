@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public class DefaultAgendaClient implements AgendaClient
 {
-    private String payloadFileName = "/EncodeAgenda.json";
+    private String payloadFileName = "/NoopAgenda.json";
 
     private String work;
 

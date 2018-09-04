@@ -29,9 +29,43 @@
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
         <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
         <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
+        <dropwizard.version>1.3.5</dropwizard.version>
+        <fasterxml.jackson.core.version>2.9.0</fasterxml.jackson.core.version>
+        <fasterxml.jackson.core.databind.version>2.9.5</fasterxml.jackson.core.databind.version>
     </properties>
     
     <dependencies>
+
+        <!-- jackson has to be first in maven order to suppress API's older version-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${fasterxml.jackson.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${fasterxml.jackson.core.databind.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-api</artifactId>
@@ -41,11 +75,23 @@
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-dfh-docker</artifactId>
             <version>${dfh-docker.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-puller-api</artifactId>
             <version>${puller-handler-api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -61,6 +107,12 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-logger</artifactId>
             <version>${logger-reporter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -71,6 +123,12 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -81,6 +139,12 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
             <version>${podconfig-registry-client-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>${dropwizard.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -111,6 +175,12 @@
             <artifactId>pl-dfh-filemanager-client</artifactId>
             <version>2.0.0-SNAPSHOT</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.test.modules</groupId>

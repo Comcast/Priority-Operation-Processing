@@ -1,0 +1,7 @@
+logging:
+  level: DEBUG
+  loggers:
+    org.eclipse.jetty: WARN
+    io.dropwizard: WARN
+    org.apache.http: WARN
+    io.fabric8.kubernetes.client.Config: WARN

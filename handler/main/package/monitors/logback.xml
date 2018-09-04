@@ -25,9 +25,12 @@
     <logger name="com.theplatform.web.marshalling" level="ERROR" />
     <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
 
-    <root level="${LogLevel:-DEBUG}">
+    <root level="${LogLevel:-INFO}">
         <appender-ref ref="STDOUT" />
         <!--<appender-ref ref="sampleHandlerServiceLog" />-->
     </root>
+
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <logger name="org.hibernate.validator" level="info" /> <!-- Validator prints a lot of debug messages during integration tests -->
 
 </configuration>

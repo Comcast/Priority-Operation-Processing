@@ -97,58 +97,58 @@ public class KubernetesLauncher implements BaseLauncher
 
         // Use this code to run in the mode that we will use in production.
         // don't follow the pod run, just kick it off and let it be.
-        podConfig.setReapCompletedPods(true);
-        podPushClient.startWithoutWatcher(podConfig, executionConfig);
+//        podConfig.setReapCompletedPods(true);
+//        podPushClient.startWithoutWatcher(podConfig, executionConfig);
 
 
         // Use this code to actually follow the pod
-//        podConfig.setReapCompletedPods(false);
-//        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
-//
-//        logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
-//        StringBuilder allStdout = new StringBuilder();
-//        logLineObserver.addConsumer(new Consumer<String>()
-//        {
-//            @Override
-//            public void accept(String s)
-//            {
-//                logger.info("STDOUT: {}", s);
-//            }
-//        });
-//        FinalPodPhaseInfo lastPodPhase = null;
-//        try
-//        {
-//            logger.info("Starting the pod with name {}", executionConfig.getName());
-//
-//            lastPodPhase = follower.startAndFollowPod(logLineObserver);
-//
-//            logger.info("Executor completed with pod status {}", lastPodPhase.phase.getLabel());
-//            if (lastPodPhase.phase.hasFinished())
-//            {
-//                if (lastPodPhase.phase.isFailed())
-//                {
-//                    logger.error("Executor failed to produce metadata, output was : {}", allStdout);
-//                    throw new RuntimeException(allStdout.toString());
-//                }
-//            }
-//
-//            if (logger.isDebugEnabled())
-//            {
-//                logger.debug("Executor produced: {}", allStdout.toString());
-//            }
-//        }
-//        catch (Exception e)
-//        {
-//            String allStringMetadata = allStdout.toString();
-//            logger.error("Exception caught {}", allStringMetadata, e);
-//            throw new RuntimeException(allStringMetadata, e);
-//        }
-//        logger.info("Done with execution of pod: {}", executionConfig.getName());
-//
-//        Map<String,String> podAnnotations = new PodAnnotationClient(new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)), executionConfig.getName())
-//            .getPodAnnotations();
-//        String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
-//
-//        follower.getPodPushClient().deletePod(executionConfig.getName());
+        podConfig.setReapCompletedPods(false);
+        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
+
+        logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
+        StringBuilder allStdout = new StringBuilder();
+        logLineObserver.addConsumer(new Consumer<String>()
+        {
+            @Override
+            public void accept(String s)
+            {
+                logger.info("STDOUT: {}", s);
+            }
+        });
+        FinalPodPhaseInfo lastPodPhase = null;
+        try
+        {
+            logger.info("Starting the pod with name {}", executionConfig.getName());
+
+            lastPodPhase = follower.startAndFollowPod(logLineObserver);
+
+            logger.info("Executor completed with pod status {}", lastPodPhase.phase.getLabel());
+            if (lastPodPhase.phase.hasFinished())
+            {
+                if (lastPodPhase.phase.isFailed())
+                {
+                    logger.error("Executor failed to produce metadata, output was : {}", allStdout);
+                    throw new RuntimeException(allStdout.toString());
+                }
+            }
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Executor produced: {}", allStdout.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            String allStringMetadata = allStdout.toString();
+            logger.error("Exception caught {}", allStringMetadata, e);
+            throw new RuntimeException(allStringMetadata, e);
+        }
+        logger.info("Done with execution of pod: {}", executionConfig.getName());
+
+        Map<String,String> podAnnotations = new PodAnnotationClient(new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)), executionConfig.getName())
+            .getPodAnnotations();
+        String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
+
+        follower.getPodPushClient().deletePod(executionConfig.getName());
     }
 }

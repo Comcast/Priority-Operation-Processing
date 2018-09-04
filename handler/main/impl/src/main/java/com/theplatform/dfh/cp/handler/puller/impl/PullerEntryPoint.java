@@ -23,25 +23,6 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         agendaClient = new DefaultAgendaClientFactory().getClient();
     }
 
-    /**
-     * Debugging/running with a local-only build use these args:
-     * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties
-     *
-     * Debugging running local with minikube for pod launches
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties
-     *
-     * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties
-     *
-     * @param args command line args
-     */
-    public static void main(String[] args)
-    {
-        logger.info(String.join("\n", args));
-        new PullerEntryPoint(args).execute();
-
-    }
-
     @Override
     protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
