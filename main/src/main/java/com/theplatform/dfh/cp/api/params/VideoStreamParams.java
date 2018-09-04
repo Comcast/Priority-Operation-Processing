@@ -17,7 +17,7 @@ public class VideoStreamParams
     private Double framerate;
     private Integer gopSize;
     private Integer height;
-    private Integer id;
+    private String id;
     private String level;
     private String profile;
     private String scanOrder;
@@ -145,12 +145,12 @@ public class VideoStreamParams
         this.height = height;
     }
 
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }

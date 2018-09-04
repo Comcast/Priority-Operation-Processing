@@ -10,7 +10,7 @@ public class AudioStreamParams
     private String codec;
     private Long duration;
     private String format;
-    private Integer id;
+    private String id;
     private String language;
     private String profile;
     private Integer samplingRate;
@@ -67,12 +67,12 @@ public class AudioStreamParams
         this.format = format;
     }
 
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }
