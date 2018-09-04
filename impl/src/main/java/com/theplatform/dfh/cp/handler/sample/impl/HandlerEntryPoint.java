@@ -7,9 +7,13 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContextFactory;
 import com.theplatform.dfh.cp.handler.sample.impl.processor.SampleActionProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, SampleActionProcessor>
 {
+    private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
+
     public HandlerEntryPoint(String[] args)
     {
         super(args);
@@ -27,8 +31,8 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, S
         // just for convenience...
         // if(args != null) System.out.println(String.format("ARGS: %1$s", String.join(",", args)));
         //System.out.println(System.getProperty("user.dir"));
-
         new HandlerEntryPoint(args).execute();
+        logger.info("SampleComplete");
     }
 
     @Override
