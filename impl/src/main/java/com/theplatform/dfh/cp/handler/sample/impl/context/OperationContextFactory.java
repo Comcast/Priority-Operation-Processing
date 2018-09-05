@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl.context;
 
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
+import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 
 /**
  * Factory that creates a context object for this operation.
@@ -16,6 +17,12 @@ public class OperationContextFactory extends KubernetesOperationContextFactory<O
     @Override
     public OperationContext createOperationContext()
     {
-        return new OperationContext(createKubernetesReporter(), launchDataWrapper);
+        switch(getLaunchType())
+        {
+            case local:
+                return new OperationContext(new LogReporter(), launchDataWrapper);
+            default:
+                return new OperationContext(createKubernetesReporter(), launchDataWrapper);
+        }
     }
 }
