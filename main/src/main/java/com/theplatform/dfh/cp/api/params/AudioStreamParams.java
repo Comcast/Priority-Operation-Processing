@@ -16,6 +16,7 @@ public class AudioStreamParams
     private Integer samplingRate;
     private Integer sampleSize;
     private Long streamSize;
+    private String title;
 
     public Integer getBitrate()
     {
@@ -125,5 +126,15 @@ public class AudioStreamParams
     public void setStreamSize(Long streamSize)
     {
         this.streamSize = streamSize;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 }

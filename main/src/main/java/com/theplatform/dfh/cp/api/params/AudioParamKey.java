@@ -14,6 +14,7 @@ public enum AudioParamKey implements ParamKey
     samplingRate,
     sampleSize,
     streamSize,
+    title
     ;
 
     public String getKey()
