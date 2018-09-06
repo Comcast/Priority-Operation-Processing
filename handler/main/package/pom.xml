@@ -62,7 +62,7 @@
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
                     <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
-                    <appMainClass>PullerApp.class</appMainClass>
+                    <appMainClass>PullerEntryPoint.class</appMainClass>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>
