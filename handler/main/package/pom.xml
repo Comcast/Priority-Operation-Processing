@@ -16,6 +16,12 @@
     <packaging>pom</packaging>
     <name>Executor Handler Package</name>
 
+    <properties>
+        <!-- You can override these in an environment variable! -->
+        <env.DOCKER_PROD>docker-lab.repo.theplatform.com</env.DOCKER_PROD>
+        <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -76,6 +82,28 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>dockerLabDefault</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!env.DOCKER_LAB</name>
+                </property>
+            </activation>
+        </profile>
+        <profile>
+            <id>dockerProdDefault</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!env.DOCKER_PROD</name>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
 </project>
 
 
