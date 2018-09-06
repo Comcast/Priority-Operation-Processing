@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations.ResidentOperationsRegistry;
 
 public abstract class OperationExecutorFactory
 {
