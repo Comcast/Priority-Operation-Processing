@@ -22,6 +22,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     public PullerEntryPoint(String[] args)
     {
         super(args);
+        //logger.info(String.join("\n", args));
         agendaClient = new DefaultAgendaClientFactory().getClient();
     }
 

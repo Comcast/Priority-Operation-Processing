@@ -33,7 +33,7 @@ public class PullerApp extends Application<PullerConfig>
 
     /**
      * Debugging/running with a local-only build use these args:
-     * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties
+     * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -confPath ./handler/main/package/local/config/conf.yaml
      *
      * Debugging running local with minikube for pod launches
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties
