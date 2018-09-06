@@ -11,9 +11,9 @@ import java.util.Map;
 /**
  * Registry of ResidentHandlers (could use some plugin function if that seems like a necessity...)
  */
-public class ResidentOperationsRegistry
+public class ResidentOperationRegistry
 {
-    private static Logger logger = LoggerFactory.getLogger(ResidentOperationsRegistry.class);
+    private static Logger logger = LoggerFactory.getLogger(ResidentOperationRegistry.class);
 
     private static Map<String, Class<? extends ResidentHandler>> residentHandlerMap = new HashMap<>();
 
