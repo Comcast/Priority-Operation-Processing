@@ -1,0 +1,41 @@
+package com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations;
+
+import com.theplatform.dfh.cp.handler.base.ResidentHandler;
+import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Registry of ResidentHandlers (could use some plugin function if that seems like a necessity...)
+ */
+public class ResidentOperationsRegistry
+{
+    private static Logger logger = LoggerFactory.getLogger(ResidentOperationsRegistry.class);
+
+    private static Map<String, Class<? extends ResidentHandler>> residentHandlerMap = new HashMap<>();
+
+    static
+    {
+        residentHandlerMap.put("residentSample", SampleResidentHandler.class);
+    }
+
+    public ResidentHandler getHandler(String type)
+    {
+        Class<? extends ResidentHandler> residentHandlerClass = residentHandlerMap.get(type);
+        if(residentHandlerClass != null)
+        {
+            try
+            {
+                return residentHandlerClass.newInstance();
+            }
+            catch(InstantiationException | IllegalAccessException e)
+            {
+                logger.error("Failed to instantiate ResidentHandler: {}", residentHandlerClass.getSimpleName());
+            }
+        }
+        return null;
+    }
+}

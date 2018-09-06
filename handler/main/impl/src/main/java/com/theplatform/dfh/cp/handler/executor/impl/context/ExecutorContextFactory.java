@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 
@@ -36,6 +37,8 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
                     .setKubeConfigFactory(getKubeConfigFactory());
                 break;
         }
+
+        operationExecutorFactory.setResidentOperationExecutorFactory(new ResidentOperationExecutorFactory());
 
         return new ExecutorContext(createReporter(), launchDataWrapper, operationExecutorFactory);
     }

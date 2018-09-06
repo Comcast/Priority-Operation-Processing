@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
  * Factory for producing executors to get MediaProperties (via a mediainfo launch through a docker container).
  * This may only apply to functional tests.
  */
-public class LocalOperationExecutorFactory implements OperationExecutorFactory
+public class LocalOperationExecutorFactory extends OperationExecutorFactory
 {
     @Override
     public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)

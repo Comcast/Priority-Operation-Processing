@@ -1,13 +1,15 @@
-package com.theplatform.dfh.cp.handler.executor.impl.podconfig.registry;
+package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Hard coded PodConfigs until we have a real registry
+ */
 public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 {
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();

@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
-import com.theplatform.dfh.cp.handler.executor.impl.podconfig.registry.StaticPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory for producing executors to get MediaProperties (via a mediainfo launch through kubernetes)
  */
-public class KubernetesOperationExecutorFactory implements OperationExecutorFactory
+public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutorFactory.class);
     private PodConfigRegistryClient podConfigRegistryClient;
