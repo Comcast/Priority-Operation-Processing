@@ -1,8 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl;
 
+import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
-import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
+import com.theplatform.dfh.cp.handler.puller.impl.retriever.PullerArgumentProvider;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.slf4j.Logger;
@@ -45,8 +46,9 @@ public class PullerApp extends Application<PullerConfig>
     public static void main( String[] args ) throws Exception
     {
         PullerEntryPoint pullerEntryPoint = new PullerEntryPoint(args);
-        String[] args2 = new String[] {"server", "./handler/main/package/local/config/conf.yaml"};
+        FieldRetriever argumentRetriever = pullerEntryPoint.getLaunchDataWrapper().getArgumentRetriever();
+        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, "/app/config/conf.yaml");
+        String[] args2 = new String[] {"server", confPath};
         new PullerApp(pullerEntryPoint).run(args2);
-        // todo can't pass new pullerConfig.  need to get stuff from the conf.yaml
     }
 }

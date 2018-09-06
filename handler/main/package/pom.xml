@@ -56,7 +56,7 @@
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
                     <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
-                    <appMainClass>Must.Be.Here.Due.To.Plugin</appMainClass>
+                    <appMainClass>PullerApp.class</appMainClass>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>
