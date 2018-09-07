@@ -5,10 +5,10 @@ DIR=$(dirname $0)
 
 IMAGE=fhexec:1.0.0
 #IMAGE=$'docker-lab.repo.theplatform.com/feh:1.0.1'
-ARGS="-externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json"
+ARGS="-launchType local -externalLaunchType local -propFile /local/config/external.properties -payloadFile /local/payload.json"
 
 docker run --env-file env.list -it      \
-           -v ${DIR}/local/config:/config \
+           -v ${DIR}/local:/local \
            -v ${DIR}/logs:/app/dumps    \
            ${IMAGE}                     \
-           -- ${ARGS}
+           ${ARGS}
