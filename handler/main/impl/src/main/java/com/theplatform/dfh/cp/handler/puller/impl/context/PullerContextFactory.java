@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.context;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.exception.PullerException;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncherFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.executor.local.LocalOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.executor.local.LocalOperationLauncherFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 
@@ -27,7 +27,7 @@ public class PullerContextFactory extends KubernetesOperationContextFactory<Pull
         switch (getExternalLaunchType())
         {
             case local:
-                launcherFactory = new LocalOperationExecutorFactory();
+                launcherFactory = new LocalOperationLauncherFactory();
                 break;
             case docker:
                 throw new PullerException("Docker is not supported for agenda execution.");
