@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Local puller is just for testing/prototype. It does not perform any actual operations.
  */
-public class LocalOperationExecutor implements BaseLauncher
+public class LocalOperationLauncher implements BaseLauncher
 {
-    private static final Logger logger = LoggerFactory.getLogger(LocalOperationExecutor.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalOperationLauncher.class);
     private ObjectMapper objectMapper = new ObjectMapper();
     private JsonHelper jsonHelper;
     private static final String OUTPUT_OVERRIDE_PTR = "/resultPayload";
 
-    public LocalOperationExecutor()
+    public LocalOperationLauncher()
     {
         jsonHelper = new JsonHelper();
     }

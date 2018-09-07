@@ -5,14 +5,14 @@ import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 
 /**
- * Factory for producing executors to get MediaProperties (via a mediainfo launch through a docker container).
+ * Factory for producing launchers.
  * This may only apply to functional tests.
  */
-public class LocalOperationExecutorFactory implements LauncherFactory
+public class LocalOperationLauncherFactory implements LauncherFactory
 {
     @Override
     public BaseLauncher createLauncher(PullerContext handlerContext)
     {
-        return new LocalOperationExecutor();
+        return new LocalOperationLauncher();
     }
 }
