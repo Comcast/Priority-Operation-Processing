@@ -21,9 +21,10 @@ public class PullerExecution
             {
                 try
                 {
-                    logger.info("Executing Puller");
-                    pullerEntryPoint.execute();
-                    Thread.sleep(20 * 1000);
+//                    logger.info("Executing Puller");
+//                    pullerEntryPoint.execute();
+                    logger.info("Puller is looping...");
+                    Thread.sleep(300 * 1000);
                 }
                 catch (InterruptedException e)
                 {
