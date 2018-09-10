@@ -61,7 +61,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     {
         PullerEntryPoint pullerEntryPoint = new PullerEntryPoint(args);
         FieldRetriever argumentRetriever = pullerEntryPoint.getLaunchDataWrapper().getArgumentRetriever();
-        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, "/app/config/conf.yaml");
+        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, "/config/conf.yaml");
         String[] args2 = new String[] {"server", confPath};
         new PullerApp(pullerEntryPoint).run(args2);
     }
