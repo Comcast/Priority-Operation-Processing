@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 
+/**
+ * Provides a simple wrapper for a json string so the object can be unmarshaled and references can be looked up
+ */
 public class JsonContainer
 {
     private JsonHelper jsonHelper;
