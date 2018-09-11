@@ -50,62 +50,52 @@ public abstract class AbstractTransform
         params.put("externalId", externalId);
     }
 
-    @JsonProperty
     public List<InputFileResource> getInputs()
     {
         return inputs;
     }
 
-    @JsonProperty
     public void setInputs(List<InputFileResource> inputs)
     {
         this.inputs = inputs;
         fileReferencesByType = new FileResourceByTypeMap(inputs);
     }
 
-    @JsonProperty
     public InputStreams getInputStreams()
     {
         return inputStreams;
     }
 
-    @JsonProperty
     public void setInputStreams(InputStreams inputStreams)
     {
         this.inputStreams = inputStreams;
     }
 
-    @JsonProperty
     public OutputStreams getOutputStreams()
     {
         return outputStreams;
     }
 
-    @JsonProperty
     public void setOutputStreams(OutputStreams outputStreams)
     {
         this.outputStreams = outputStreams;
     }
 
-    @JsonProperty
     public List<OutputFileResource> getOutputs()
     {
         return outputs;
     }
 
-    @JsonProperty
     public void setOutputs(List<OutputFileResource> outputs)
     {
         this.outputs = outputs;
     }
 
-    @JsonProperty
     public ParamsMap getParams()
     {
         return params;
     }
 
-    @JsonProperty
     public void setParams(ParamsMap params)
     {
         this.params = params;

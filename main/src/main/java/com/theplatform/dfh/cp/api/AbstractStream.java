@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 public abstract class AbstractStream
@@ -8,12 +9,13 @@ public abstract class AbstractStream
     private String type;
     private ParamsMap params = new ParamsMap();
 
-
+    @JsonIgnore
     public String getReference()
     {
         return reference;
     }
 
+    @JsonIgnore
     public void setReference(String reference)
     {
         this.reference = reference;
