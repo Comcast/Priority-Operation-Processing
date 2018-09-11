@@ -17,11 +17,11 @@ import java.util.Map;
  */
 public class JsonHelper
 {
-    private static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final ObjectMapper objectMapper;
 
     public JsonHelper()
     {
-
+        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**
@@ -148,5 +148,14 @@ public class JsonHelper
             .put(
                 jsonPtrExpr.substring(jsonPtrExpr.lastIndexOf('/') + 1),
                 value);
+    }
+
+    /**
+     * Get the object mapper associated with the JsonHelper
+     * @return The ObjectMapper
+     */
+    public ObjectMapper getObjectMapper()
+    {
+        return objectMapper;
     }
 }
