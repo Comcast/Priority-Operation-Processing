@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 /**
  * Utility for traversing a Json structure and replacing references
  *
- * This uses recursion due to the need for the name of a node (which is not available once on the node for things like array entries)
- * TODO: consider non-recursive...
  */
 public class JsonReferenceReplacer
 {
@@ -81,72 +79,85 @@ public class JsonReferenceReplacer
     {
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         StringSubstitutor strSubstitutor = new StringSubstitutor(referenceMap);
-        // Note: there is no parent to start with. (this should traverse)
-        traverseNodeForTokenReplacement(rootNode, "/", null, referenceMap, strSubstitutor, referenceReplacementResult);
+        traverseNodeForTokenReplacement(rootNode, referenceMap, strSubstitutor, referenceReplacementResult);
         referenceReplacementResult.setResult(rootNode.toString());
         return referenceReplacementResult;
     }
 
 
     /**
-     * Recursive evaluation of the specified node for token replacement or traversal based on type.
-     * @param node The node to evaluate
-     * @param nodeId The field name of the node
-     * @param parentNode The parent of the node
+     * Processes the specified node (and all child nodes for replacement). This is a non-recursive implementation
+     * @param inputNode The node to evaluate
      * @param parameterMap The map of parameters for replacement (used for whole object replacement)
      * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      */
-    private void traverseNodeForTokenReplacement(JsonNode node, String nodeId, JsonNode parentNode,
-        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report)
+    private void traverseNodeForTokenReplacement(JsonNode inputNode, Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor,
+        ReferenceReplacementResult report)
     {
-        if(node.isArray())
+        // instead of recursion use a stack that is added to
+        Stack<JsonNodeWrapper> nodeEvaluationStack = new Stack<>();
+        nodeEvaluationStack.push(new JsonNodeWrapper(inputNode, null, null));
+
+        while(!nodeEvaluationStack.empty())
         {
-            ArrayNode arrayNode = (ArrayNode)node;
-            List<JsonNode> nodes = new ArrayList<>();
-            for (final JsonNode objNode : node)
+            JsonNodeWrapper jsonNodeWrapper = nodeEvaluationStack.pop();
+            JsonNode node = jsonNodeWrapper.getNode();
+            JsonNode parentNode = jsonNodeWrapper.getParent();
+            String nodeId = jsonNodeWrapper.getNodeId();
+
+            // evaluate the node (adding any child nodes to the stack for evaluation)
+            if (node.isArray())
             {
-                nodes.add(objNode);
-            }
-            // have to avoid using an iterator because the array itself may be modified (index will always be replaced)
-            for(int idx = 0; idx < nodes.size(); idx++)
-            {
-                JsonNode objNode = nodes.get(idx);
-                if(objNode.isTextual())
+                ArrayNode arrayNode = (ArrayNode) node;
+                List<JsonNode> nodes = new ArrayList<>();
+                for (final JsonNode objNode : node)
                 {
-                    performTokenReplacement(
-                        objNode,
-                        nodeId,
-                        parentNode,
-                        arrayNodeReplacer.configureArrayIndex(arrayNode, idx),
-                        parameterMap,
-                        strSubstitutor,
-                        report);
+                    nodes.add(objNode);
                 }
-                // this else section is completely unsafe and likely to cause bugs (no type check and the null nodeId!)
-                else
+                // have to avoid using an iterator because the array itself may be modified (index will always be replaced)
+                for (int idx = 0; idx < nodes.size(); idx++)
                 {
-                    traverseNodeForTokenReplacement(objNode, null, node, parameterMap, strSubstitutor, report);
+                    JsonNode objNode = nodes.get(idx);
+                    if (objNode.isTextual())
+                    {
+                        performTokenReplacement(
+                            objNode,
+                            nodeId,
+                            parentNode,
+                            arrayNodeReplacer.configureArrayIndex(arrayNode, idx),
+                            parameterMap,
+                            strSubstitutor,
+                            report,
+                            nodeEvaluationStack);
+                    }
+                    // this else section is completely unsafe and likely to cause bugs (no type check and the null nodeId!)
+                    else
+                    {
+                        // no replacement will take place on this object reference (but possibly its children) because it is not text
+                        nodeEvaluationStack.push(new JsonNodeWrapper(objNode, null, null));
+                    }
                 }
             }
-        }
-        else if(node.isTextual())
-        {
-            performTokenReplacement(
-                node,
-                nodeId,
-                parentNode,
-                objectNodeReplacer.configureField(parentNode, nodeId),
-                parameterMap,
-                strSubstitutor,
-                report);
-        }
-        else if(node.isObject())
-        {
-            Iterator<Map.Entry<String, JsonNode>> fieldIterator = node.fields();
-            while(fieldIterator.hasNext())
+            else if (node.isTextual())
             {
-                Map.Entry<String,JsonNode> entry = fieldIterator.next();
-                traverseNodeForTokenReplacement(entry.getValue(), entry.getKey(), node, parameterMap, strSubstitutor, report);
+                performTokenReplacement(
+                    node,
+                    nodeId,
+                    parentNode,
+                    objectNodeReplacer.configureField(parentNode, nodeId),
+                    parameterMap,
+                    strSubstitutor,
+                    report,
+                    nodeEvaluationStack);
+            }
+            else if (node.isObject())
+            {
+                Iterator<Map.Entry<String, JsonNode>> fieldIterator = node.fields();
+                while (fieldIterator.hasNext())
+                {
+                    Map.Entry<String, JsonNode> entry = fieldIterator.next();
+                    nodeEvaluationStack.push(new JsonNodeWrapper(entry.getValue(), entry.getKey(), node));
+                }
             }
         }
     }
@@ -157,9 +168,11 @@ public class JsonReferenceReplacer
      * @param jsonNodeReplacer The replacer to use to perform the update
      * @param parameterMap The map of parameters for replacement (used for whole object replacement)
      * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
+     * @param report The result object to add issues related to the replacement processing
+     * @param nodeEvaluationStack The stack of nodes to push any additional nodes for evaluation
      */
     protected void performTokenReplacement(JsonNode node, String nodeId, JsonNode parentNode, JsonNodeReplacer jsonNodeReplacer,
-        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report)
+        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report, Stack<JsonNodeWrapper> nodeEvaluationStack)
     {
         final String nodeValue = node.asText();
         if (nodeValue != null)
@@ -180,8 +193,9 @@ public class JsonReferenceReplacer
                         replaced = true;
                         //logger.debug("Object Replace: {} => {}", nodeValue, parameterValue);
                         jsonNodeReplacer.updateValue(parameterValue);
-                        traverseNodeForTokenReplacement(
-                            parameterValue, nodeId, parentNode, parameterMap, strSubstitutor, report);
+                        // TODO: consider supporting nested references (unlikely)
+                        // TODO: this would allow self-referencing and is quite risky
+                        //nodeEvaluationStack.push(new JsonNodeWrapper(parameterValue, nodeId, parentNode));
                     }
                     else if(parameterValue.isTextual() || parameterValue.isNumber())
                     {
@@ -256,5 +270,37 @@ public class JsonReferenceReplacer
     public void setObjectNodeReplacer(ObjectNodeReplacer objectNodeReplacer)
     {
         this.objectNodeReplacer = objectNodeReplacer;
+    }
+
+    /**
+     * Wrapper for JsonNode providing parent and id information. JsonNode by default has neither.
+     */
+    private static class JsonNodeWrapper
+    {
+        private final JsonNode node;
+        private final JsonNode parent;
+        private final String nodeId;
+
+        public JsonNodeWrapper(JsonNode node, String nodeId, JsonNode parent)
+        {
+            this.node = node;
+            this.nodeId = nodeId;
+            this.parent = parent;
+        }
+
+        public JsonNode getNode()
+        {
+            return node;
+        }
+
+        public JsonNode getParent()
+        {
+            return parent;
+        }
+
+        public String getNodeId()
+        {
+            return nodeId;
+        }
     }
 }
