@@ -1,14 +1,13 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
 public class JobProgress
 {
-    private URI id;
-    private URI jobId;
+    private String id;
+    private String jobId;
     private JobStatus status;
     private Date added;
     private Date started;
@@ -22,29 +21,29 @@ public class JobProgress
     {
     }
 
-    public JobProgress(URI jobId)
+    public JobProgress(String jobId)
     {
         this.jobId = jobId;
         this.status = JobStatus.INITIALIZE_QUEUED;
         this.added = new Date();
     }
 
-    public URI getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(URI id)
+    public void setId(String id)
     {
         this.id = id;
     }
 
-    public URI getJobId()
+    public String getJobId()
     {
         return jobId;
     }
 
-    public void setJobId(URI jobId)
+    public void setJobId(String jobId)
     {
         this.jobId = jobId;
     }
