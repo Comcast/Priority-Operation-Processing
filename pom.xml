@@ -15,7 +15,6 @@
     <name>Puller Handler Parent</name>
 
     <modules>
-        <module>api/main</module>
         <module>handler/main/impl</module>
         <module>handler/main/package</module>
     </modules>
