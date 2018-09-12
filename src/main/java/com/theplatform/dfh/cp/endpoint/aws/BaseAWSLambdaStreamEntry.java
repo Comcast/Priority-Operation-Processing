@@ -19,13 +19,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 /**
- *
-
- // research how we do /agenda/{id} instead of a query param
- * @param <T> The type of object to persist/retrieve
- */
-
-/**
  * Base for CP Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
