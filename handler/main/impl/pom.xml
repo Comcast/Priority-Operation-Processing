@@ -30,6 +30,7 @@
         <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
         <http-request-util-handler.version>1.0.0-SNAPSHOT</http-request-util-handler.version>
         <ldap-filter.version>1.0.0-SNAPSHOT</ldap-filter.version>
+        <accelerate-filter-handler.version>1.0.0-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
     
     <dependencies>
@@ -91,6 +92,11 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-filter-ldap-impl</artifactId>
             <version>${ldap-filter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-filter-accelerate-impl</artifactId>
+            <version>${accelerate-filter-handler.version}</version>
         </dependency>
 
         <!-- Logging -->
