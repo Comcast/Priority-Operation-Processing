@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operation
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
 import com.theplatform.dfh.cp.handler.filter.ldap.impl.LDAPFilterHandler;
-import com.theplatform.dfh.cp.handler.util.http.impl.HttpRequestHandler;
+import com.theplatform.dfh.cp.handler.util.http.impl.AgendaPostHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class ResidentOperationRegistry
     static
     {
         residentHandlerMap.put("residentSample", SampleResidentHandler.class);
-        residentHandlerMap.put("httpRequest", HttpRequestHandler.class);
+        residentHandlerMap.put("agendaPost", AgendaPostHandler.class);
         residentHandlerMap.put("ldap", LDAPFilterHandler.class);
     }
 
