@@ -10,6 +10,7 @@ public class Agenda
     private List<Operation> operations;
     private ParamsMap params;
     private String id;
+    private String jobId;
 
     public List<Operation> getOperations()
     {
@@ -39,5 +40,15 @@ public class Agenda
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getJobId()
+    {
+        return jobId;
+    }
+
+    public void setJobId(String jobId)
+    {
+        this.jobId = jobId;
     }
 }
