@@ -1,3 +1,7 @@
+agendaProviderUrl: 'https://iqeyna6qnd.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/service/agendaprovider'
+identityUrl: 'http://identity.auth.test.corp.theplatform.com/idm'
+username: 'service/dfh.filehandler.user.dev1@theplatform.com'
+encryptedPassword: 'iVcsBRR0FPee/pgnFI+mAw=='
 logging:
   level: INFO
   loggers:

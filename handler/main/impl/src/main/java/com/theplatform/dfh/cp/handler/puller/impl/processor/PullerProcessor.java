@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncher;
@@ -24,12 +25,12 @@ public class PullerProcessor implements HandlerProcessor<Void>
 
     private AgendaClient agendaClient;
 
-    public PullerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClient agendaClient)
+    public PullerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
         this.launchDataWrapper = launchDataWrapper;
         this.pullerContext = pullerContext;
         this.jsonHelper = new JsonHelper();
-        this.agendaClient = agendaClient;
+        this.agendaClient = agendaClientFactory.getClient();
     }
 
     /**
@@ -38,13 +39,11 @@ public class PullerProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
-//        for (;;)
-//        {
-        String work = agendaClient.getAgenda();
+        String agenda = agendaClient.getAgenda();
+        logger.info("Retrieved Agenda: {}", agenda);
         // launch an executor and pass it the agenda payload
         BaseLauncher launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
-        launcher.execute(work);
-//        }
+        launcher.execute(agenda);
 
         return null;
     }

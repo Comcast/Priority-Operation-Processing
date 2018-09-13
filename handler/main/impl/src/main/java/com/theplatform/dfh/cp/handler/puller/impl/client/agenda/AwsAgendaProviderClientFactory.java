@@ -1,0 +1,37 @@
+package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
+
+import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
+import com.theplatform.dfh.schedule.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.schedule.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
+
+
+public class AwsAgendaProviderClientFactory implements AgendaClientFactory
+{
+    private String identityUrl;
+    private String username;
+    private String encryptedPassword;
+    private String endpointUrl;
+
+    public AwsAgendaProviderClientFactory(String endpointUrl, String identityUrl, String username, String encryptedPassword)
+    {
+        this.endpointUrl = endpointUrl;
+        this.identityUrl = identityUrl;
+        this.username = username;
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public AwsAgendaProviderClientFactory(PullerConfig pullerConfig)
+    {
+        this(pullerConfig.getAgendaProviderUrl(), pullerConfig.getIdentityUrl(), pullerConfig.getUsername(), pullerConfig.getEncryptedPassword());
+    }
+
+    public AwsAgendaProviderClient getClient()
+    {
+        EncryptedAuthenticationClient authClient = new EncryptedAuthenticationClient(identityUrl, username, encryptedPassword, null);
+
+        HttpURLConnectionFactory httpURLConnectionFactory = new IDMHTTPUrlConnectionFactory(authClient);
+
+        return new AwsAgendaProviderClient(endpointUrl, httpURLConnectionFactory);
+    }
+}

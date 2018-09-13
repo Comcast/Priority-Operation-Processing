@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
@@ -18,13 +20,15 @@ import org.slf4j.LoggerFactory;
 public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
-    private AgendaClient agendaClient;
+
+    private AgendaClientFactory agendaClientFactory;
 
     public PullerEntryPoint(String[] args)
     {
         super(args);
-        //logger.info(String.join("\n", args));
-        agendaClient = new DefaultAgendaClientFactory().getClient();
+        logger.info("****ARGS: {}", String.join("\n", args));
+
+        agendaClientFactory = new DefaultAgendaClientFactory();
     }
 
     @Override
@@ -42,7 +46,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     @Override
     protected PullerProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
     {
-        return new PullerProcessor(launchDataWrapper, handlerContext, agendaClient);
+        return new PullerProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
     }
 
     /**
@@ -64,5 +68,16 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, "/config/conf.yaml");
         String[] args2 = new String[] {"server", confPath};
         new PullerApp(pullerEntryPoint).run(args2);
+    }
+
+    public AgendaClientFactory getAgendaClientFactory()
+    {
+        return agendaClientFactory;
+    }
+
+    public PullerEntryPoint setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
+    {
+        this.agendaClientFactory = agendaClientFactory;
+        return this;
     }
 }

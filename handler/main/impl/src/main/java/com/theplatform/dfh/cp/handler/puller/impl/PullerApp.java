@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl;
 
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
 import io.dropwizard.Application;
@@ -21,6 +22,8 @@ public class PullerApp extends Application<PullerConfig>
     @Override
     public void run(PullerConfig config, Environment environment) throws Exception
     {
+        AwsAgendaProviderClientFactory agendaClientFactory = new AwsAgendaProviderClientFactory(config);
+        pullerEntryPoint.setAgendaClientFactory(agendaClientFactory);
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);
 
         environment.healthChecks().register("basic-health", new AliveHealthCheck(pullerExecution.getExecutionContext()));

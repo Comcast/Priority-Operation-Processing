@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.context;
 
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.exception.PullerException;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncherFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.local.LocalOperationLauncherFactory;
@@ -13,10 +15,12 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 public class PullerContextFactory extends KubernetesOperationContextFactory<PullerContext>
 {
 
-    public PullerContextFactory(LaunchDataWrapper launchDataWrapper)
-    {
+//    private AgendaClientFactory agendaClientFactory;
 
+    public PullerContextFactory(LaunchDataWrapper launchDataWrapper) //, AgendaClientFactory agendaClientFactory)
+    {
         super(launchDataWrapper);
+//        this.agendaClientFactory = agendaClientFactory;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class PullerContextFactory extends KubernetesOperationContextFactory<Pull
                     .setKubeConfigFactory(getKubeConfigFactory());
                 break;
         }
-
-        return new PullerContext(launchDataWrapper, launcherFactory);
+        
+        return new PullerContext(launchDataWrapper, launcherFactory); //, agendaClientFactory);
     }
 }

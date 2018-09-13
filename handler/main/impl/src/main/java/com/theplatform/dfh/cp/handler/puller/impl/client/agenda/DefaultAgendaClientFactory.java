@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 
-public class DefaultAgendaClientFactory
+public class DefaultAgendaClientFactory implements AgendaClientFactory
 {
-    public AgendaClient getClient()
+    public DefaultAgendaClient getClient()
     {
         return new DefaultAgendaClient();
     }

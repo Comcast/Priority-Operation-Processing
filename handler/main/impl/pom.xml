@@ -18,6 +18,7 @@
         <testng.version>6.9.10</testng.version>
         <mockito.version>1.9.5</mockito.version>
         <logging-extension.version>1.2.0</logging-extension.version>
+        <logback.version>1.2.3</logback.version>
         <handler-base.version>1.0.0-SNAPSHOT</handler-base.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
         <handler-field-api.version>1.0.0-SNAPSHOT</handler-field-api.version>
@@ -32,6 +33,10 @@
         <dropwizard.version>1.3.5</dropwizard.version>
         <fasterxml.jackson.core.version>2.9.0</fasterxml.jackson.core.version>
         <fasterxml.jackson.core.databind.version>2.9.5</fasterxml.jackson.core.databind.version>
+        <dfh-schedule-http-idm.version>1.0.2-SNAPSHOT</dfh-schedule-http-idm.version>
+        <dfh-endpoint-http-client.version>1.0.0-SNAPSHOT</dfh-endpoint-http-client.version>
+        <auth-client.version>1.2.6</auth-client.version>
+        <commons-http-client.version>3.1</commons-http-client.version>
     </properties>
     
     <dependencies>
@@ -51,13 +56,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.3</version>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
@@ -145,6 +150,29 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-web-client-http</artifactId>
+            <version>${dfh-endpoint-http-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.modules</groupId>
+            <artifactId>pl-authentication-client</artifactId>
+            <version>${auth-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.schedule</groupId>
+            <artifactId>pl-dfh-schedule-http-idm</artifactId>
+            <version>${dfh-schedule-http-idm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http-client.version}</version>
         </dependency>
 
         <!-- Logging -->
