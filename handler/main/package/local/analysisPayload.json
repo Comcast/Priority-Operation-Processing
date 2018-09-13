@@ -10,12 +10,14 @@
       "name": "analysis.1",
       "type": "analysis",
       "payload": {
-        "inputs": [
-          {
-            "type": "mezzanine",
-            "url": "/testFiles/dfh_kube_test_input.mp4"
-          }
-        ]
+        "transformRequest": {
+          "inputs": [
+            {
+              "type": "mezzanine",
+              "url": "/testFiles/dfh_kube_test_input.mp4"
+            }
+          ]
+        }
       }
     }
   ]
