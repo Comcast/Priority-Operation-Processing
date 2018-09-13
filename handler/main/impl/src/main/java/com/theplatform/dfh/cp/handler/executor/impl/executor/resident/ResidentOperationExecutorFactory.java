@@ -24,7 +24,7 @@ public class ResidentOperationExecutorFactory extends OperationExecutorFactory
     {
         ResidentHandler residentHandler = residentOperationsRegistry.getHandler(operation.getType());
         // if no resident handler was found it is fine, if one was found pass it back
-        return residentHandler == null ? null : new ResidentOperationExecutor(operation, residentHandler);
+        return residentHandler == null ? null : new ResidentOperationExecutor(operation, residentHandler, executorContext.getLaunchDataWrapper());
     }
 
     public void setResidentOperationsRegistry(ResidentOperationRegistry residentOperationsRegistry)

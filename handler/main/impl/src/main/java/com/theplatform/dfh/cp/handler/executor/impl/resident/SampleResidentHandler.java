@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
+import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class SampleResidentHandler implements ResidentHandler
     }
 
     @Override
-    public String execute(String payload)
+    public String execute(String payload, LaunchDataWrapper launchDataWrapper, Reporter reporter)
     {
         JsonNode outputNode = new ObjectNode(objectMapper.getNodeFactory());
         try

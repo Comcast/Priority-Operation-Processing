@@ -2,23 +2,20 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
+import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class KubernetesOperationExecutor extends BaseOperationExecutor
@@ -30,9 +27,9 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     protected ExecutionConfig executionConfig;
     protected PodFollower<PodPushClient> follower;
 
-    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
+    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, LaunchDataWrapper launchDataWrapper)
     {
-        super(operation);
+        super(operation, launchDataWrapper);
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;

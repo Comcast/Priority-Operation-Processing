@@ -55,7 +55,7 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
             }
         });
 
-        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig);
+        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, executorContext.getLaunchDataWrapper());
     }
 
     public KubernetesOperationExecutorFactory setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)

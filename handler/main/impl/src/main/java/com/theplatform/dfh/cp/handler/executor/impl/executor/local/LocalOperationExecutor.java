@@ -3,6 +3,8 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.local;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
+import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,16 +17,16 @@ public class LocalOperationExecutor extends BaseOperationExecutor
 {
     private static final Logger logger = LoggerFactory.getLogger(LocalOperationExecutor.class);
 
-    public LocalOperationExecutor(Operation operation)
+    public LocalOperationExecutor(Operation operation, LaunchDataWrapper launchDataWrapper)
     {
-        super(operation);
+        super(operation, launchDataWrapper);
     }
 
     @Override
     public String execute(String payload)
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
-        String outputPayload = new SampleResidentHandler().execute(payload);
+        String outputPayload = new SampleResidentHandler().execute(payload, launchDataWrapper, new LogReporter());
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
     }
