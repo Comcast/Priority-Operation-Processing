@@ -25,7 +25,7 @@
     "name" : "ldap.1"
   }, {
     "payload" : {
-      "transformRequest" : "$$ldap.1.out::/modifiedRequest"
+      "transformRequest" : "$$ldap.1.out::/transformRequest"
     },
     "type" : "analysis",
     "id" : "b91adf62-d572-4a1e-aa09-3091e27eac19",

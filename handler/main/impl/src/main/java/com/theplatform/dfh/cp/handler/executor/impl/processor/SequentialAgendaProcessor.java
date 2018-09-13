@@ -77,7 +77,9 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         }
         catch(Throwable t)
         {
-            throw new AgendaExecutorException("Failed to execute operation.", t);
+            throw new AgendaExecutorException(
+                String.format("Failed to execute operation: %1$s", operation == null ? "unknown!" : operation.getName())
+                , t);
         }
     }
 
