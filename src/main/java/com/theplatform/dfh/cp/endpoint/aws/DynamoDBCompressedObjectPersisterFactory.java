@@ -9,9 +9,9 @@ import com.theplatform.dfh.schedule.persistence.aws.dynamodb.DynamoDBCompressedO
  */
 public class DynamoDBCompressedObjectPersisterFactory<T> implements ObjectPersisterFactory<T>
 {
-    private String tableName;
-    private String persistenceKeyFieldName;
-    private Class persistentObjectClass;
+    protected String tableName;
+    protected String persistenceKeyFieldName;
+    protected Class persistentObjectClass;
 
     public DynamoDBCompressedObjectPersisterFactory(String tableName, String persistenceKeyFieldName, Class<T> clazz)
     {
