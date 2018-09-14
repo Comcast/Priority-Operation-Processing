@@ -4,7 +4,7 @@
       "originalRequest" : {
         "id" : null,
         "inputs" : [ {
-          "type" : "UNKNOWN",
+          "type" : "video",
           "url" : "ftp://aort1a-tpaspe-mi.corp.theplatform.com/testFiles/backcountry_bombshells_4min_HD_H264.mp4__972349.flv",
           "label" : null,
           "credentials" :
@@ -14,8 +14,44 @@
           "params" : { }
         } ],
         "inputStreams" : null,
-        "outputStreams" : null,
-        "outputs" : null,
+        "outputStreams": {
+          "video": [
+            {
+              "params": {
+                "bitrate": 1000000,
+                "height": 720,
+                "width": 1280
+              }
+            },
+            {
+              "params": {
+                "bitrate": 2000000,
+                "height": 1080,
+                "width": 1920
+              }
+            }
+          ]
+        },
+        "outputs": [
+          {
+            "credentials": {
+              "username": "contentowner"
+            },
+            "outputStreamRefs": [
+              "/outputStreams/video/0"
+            ],
+            "url": "/testFiles/output/immortals_1000k.mp4"
+          },
+          {
+            "credentials": {
+              "username": "contentowner"
+            },
+            "outputStreamRefs": [
+              "/outputStreams/video/1"
+            ],
+            "url": "/testFiles/output/immortals_2000k.mp4"
+          }
+        ],
         "params" : { },
         "externalId" : null
       }
@@ -45,7 +81,7 @@
       "url" : null,
       "headers" : null,
       "postData" : "@@accelerate.1.out::/agenda",
-      "postDataEncoding" : "base64",
+      "postDataEncoding" : "json",
       "contentType" : "application/json",
       "requestMethod" : null
     },
