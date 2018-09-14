@@ -28,9 +28,9 @@ public class JsonReferenceReplacerTest extends JsonReplacementTestBase
     {
         return new Object[][]
             {
-                {"$$mediainfo.1::/", true, "mediainfo.1", "/"},
-                {"$$mediainfo.1::/test/sub/path", true, "mediainfo.1", "/test/sub/path"},
-                {"$$mediainfo.1", true, "mediainfo.1", null}
+                {"@@mediainfo.1::/", true, "mediainfo.1", "/"},
+                {"@@mediainfo.1::/test/sub/path", true, "mediainfo.1", "/test/sub/path"},
+                {"@@mediainfo.1", true, "mediainfo.1", null}
             };
     }
 
