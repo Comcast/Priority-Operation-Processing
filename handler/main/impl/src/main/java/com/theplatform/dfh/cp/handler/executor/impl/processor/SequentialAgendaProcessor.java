@@ -52,11 +52,13 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         if(handlerInput == null)
         {
             executorContext.getReporter().reportFailure("Invalid input. No payload.", null);
+            return null;
         }
-        
+
         if(handlerInput.getOperations() == null)
         {
             executorContext.getReporter().reportFailure("No operations in Agenda. Nothing to do.", null);
+            return null;
         }
 
         try
