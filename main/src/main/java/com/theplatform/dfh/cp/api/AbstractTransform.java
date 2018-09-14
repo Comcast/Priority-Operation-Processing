@@ -7,21 +7,20 @@ import com.theplatform.dfh.cp.api.output.OutputStream;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.input.InputFileResource;
-import com.theplatform.dfh.cp.api.input.InputStream;
 
 import java.net.URI;
 import java.util.List;
 
 public abstract class AbstractTransform
 {
-    private URI id;
+    private String id;
 
-    public URI getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(URI id)
+    public void setId(String id)
     {
         this.id = id;
     }
