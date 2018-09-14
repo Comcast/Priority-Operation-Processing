@@ -48,6 +48,17 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         {
             throw new AgendaExecutorException("Failed to load payload.", e);
         }
+
+        if(handlerInput == null)
+        {
+            executorContext.getReporter().reportFailure("Invalid input. No payload.", null);
+        }
+        
+        if(handlerInput.getOperations() == null)
+        {
+            executorContext.getReporter().reportFailure("No operations in Agenda. Nothing to do.", null);
+        }
+
         try
         {
             handlerInput.getOperations().forEach(this::executeOperation);
