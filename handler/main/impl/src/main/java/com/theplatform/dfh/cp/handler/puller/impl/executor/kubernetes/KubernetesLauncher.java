@@ -85,7 +85,6 @@ public class KubernetesLauncher implements BaseLauncher
         this.executionConfig = executionConfig;
     }
 
-    // TODO this execute is exactly the same as in KubernetesOperationExecutor in the Executor Handler.  Might want to put this in a shared space.
     @Override
     public void execute(String payload)
     {

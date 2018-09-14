@@ -3,10 +3,6 @@ package com.theplatform.dfh.cp.handler.puller.impl.healthcheck;
 import com.codahale.metrics.health.HealthCheck;
 import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
 
-/**
- * User: kimberly.todd
- * Date: 8/29/18
- */
 public class AliveHealthCheck extends HealthCheck
 {
     private ExecutionContext executionContext;

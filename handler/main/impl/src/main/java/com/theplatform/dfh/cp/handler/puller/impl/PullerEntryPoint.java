@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;
@@ -22,11 +23,12 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
 
     private AgendaClientFactory agendaClientFactory;
+    private PullerConfig pullerConfig;
 
     public PullerEntryPoint(String[] args)
     {
         super(args);
-        logger.info("****ARGS: {}", String.join("\n", args));
+        logger.debug("ARGS: {}", String.join("\n", args));
 
         agendaClientFactory = new DefaultAgendaClientFactory();
     }
@@ -78,6 +80,17 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     public PullerEntryPoint setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
     {
         this.agendaClientFactory = agendaClientFactory;
+        return this;
+    }
+
+    public PullerConfig getPullerConfig()
+    {
+        return pullerConfig;
+    }
+
+    public PullerEntryPoint setPullerConfig(PullerConfig pullerConfig)
+    {
+        this.pullerConfig = pullerConfig;
         return this;
     }
 }

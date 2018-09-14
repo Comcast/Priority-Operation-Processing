@@ -5,8 +5,7 @@ import com.theplatform.dfh.cp.handler.field.retriever.argument.DefaultArgumentPr
 import org.apache.commons.cli.Options;
 
 /**
- * User: kimberly.todd
- * Date: 9/5/18
+ * program arguments specific to the Puller
  */
 public class PullerArgumentProvider extends DefaultArgumentProvider
 {

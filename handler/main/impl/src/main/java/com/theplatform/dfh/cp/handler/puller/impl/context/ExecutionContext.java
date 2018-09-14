@@ -1,9 +1,5 @@
 package com.theplatform.dfh.cp.handler.puller.impl.context;
 
-/**
- * User: kimberly.todd
- * Date: 8/29/18
- */
 public class ExecutionContext
 {
     private Thread pullerThread;

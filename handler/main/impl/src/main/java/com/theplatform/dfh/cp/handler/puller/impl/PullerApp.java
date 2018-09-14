@@ -24,6 +24,7 @@ public class PullerApp extends Application<PullerConfig>
     {
         AwsAgendaProviderClientFactory agendaClientFactory = new AwsAgendaProviderClientFactory(config);
         pullerEntryPoint.setAgendaClientFactory(agendaClientFactory);
+        pullerEntryPoint.setPullerConfig(config);
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);
 
         environment.healthChecks().register("basic-health", new AliveHealthCheck(pullerExecution.getExecutionContext()));

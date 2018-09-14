@@ -15,12 +15,9 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 public class PullerContextFactory extends KubernetesOperationContextFactory<PullerContext>
 {
 
-//    private AgendaClientFactory agendaClientFactory;
-
     public PullerContextFactory(LaunchDataWrapper launchDataWrapper) //, AgendaClientFactory agendaClientFactory)
     {
         super(launchDataWrapper);
-//        this.agendaClientFactory = agendaClientFactory;
     }
 
     @Override

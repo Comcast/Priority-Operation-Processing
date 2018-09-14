@@ -4,10 +4,6 @@ import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * User: kimberly.todd
- * Date: 8/29/18
- */
 public class PullerExecution
 {
     private static Logger logger = LoggerFactory.getLogger(PullerExecution.class);
@@ -16,6 +12,8 @@ public class PullerExecution
 
     public PullerExecution(PullerEntryPoint pullerEntryPoint)
     {
+        int pullWait = pullerEntryPoint.getPullerConfig().getPullWait();
+
         Runnable executePuller = () -> {
             for (;;)
             {
@@ -23,12 +21,12 @@ public class PullerExecution
                 {
                     logger.info("Executing Puller");
                     pullerEntryPoint.execute();
-                    logger.info("Puller is looping...");
-                    Thread.sleep(30 * 1000);
+                    logger.info("Puller is sleeping for {} seconds...", pullWait);
+                    Thread.sleep(pullWait * 1000);
                 }
                 catch (InterruptedException e)
                 {
-                    logger.error("", e);
+                    logger.warn("Puller Execution was stopped. {}", e);
                 }
             }
         };

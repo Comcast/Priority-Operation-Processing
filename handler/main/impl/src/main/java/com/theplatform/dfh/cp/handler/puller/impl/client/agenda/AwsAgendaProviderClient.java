@@ -10,8 +10,7 @@ import com.theplatform.dfh.schedule.http.api.HttpURLConnectionFactory;
 import javax.annotation.Resource;
 
 /**
- * User: ktodd200
- * Date: 9/12/18
+ * Use the AgendaProvider API Gateway to get an Agenda from the DynamoDB in AWS
  */
 public class AwsAgendaProviderClient implements AgendaClient
 {
@@ -25,6 +24,8 @@ public class AwsAgendaProviderClient implements AgendaClient
 
     public String getAgenda()
     {
-        return jsonHelper.getJSONString(webClient.getAgenda());
+        Agenda result = webClient.getAgenda();
+
+        return result == null ? null : jsonHelper.getJSONString(webClient.getAgenda());
     }
 }
