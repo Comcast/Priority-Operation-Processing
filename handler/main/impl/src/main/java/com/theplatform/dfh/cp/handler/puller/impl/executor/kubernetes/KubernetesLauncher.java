@@ -101,7 +101,6 @@ public class KubernetesLauncher implements BaseLauncher
 
 
         // Use this code to actually follow the pod
-        podConfig.setReapCompletedPods(false);
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
         logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
