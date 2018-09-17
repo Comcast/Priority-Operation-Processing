@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
+import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.schedule.persistence.api.ObjectPersister;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
  * Basic implementation for request processing.
  * @param <T> The type of object to persist
  */
-public abstract class BaseRequestProcessor<T>
+public abstract class BaseRequestProcessor<T extends IdentifiedObject>
 {
     protected ObjectPersister<T> objectPersister;
 
@@ -38,6 +39,16 @@ public abstract class BaseRequestProcessor<T>
         String objectId = UUID.randomUUID().toString();
         objectPersister.persist(objectId, objectToPersist);
         return new ObjectPersistResponse(objectId);
+    }
+
+    /**
+     * Handles a PUT of an object
+     * @param objectToUpdate object to persist
+     */
+    public void handlePUT(T objectToUpdate)
+    {
+        // TODO: this is just an overwrite... not a join/append
+        objectPersister.persist(objectToUpdate.getId(), objectToUpdate);
     }
 
     /**
