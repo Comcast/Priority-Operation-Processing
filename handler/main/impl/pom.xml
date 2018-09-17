@@ -31,6 +31,7 @@
         <http-request-util-handler.version>1.0.0-SNAPSHOT</http-request-util-handler.version>
         <ldap-filter.version>1.0.0-SNAPSHOT</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.0-SNAPSHOT</accelerate-filter-handler.version>
+        <cp-endpoint-object-client-http.version>1.0.0-SNAPSHOT</cp-endpoint-object-client-http.version>
     </properties>
     
     <dependencies>
@@ -79,6 +80,12 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
             <version>${podconfig-registry-client-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-object-client-http</artifactId>
+            <version>${cp-endpoint-object-client-http.version}</version>
         </dependency>
 
         <!-- Resident Handlers -->

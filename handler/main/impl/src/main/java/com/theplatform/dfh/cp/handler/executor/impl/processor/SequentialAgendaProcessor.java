@@ -1,6 +1,10 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
+import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.JobProgress;
+import com.theplatform.dfh.cp.api.progress.JobStatus;
+import com.theplatform.dfh.cp.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
@@ -8,8 +12,13 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
+import com.theplatform.dfh.schedule.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.schedule.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +80,8 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
             executorContext.getReporter().reportFailure("", e);
             logger.error("", e);
         }
+
+        updateJobProgressStatus(handlerInput);
         logger.info("ExecutorComplete");
         return null;
     }
@@ -109,5 +120,46 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
     public void setJsonHelper(JsonHelper jsonHelper)
     {
         this.jsonHelper = jsonHelper;
+    }
+
+
+    /**
+     * All belongs elsewhere...
+     */
+    public static final String IDM_URL_FIELD = "agenda.poster.idm.url";
+    public static final String IDM_USER = "agenda.poster.idm.user";
+    public static final String IDM_ENCRYPTED_PASS = "agenda.poster.idm.encryptedpass";
+
+    private void updateJobProgressStatus(Agenda agenda)
+    {
+        try
+        {
+            String identityUrl = launchDataWrapper.getPropertyRetriever().getField(IDM_URL_FIELD);
+            String user = launchDataWrapper.getPropertyRetriever().getField(IDM_USER);
+            String encryptedPass = launchDataWrapper.getPropertyRetriever().getField(IDM_ENCRYPTED_PASS);
+            if(identityUrl == null || user == null || encryptedPass == null)
+            {
+                throw new HttpRequestHandlerException("Invalid IDM credentials configured for token generation.");
+            }
+            HttpURLConnectionFactory httpURLConnectionFactory = new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
+                identityUrl,
+                user,
+                encryptedPass,
+                null
+            ));
+
+            HttpCPObjectClient<JobProgress> jobProgressClient = new HttpCPObjectClient<>(
+                launchDataWrapper.getPropertyRetriever().getField("job.progress.url"),
+                httpURLConnectionFactory,
+                JobProgress.class
+                );
+            JobProgress progress = jobProgressClient.getObject(agenda.getId());
+            progress.setStatus(JobStatus.INITIALIZE_COMPLETE);
+            jobProgressClient.updateObject(progress);
+        }
+        catch(Exception e)
+        {
+            logger.error("Failed to update status on progress object.");
+        }
     }
 }
