@@ -37,6 +37,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
     public ObjectPersistResponse handlePOST(T objectToPersist)
     {
         String objectId = UUID.randomUUID().toString();
+        objectToPersist.setId(objectId);
         objectPersister.persist(objectId, objectToPersist);
         return new ObjectPersistResponse(objectId);
     }
