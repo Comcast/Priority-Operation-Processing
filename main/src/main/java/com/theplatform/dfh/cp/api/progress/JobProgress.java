@@ -1,10 +1,12 @@
 package com.theplatform.dfh.cp.api.progress;
 
+import com.theplatform.dfh.cp.api.IdentifiedObject;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
-public class JobProgress
+public class JobProgress implements IdentifiedObject
 {
     private String id;
     private String jobId;

@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
-import com.theplatform.dfh.cp.api.output.OutputStream;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.input.InputFileResource;
@@ -11,7 +10,7 @@ import com.theplatform.dfh.cp.api.input.InputFileResource;
 import java.net.URI;
 import java.util.List;
 
-public abstract class AbstractTransform
+public abstract class AbstractTransform implements IdentifiedObject
 {
     private String id;
 
