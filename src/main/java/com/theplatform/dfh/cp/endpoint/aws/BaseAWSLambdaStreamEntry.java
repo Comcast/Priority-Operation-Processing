@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.schedule.persistence.api.ObjectPersister;
 import com.theplatform.dfh.schedule.status.version.ServiceBuildPropertiesContainer;
@@ -22,12 +23,12 @@ import java.io.OutputStreamWriter;
  * Base for CP Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
-public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandler
+public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> implements RequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Class persistenceObjectClazz;
+    private final Class<T> persistenceObjectClazz;
     private ObjectPersisterFactory<T> objectPersisterFactory;
 
     // TODO: wrapper class for all the json parsing
@@ -43,7 +44,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected  abstract BaseRequestProcessor<T> getRequestProcessor(JsonNode rootRequestNode, ObjectPersister<T> objectPersister);
+    protected abstract BaseRequestProcessor<T> getRequestProcessor(JsonNode rootRequestNode, ObjectPersister<T> objectPersister);
     
     /**
      * Gets the path parameter name based on the url -- https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
@@ -73,6 +74,7 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
         BaseRequestProcessor<T> requestProcessor = getRequestProcessor(rootRequestNode, objectPersister);
         Object responseObject = null;
         int httpStatusCode = 200;
+        String bodyJson;
         switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
         {
             case "GET":
@@ -80,9 +82,12 @@ public abstract class BaseAWSLambdaStreamEntry<T> implements RequestStreamHandle
                 if(responseObject == null) httpStatusCode = 404;
                 break;
             case "POST":
-                String bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
-                responseObject = requestProcessor.handlePOST((T)objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
+                responseObject = requestProcessor.handlePOST(objectMapper.readValue(bodyJson, persistenceObjectClazz));
                 break;
+            case "PUT":
+                bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
+                requestProcessor.handlePUT(objectMapper.readValue(bodyJson, persistenceObjectClazz));
             case "DELETE":
                 requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
                 break;
