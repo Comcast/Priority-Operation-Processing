@@ -89,6 +89,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
                 // TODO: decide to use the id from the path param or the id from the object (maybe put should not go to the path param endpoint anyway...)
                 bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
                 requestProcessor.handlePUT(objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                break;
             case "DELETE":
                 requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
                 break;
