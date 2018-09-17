@@ -49,7 +49,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
     public void handlePUT(T objectToUpdate)
     {
         // TODO: this is just a delete and overwrite (we're not doing a proper update with dynamodb yet)... not a join/append
-        objectPersister.delete(objectToUpdate.getId());
+        //objectPersister.delete(objectToUpdate.getId());
         objectPersister.persist(objectToUpdate.getId(), objectToUpdate);
     }
 
