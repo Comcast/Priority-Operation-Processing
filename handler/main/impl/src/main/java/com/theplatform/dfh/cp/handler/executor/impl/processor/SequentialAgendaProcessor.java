@@ -156,7 +156,15 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
                 );
             String progressId = agenda.getParams() == null ? null : agenda.getParams().getString(GeneralParamKey.progressId);
             JobProgress progress = jobProgressClient.getObject(progressId);
-            progress.setStatus(JobStatus.INITIALIZE_COMPLETE);
+            // This is a hack
+            if(progress.getStatus() == null || progress.getStatus() == JobStatus.INITIALIZE_EXECUTING)
+            {
+                progress.setStatus(JobStatus.INITIALIZE_COMPLETE);
+            }
+            else
+            {
+                progress.setStatus(JobStatus.RUN_COMPLETE);
+            }
             jobProgressClient.updateObject(progress);
         }
         catch(Exception e)
