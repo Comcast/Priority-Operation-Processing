@@ -22,10 +22,26 @@ public class AwsAgendaProviderClient implements AgendaClient
         webClient = new HttpCPWebClient(agendaProviderUrl, httpURLConnectionFactory);
     }
 
+    public AwsAgendaProviderClient(CPWebClientAPI webClient)
+    {
+        this.webClient = webClient;
+    }
+
     public String getAgenda()
     {
         Agenda result = webClient.getAgenda();
 
         return result == null ? null : jsonHelper.getJSONString(result);
+    }
+
+    public AwsAgendaProviderClient setWebClient(CPWebClientAPI webClient)
+    {
+        this.webClient = webClient;
+        return this;
+    }
+
+    public CPWebClientAPI getWebClient()
+    {
+        return webClient;
     }
 }

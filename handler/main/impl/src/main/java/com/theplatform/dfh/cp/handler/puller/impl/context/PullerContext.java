@@ -11,7 +11,7 @@ public class PullerContext extends BaseOperationContext
 {
     private LauncherFactory launcherFactory;
 
-    public PullerContext(LaunchDataWrapper launchDataWrapper, LauncherFactory launcherFactory) //, AgendaClientFactory agendaClientFactory)
+    public PullerContext(LaunchDataWrapper launchDataWrapper, LauncherFactory launcherFactory)
     {
         super(null, launchDataWrapper);
         this.launcherFactory = launcherFactory;
