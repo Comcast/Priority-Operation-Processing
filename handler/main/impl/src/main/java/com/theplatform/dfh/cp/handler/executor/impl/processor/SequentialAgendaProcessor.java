@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.JobProgress;
 import com.theplatform.dfh.cp.api.progress.JobStatus;
 import com.theplatform.dfh.cp.endpoint.client.HttpCPObjectClient;
@@ -153,7 +154,8 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
                 httpURLConnectionFactory,
                 JobProgress.class
                 );
-            JobProgress progress = jobProgressClient.getObject(agenda.getId());
+            String progressId = agenda.getParams() == null ? null : agenda.getParams().getString(GeneralParamKey.progressId);
+            JobProgress progress = jobProgressClient.getObject(progressId);
             progress.setStatus(JobStatus.INITIALIZE_COMPLETE);
             jobProgressClient.updateObject(progress);
         }
