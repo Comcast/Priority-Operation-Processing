@@ -26,6 +26,6 @@ public class AwsAgendaProviderClient implements AgendaClient
     {
         Agenda result = webClient.getAgenda();
 
-        return result == null ? null : jsonHelper.getJSONString(webClient.getAgenda());
+        return result == null ? null : jsonHelper.getJSONString(result);
     }
 }

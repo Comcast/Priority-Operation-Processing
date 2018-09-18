@@ -142,11 +142,5 @@ public class KubernetesLauncher implements BaseLauncher
             throw new RuntimeException(allStringMetadata, e);
         }
         logger.info("Done with execution of pod: {}", executionConfig.getName());
-
-        Map<String,String> podAnnotations = new PodAnnotationClient(new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig)), executionConfig.getName())
-            .getPodAnnotations();
-        String result = podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
-
-        follower.getPodPushClient().deletePod(executionConfig.getName());
     }
 }
