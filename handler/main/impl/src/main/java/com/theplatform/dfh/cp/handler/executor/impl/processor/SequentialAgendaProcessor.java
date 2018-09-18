@@ -159,7 +159,7 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         }
         catch(Exception e)
         {
-            logger.error("Failed to update status on progress object.");
+            logger.error("Failed to update status on progress object.", e);
         }
     }
 }
