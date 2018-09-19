@@ -17,17 +17,9 @@ public class PullerExecution
         Runnable executePuller = () -> {
             for (;;)
             {
-                try
-                {
-                    logger.info("Executing Puller");
-                    pullerEntryPoint.execute();
-                    logger.info("Puller is sleeping for {} seconds...", pullWait);
-                    Thread.sleep(pullWait * 1000);
-                }
-                catch (InterruptedException e)
-                {
-                    logger.warn("Puller Execution was stopped. {}", e);
-                }
+                // todo unit test: loops a couple times and then aborts
+                logger.info("Executing Puller");
+                pullerEntryPoint.execute();
             }
         };
         Thread pullerThread =new Thread(executePuller);

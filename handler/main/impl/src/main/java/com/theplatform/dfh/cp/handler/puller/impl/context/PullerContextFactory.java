@@ -15,7 +15,7 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 public class PullerContextFactory extends KubernetesOperationContextFactory<PullerContext>
 {
 
-    public PullerContextFactory(LaunchDataWrapper launchDataWrapper) //, AgendaClientFactory agendaClientFactory)
+    public PullerContextFactory(LaunchDataWrapper launchDataWrapper)
     {
         super(launchDataWrapper);
     }
@@ -39,6 +39,6 @@ public class PullerContextFactory extends KubernetesOperationContextFactory<Pull
                 break;
         }
         
-        return new PullerContext(launchDataWrapper, launcherFactory); //, agendaClientFactory);
+        return new PullerContext(launchDataWrapper, launcherFactory);
     }
 }

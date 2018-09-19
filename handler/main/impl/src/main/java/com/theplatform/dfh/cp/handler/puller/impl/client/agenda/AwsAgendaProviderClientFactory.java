@@ -13,17 +13,12 @@ public class AwsAgendaProviderClientFactory implements AgendaClientFactory
     private String encryptedPassword;
     private String endpointUrl;
 
-    public AwsAgendaProviderClientFactory(String endpointUrl, String identityUrl, String username, String encryptedPassword)
-    {
-        this.endpointUrl = endpointUrl;
-        this.identityUrl = identityUrl;
-        this.username = username;
-        this.encryptedPassword = encryptedPassword;
-    }
-
     public AwsAgendaProviderClientFactory(PullerConfig pullerConfig)
     {
-        this(pullerConfig.getAgendaProviderUrl(), pullerConfig.getIdentityUrl(), pullerConfig.getUsername(), pullerConfig.getEncryptedPassword());
+        this.endpointUrl = pullerConfig.getAgendaProviderUrl();
+        this.identityUrl = pullerConfig.getIdentityUrl();
+        this.username = pullerConfig.getUsername();
+        this.encryptedPassword = pullerConfig.getEncryptedPassword();
     }
 
     public AwsAgendaProviderClient getClient()

@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.processor;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncher;
@@ -18,12 +19,12 @@ public class PullerProcessor implements HandlerProcessor<Void>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
 
-    private LaunchDataWrapper launchDataWrapper;
+    private PullerLaunchDataWrapper launchDataWrapper;
     private BaseLauncher launcher;
 
     private AgendaClient agendaClient;
 
-    public PullerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
+    public PullerProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
         this.launchDataWrapper = launchDataWrapper;
         this.agendaClient = agendaClientFactory.getClient();
@@ -36,6 +37,7 @@ public class PullerProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
+        // todo add unit test for when agendaClient returns badness
         String agenda = agendaClient.getAgenda();
 
         if (agenda != null && agenda.length() > 0)
@@ -46,7 +48,16 @@ public class PullerProcessor implements HandlerProcessor<Void>
         }
         else
         {
-            logger.info("Did not retrieve Agenda.");
+            int pullWait = launchDataWrapper.getPullerConfig().getPullWait();
+            logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", launchDataWrapper.getPullerConfig().getPullWait());
+            try
+            {
+                Thread.sleep(pullWait * 1000);
+            }
+            catch (InterruptedException e)
+            {
+                logger.warn("Puller execution was stopped. {}", e);
+            }
         }
 
         return null;

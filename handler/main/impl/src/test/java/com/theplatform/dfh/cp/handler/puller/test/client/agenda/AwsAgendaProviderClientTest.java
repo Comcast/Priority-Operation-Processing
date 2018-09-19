@@ -13,6 +13,8 @@ import java.net.HttpURLConnection;
 import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -35,7 +37,7 @@ public class AwsAgendaProviderClientTest
         String agendaResponse = awsClient.getAgenda();
         String expectedAgenda =jsonHelper.getJSONString(agenda);
         Assert.assertEquals(agendaResponse, expectedAgenda);
-        
+        verify(webClient, times(1)).getAgenda();
     }
 
     @Test
@@ -48,5 +50,6 @@ public class AwsAgendaProviderClientTest
 
         String agendaResponse = awsClient.getAgenda();
         Assert.assertNull(agendaResponse);
+        verify(webClient, times(1)).getAgenda();
     }
 }

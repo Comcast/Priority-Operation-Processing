@@ -33,15 +33,4 @@ public class AwsAgendaProviderClient implements AgendaClient
 
         return result == null ? null : jsonHelper.getJSONString(result);
     }
-
-    public AwsAgendaProviderClient setWebClient(CPWebClientAPI webClient)
-    {
-        this.webClient = webClient;
-        return this;
-    }
-
-    public CPWebClientAPI getWebClient()
-    {
-        return webClient;
-    }
 }

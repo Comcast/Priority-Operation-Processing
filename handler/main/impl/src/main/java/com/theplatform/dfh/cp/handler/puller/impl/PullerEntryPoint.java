@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFact
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
+import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;
@@ -22,8 +23,11 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
 {
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
 
+    // todo make constant for "/config/conf.yaml"
+
+    private PullerLaunchDataWrapper launchDataWrapper;
+
     private AgendaClientFactory agendaClientFactory;
-    private PullerConfig pullerConfig;
 
     public PullerEntryPoint(String[] args)
     {
@@ -36,19 +40,21 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     @Override
     protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
-        return new DefaultLaunchDataWrapper(new ArgumentRetriever(new PullerArgumentProvider(args)));
+        this.launchDataWrapper = new PullerLaunchDataWrapper(new ArgumentRetriever(new PullerArgumentProvider(args)));
+        return launchDataWrapper;
     }
 
     @Override
     protected BaseOperationContextFactory<PullerContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
     {
-        return new PullerContextFactory(launchDataWrapper);
+        return new PullerContextFactory
+            (this.launchDataWrapper);
     }
 
     @Override
     protected PullerProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
     {
-        return new PullerProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
+        return new PullerProcessor(this.launchDataWrapper, handlerContext, agendaClientFactory);
     }
 
     /**
@@ -85,12 +91,12 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
 
     public PullerConfig getPullerConfig()
     {
-        return pullerConfig;
+        return this.launchDataWrapper.getPullerConfig();
     }
 
     public PullerEntryPoint setPullerConfig(PullerConfig pullerConfig)
     {
-        this.pullerConfig = pullerConfig;
+        this.launchDataWrapper.setPullerConfig(pullerConfig);
         return this;
     }
 }
