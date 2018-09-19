@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.3</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.modules.http</groupId>
+    <artifactId>pl-dfh-http-util</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>HTTP connectivity Utils</name>
+</project>
