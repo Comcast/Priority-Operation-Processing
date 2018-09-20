@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
-import com.theplatform.dfh.schedule.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**
  * Basic factory interface for ObjectPersister

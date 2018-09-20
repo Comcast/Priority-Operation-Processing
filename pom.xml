@@ -18,8 +18,8 @@
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
         <endpoint-agenda.version>1.0.0-SNAPSHOT</endpoint-agenda.version>
-        <dfh.schedule.persistence.aws.version>1.0.0</dfh.schedule.persistence.aws.version>
-        <dfh.schedule.status.version.version>1.0.0</dfh.schedule.status.version.version>
+        <dfh-persistence-aws-dynamodb.version>1.0.0-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
+        <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <cp-endpoint-base>1.0.0-SNAPSHOT</cp-endpoint-base>
         <commons-text.version>1.4</commons-text.version>
     </properties>
@@ -54,14 +54,14 @@
             <version>${cp-endpoint-base}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.schedule</groupId>
-            <artifactId>pl-dfh-schedule-persistence-impl-dynamodb</artifactId>
-            <version>${dfh.schedule.persistence.aws.version}</version>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
+            <version>${dfh-persistence-aws-dynamodb.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.schedule</groupId>
-            <artifactId>pl-dfh-schedule-status-version</artifactId>
-            <version>${dfh.schedule.status.version.version}</version>
+            <groupId>com.theplatform.dfh.modules.version</groupId>
+            <artifactId>pl-dfh-module-version-info</artifactId>
+            <version>${dfh-module-version-info.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
