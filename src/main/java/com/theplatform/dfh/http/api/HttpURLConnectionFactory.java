@@ -1,4 +1,4 @@
-package com.theplatform.dfh.modules.http.api;
+package com.theplatform.dfh.http.api;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
