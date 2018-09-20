@@ -1,4 +1,4 @@
-package com.theplatform.dfh.modules.http.util;
+package com.theplatform.dfh.http.util;
 
 import java.io.*;
 import java.net.HttpURLConnection;
