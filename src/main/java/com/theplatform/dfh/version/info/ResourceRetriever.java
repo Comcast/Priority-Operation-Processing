@@ -1,4 +1,4 @@
-package com.theplatform.dfh.version;
+package com.theplatform.dfh.version.info;
 
 import java.io.IOException;
 import java.io.InputStream;

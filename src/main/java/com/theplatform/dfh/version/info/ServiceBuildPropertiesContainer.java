@@ -1,4 +1,4 @@
-package com.theplatform.dfh.version;
+package com.theplatform.dfh.version.info;
 
 import org.slf4j.Logger;
 
