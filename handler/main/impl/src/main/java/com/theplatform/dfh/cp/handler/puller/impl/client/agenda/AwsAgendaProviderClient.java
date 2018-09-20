@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.endpoint.web.client.HttpCPWebClient;
 import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.modules.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 /**
  * Use the AgendaProvider API Gateway to get an Agenda from the DynamoDB in AWS
