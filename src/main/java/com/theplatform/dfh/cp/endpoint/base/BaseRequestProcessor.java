@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.base;
 
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.ObjectPersistResponse;
-import com.theplatform.dfh.schedule.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 import java.util.UUID;
 

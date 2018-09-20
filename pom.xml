@@ -14,7 +14,7 @@
     <name>TransformRequest endpoint implementation</name>
 
     <properties>
-        <scheduling.persistence.api.version>1.0.0</scheduling.persistence.api.version>
+        <dfh-persistence-api.version>1.0.0-SNAPSHOT</dfh-persistence-api.version>
         <endpoint-api.version>1.0.0-SNAPSHOT</endpoint-api.version>
     </properties>
 
@@ -25,9 +25,9 @@
             <version>${endpoint-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.schedule</groupId>
-            <artifactId>pl-dfh-schedule-persistence-api</artifactId>
-            <version>${scheduling.persistence.api.version}</version>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${dfh-persistence-api.version}</version>
         </dependency>
 
         <!-- 3rd party -->
