@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
-import com.theplatform.dfh.schedule.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.schedule.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.modules.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.modules.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 
 

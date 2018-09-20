@@ -4,12 +4,9 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.schedule.http.api.HttpURLConnectionFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
