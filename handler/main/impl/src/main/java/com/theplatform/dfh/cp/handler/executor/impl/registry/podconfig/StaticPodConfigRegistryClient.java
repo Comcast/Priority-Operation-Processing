@@ -75,6 +75,26 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                     .setVolumeName("config-volume")
                     .setVolumeMountPath("/config"))
         );
+
+        podConfigMap.put("package",
+                new PodConfig()
+                        .setServiceAccountName("ffmpeg-service")
+                        .setMemoryRequestCount("1000m")
+                        .setCpuMinRequestCount("1000m")
+                        .setCpuMaxRequestCount("1000m")
+                        .setPodScheduledTimeoutMs(600000L)
+                        .setReapCompletedPods(true)
+                        .setPullAlways(true) // for now
+                        .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.8.5")
+                        .setNamePrefix("dfh-package")
+                        .setEndOfLogIdentifier("package_handler_end")
+                        .setConfigMapDetails(new ConfigMapDetails()
+                                .setConfigMapName("lab-main-t-aor-fhpkm-t01")
+                                .setMapKey("external-properties")
+                                .setMapPath("external.properties")
+                                .setVolumeName("config-volume")
+                                .setVolumeMountPath("/config"))
+        );
     }
 
     @Override
