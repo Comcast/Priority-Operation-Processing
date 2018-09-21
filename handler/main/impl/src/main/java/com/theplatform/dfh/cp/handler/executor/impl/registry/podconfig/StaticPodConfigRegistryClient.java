@@ -85,7 +85,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                         .setPodScheduledTimeoutMs(600000L)
                         .setReapCompletedPods(true)
                         .setPullAlways(true) // for now
-                        .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.8.5")
+                        .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.0")
                         .setNamePrefix("dfh-package")
                         .setEndOfLogIdentifier("package_handler_end")
                         .setConfigMapDetails(new ConfigMapDetails()
