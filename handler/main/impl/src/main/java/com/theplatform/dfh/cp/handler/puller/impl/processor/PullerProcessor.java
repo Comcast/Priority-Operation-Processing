@@ -31,6 +31,10 @@ public class PullerProcessor implements HandlerProcessor<Void>
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
     }
 
+    protected PullerProcessor()
+    {
+    }
+
     /**
      * Executes the ops in the Agenda in order
      * @return
@@ -61,5 +65,38 @@ public class PullerProcessor implements HandlerProcessor<Void>
         }
 
         return null;
+    }
+
+    public PullerLaunchDataWrapper getLaunchDataWrapper()
+    {
+        return launchDataWrapper;
+    }
+
+    public PullerProcessor setLaunchDataWrapper(PullerLaunchDataWrapper launchDataWrapper)
+    {
+        this.launchDataWrapper = launchDataWrapper;
+        return this;
+    }
+
+    public BaseLauncher getLauncher()
+    {
+        return launcher;
+    }
+
+    public PullerProcessor setLauncher(BaseLauncher launcher)
+    {
+        this.launcher = launcher;
+        return this;
+    }
+
+    public AgendaClient getAgendaClient()
+    {
+        return agendaClient;
+    }
+
+    public PullerProcessor setAgendaClient(AgendaClient agendaClient)
+    {
+        this.agendaClient = agendaClient;
+        return this;
     }
 }
