@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.puller.test.client.agenda;
+package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
@@ -22,7 +22,7 @@ public class AwsAgendaProviderClientTest
     private JsonHelper jsonHelper = new JsonHelper();
 
     @Test
-    void testGetAgenda()
+    public void testGetAgenda()
     {
         Agenda agenda = new Agenda();
         agenda.setId(UUID.randomUUID().toString());
@@ -38,7 +38,7 @@ public class AwsAgendaProviderClientTest
     }
 
     @Test
-    void testGetAgendaReturnsNull()
+    public void testGetAgendaReturnsNull()
     {
         CPWebClientAPI webClient = mock(CPWebClientAPI.class);
         when(webClient.getAgenda()).thenReturn(null);

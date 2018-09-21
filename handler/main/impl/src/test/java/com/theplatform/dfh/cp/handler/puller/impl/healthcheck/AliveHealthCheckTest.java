@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.puller.test.healthcheck;
+package com.theplatform.dfh.cp.handler.puller.impl.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
@@ -14,7 +14,7 @@ public class AliveHealthCheckTest
     private ExecutionContext executionContext = mock(ExecutionContext.class);
 
     @Test
-    void testThreadRunning()
+    public void testThreadRunning()
     {
         AliveHealthCheck aliveHealthCheck = new AliveHealthCheck(executionContext);
         when(executionContext.isThreadAlive()).thenReturn(true);
@@ -23,7 +23,7 @@ public class AliveHealthCheckTest
     }
 
     @Test
-    void testThreadNotRunning()
+    public void testThreadNotRunning()
     {
         AliveHealthCheck aliveHealthCheck = new AliveHealthCheck(executionContext);
         when(executionContext.isThreadAlive()).thenReturn(false);
