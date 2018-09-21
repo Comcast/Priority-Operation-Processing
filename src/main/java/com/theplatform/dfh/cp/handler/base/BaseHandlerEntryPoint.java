@@ -5,14 +5,14 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 
-public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor>
+public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
-    private LaunchDataWrapper launchDataWrapper;
+    private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
 
-    protected abstract LaunchDataWrapper createLaunchDataWrapper(String[] args);
-    protected abstract BaseOperationContextFactory<C> createOperationContextFactory(LaunchDataWrapper launchDataWrapper);
-    protected abstract P createHandlerProcessor(LaunchDataWrapper launchDataWrapper, C operationContext);
+    protected abstract W createLaunchDataWrapper(String[] args);
+    protected abstract BaseOperationContextFactory<C> createOperationContextFactory(W launchDataWrapper);
+    protected abstract P createHandlerProcessor(W launchDataWrapper, C operationContext);
 
     public BaseHandlerEntryPoint(String[] args)
     {
@@ -30,12 +30,12 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             .execute();
     }
 
-    public LaunchDataWrapper getLaunchDataWrapper()
+    public W getLaunchDataWrapper()
     {
         return launchDataWrapper;
     }
 
-    public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
+    public void setLaunchDataWrapper(W launchDataWrapper)
     {
         this.launchDataWrapper = launchDataWrapper;
     }
