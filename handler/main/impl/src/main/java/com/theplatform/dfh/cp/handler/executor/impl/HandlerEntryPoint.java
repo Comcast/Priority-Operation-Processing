@@ -10,7 +10,7 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, SequentialAgendaProcessor>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, SequentialAgendaProcessor, DefaultLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -40,19 +40,19 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Se
     }
 
     @Override
-    protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
+    protected DefaultLaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
         return new DefaultLaunchDataWrapper(args);
     }
 
     @Override
-    protected BaseOperationContextFactory<ExecutorContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<ExecutorContext> createOperationContextFactory(DefaultLaunchDataWrapper launchDataWrapper)
     {
         return new ExecutorContextFactory(launchDataWrapper);
     }
 
     @Override
-    protected SequentialAgendaProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    protected SequentialAgendaProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
         return new SequentialAgendaProcessor(launchDataWrapper, executorContext);
     }
