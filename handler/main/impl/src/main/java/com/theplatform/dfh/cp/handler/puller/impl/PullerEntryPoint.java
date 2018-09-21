@@ -19,13 +19,11 @@ import com.theplatform.dfh.cp.handler.puller.impl.retriever.PullerArgumentProvid
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor>
+public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor, PullerLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
 
-    // todo make constant for "/config/conf.yaml"
-
-    private PullerLaunchDataWrapper launchDataWrapper;
+    private static final String DEFAULT_CONF_PATH = "/config/conf.yaml";
 
     private AgendaClientFactory agendaClientFactory;
 
@@ -38,23 +36,21 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     }
 
     @Override
-    protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
+    protected PullerLaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
-        this.launchDataWrapper = new PullerLaunchDataWrapper(new ArgumentRetriever(new PullerArgumentProvider(args)));
-        return launchDataWrapper;
+        return new PullerLaunchDataWrapper(new ArgumentRetriever(new PullerArgumentProvider(args)));
     }
 
     @Override
-    protected BaseOperationContextFactory<PullerContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<PullerContext> createOperationContextFactory(PullerLaunchDataWrapper launchDataWrapper)
     {
-        return new PullerContextFactory
-            (this.launchDataWrapper);
+        return new PullerContextFactory(launchDataWrapper);
     }
 
     @Override
-    protected PullerProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
+    protected PullerProcessor createHandlerProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
     {
-        return new PullerProcessor(this.launchDataWrapper, handlerContext, agendaClientFactory);
+        return new PullerProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
     }
 
     /**
@@ -73,7 +69,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     {
         PullerEntryPoint pullerEntryPoint = new PullerEntryPoint(args);
         FieldRetriever argumentRetriever = pullerEntryPoint.getLaunchDataWrapper().getArgumentRetriever();
-        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, "/config/conf.yaml");
+        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, DEFAULT_CONF_PATH);
         String[] args2 = new String[] {"server", confPath};
         new PullerApp(pullerEntryPoint).run(args2);
     }
@@ -91,12 +87,12 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
 
     public PullerConfig getPullerConfig()
     {
-        return this.launchDataWrapper.getPullerConfig();
+        return getLaunchDataWrapper().getPullerConfig();
     }
 
     public PullerEntryPoint setPullerConfig(PullerConfig pullerConfig)
     {
-        this.launchDataWrapper.setPullerConfig(pullerConfig);
+        getLaunchDataWrapper().setPullerConfig(pullerConfig);
         return this;
     }
 }
