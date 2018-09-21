@@ -10,7 +10,7 @@ import com.theplatform.dfh.cp.handler.sample.impl.processor.SampleActionProcesso
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, SampleActionProcessor>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, SampleActionProcessor, DefaultLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -36,19 +36,19 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, S
     }
 
     @Override
-    protected LaunchDataWrapper createLaunchDataWrapper(String[] args)
+    protected DefaultLaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
         return new DefaultLaunchDataWrapper(args);
     }
 
     @Override
-    protected BaseOperationContextFactory<OperationContext> createOperationContextFactory(LaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<OperationContext> createOperationContextFactory(DefaultLaunchDataWrapper launchDataWrapper)
     {
         return new OperationContextFactory(launchDataWrapper);
     }
 
     @Override
-    protected SampleActionProcessor createHandlerProcessor(LaunchDataWrapper launchDataWrapper, OperationContext operationContext)
+    protected SampleActionProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, OperationContext operationContext)
     {
         return new SampleActionProcessor(launchDataWrapper, operationContext);
     }
