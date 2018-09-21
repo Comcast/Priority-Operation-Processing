@@ -30,7 +30,9 @@ public class PullerProcessorTest
     {
         return new Object[][]
             {
-                {null, 0}
+                {null, 0},
+                {"", 0},
+                {"foo", 1}
             };
     }
 
@@ -46,12 +48,13 @@ public class PullerProcessorTest
 
         BaseLauncher launcherMock = mock(BaseLauncher.class);
         PullerLaunchDataWrapper launchDataWrapper = mock(PullerLaunchDataWrapper.class);
-        doReturn(pullerConfig).when(launchDataWrapper).getPayload();
+        doReturn(pullerConfig).when(launchDataWrapper).getPullerConfig();
 
         PullerProcessor pullerProcessor = new PullerProcessor();
         pullerProcessor.setAgendaClient(clientMock);
         pullerProcessor.setLauncher(launcherMock);
         pullerProcessor.setLaunchDataWrapper(launchDataWrapper);
+        pullerProcessor.execute();
 
         verify(launcherMock, times(executeCalls)).execute(agenda);
     }

@@ -41,7 +41,6 @@ public class PullerProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
-        // todo add unit test for when agendaClient returns badness
         String agenda = agendaClient.getAgenda();
 
         if (agenda != null && agenda.length() > 0)

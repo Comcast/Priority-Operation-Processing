@@ -12,12 +12,9 @@ public class PullerExecution
 
     public PullerExecution(PullerEntryPoint pullerEntryPoint)
     {
-        int pullWait = pullerEntryPoint.getPullerConfig().getPullWait();
-
         Runnable executePuller = () -> {
             for (;;)
             {
-                // todo unit test: loops a couple times and then aborts
                 logger.info("Executing Puller");
                 pullerEntryPoint.execute();
             }

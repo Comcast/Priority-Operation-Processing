@@ -18,4 +18,10 @@ public class ExecutionContext
     {
         return pullerThread.isAlive();
     }
+
+    @Deprecated
+    public void stopThread()
+    {
+        pullerThread.stop();
+    }
 }
