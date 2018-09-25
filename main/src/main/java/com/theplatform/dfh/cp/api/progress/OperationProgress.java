@@ -1,11 +1,10 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import java.net.URI;
 import java.util.Date;
 
 public class OperationProgress
 {
-    private URI id;
+    private String id;
     private OperationStatus status;
     private Long progress;
     private String title;
@@ -18,12 +17,12 @@ public class OperationProgress
     private Date completed;
     private String payload;
 
-    public URI getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(URI id)
+    public void setId(String id)
     {
         this.id = id;
     }
