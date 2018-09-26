@@ -210,11 +210,13 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         {
             if(logLineAccumulator.isAllLogDataRequired() && finalPodPhaseInfo != null)
             {
-                logger.warn("Waited to long. Truncating our wait for log data.");
+                logger.warn("Waited too long. Truncating our wait for log data.");
                 logLineAccumulator.forceCompletion();
             }
+        } else
+        {
+            setupLogObserveration();
         }
-        setupLogObserveration();
     }
 
     public void setPodClient(PodResource<Pod, DoneablePod> podClient)
