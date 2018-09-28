@@ -1,20 +1,21 @@
 package com.theplatform.dfh.cp.api.progress;
 
+import com.theplatform.dfh.cp.api.IdentifiedObject;
+
 import java.util.Date;
 
-public class OperationProgress
+public class OperationProgress implements IdentifiedObject
 {
     private String id;
+    private String jobProgressId;
     private OperationStatus status;
-    private Long progress;
-    private String title;
-    private String lastErrorCode;
-    private String lastErrorMessage;
-    private Date lastErrorTime;
+    private Double percentComplete;
+    private String operation;
+    private String diagnosticId;
     private int attemptCount;
     private Date attemptTime;
-    private Date started;
-    private Date completed;
+    private Date startedTime;
+    private Date completedTime;
     private String payload;
 
     public String getId()
@@ -27,6 +28,16 @@ public class OperationProgress
         this.id = id;
     }
 
+    public String getJobProgressId()
+    {
+        return jobProgressId;
+    }
+
+    public void setJobProgressId(String jobProgressId)
+    {
+        this.jobProgressId = jobProgressId;
+    }
+
     public OperationStatus getStatus()
     {
         return status;
@@ -37,54 +48,34 @@ public class OperationProgress
         this.status = status;
     }
 
-    public Long getProgress()
+    public Double getPercentComplete()
     {
-        return progress;
+        return percentComplete;
     }
 
-    public void setProgress(Long progress)
+    public void setPercentComplete(Double percentComplete)
     {
-        this.progress = progress;
+        this.percentComplete = percentComplete;
     }
 
-    public String getTitle()
+    public String getOperation()
     {
-        return title;
+        return operation;
     }
 
-    public void setTitle(String title)
+    public void setOperation(String operation)
     {
-        this.title = title;
+        this.operation = operation;
     }
 
-    public String getLastErrorCode()
+    public String getDiagnosticId()
     {
-        return lastErrorCode;
+        return diagnosticId;
     }
 
-    public void setLastErrorCode(String lastErrorCode)
+    public void setDiagnosticId(String diagnosticId)
     {
-        this.lastErrorCode = lastErrorCode;
-    }
-
-    public String getLastErrorMessage()
-    {
-        return lastErrorMessage;
-    }
-
-    public void setLastErrorMessage(String lastErrorMessage)
-    {
-        this.lastErrorMessage = lastErrorMessage;
-    }
-
-    public Date getLastErrorTime()
-    {
-        return lastErrorTime;
-    }
-
-    public void setLastErrorTime(Date lastErrorTime)
-    {
-        this.lastErrorTime = lastErrorTime;
+        this.diagnosticId = diagnosticId;
     }
 
     public int getAttemptCount()
@@ -107,24 +98,24 @@ public class OperationProgress
         this.attemptTime = attemptTime;
     }
 
-    public Date getStarted()
+    public Date getStartedTime()
     {
-        return started;
+        return startedTime;
     }
 
-    public void setStarted(Date started)
+    public void setStartedTime(Date startedTime)
     {
-        this.started = started;
+        this.startedTime = startedTime;
     }
 
-    public Date getCompleted()
+    public Date getCompletedTime()
     {
-        return completed;
+        return completedTime;
     }
 
-    public void setCompleted(Date completed)
+    public void setCompletedTime(Date completedTime)
     {
-        this.completed = completed;
+        this.completedTime = completedTime;
     }
 
     public String getPayload()

@@ -10,12 +10,13 @@ public class JobProgress implements IdentifiedObject
 {
     private String id;
     private String jobId;
-    private JobStatus status;
-    private Date added;
-    private Date started;
-    private Date completed;
-    private Long percentComplete;
-    private OperationProgress[] operationProgresses;
+    private JobStatus jobStatus;
+    private Date updatedTime;
+    private Date addedTime;
+    private Date startedTime;
+    private Date completedTime;
+    private Double percentComplete;
+    private OperationProgress[] operationProgresses;   // todo this is not plural in the doc
     private boolean halted;
     private ConclusionStatus conclusionStatus;
 
@@ -26,8 +27,8 @@ public class JobProgress implements IdentifiedObject
     public JobProgress(String jobId)
     {
         this.jobId = jobId;
-        this.status = JobStatus.INITIALIZE_QUEUED;
-        this.added = new Date();
+        this.jobStatus = JobStatus.INITIALIZE_QUEUED;
+        this.addedTime = new Date();
     }
 
     public String getId()
@@ -50,52 +51,62 @@ public class JobProgress implements IdentifiedObject
         this.jobId = jobId;
     }
 
-    public JobStatus getStatus()
+    public JobStatus getJobStatus()
     {
-        return status;
+        return jobStatus;
     }
 
-    public void setStatus(JobStatus status)
+    public void setJobStatus(JobStatus jobStatus)
     {
-        this.status = status;
+        this.jobStatus = jobStatus;
     }
 
-    public Date getAdded()
+    public Date getUpdatedTime()
     {
-        return added;
+        return updatedTime;
     }
 
-    public void setAdded(Date added)
+    public void setUpdatedTime(Date updatedTime)
     {
-        this.added = added;
+        this.updatedTime = updatedTime;
     }
 
-    public Date getStarted()
+    public Date getAddedTime()
     {
-        return started;
+        return addedTime;
     }
 
-    public void setStarted(Date started)
+    public void setAddedTime(Date addedTime)
     {
-        this.started = started;
+        this.addedTime = addedTime;
     }
 
-    public Date getCompleted()
+    public Date getStartedTime()
     {
-        return completed;
+        return startedTime;
     }
 
-    public void setCompleted(Date completed)
+    public void setStartedTime(Date startedTime)
     {
-        this.completed = completed;
+        this.startedTime = startedTime;
     }
 
-    public Long getPercentComplete()
+    public Date getCompletedTime()
+    {
+        return completedTime;
+    }
+
+    public void setCompletedTime(Date completedTime)
+    {
+        this.completedTime = completedTime;
+    }
+
+    public Double getPercentComplete()
     {
         return percentComplete;
     }
 
-    public void setPercentComplete(Long percentComplete)
+    public void setPercentComplete(Double percentComplete)
     {
         this.percentComplete = percentComplete;
     }
@@ -132,10 +143,10 @@ public class JobProgress implements IdentifiedObject
 
     public void runComplete()
     {
-        setCompleted(new Date());
+        setCompletedTime(new Date());
         setConclusionStatus(ConclusionStatus.succeeded);
-        setPercentComplete(100L);
-        setStatus(JobStatus.RUN_COMPLETE);
+        setPercentComplete(100.0);
+        setJobStatus(JobStatus.RUN_COMPLETE);
     }
 
     @Override
@@ -150,13 +161,13 @@ public class JobProgress implements IdentifiedObject
             return false;
         }
         JobProgress that = (JobProgress) o;
-        return isHalted() == that.isHalted() &&
-            Objects.equals(getId(), that.getId()) &&
+        return Objects.equals(getId(), that.getId()) &&
             Objects.equals(getJobId(), that.getJobId()) &&
-            getStatus() == that.getStatus() &&
-            Objects.equals(getAdded(), that.getAdded()) &&
-            Objects.equals(getStarted(), that.getStarted()) &&
-            Objects.equals(getCompleted(), that.getCompleted()) &&
+            getJobStatus() == that.getJobStatus() &&
+            Objects.equals(getAddedTime(), that.getAddedTime()) &&
+            Objects.equals(getUpdatedTime(), that.getUpdatedTime()) &&
+            Objects.equals(getStartedTime(), that.getStartedTime()) &&
+            Objects.equals(getCompletedTime(), that.getCompletedTime()) &&
             Objects.equals(getPercentComplete(), that.getPercentComplete()) &&
             Arrays.equals(getOperationProgresses(), that.getOperationProgresses()) &&
             getConclusionStatus() == that.getConclusionStatus();
@@ -166,7 +177,8 @@ public class JobProgress implements IdentifiedObject
     public int hashCode()
     {
 
-        int result = Objects.hash(getId(), getJobId(), getStatus(), getAdded(), getStarted(), getCompleted(), getPercentComplete(), isHalted(), getConclusionStatus());
+        int result = Objects.hash(getId(), getJobId(), getJobStatus(), getUpdatedTime(), getAddedTime(), getStartedTime(), getCompletedTime(), getPercentComplete(),
+            getConclusionStatus());
         result = 31 * result + Arrays.hashCode(getOperationProgresses());
         return result;
     }
