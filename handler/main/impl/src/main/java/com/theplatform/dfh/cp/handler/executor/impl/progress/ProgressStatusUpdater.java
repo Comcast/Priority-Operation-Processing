@@ -32,13 +32,13 @@ public class ProgressStatusUpdater
         {
             JobProgress progress = jobProgressClient.getObject(progressId);
             // This is a hack
-            if(progress.getStatus() == null || progress.getStatus() == JobStatus.INITIALIZE_EXECUTING)
+            if(progress.getJobStatus() == null || progress.getJobStatus() == JobStatus.INITIALIZE_EXECUTING)
             {
-                progress.setStatus(JobStatus.INITIALIZE_COMPLETE);
+                progress.setJobStatus(JobStatus.INITIALIZE_COMPLETE);
             }
             else
             {
-                progress.setStatus(JobStatus.RUN_COMPLETE);
+                progress.setJobStatus(JobStatus.RUN_COMPLETE);
             }
             jobProgressClient.updateObject(progress);
         }
