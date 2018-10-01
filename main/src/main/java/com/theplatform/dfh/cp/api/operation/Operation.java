@@ -1,12 +1,14 @@
 package com.theplatform.dfh.cp.api.operation;
 
+import com.theplatform.dfh.cp.api.params.ParamsMap;
+
 public class Operation
 {
-    // TODO: should this be a set or other type?
     private Object payload;
     private String type;
     private String id;
     private String name;
+    private ParamsMap params;
 
     public Object getPayload()
     {
@@ -46,5 +48,15 @@ public class Operation
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public ParamsMap getParams()
+    {
+        return params;
+    }
+
+    public void setParams(ParamsMap params)
+    {
+        this.params = params;
     }
 }
