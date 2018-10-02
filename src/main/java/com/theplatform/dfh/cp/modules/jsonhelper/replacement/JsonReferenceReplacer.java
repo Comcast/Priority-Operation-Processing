@@ -273,6 +273,21 @@ public class JsonReferenceReplacer
     }
 
     /**
+     * Returns the name of the reference by matching a full reference specification
+     * @param reference The reference to attempt to parse
+     * @return The name of the reference or null if unable to parse
+     */
+    public String getReferenceName(String reference)
+    {
+        Matcher matcher = getMatcher(reference);
+        if (matcher.matches())
+        {
+            return matcher.group(REFERENCE_GROUP);
+        }
+        return null;
+    }
+
+    /**
      * Wrapper for JsonNode providing parent and id information. JsonNode by default has neither.
      */
     private static class JsonNodeWrapper

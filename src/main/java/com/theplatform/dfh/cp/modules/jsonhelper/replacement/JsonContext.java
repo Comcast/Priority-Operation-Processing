@@ -53,8 +53,13 @@ public class JsonContext
         this.contextMap = contextMap;
     }
 
-    public void setJsonReferenceReplacer(JsonReferenceReplacer jsonReferenceReplacer)
+    protected void setJsonReferenceReplacer(JsonReferenceReplacer jsonReferenceReplacer)
     {
         this.jsonReferenceReplacer = jsonReferenceReplacer;
+    }
+
+    public JsonReferenceReplacer getJsonReferenceReplacer()
+    {
+        return jsonReferenceReplacer;
     }
 }
