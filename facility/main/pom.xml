@@ -20,9 +20,15 @@
         <fasterxml.jackson.core.version>2.7.0</fasterxml.jackson.core.version>
         <fasterxml.jackson.core.databind.version>2.7.4</fasterxml.jackson.core.databind.version>
         <commons-io.version>2.6</commons-io.version>
+        <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
