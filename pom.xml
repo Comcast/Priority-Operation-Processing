@@ -18,6 +18,7 @@
         <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
         <reporter-api.version>1.0.0-SNAPSHOT</reporter-api.version>
         <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
+        <handler-reporter-progress.version>1.0.0-SNAPSHOT</handler-reporter-progress.version>
         <testng.version>6.9.10</testng.version>
         <mockito.version>1.9.5</mockito.version>
         <commons-lang3.version>3.7</commons-lang3.version>
@@ -30,6 +31,11 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-retriever</artifactId>
             <version>${field-retriever.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-reporter-progress</artifactId>
+            <version>${handler-reporter-progress.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
