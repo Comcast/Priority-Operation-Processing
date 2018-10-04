@@ -54,8 +54,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
             throw new RuntimeException("Failed to load payload.", e);
         }
 
-        reporter.reportProgress(handlerInput);
-
         List<SampleAction> sampleActionList = handlerInput.getActions();
         // TODO: foreach exception handling check / test
         if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
