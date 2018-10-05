@@ -1,42 +1,37 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.ProgressStatusUpdaterFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Basic test/local/prototype processor for running the Agenda
+ * TODO: this can be completely replaced with the ParallelOperationAgendaProcessor (by specifying a thread pool of 1)
  */
-public class SequentialAgendaProcessor implements HandlerProcessor<Void>
+public class SequentialAgendaProcessor extends BaseAgendaProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(SequentialAgendaProcessor.class);
 
-    private static final String OUTPUT_SUFFIX = ".out";
-    private LaunchDataWrapper launchDataWrapper;
-    private ExecutorContext executorContext;
-    private JsonHelper jsonHelper;
-    private ProgressStatusUpdaterFactory progressStatusUpdaterFactory;
-
-    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
-    {
-        this(launchDataWrapper, executorContext, new ProgressStatusUpdaterFactory(launchDataWrapper));
-    }
+    private OperationRunnerFactory operationRunnerFactory;
+    private JsonContextUpdater jsonContextUpdater;
+    private Set<OperationWrapper> completedOperations;
 
     public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext, ProgressStatusUpdaterFactory progressStatusUpdaterFactory)
     {
-        this.launchDataWrapper = launchDataWrapper;
-        this.executorContext = executorContext;
-        this.progressStatusUpdaterFactory = progressStatusUpdaterFactory;
-        this.jsonHelper = new JsonHelper();
+        super(launchDataWrapper, executorContext, progressStatusUpdaterFactory);
+        operationRunnerFactory = new OperationRunnerFactory();
+        jsonContextUpdater = new JsonContextUpdater(executorContext);
+        completedOperations = new HashSet<>();
     }
 
     /**
@@ -80,43 +75,38 @@ public class SequentialAgendaProcessor implements HandlerProcessor<Void>
         }
 
         progressStatusUpdaterFactory.createProgressStatusUpdater(handlerInput).updateProgress();
-        logger.info("ExecutorComplete");
         return null;
     }
 
+    /**
+     * Executes the specific operation on the current thread
+     * @param operation The operation to execute
+     */
     protected void executeOperation(Operation operation)
     {
-        try
+        OperationWrapper operationWrapper = new OperationWrapper(operation).init(executorContext, jsonContextUpdater);
+        Set<String> completedOperationNames = completedOperations.stream().map(x -> x.getOperation().getName()).collect(Collectors.toSet());
+        if(operationWrapper.isReady(executorContext, completedOperationNames))
         {
-            // TODO: Use the information about missing/invalid references.
-            ReferenceReplacementResult result = executorContext.getJsonContext().processReferences(operation.getPayload());
-
-            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operation);
-            String contextKey = operation.getName() + OUTPUT_SUFFIX;
-            String outputPayload = executor.execute(result.getResult());
-            logger.info("Persisting ContextKey: [{}] OperationId: [{}] with OUTPUT Payload: {}", contextKey, operation.getId(), outputPayload);
-            executorContext.getJsonContext().addData(contextKey, outputPayload);
+            operationRunnerFactory.createOperationRunner(operationWrapper, executorContext, new OnOperationCompleteListener()
+            {
+                @Override
+                public void onComplete(OperationWrapper operationWrapper)
+                {
+                    jsonContextUpdater.onComplete(operationWrapper);
+                    completedOperations.add(operationWrapper);
+                }
+            }).run();
         }
-        catch(Throwable t)
+        else
         {
-            throw new AgendaExecutorException(
-                String.format("Failed to execute operation: %1$s", operation == null ? "unknown!" : operation.getName())
-                , t);
+            throw new AgendaExecutorException("An operation dependency is missing. The sequential executor does not support this.");
         }
     }
 
-    public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
+    public void setOperationRunnerFactory(OperationRunnerFactory operationRunnerFactory)
     {
-        this.launchDataWrapper = launchDataWrapper;
+        this.operationRunnerFactory = operationRunnerFactory;
     }
 
-    public void setExecutorContext(ExecutorContext executorContext)
-    {
-        this.executorContext = executorContext;
-    }
-
-    public void setJsonHelper(JsonHelper jsonHelper)
-    {
-        this.jsonHelper = jsonHelper;
-    }
 }

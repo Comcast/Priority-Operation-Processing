@@ -4,13 +4,16 @@ import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.BaseAgendaProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.SequentialAgendaProcessor;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.parallel.ParallelOperationAgendaProcessor;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.ProgressStatusUpdaterFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, SequentialAgendaProcessor, DefaultLaunchDataWrapper>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, BaseAgendaProcessor, DefaultLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -37,6 +40,7 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Se
         //logger.debug(System.getProperty("user.dir"));
         logger.info(String.join("\n", args));
         new HandlerEntryPoint(args).execute();
+        logger.info("ExecutorComplete");
     }
 
     @Override
@@ -52,8 +56,10 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Se
     }
 
     @Override
-    protected SequentialAgendaProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    protected BaseAgendaProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
-        return new SequentialAgendaProcessor(launchDataWrapper, executorContext);
+        return new SequentialAgendaProcessor(launchDataWrapper, executorContext, new ProgressStatusUpdaterFactory(launchDataWrapper));
+        // TODO: when ready we'll switch over (right now the sequence would need to use the yet-to-be-implemented dependsOn functionality)
+        //return new ParallelOperationAgendaProcessor(launchDataWrapper, executorContext);
     }
 }

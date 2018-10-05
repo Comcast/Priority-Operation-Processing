@@ -1,0 +1,66 @@
+{
+  "id": "theAgenda",
+  "params": {
+    "param.1": "one",
+    "param.2": "two"
+  },
+  "operations": [
+    {
+      "id": "01",
+      "name": "sample.1",
+      "type": "residentSample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 4000,
+              "logMessage": "This is a custom log message"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "firstAction"
+        }
+      }
+    },
+    {
+      "id": "02",
+      "name": "sample.2",
+      "type": "residentSample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 2000,
+              "logMessage": "@@sample.1.out::/actionData"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "secondAction"
+        }
+      }
+    },
+    {
+      "id": "03",
+      "name": "sample.3",
+      "type": "residentSample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 1000,
+              "logMessage": "@@sample.2.out::/actionData"
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "thirdAction"
+        }
+      }
+    }
+  ]
+}

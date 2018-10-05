@@ -28,6 +28,12 @@ public class ProgressStatusUpdater
 
     public void updateProgress()
     {
+        if(progressId == null)
+        {
+            logger.warn("ProgressId is null. Unable to adjust status.");
+            return;
+        }
+
         try
         {
             JobProgress progress = jobProgressClient.getObject(progressId);
