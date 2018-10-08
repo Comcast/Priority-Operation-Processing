@@ -7,15 +7,21 @@ import java.util.Date;
 public class OperationProgress implements IdentifiedObject
 {
     private String id;
-    private String jobProgressId;
-    private OperationStatus status;
-    private Double percentComplete;
+    private String agendaProgressId;
+    private ProcessingState processingState;
+    private String processingStateMessage;
     private String operation;
     private String diagnosticId;
     private int attemptCount;
     private Date attemptTime;
     private Date startedTime;
     private Date completedTime;
+    private String resultPayload;
+
+    // deprecated fields
+    private String jobProgressId;
+    private OperationStatus status;
+    private Double percentComplete;
     private String payload;
 
     public String getId()
@@ -26,6 +32,36 @@ public class OperationProgress implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getAgendaProgressId()
+    {
+        return agendaProgressId;
+    }
+
+    public void setAgendaProgressId(String agendaProgressId)
+    {
+        this.agendaProgressId = agendaProgressId;
+    }
+
+    public ProcessingState getProcessingState()
+    {
+        return processingState;
+    }
+
+    public void setProcessingState(ProcessingState processingState)
+    {
+        this.processingState = processingState;
+    }
+
+    public String getProcessingStateMessage()
+    {
+        return processingStateMessage;
+    }
+
+    public void setProcessingStateMessage(String processingStateMessage)
+    {
+        this.processingStateMessage = processingStateMessage;
     }
 
     public String getJobProgressId()
@@ -116,6 +152,16 @@ public class OperationProgress implements IdentifiedObject
     public void setCompletedTime(Date completedTime)
     {
         this.completedTime = completedTime;
+    }
+
+    public String getResultPayload()
+    {
+        return resultPayload;
+    }
+
+    public void setResultPayload(String resultPayload)
+    {
+        this.resultPayload = resultPayload;
     }
 
     public String getPayload()

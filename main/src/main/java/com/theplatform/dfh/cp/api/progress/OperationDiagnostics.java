@@ -10,9 +10,9 @@ public class OperationDiagnostics implements IdentifiedObject
 {
 
     private String id;
-    private String lastErrorCode;
-    private String lastErrorMessage;
-    private Date lastErrorTime;
+    private String errorCode;
+    private String errorMessage;
+    private Date errorTime;
     private Integer attempt;
     private Date attemptTime;
 
@@ -29,34 +29,34 @@ public class OperationDiagnostics implements IdentifiedObject
         this.id = id;
     }
 
-    public String getLastErrorCode()
+    public String getErrorCode()
     {
-        return lastErrorCode;
+        return errorCode;
     }
 
-    public void setLastErrorCode(String lastErrorCode)
+    public void setErrorCode(String errorCode)
     {
-        this.lastErrorCode = lastErrorCode;
+        this.errorCode = errorCode;
     }
 
-    public String getLastErrorMessage()
+    public String getErrorMessage()
     {
-        return lastErrorMessage;
+        return errorMessage;
     }
 
-    public void setLastErrorMessage(String lastErrorMessage)
+    public void setErrorMessage(String errorMessage)
     {
-        this.lastErrorMessage = lastErrorMessage;
+        this.errorMessage = errorMessage;
     }
 
-    public Date getLastErrorTime()
+    public Date getErrorTime()
     {
-        return lastErrorTime;
+        return errorTime;
     }
 
-    public void setLastErrorTime(Date lastErrorTime)
+    public void setErrorTime(Date errorTime)
     {
-        this.lastErrorTime = lastErrorTime;
+        this.errorTime = errorTime;
     }
 
     public Integer getAttempt()
