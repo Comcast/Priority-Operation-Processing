@@ -13,24 +13,24 @@ public class ProgressStatusUpdaterFactory
     public static final String IDM_URL_FIELD = "idm.url";
     public static final String IDM_USER = "idm.service.user.name";
     public static final String IDM_ENCRYPTED_PASS = "idm.service.user.encryptedpass";
-    public static final String JOB_PROGRESS_URL = "job.progress.url";
+    public static final String AGENDA_PROGRESS_URL = "agenda.progress.url";
 
-    private final String jobProgressUrl;
+    private final String agendaProgressUrl;
     private final HttpURLConnectionFactory httpURLConnectionFactory;
 
     public ProgressStatusUpdaterFactory(LaunchDataWrapper launchDataWrapper)
     {
         this.httpURLConnectionFactory = createIDMHTTPUrlConnectionFactory(launchDataWrapper.getPropertyRetriever());
-        this.jobProgressUrl = launchDataWrapper.getPropertyRetriever().getField(JOB_PROGRESS_URL);
-        if(jobProgressUrl == null)
+        this.agendaProgressUrl = launchDataWrapper.getPropertyRetriever().getField(AGENDA_PROGRESS_URL);
+        if(agendaProgressUrl == null)
         {
-            throw new HttpRequestHandlerException("Invalid JobProgress url.");
+            throw new HttpRequestHandlerException("Invalid AgendaProgress url.");
         }
     }
 
     public ProgressStatusUpdater createProgressStatusUpdater(Agenda agenda)
     {
-        return new ProgressStatusUpdater(jobProgressUrl, httpURLConnectionFactory, agenda);
+        return new ProgressStatusUpdater(agendaProgressUrl, httpURLConnectionFactory, agenda);
     }
 
     protected static IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever fieldRetriever)

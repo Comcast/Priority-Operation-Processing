@@ -2,8 +2,8 @@ package com.theplatform.dfh.cp.handler.executor.impl.progress;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
-import com.theplatform.dfh.cp.api.progress.JobProgress;
-import com.theplatform.dfh.cp.api.progress.JobStatus;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.slf4j.Logger;
@@ -14,15 +14,15 @@ public class ProgressStatusUpdater
     private static Logger logger = LoggerFactory.getLogger(ProgressStatusUpdater.class);
 
     private final String progressId;
-    private final HttpCPObjectClient<JobProgress> jobProgressClient;
+    private final HttpCPObjectClient<AgendaProgress> agendaProgressClient;
 
-    public ProgressStatusUpdater(String jobProgressUrl, HttpURLConnectionFactory httpURLConnectionFactory, Agenda agenda)
+    public ProgressStatusUpdater(String agendaProgressUrl, HttpURLConnectionFactory httpURLConnectionFactory, Agenda agenda)
     {
         progressId = agenda.getParams() == null ? null : agenda.getParams().getString(GeneralParamKey.progressId);
-        this.jobProgressClient = new HttpCPObjectClient<>(
-            jobProgressUrl,
+        this.agendaProgressClient = new HttpCPObjectClient<>(
+            agendaProgressUrl,
             httpURLConnectionFactory,
-            JobProgress.class
+            AgendaProgress.class
         );
     }
 
@@ -36,17 +36,9 @@ public class ProgressStatusUpdater
 
         try
         {
-            JobProgress progress = jobProgressClient.getObject(progressId);
-            // This is a hack
-            if(progress.getJobStatus() == null || progress.getJobStatus() == JobStatus.INITIALIZE_EXECUTING)
-            {
-                progress.setJobStatus(JobStatus.INITIALIZE_COMPLETE);
-            }
-            else
-            {
-                progress.setJobStatus(JobStatus.RUN_COMPLETE);
-            }
-            jobProgressClient.updateObject(progress);
+            AgendaProgress progress = agendaProgressClient.getObject(progressId);
+            progress.setProcessingState(ProcessingState.COMPLETE);
+            agendaProgressClient.updateObject(progress);
         }
         catch(Exception e)
         {
