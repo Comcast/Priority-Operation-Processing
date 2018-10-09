@@ -89,17 +89,6 @@
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-puller-api</artifactId>
-            <version>${puller-handler-api.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
             <version>${kubernetes-reporter.version}</version>
         </dependency>
