@@ -18,12 +18,6 @@ public class OperationProgress implements IdentifiedObject
     private Date completedTime;
     private String resultPayload;
 
-    // deprecated fields
-    private String jobProgressId;
-    private OperationStatus status;
-    private Double percentComplete;
-    private String payload;
-
     public String getId()
     {
         return id;
@@ -62,36 +56,6 @@ public class OperationProgress implements IdentifiedObject
     public void setProcessingStateMessage(String processingStateMessage)
     {
         this.processingStateMessage = processingStateMessage;
-    }
-
-    public String getJobProgressId()
-    {
-        return jobProgressId;
-    }
-
-    public void setJobProgressId(String jobProgressId)
-    {
-        this.jobProgressId = jobProgressId;
-    }
-
-    public OperationStatus getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(OperationStatus status)
-    {
-        this.status = status;
-    }
-
-    public Double getPercentComplete()
-    {
-        return percentComplete;
-    }
-
-    public void setPercentComplete(Double percentComplete)
-    {
-        this.percentComplete = percentComplete;
     }
 
     public String getOperation()
@@ -162,15 +126,5 @@ public class OperationProgress implements IdentifiedObject
     public void setResultPayload(String resultPayload)
     {
         this.resultPayload = resultPayload;
-    }
-
-    public String getPayload()
-    {
-        return payload;
-    }
-
-    public void setPayload(String payload)
-    {
-        this.payload = payload;
     }
 }
