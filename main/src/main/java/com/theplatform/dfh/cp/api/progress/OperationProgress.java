@@ -11,7 +11,7 @@ public class OperationProgress implements IdentifiedObject
     private ProcessingState processingState;
     private String processingStateMessage;
     private String operation;
-    private String diagnosticId;
+    private OperationDiagnostics[] diagnostics;
     private int attemptCount;
     private Date attemptTime;
     private Date startedTime;
@@ -68,16 +68,6 @@ public class OperationProgress implements IdentifiedObject
         this.operation = operation;
     }
 
-    public String getDiagnosticId()
-    {
-        return diagnosticId;
-    }
-
-    public void setDiagnosticId(String diagnosticId)
-    {
-        this.diagnosticId = diagnosticId;
-    }
-
     public int getAttemptCount()
     {
         return attemptCount;
@@ -126,5 +116,15 @@ public class OperationProgress implements IdentifiedObject
     public void setResultPayload(String resultPayload)
     {
         this.resultPayload = resultPayload;
+    }
+
+    public OperationDiagnostics[] getDiagnostics()
+    {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(OperationDiagnostics[] diagnostics)
+    {
+        this.diagnostics = diagnostics;
     }
 }
