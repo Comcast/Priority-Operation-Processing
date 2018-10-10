@@ -1,0 +1,31 @@
+{
+  "actions": [
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 5000,
+        "logMessage": "This is a custom log message",
+        "exceptionMessage": "This is a custom exception message."
+      }
+    },
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 4000,
+        "logMessage": "This is a custom log message",
+        "exceptionMessage": "This is a custom exception message."
+      }
+    },
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 4000,
+        "logMessage": "This is a custom log message",
+        "exceptionMessage": "This is a custom exception message."
+      }
+    }
+  ],
+  "resultPayload": {
+    "data": "someData"
+  }
+}

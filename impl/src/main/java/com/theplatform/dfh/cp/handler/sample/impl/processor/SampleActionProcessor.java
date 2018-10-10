@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
+import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
@@ -41,29 +41,34 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
-        SampleInput handlerInput;
-
-        Reporter reporter = operationContext.getReporter();
+        // TODO: can probably centralize the init/try/finally/shutdown
+        operationContext.init();
 
         try
         {
-            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
+            OperationProgressReporter reporter = operationContext.getOperationProgressReporter();
+            SampleInput handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
+            List<SampleAction> sampleActionList = handlerInput.getActions();
+            // TODO: foreach exception handling check / test
+            if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
+
+            // the result is always the payload indicated on the input
+            reporter.addCompleteOperationProgress(100d, handlerInput.getResultPayload());
+            // TODO: consider pushing this into the base context
         }
         catch(Exception e)
         {
-            throw new RuntimeException("Failed to load payload.", e);
+            // TODO: handlers should exit gracefully...
+            throw new RuntimeException("Failed to load/execute payload.", e);
         }
-
-        List<SampleAction> sampleActionList = handlerInput.getActions();
-        // TODO: foreach exception handling check / test
-        if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
-
-        // the result is always the payload indicated on the input
-        reporter.reportSuccess(handlerInput.getResultPayload());
+        finally
+        {
+            operationContext.shutdown();
+        }
         return null;
     }
 
-    public void performAction(SampleAction sampleAction, Reporter reporter)
+    public void performAction(SampleAction sampleAction, OperationProgressReporter reporter)
     {
         BaseAction baseAction = actionMap.getAction(sampleAction.getAction());
         // convert the params map to a ActionParameters (Jackson can do this without converting to intermediate json)

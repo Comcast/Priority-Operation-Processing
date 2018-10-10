@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.sample.impl.action;
 
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.OperationProgressFactory;
+import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressFactory;
+import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ public abstract class BaseAction
     private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
     protected OperationProgressFactory operationProgressFactory = new OperationProgressFactory();
 
-    public void performAction(Reporter reporter, ActionParameters actionParameters)
+    public void performAction(OperationProgressReporter reporter, ActionParameters actionParameters)
     {
         Long sleepMilliseconds = actionParameters.getSleepMilliseconds();
         if(sleepMilliseconds != null && sleepMilliseconds > 0)
@@ -23,9 +23,7 @@ public abstract class BaseAction
             final int ITERATIONS = Math.max(1, (int)(sleepMilliseconds/1000));
             IntStream.range(0, ITERATIONS).forEach(i ->
                 {
-                    reporter.reportProgress(operationProgressFactory.createProgressOperationProgress(
-                        ((double)i/(double)ITERATIONS) * 100d)
-                    );
+                    reporter.addProgressOperationProgress(((double)i/(double)ITERATIONS) * 100d);
                     try
                     {
                         Thread.sleep(1000);
@@ -41,5 +39,5 @@ public abstract class BaseAction
         perform(reporter, actionParameters);
     }
 
-    protected abstract void perform(Reporter reporter, ActionParameters actionParameters);
+    protected abstract void perform(OperationProgressReporter reporter, ActionParameters actionParameters);
 }
