@@ -14,6 +14,9 @@ public abstract class BaseOperationContext
         this.launchDataWrapper = launchDataWrapper;
     }
 
+    public void init(){}
+    public void shutdown(){}
+
     public Reporter getReporter()
     {
         return reporter;
