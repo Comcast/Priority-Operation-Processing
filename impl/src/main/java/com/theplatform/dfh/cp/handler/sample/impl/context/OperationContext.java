@@ -23,10 +23,18 @@ public class OperationContext extends BaseOperationContext
         this.operationProgressReporter = new OperationProgressReporter(operationProgressThread, new OperationProgressFactory());
     }
 
+    @Override
     public void init()
     {
         operationProgressThread.init();
     }
+    
+    @Override
+    public void shutdown()
+    {
+        operationProgressThread.shutdown(false);
+    }
+
 
     public OperationProgressReporter getOperationProgressReporter()
     {
@@ -36,10 +44,5 @@ public class OperationContext extends BaseOperationContext
     public void setOperationProgressReporter(OperationProgressReporter operationProgressReporter)
     {
         this.operationProgressReporter = operationProgressReporter;
-    }
-
-    public void shutdown()
-    {
-        operationProgressThread.shutdown(false);
     }
 }
