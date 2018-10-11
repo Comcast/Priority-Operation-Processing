@@ -11,7 +11,6 @@ import java.util.Objects;
 public class AgendaProgress implements IdentifiedObject
 {
     private String id;
-    private String transformRequestId;
     private String linkId;
     private String title;
     private ProcessingState processingState;
@@ -27,9 +26,9 @@ public class AgendaProgress implements IdentifiedObject
     {
     }
 
-    public AgendaProgress(String jobId)
+    public AgendaProgress(String linkId)
     {
-        this.transformRequestId = jobId;
+        this.linkId = linkId;
         this.processingState = ProcessingState.WAITING;
         this.addedTime = new Date();
     }
@@ -42,16 +41,6 @@ public class AgendaProgress implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
-    }
-
-    public String getTransformRequestId()
-    {
-        return transformRequestId;
-    }
-
-    public void setTransformRequestId(String transformRequestId)
-    {
-        this.transformRequestId = transformRequestId;
     }
 
     public String getLinkId()
@@ -175,7 +164,6 @@ public class AgendaProgress implements IdentifiedObject
         }
         AgendaProgress that = (AgendaProgress) o;
         return Objects.equals(getId(), that.getId()) &&
-            Objects.equals(getTransformRequestId(), that.getTransformRequestId()) &&
             Objects.equals(getLinkId(), that.getLinkId()) &&
             Objects.equals(getTitle(), that.getTitle()) &&
             getProcessingState() == that.getProcessingState() &&
@@ -192,7 +180,7 @@ public class AgendaProgress implements IdentifiedObject
     public int hashCode()
     {
 
-        int result = Objects.hash(getId(), getTransformRequestId(), getLinkId(), getTitle(), getProcessingState(), getProcessingStateMessage(),
+        int result = Objects.hash(getId(), getLinkId(), getTitle(), getProcessingState(), getProcessingStateMessage(),
             getUpdatedTime(), getAddedTime(), getStartedTime(), getCompletedTime(), getPercentComplete());
         result = 31 * result + Arrays.hashCode(getOperationProgress());
         return result;

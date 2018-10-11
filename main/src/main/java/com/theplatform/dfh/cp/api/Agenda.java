@@ -10,7 +10,8 @@ public class Agenda implements IdentifiedObject
     private List<Operation> operations;
     private ParamsMap params;
     private String id;
-    private String jobId;
+    private String jobId; // todo remove
+    private String linkId;
 
     public List<Operation> getOperations()
     {
@@ -50,5 +51,15 @@ public class Agenda implements IdentifiedObject
     public void setJobId(String jobId)
     {
         this.jobId = jobId;
+    }
+
+    public String getLinkId()
+    {
+        return linkId;
+    }
+
+    public void setLinkId(String linkId)
+    {
+        this.linkId = linkId;
     }
 }
