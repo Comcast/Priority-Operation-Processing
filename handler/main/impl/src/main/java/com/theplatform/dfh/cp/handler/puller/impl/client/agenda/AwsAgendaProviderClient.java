@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.endpoint.web.client.HttpCPWebClient;
 import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 /**
@@ -12,7 +11,6 @@ import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 public class AwsAgendaProviderClient implements AgendaClient
 {
     private CPWebClientAPI webClient;
-    private JsonHelper jsonHelper = new JsonHelper();
 
     public AwsAgendaProviderClient(String agendaProviderUrl, HttpURLConnectionFactory httpURLConnectionFactory)
     {
@@ -24,10 +22,8 @@ public class AwsAgendaProviderClient implements AgendaClient
         this.webClient = webClient;
     }
 
-    public String getAgenda()
+    public Agenda getAgenda()
     {
-        Agenda result = webClient.getAgenda();
-
-        return result == null ? null : jsonHelper.getJSONString(result);
+        return webClient.getAgenda();
     }
 }

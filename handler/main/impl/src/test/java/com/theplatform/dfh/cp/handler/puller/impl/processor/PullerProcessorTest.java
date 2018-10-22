@@ -22,22 +22,18 @@ import static org.mockito.Mockito.when;
  */
 public class PullerProcessorTest
 {
-    private JsonHelper jsonHelper = new JsonHelper();
-
-
     @DataProvider
     public Object[][] agendaCases()
     {
         return new Object[][]
             {
                 {null, 0},
-                {"", 0},
-                {"foo", 1}
+                {new Agenda(), 1}
             };
     }
 
     @Test(dataProvider = "agendaCases")
-    public void testAgendaClientReturnsNull(String agenda, int executeCalls)
+    public void testAgendaClientReturnsNull(Agenda agenda, int executeCalls)
     {
         AwsAgendaProviderClient clientMock = mock(AwsAgendaProviderClient.class);
         when(clientMock.getAgenda()).thenReturn(agenda);

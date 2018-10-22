@@ -1,10 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor;
 
-import com.theplatform.dfh.cp.api.operation.Operation;
-
-import java.util.UUID;
+import com.theplatform.dfh.cp.api.Agenda;
 
 public interface BaseLauncher
 {
-    public abstract void execute(String payload);
+    void execute(Agenda agenda);
 }

@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
+import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.IOException;
 public class DefaultAgendaClient implements AgendaClient
 {
     private String payloadFileName = "/EncodeAgenda2.json";
+    private JsonHelper jsonHelper = new JsonHelper();
 
     private String work;
 
@@ -26,9 +29,9 @@ public class DefaultAgendaClient implements AgendaClient
     }
 
 
-    public String getAgenda()
+    public Agenda getAgenda()
     {
-        return work;
+        return jsonHelper.getObjectFromString(work, Agenda.class);
     }
 
     protected String getStringFromResourceFile(String file) throws IOException

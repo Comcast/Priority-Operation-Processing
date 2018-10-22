@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
+import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
@@ -41,9 +42,9 @@ public class PullerProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
-        String agenda = agendaClient.getAgenda();
+        Agenda agenda = agendaClient.getAgenda();
 
-        if (agenda != null && agenda.length() > 0)
+        if (agenda != null)
         {
             logger.info("Retrieved Agenda: {}", agenda);
             // launch an executor and pass it the agenda payload

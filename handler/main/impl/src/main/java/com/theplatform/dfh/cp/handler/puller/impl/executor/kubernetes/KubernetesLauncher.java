@@ -1,7 +1,11 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
+import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
+import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
@@ -14,6 +18,7 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +36,7 @@ public class KubernetesLauncher implements BaseLauncher
     protected ExecutionConfig executionConfig;
     protected PodPushClient podPushClient;
     protected PodFollower<PodPushClient> follower;
+    protected JsonHelper jsonHelper;
 
     public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
@@ -39,6 +45,7 @@ public class KubernetesLauncher implements BaseLauncher
         this.executionConfig = executionConfig;
         this.podPushClient = new PodPushClientFactoryImpl().getClient(kubeConfig);
         this.follower = new PodFollowerImpl<>(this.kubeConfig, podConfig, executionConfig);
+        this.jsonHelper = new JsonHelper();
     }
 
     private Consumer<String> getLineConsumer(final List<String> linesForProcessing)
@@ -86,13 +93,29 @@ public class KubernetesLauncher implements BaseLauncher
     }
 
     @Override
-    public void execute(String payload)
+    public void execute(Agenda agenda)
     {
+        String payload = jsonHelper.getJSONString(agenda);
         logger.info("Launching Executor with Payload: {}", payload);
 
         executionConfig.getEnvVars().put(
-            "PAYLOAD", payload
+            HandlerField.PAYLOAD.name(), payload
         );
+
+        String progressId = agenda.getParams() == null
+                            ? null
+                            : agenda.getParams().getString(GeneralParamKey.progressId);
+
+        if(!StringUtils.isBlank(progressId))
+        {
+            executionConfig.getEnvVars().put(
+                HandlerField.PROGRESS_ID.name(), agenda.getParams().getString(GeneralParamKey.progressId)
+            );
+        }
+        else
+        {
+            logger.warn("No progressId was set on the Agenda.");
+        }
 
         // Use this code to run in the mode that we will use in production.
         // don't follow the pod run, just kick it off and let it be.

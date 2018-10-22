@@ -31,9 +31,10 @@ public class AwsAgendaProviderClientTest
 
         AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
 
-        String agendaResponse = awsClient.getAgenda();
+        Agenda agendaResponse = awsClient.getAgenda();
         String expectedAgenda =jsonHelper.getJSONString(agenda);
-        Assert.assertEquals(agendaResponse, expectedAgenda);
+        String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
+        Assert.assertEquals(agendaResponseJson, expectedAgenda);
         verify(webClient, times(1)).getAgenda();
     }
 
@@ -45,7 +46,7 @@ public class AwsAgendaProviderClientTest
 
         AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
 
-        String agendaResponse = awsClient.getAgenda();
+        Agenda agendaResponse = awsClient.getAgenda();
         Assert.assertNull(agendaResponse);
         verify(webClient, times(1)).getAgenda();
     }
