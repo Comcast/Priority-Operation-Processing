@@ -33,7 +33,7 @@
           {
             "action": "log",
             "paramsMap": {
-              "sleepMilliseconds": 2000,
+              "sleepMilliseconds": 8000,
               "logMessage": "@@sample.1.out::/actionData"
             }
           }
@@ -52,7 +52,7 @@
           {
             "action": "log",
             "paramsMap": {
-              "sleepMilliseconds": 1000,
+              "sleepMilliseconds": 10000,
               "logMessage": "@@sample.2.out::/actionData"
             }
           }

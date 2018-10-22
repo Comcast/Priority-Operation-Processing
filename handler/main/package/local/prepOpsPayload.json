@@ -5,7 +5,7 @@
         "id" : null,
         "inputs" : [ {
           "type" : "video",
-          "url" : "ftp://aort1a-tpaspe-mi.corp.theplatform.com/testFiles/backcountry_bombshells_4min_HD_H264.mp4__972349.flv",
+          "url" : "ftp://aort1a-tpaspe-mi.corp.theplatform.com/testFiles/backcountry_bombshells_4min_HD_H264.mp4.flv",
           "label" : null,
           "credentials" :
           {
@@ -76,19 +76,7 @@
     "type" : "accelerate",
     "id" : "58367cd2-445a-4e93-9d23-63c6bcc36c7a",
     "name" : "accelerate.1"
-  }, {
-    "payload" : {
-      "url" : null,
-      "headers" : null,
-      "postData" : "@@accelerate.1.out::/agenda",
-      "postDataEncoding" : "json",
-      "contentType" : "application/json",
-      "requestMethod" : null
-    },
-    "type" : "agendaPost",
-    "id" : "69f0f941-704f-4073-b81f-dc83a59ee93a",
-    "name" : "agendaPost.1"
-  } ],
+  }],
   "params" : null,
   "id" : null
 }
