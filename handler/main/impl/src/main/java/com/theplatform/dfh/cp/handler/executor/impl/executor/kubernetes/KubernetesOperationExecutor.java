@@ -1,9 +1,13 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
@@ -18,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Executor for launching the necessary components via kubernetes to complete the operation
+ */
 public class KubernetesOperationExecutor extends BaseOperationExecutor
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutor.class);
@@ -26,6 +33,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     protected PodConfig podConfig;
     protected ExecutionConfig executionConfig;
     protected PodFollower<PodPushClient> follower;
+    protected JsonHelper jsonHelper;
 
     public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, LaunchDataWrapper launchDataWrapper)
     {
@@ -33,6 +41,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
+        this.jsonHelper = new JsonHelper();
         this.follower = new PodFollowerImpl<>(this.kubeConfig, this.podConfig, this.executionConfig);
     }
 
@@ -57,14 +66,34 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     }
 
     @Override
+    public OperationProgress retrieveOperationProgress()
+    {
+        try
+        {
+            Map<String,String> podAnnotations = follower.getPodAnnotations();
+            String progressJson = podAnnotations.getOrDefault(KubernetesReporter.REPORT_PROGRESS_ANNOTATION, null);
+            if(progressJson == null) return null;
+            OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
+            operationProgress.setOperation(operation.getName());
+            return operationProgress;
+        }
+        catch(JsonHelperException je)
+        {
+            logger.error("{} - Unable to convert progress string to OperationProgress", operation.getName());
+        }
+        catch(Exception e)
+        {
+            logger.error("{} - Unable to pull pod annotation: {}", operation.getName(), KubernetesReporter.REPORT_PROGRESS_ANNOTATION);
+        }
+        return null;
+    }
+
+    @Override
     public String execute(String payload)
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
         executionConfig.getEnvVars().put("PAYLOAD", payload);
-
-        // TODO!! we need to get the annotations before reaping... probably should build that into the follower
-        podConfig.setReapCompletedPods(true);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
@@ -75,6 +104,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             @Override
             public void accept(String s)
             {
+                // TEMP commented out... probably don't want this in the long term
                 logger.info("STDOUT: {}", s);
             }
         });
@@ -109,6 +139,8 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         logger.info("Done with execution of pod: {}", executionConfig.getName());
 
         Map<String,String> podAnnotations = follower.getPodAnnotations();
+        // TODO: When all the handlers are updated the payload will come out of a payload annotation (not the success one)
+        // for now (backwards compatibility) the handlers are writing to multiple annotations via kubernetes
         return podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
     }
 }
