@@ -1,10 +1,12 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.local;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,14 @@ public class LocalOperationExecutor extends BaseOperationExecutor
     public LocalOperationExecutor(Operation operation, LaunchDataWrapper launchDataWrapper)
     {
         super(operation, launchDataWrapper);
+    }
+
+    @Override
+    public OperationProgress retrieveOperationProgress()
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setOperation(operation.getName());
+        return operationProgress;
     }
 
     @Override

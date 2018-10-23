@@ -1,12 +1,13 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.ProgressStatusUpdaterFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,9 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     private JsonContextUpdater jsonContextUpdater;
     private Set<OperationWrapper> completedOperations;
 
-    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext, ProgressStatusUpdaterFactory progressStatusUpdaterFactory)
+    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
-        super(launchDataWrapper, executorContext, progressStatusUpdaterFactory);
+        super(launchDataWrapper, executorContext);
         operationRunnerFactory = new OperationRunnerFactory();
         jsonContextUpdater = new JsonContextUpdater(executorContext);
         completedOperations = new HashSet<>();
@@ -40,41 +41,52 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      */
     public Void execute()
     {
-        ExecutorHandlerInput handlerInput;
-        try
-        {
-            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            executorContext.getReporter().reportProgress(handlerInput);
-        }
-        catch(Exception e)
-        {
-            throw new AgendaExecutorException("Failed to load payload.", e);
-        }
-
-        if(handlerInput == null)
-        {
-            executorContext.getReporter().reportFailure("Invalid input. No payload.", null);
-            return null;
-        }
-
-        if(handlerInput.getOperations() == null)
-        {
-            executorContext.getReporter().reportFailure("No operations in Agenda. Nothing to do.", null);
-            return null;
-        }
+        executorContext.init();
 
         try
         {
-            handlerInput.getOperations().forEach(this::executeOperation);
-            executorContext.getReporter().reportSuccess("Done!");
-        }
-        catch (AgendaExecutorException e)
-        {
-            executorContext.getReporter().reportFailure("", e);
-            logger.error("", e);
-        }
+            AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
 
-        progressStatusUpdaterFactory.createProgressStatusUpdater(handlerInput).updateProgress();
+            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
+            ExecutorHandlerInput handlerInput;
+            try
+            {
+                handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
+            }
+            catch (Exception e)
+            {
+                throw new AgendaExecutorException("Failed to load payload.", e);
+            }
+
+            if (handlerInput == null)
+            {
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
+                return null;
+            }
+
+            if (handlerInput.getOperations() == null)
+            {
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
+                return null;
+            }
+
+            try
+            {
+                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Running Operations");
+                handlerInput.getOperations().forEach(op -> executeOperation(op, agendaProgressReporter));
+            }
+            catch (AgendaExecutorException e)
+            {
+                logger.error("Error running operations.", e);
+            }
+
+            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
+        }
+        finally
+        {
+            executorContext.shutdown();
+        }
         return null;
     }
 
@@ -82,12 +94,13 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      * Executes the specific operation on the current thread
      * @param operation The operation to execute
      */
-    protected void executeOperation(Operation operation)
+    protected void executeOperation(Operation operation, AgendaProgressReporter agendaProgressReporter)
     {
         OperationWrapper operationWrapper = new OperationWrapper(operation).init(executorContext, jsonContextUpdater);
         Set<String> completedOperationNames = completedOperations.stream().map(x -> x.getOperation().getName()).collect(Collectors.toSet());
         if(operationWrapper.isReady(executorContext, completedOperationNames))
         {
+            agendaProgressReporter.updateState(ProcessingState.EXECUTING, String.format("Sequential Op: Running %1$s", operation.getName()));
             operationRunnerFactory.createOperationRunner(operationWrapper, executorContext, new OnOperationCompleteListener()
             {
                 @Override

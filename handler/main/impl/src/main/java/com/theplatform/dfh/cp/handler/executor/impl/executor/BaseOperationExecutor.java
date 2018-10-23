@@ -2,15 +2,16 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
 /**
- * TODO: rename to anything else...
+ * Base for all types of operation executors
  */
-public abstract class BaseOperationExecutor
+public abstract class BaseOperationExecutor implements OperationProgressProvider
 {
     protected Operation operation;
     protected LaunchDataWrapper launchDataWrapper;

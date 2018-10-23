@@ -3,6 +3,8 @@ package com.theplatform.dfh.cp.handler.executor.impl.resident;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
@@ -29,6 +31,7 @@ public class SampleResidentHandler implements ResidentHandler
     public String execute(String payload, LaunchDataWrapper launchDataWrapper, Reporter reporter)
     {
         JsonNode outputNode = new ObjectNode(objectMapper.getNodeFactory());
+        reporter.reportProgress(createOperationProgress(ProcessingState.EXECUTING, "Init"));
         try
         {
             // extract the output override from the payload
@@ -45,8 +48,16 @@ public class SampleResidentHandler implements ResidentHandler
         }
 
         String outputPayload = jsonHelper.getJSONString(outputNode);
-
+        reporter.reportProgress(createOperationProgress(ProcessingState.COMPLETE, "Success"));
         return outputPayload;
+    }
+
+    private OperationProgress createOperationProgress(ProcessingState processingState, String processingStateMessage)
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setProcessingState(processingState);
+        operationProgress.setProcessingStateMessage(processingStateMessage);
+        return operationProgress;
     }
 
     public void setObjectMapper(ObjectMapper objectMapper)

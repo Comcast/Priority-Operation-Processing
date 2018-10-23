@@ -32,7 +32,6 @@ public class JsonContextUpdater implements OnOperationCompleteListener, JsonCont
     @Override
     public void onComplete(OperationWrapper operationWrapper)
     {
-        // TODO: if failed this operation should not add data... can just exit
         Operation operation = operationWrapper.getOperation();
         String outputPayload = operationWrapper.getOutputPayload();
 
@@ -56,8 +55,8 @@ public class JsonContextUpdater implements OnOperationCompleteListener, JsonCont
     /**
      * Gets the reference name from a string (assuming it is a valid reference)
      * @param jsonReferenceReplacer The replacer
-     * @param reference
-     * @return
+     * @param reference The reference to seek
+     * @return The reference name from the string
      */
     protected static String getReferenceName(JsonReferenceReplacer jsonReferenceReplacer, String reference)
     {

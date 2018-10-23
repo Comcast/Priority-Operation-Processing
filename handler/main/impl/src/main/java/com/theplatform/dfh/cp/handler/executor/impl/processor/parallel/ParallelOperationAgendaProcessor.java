@@ -1,11 +1,12 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.BaseAgendaProcessor;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.ProgressStatusUpdaterFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +21,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
     public ParallelOperationAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
     {
-        this(launchDataWrapper, executorContext, new ProgressStatusUpdaterFactory(launchDataWrapper));
-    }
-
-    public ParallelOperationAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext, ProgressStatusUpdaterFactory progressStatusUpdaterFactory)
-    {
-        super(launchDataWrapper, executorContext, progressStatusUpdaterFactory);
+        super(launchDataWrapper, executorContext);
         this.operationAdviserFactory = new OperationConductorFactory();
     }
 
@@ -36,43 +32,52 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
     @Override
     public Void execute()
     {
+        executorContext.init();
+
         ExecutorHandlerInput handlerInput;
         try
         {
-            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            executorContext.getReporter().reportProgress(handlerInput);
+            AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
+            try
+            {
+                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
+                handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
+            }
+            catch (Exception e)
+            {
+                throw new AgendaExecutorException("Failed to load payload.", e);
+            }
+
+            if (handlerInput == null)
+            {
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
+                return null;
+            }
+
+            if (handlerInput.getOperations() == null)
+            {
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
+                return null;
+            }
+
+            try
+            {
+                operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext).run();
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
+            }
+            catch (AgendaExecutorException e)
+            {
+                // TODO: need to create a diganostic for the executor...
+                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Failed");
+                logger.error("", e);
+            }
         }
-        catch(Exception e)
+        finally
         {
-            throw new AgendaExecutorException("Failed to load payload.", e);
+            executorContext.shutdown();
         }
 
-        if(handlerInput == null)
-        {
-            executorContext.getReporter().reportFailure("Invalid input. No payload.", null);
-            return null;
-        }
-
-        if(handlerInput.getOperations() == null)
-        {
-            executorContext.getReporter().reportFailure("No operations in Agenda. Nothing to do.", null);
-            return null;
-        }
-
-        try
-        {
-            // TODO: this could run in a thread itself... if it matters
-            // TODO: progress reporting will need to have some hooks into this
-            operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext).run();
-        }
-        catch (AgendaExecutorException e)
-        {
-            executorContext.getReporter().reportFailure("", e);
-            logger.error("", e);
-        }
-
-        // TODO: remove this when progress reporting is real
-        progressStatusUpdaterFactory.createProgressStatusUpdater(handlerInput).updateProgress();
         return null;
     }
 

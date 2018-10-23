@@ -35,6 +35,8 @@ public class OperationRunner implements Runnable
         try
         {
             BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operationWrapper.getOperation());
+            // register the executor as a provider of operation progress
+            executorContext.getAgendaProgressReporter().registerOperationProgressProvider(executor);
             String outputPayload = executor.execute(operationWrapper.getInputPayload());
             operationWrapper.setOutputPayload(outputPayload);
             // TODO: op wrapper success flag

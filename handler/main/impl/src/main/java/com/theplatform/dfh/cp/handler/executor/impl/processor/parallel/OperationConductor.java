@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.JsonContextUpdater;
@@ -18,9 +19,12 @@ import java.util.stream.Collectors;
  * Manages the execution of the operations, executing those with no remaining dependencies immediately.
  * There is no fixed limit on concurrent operations (at this time...)
  */
-public class OperationConductor implements Runnable, OnOperationCompleteListener
+public class OperationConductor implements OnOperationCompleteListener
 {
     private static Logger logger = LoggerFactory.getLogger(OperationConductor.class);
+
+    private static final String THREAD_POOL_SIZE_SETTING = "operation.conductor.threadpool.size";
+    private static final int DEFAULT_THREAD_POOL_SIZE = 50;
 
     // queue of operations that have been completed since the last readiness evaluation (this is the only collection accessed cross-thread)
     private BlockingQueue<OperationWrapper> postProcessingOperationQueue;
@@ -59,13 +63,21 @@ public class OperationConductor implements Runnable, OnOperationCompleteListener
      */
     public void run()
     {
-        // prep the thread pool TODO: there should be a limit...
-        if(executorService == null) executorService = Executors.newFixedThreadPool(50/*pendingOperations.size()*/);
 
         final int ORIGINAL_OP_COUNT = pendingOperations.size();
 
         try
         {
+            executorContext.getAgendaProgressReporter().updateState(ProcessingState.EXECUTING, "Initializing Operation ThreadPool");
+
+            if(executorService == null)
+            {
+                executorService = Executors.newFixedThreadPool(Integer.parseInt(executorContext.getLaunchDataWrapper().getPropertyRetriever().getField(THREAD_POOL_SIZE_SETTING,
+                    Integer.toString(DEFAULT_THREAD_POOL_SIZE))));
+            }
+
+            executorContext.getAgendaProgressReporter().updateState(ProcessingState.EXECUTING, "Launching Operations");
+
             // TODO: need to react to failed operations (probably halt remaining)
             while (!pendingOperations.isEmpty())
             {
@@ -78,7 +90,6 @@ public class OperationConductor implements Runnable, OnOperationCompleteListener
                 drainPostProcessOperations();
                 waitOnPostProcessOperations();
             }
-
         }
         catch(Throwable t)
         {

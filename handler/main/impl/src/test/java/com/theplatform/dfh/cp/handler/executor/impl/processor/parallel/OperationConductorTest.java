@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
+import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -27,13 +28,16 @@ public class OperationConductorTest
     private OperationConductor operationConductor;
     private OperationRunnerFactory mockOperationRunnerFactory;
     private ExecutorContext mockExecutorContext;
+    private AgendaProgressReporter mockAgendaProgressReporter;
     private JsonContext mockJsonContext;
     private ExecutorService mockExecutorService;
 
     @BeforeMethod
     public void setup()
     {
+        mockAgendaProgressReporter = mock(AgendaProgressReporter.class);
         mockExecutorContext = mock(ExecutorContext.class);
+        doReturn(mockAgendaProgressReporter).when(mockExecutorContext).getAgendaProgressReporter();
         mockJsonContext = mock(JsonContext.class);
         doReturn(mockJsonContext).when(mockExecutorContext).getJsonContext();
         mockExecutorService = mock(ExecutorService.class);
