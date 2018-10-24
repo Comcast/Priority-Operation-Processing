@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.api.params;
 
 public enum GeneralParamKey implements ParamKey
 {
-    progressId, agendaId;
+    progressId, execProgressId, agendaId;
 
     public String getKey()
     {
