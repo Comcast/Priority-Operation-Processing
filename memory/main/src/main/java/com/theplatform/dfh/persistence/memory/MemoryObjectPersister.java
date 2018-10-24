@@ -26,6 +26,17 @@ public class MemoryObjectPersister<T> implements ObjectPersister<T>
         objectPersistenceMap.put(identifier, object);
     }
 
+    /**
+     * Uses the persist method to simply overwrite the object.
+     * @param identifier The key to update the item by
+     * @param object The object to update
+     */
+    @Override
+    public void update(String identifier, T object)
+    {
+        persist(identifier, object);
+    }
+
     @Override
     public void delete(String identifier)
     {

@@ -17,6 +17,13 @@ public interface ObjectPersister<T>
     void persist(String identifier, T object);
 
     /**
+     * Updates the item specified in the table
+     * @param identifier The key to update the item by
+     * @param object The object to update
+     */
+    void update(String identifier, T object);
+
+    /**
      * Deletes the item from the specified table by the given idendifier
      * @param identifier The identifier of the item to remove
      */
