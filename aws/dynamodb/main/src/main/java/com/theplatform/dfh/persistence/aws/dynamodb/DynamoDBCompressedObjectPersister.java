@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
 {
-    private static Logger logger = LoggerFactory.getLogger(DynamoDBCompressedObjectPersister.class);
+    protected static Logger logger = LoggerFactory.getLogger(DynamoDBCompressedObjectPersister.class);
 
     private static ObjectMapper mapper = new ObjectMapper();
     public static final String DATA_BLOB = "dataBlob";
@@ -154,7 +154,7 @@ public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
         }
     }
 
-    private Map<String, AttributeValue> getKey(String identifier)
+    protected Map<String, AttributeValue> getKey(String identifier)
     {
         Map<String, AttributeValue> key = new HashMap<>();
         key.put(persistenceKeyFieldName, new AttributeValue(identifier));
@@ -171,5 +171,20 @@ public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
         {
             throw new RuntimeException(e);
         }
+    }
+
+    protected AWSDynamoDBFactory getAWSDynamoDBFactory()
+    {
+        return AWSDynamoDBFactory;
+    }
+
+    public String getPersistenceKeyFieldName()
+    {
+        return persistenceKeyFieldName;
+    }
+
+    public String getTableName()
+    {
+        return tableName;
     }
 }
