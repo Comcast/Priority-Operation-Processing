@@ -53,6 +53,9 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
             {
                 handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
                 agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
+                // TODO: this is only temporary because the linkid has to be set on every update
+                if(handlerInput.getLinkId() != null)
+                    agendaProgressReporter.getAgendaProgressFactory().setLinkId(handlerInput.getLinkId());
             }
             catch (Exception e)
             {
