@@ -12,6 +12,7 @@ public class AgendaProgress implements IdentifiedObject
 {
     private String id;
     private String linkId;
+    private String externalId;
     private String title;
     private ProcessingState processingState;
     private String processingStateMessage;
@@ -51,6 +52,16 @@ public class AgendaProgress implements IdentifiedObject
     public void setLinkId(String linkId)
     {
         this.linkId = linkId;
+    }
+
+    public String getExternalId()
+    {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId)
+    {
+        this.externalId = externalId;
     }
 
     public String getTitle()
