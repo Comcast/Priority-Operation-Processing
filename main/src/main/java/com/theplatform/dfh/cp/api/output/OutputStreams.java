@@ -6,6 +6,7 @@ public class OutputStreams
 {
     private List<OutputStream> video;
     private List<OutputStream> audio;
+    private List<OutputStream> text;
 
     public List<OutputStream> getVideo()
     {
@@ -25,5 +26,15 @@ public class OutputStreams
     public void setAudio(List<OutputStream> audio)
     {
         this.audio = audio;
+    }
+
+    public List<OutputStream> getText()
+    {
+        return text;
+    }
+
+    public void setText(List<OutputStream> text)
+    {
+        this.text = text;
     }
 }
