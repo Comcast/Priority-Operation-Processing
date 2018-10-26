@@ -39,11 +39,11 @@ public abstract class AbstractTransform implements IdentifiedObject
     private ParamsMap params = new ParamsMap();
     private FileResourceByTypeMap fileReferencesByType;
 
-    public URI getExternalId()
+    public String getExternalId()
     {
-        return (URI)params.get("externalId");
+        return params.getString("externalId");
     }
-    public void setExternalId(URI externalId)
+    public void setExternalId(String externalId)
     {
         params.put("externalId", externalId);
     }
