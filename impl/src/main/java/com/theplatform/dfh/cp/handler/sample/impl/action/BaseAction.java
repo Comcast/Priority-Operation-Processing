@@ -21,7 +21,7 @@ public abstract class BaseAction
             final int ITERATIONS = Math.max(1, (int)(sleepMilliseconds/1000));
             IntStream.range(0, ITERATIONS).forEach(i ->
                 {
-                    reporter.addProgressOperationProgress(((double)i/(double)ITERATIONS) * 100d);
+                    reporter.addProgress(((double)i/(double)ITERATIONS) * 100d);
                     try
                     {
                         Thread.sleep(1000);
