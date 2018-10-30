@@ -32,50 +32,42 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
     @Override
     public Void execute()
     {
-        executorContext.init();
-
         ExecutorHandlerInput handlerInput;
+
+        AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
         try
         {
-            AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
-            try
-            {
-                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
-                handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
-            }
-            catch (Exception e)
-            {
-                throw new AgendaExecutorException("Failed to load payload.", e);
-            }
-
-            if (handlerInput == null)
-            {
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
-                return null;
-            }
-
-            if (handlerInput.getOperations() == null)
-            {
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
-                return null;
-            }
-
-            try
-            {
-                operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext).run();
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
-            }
-            catch (AgendaExecutorException e)
-            {
-                // TODO: need to create a diganostic for the executor...
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Failed");
-                logger.error("", e);
-            }
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
+            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Agenda Loaded");
         }
-        finally
+        catch (Exception e)
         {
-            executorContext.shutdown();
+            throw new AgendaExecutorException("Failed to load payload.", e);
+        }
+
+        if (handlerInput == null)
+        {
+            agendaProgressReporter.addFailed("Invalid input. No payload.");
+            return null;
+        }
+
+        if (handlerInput.getOperations() == null)
+        {
+            agendaProgressReporter.addFailed("No operations in Agenda. Nothing to do.");
+            return null;
+        }
+
+        try
+        {
+            operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext).run();
+            agendaProgressReporter.addSucceeded(null);
+        }
+        catch (AgendaExecutorException e)
+        {
+            // TODO: need to create a diganostic for the executor...
+            agendaProgressReporter.addFailed(null);
+            logger.error("", e);
         }
 
         return null;

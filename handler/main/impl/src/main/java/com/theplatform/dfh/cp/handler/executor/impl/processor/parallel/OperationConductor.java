@@ -68,7 +68,7 @@ public class OperationConductor implements OnOperationCompleteListener
 
         try
         {
-            executorContext.getAgendaProgressReporter().updateState(ProcessingState.EXECUTING, "Initializing Operation ThreadPool");
+            executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, "Initializing Operation ThreadPool");
 
             if(executorService == null)
             {
@@ -76,7 +76,7 @@ public class OperationConductor implements OnOperationCompleteListener
                     Integer.toString(DEFAULT_THREAD_POOL_SIZE))));
             }
 
-            executorContext.getAgendaProgressReporter().updateState(ProcessingState.EXECUTING, "Launching Operations");
+            executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, "Launching Operations");
 
             // TODO: need to react to failed operations (probably halt remaining)
             while (!pendingOperations.isEmpty())

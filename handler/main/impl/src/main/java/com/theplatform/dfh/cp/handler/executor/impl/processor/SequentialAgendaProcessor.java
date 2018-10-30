@@ -43,45 +43,46 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     {
         AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
 
-        agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
+        agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
         ExecutorHandlerInput handlerInput = null;
         try
         {
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Agenda Loaded");
             // TODO: this is only temporary because the linkid has to be set on every update
             if(handlerInput.getLinkId() != null)
                 agendaProgressReporter.getAgendaProgressFactory().setLinkId(handlerInput.getLinkId());
         }
         catch (Exception e)
         {
-            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. Failed to load payload.");
+            agendaProgressReporter.addFailed("Invalid input. Failed to load payload.");
             return null;
         }
 
         if (handlerInput == null)
         {
-            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
+            agendaProgressReporter.addFailed("Invalid input. No payload.");
             return null;
         }
 
         if (handlerInput.getOperations() == null)
         {
-            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
+            agendaProgressReporter.addFailed("No operations in Agenda. Nothing to do.");
             return null;
         }
 
         try
         {
-            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Running Operations");
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Running Operations");
             handlerInput.getOperations().forEach(op -> executeOperation(op, agendaProgressReporter));
+            agendaProgressReporter.addSucceeded(null);
         }
         catch (AgendaExecutorException e)
         {
             logger.error("Error running operations.", e);
+            // TODO: some diagnostic back...
+            agendaProgressReporter.addFailed(null);
         }
-
-        agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
         return null;
     }
 
@@ -95,7 +96,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
         Set<String> completedOperationNames = completedOperations.stream().map(x -> x.getOperation().getName()).collect(Collectors.toSet());
         if(operationWrapper.isReady(executorContext, completedOperationNames))
         {
-            agendaProgressReporter.updateState(ProcessingState.EXECUTING, String.format("Sequential Op: Running %1$s", operation.getName()));
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, String.format("Sequential Op: Running %1$s", operation.getName()));
             operationRunnerFactory.createOperationRunner(operationWrapper, executorContext, new OnOperationCompleteListener()
             {
                 @Override
