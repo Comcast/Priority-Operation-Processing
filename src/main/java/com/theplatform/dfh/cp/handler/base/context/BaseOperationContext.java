@@ -17,6 +17,7 @@ public abstract class BaseOperationContext
     public void init(){}
     public void shutdown(){}
 
+    @Deprecated
     public Reporter getReporter()
     {
         return reporter;
