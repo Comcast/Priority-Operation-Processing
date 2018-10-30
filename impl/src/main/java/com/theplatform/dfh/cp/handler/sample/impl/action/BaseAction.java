@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.sample.impl.action;
 
-import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressFactory;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import java.util.stream.IntStream;
 public abstract class BaseAction
 {
     private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
-    protected OperationProgressFactory operationProgressFactory = new OperationProgressFactory();
 
     public void performAction(OperationProgressReporter reporter, ActionParameters actionParameters)
     {

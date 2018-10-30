@@ -53,7 +53,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
             if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
 
             // the result is always the payload indicated on the input
-            reporter.addCompleteOperationProgress(100d, handlerInput.getResultPayload());
+            reporter.addSucceededOperationProgress(handlerInput.getResultPayload());
             // TODO: consider pushing this into the base context
         }
         catch(Exception e)
