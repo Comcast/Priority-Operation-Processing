@@ -41,55 +41,47 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      */
     public Void execute()
     {
-        executorContext.init();
+        AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
+
+        agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
+        ExecutorHandlerInput handlerInput = null;
+        try
+        {
+            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
+            // TODO: this is only temporary because the linkid has to be set on every update
+            if(handlerInput.getLinkId() != null)
+                agendaProgressReporter.getAgendaProgressFactory().setLinkId(handlerInput.getLinkId());
+        }
+        catch (Exception e)
+        {
+            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. Failed to load payload.");
+            return null;
+        }
+
+        if (handlerInput == null)
+        {
+            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
+            return null;
+        }
+
+        if (handlerInput.getOperations() == null)
+        {
+            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
+            return null;
+        }
 
         try
         {
-            AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
-
-            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Loading Agenda");
-            ExecutorHandlerInput handlerInput;
-            try
-            {
-                handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Agenda Loaded");
-                // TODO: this is only temporary because the linkid has to be set on every update
-                if(handlerInput.getLinkId() != null)
-                    agendaProgressReporter.getAgendaProgressFactory().setLinkId(handlerInput.getLinkId());
-            }
-            catch (Exception e)
-            {
-                throw new AgendaExecutorException("Failed to load payload.", e);
-            }
-
-            if (handlerInput == null)
-            {
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Invalid input. No payload.");
-                return null;
-            }
-
-            if (handlerInput.getOperations() == null)
-            {
-                agendaProgressReporter.updateState(ProcessingState.COMPLETE, "No operations in Agenda. Nothing to do.");
-                return null;
-            }
-
-            try
-            {
-                agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Running Operations");
-                handlerInput.getOperations().forEach(op -> executeOperation(op, agendaProgressReporter));
-            }
-            catch (AgendaExecutorException e)
-            {
-                logger.error("Error running operations.", e);
-            }
-
-            agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
+            agendaProgressReporter.updateState(ProcessingState.EXECUTING, "Running Operations");
+            handlerInput.getOperations().forEach(op -> executeOperation(op, agendaProgressReporter));
         }
-        finally
+        catch (AgendaExecutorException e)
         {
-            executorContext.shutdown();
+            logger.error("Error running operations.", e);
         }
+
+        agendaProgressReporter.updateState(ProcessingState.COMPLETE, "Done");
         return null;
     }
 
