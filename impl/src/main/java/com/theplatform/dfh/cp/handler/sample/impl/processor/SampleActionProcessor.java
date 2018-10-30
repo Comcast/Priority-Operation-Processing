@@ -41,9 +41,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
      */
     public Void execute()
     {
-        // TODO: can probably centralize the init/try/finally/shutdown
-        operationContext.init();
-
         try
         {
             OperationProgressReporter reporter = operationContext.getOperationProgressReporter();
@@ -60,10 +57,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
         {
             // TODO: handlers should exit gracefully...
             throw new RuntimeException("Failed to load/execute payload.", e);
-        }
-        finally
-        {
-            operationContext.shutdown();
         }
         return null;
     }
