@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 
@@ -106,13 +107,12 @@ public class OperationWrapper
 
         if(missingReferences != null) dependencies.addAll(jsonContextReferenceParser.getOperationNames(missingReferences));
 
-        /* // TODO: dependsOn support
         if(operation.getParams() != null)
         {
-            String dependsOn = operation.getParams().getString("dependsOn");
+            String dependsOn = operation.getParams().getString(GeneralParamKey.dependsOn.getKey());
             if(dependsOn != null)
             {
-                String[] deps = dependsOn.split(dependsOn, ',');
+                String[] deps = dependsOn.split(",");
                 Arrays.stream(deps).forEach(item ->
                 {
                     String trimmedItem = item.trim();
@@ -120,7 +120,6 @@ public class OperationWrapper
                 });
             }
         }
-        */
     }
 
     /**
@@ -147,10 +146,13 @@ public class OperationWrapper
         this.outputPayload = outputPayload;
     }
 
+    /**
+     * Gets a copied set of the dependencies
+     * @return The copied set of dependencies
+     */
     public Set<String> getDependencies()
     {
-        // TODO: probably create a clone (or make read-only) so they cannot be adjusted!
-        return dependencies;
+        return new HashSet<>(dependencies);
     }
 
     // unit test

@@ -1,13 +1,17 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,5 +110,33 @@ public class OperationWrapperTest
         operationWrapper.init(mockExecutorContext, mockJsonContextReferenceParser);
 
         Assert.assertTrue(operationWrapper.getDependencies().contains(DEPENDENCY));
+    }
+
+    @DataProvider
+    public Object[][] declaredDependenciesProvider()
+    {
+        return new Object[][]
+            {
+                {new String[] {"a"}, new String[]{}},
+                {new String[] {}, new String[]{}},
+                {new String[] {"a", "b", "c"}, new String[]{}},
+                {new String[] {"a", "b", "c"}, new String[]{"e", "f", "g"}}
+            };
+    }
+
+    @Test(dataProvider = "declaredDependenciesProvider")
+    public void testDeclaredDependencies(String[] dependsOnItems, String[] missingReferences)
+    {
+        Set<String> missingReferenceSet = new HashSet<>(Arrays.asList(missingReferences));
+        doReturn(missingReferenceSet).when(mockJsonContextReferenceParser).getOperationNames(any());
+
+        ParamsMap paramsMap = new ParamsMap();
+        paramsMap.put(GeneralParamKey.dependsOn.getKey(), String.join(",", dependsOnItems));
+        doReturn(paramsMap).when(mockOperation).getParams();
+        operationWrapper.updateDependencies(missingReferenceSet, mockJsonContextReferenceParser);
+        Set<String> dependencies = operationWrapper.getDependencies();
+        Assert.assertTrue(dependencies.containsAll(Arrays.asList(dependsOnItems)));
+        Assert.assertTrue(dependencies.containsAll(Arrays.asList(missingReferences)));
+        Assert.assertEquals(dependencies.size(), dependsOnItems.length + missingReferences.length);
     }
 }
