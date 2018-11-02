@@ -105,6 +105,8 @@ public class JsonReferenceReplacer
             JsonNode parentNode = jsonNodeWrapper.getParent();
             String nodeId = jsonNodeWrapper.getNodeId();
 
+            if(node == null) continue;
+
             // evaluate the node (adding any child nodes to the stack for evaluation)
             if (node.isArray())
             {
