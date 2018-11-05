@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
+import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
@@ -93,10 +94,10 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
-        executionConfig.getEnvVars().put("PAYLOAD", payload);
+        executionConfig.getEnvVars().put(HandlerField.PAYLOAD.name(), payload);
         
-        String cid = launchDataWrapper.getEnvironmentRetriever().getField("CID", null);
-        if(cid != null) executionConfig.getEnvVars().put("CID", payload);
+        String cid = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CID.name(), null);
+        if(cid != null) executionConfig.getEnvVars().put(HandlerField.CID.name(), payload);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
