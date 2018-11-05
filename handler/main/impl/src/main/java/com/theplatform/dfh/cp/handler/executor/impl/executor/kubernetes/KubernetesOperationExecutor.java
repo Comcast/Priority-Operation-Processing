@@ -94,6 +94,9 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
         executionConfig.getEnvVars().put("PAYLOAD", payload);
+        
+        String cid = launchDataWrapper.getEnvironmentRetriever().getField("CID", null);
+        if(cid != null) executionConfig.getEnvVars().put("CID", payload);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
