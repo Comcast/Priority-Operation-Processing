@@ -2,6 +2,8 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
+import com.theplatform.dfh.cp.api.params.ParamKey;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
@@ -98,13 +100,12 @@ public class KubernetesLauncher implements BaseLauncher
         String payload = jsonHelper.getJSONString(agenda);
         logger.info("Launching Executor with Payload: {}", payload);
 
-        executionConfig.getEnvVars().put(
-            HandlerField.PAYLOAD.name(), payload
-        );
+        executionConfig.getEnvVars().put(HandlerField.PAYLOAD.name(), payload);
 
-        String progressId = agenda.getParams() == null
-                            ? null
-                            : agenda.getParams().getString(GeneralParamKey.progressId);
+        String cid = getParam(agenda.getParams(), GeneralParamKey.cid);
+        if(cid != null) executionConfig.getEnvVars().put(HandlerField.CID.name(), payload);
+
+        String progressId = getParam(agenda.getParams(), GeneralParamKey.progressId);
 
         if(!StringUtils.isBlank(progressId))
         {
@@ -165,5 +166,10 @@ public class KubernetesLauncher implements BaseLauncher
 //            throw new RuntimeException(allStringMetadata, e);
 //        }
 //        logger.info("Done with execution of pod: {}", executionConfig.getName());
+    }
+
+    private String getParam(ParamsMap paramsMap, ParamKey key)
+    {
+        return paramsMap == null ? null : paramsMap.getString(key);
     }
 }
