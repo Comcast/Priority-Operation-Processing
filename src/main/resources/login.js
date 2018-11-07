@@ -19,7 +19,7 @@ function authorizeWithLambda(e) {
 
     $.ajax({
         type: "POST",
-        url: "https://identity.auth.test.corp.theplatform.com/idm/web/Authentication/signIn?form=json&schema=1.1",
+        url: "https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1",
         crossDomain: "true",
         cache:false,
         dataType:"json",
@@ -31,6 +31,10 @@ function authorizeWithLambda(e) {
             "Content-Type": "application/json"
         },
         data: "{\"signIn\": {\"duration\": 86400000, \"idleTimeout\": 14400000}}",
+
+
+//    {"signInResponse":{"token":"-4mfRXUCyoskRI-Q5taOYdBQAPBOkHBE","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/6111539","userName":"admin@theplatform.com","duration":86400000,"idleTimeout":14400000}}
+
         success: function (resp) {
             $.ajax({
                 type: "GET",
@@ -44,7 +48,7 @@ function authorizeWithLambda(e) {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 },
-                data: JSON.stringify(resp),
+                //data: JSON.stringify(resp),
 
                 success: function () {
                     // clear form and show a success message
