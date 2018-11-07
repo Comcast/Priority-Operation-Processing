@@ -30,7 +30,7 @@ function authorizeWithLambda(e) {
             "Accept": "*/*",
             "Content-Type": "application/json"
         },
-        data: "{signIn: {duration: 86400000, idleTimeout: 14400000}}",
+        data: "{\"signIn\": {\"duration\": 86400000, \"idleTimeout\": 14400000}}",
         success: function (resp) {
             $.ajax({
                 type: "GET",
