@@ -127,4 +127,9 @@ public class OperationProgress implements IdentifiedObject
     {
         this.diagnostics = diagnostics;
     }
+
+    public static String generateId(String agendaProgressId, String operationName)
+    {
+        return agendaProgressId + "-" + operationName;
+    }
 }
