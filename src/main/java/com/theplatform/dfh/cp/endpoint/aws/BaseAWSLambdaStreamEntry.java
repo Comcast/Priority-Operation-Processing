@@ -75,30 +75,41 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         Object responseBodyObject = null;
         int httpStatusCode = 200;
         String bodyJson;
-        switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
+
+        try
         {
-            case "GET":
-                responseBodyObject = requestProcessor.handleGET(getIdFromPathParameter(rootRequestNode));
-                if(responseBodyObject == null) httpStatusCode = 404;
-                break;
-            case "POST":
-                bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
-                responseBodyObject = requestProcessor.handlePOST(objectMapper.readValue(bodyJson, persistenceObjectClazz));
-                break;
-            case "PUT":
-                // TODO: decide to use the id from the path param or the id from the object (maybe put should not go to the path param endpoint anyway...)
-                bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
-                requestProcessor.handlePUT(objectMapper.readValue(bodyJson, persistenceObjectClazz));
-                break;
-            case "DELETE":
-                requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
-                break;
-            default:
-                // todo: some bad response code
-                httpStatusCode = 405;
-                logger.warn("Unsupported method type.");
+            switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
+            {
+                case "GET":
+                    responseBodyObject = requestProcessor.handleGET(getIdFromPathParameter(rootRequestNode));
+                    if (responseBodyObject == null)
+                        httpStatusCode = 404;
+                    break;
+                case "POST":
+                    bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
+                    responseBodyObject = requestProcessor.handlePOST(objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                    break;
+                case "PUT":
+                    // TODO: decide to use the id from the path param or the id from the object (maybe put should not go to the path param endpoint anyway...)
+                    bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
+                    requestProcessor.handlePUT(objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                    break;
+                case "DELETE":
+                    requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
+                    break;
+                default:
+                    // todo: some bad response code
+                    httpStatusCode = 405;
+                    logger.warn("Unsupported method type.");
+            }
+            responseBodyObject = createResponseBodyObject(responseBodyObject, rootRequestNode);
+        } catch (IllegalArgumentException e)
+        {
+            httpStatusCode = 400;
+            responseBodyObject = e.getMessage();
+            // todo maybe make this message json formatted?
         }
-        responseBodyObject = createResponseBodyObject(responseBodyObject, rootRequestNode);
+
         String responseBody = responseBodyObject == null ? null : objectMapper.writeValueAsString(responseBodyObject);
         String response = objectMapper.writeValueAsString(createResponseObject(httpStatusCode, responseBody, rootRequestNode));
         logger.info("Response {}", response);
