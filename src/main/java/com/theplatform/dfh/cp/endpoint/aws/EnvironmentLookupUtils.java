@@ -9,7 +9,7 @@ public class EnvironmentLookupUtils
 {
     private final String DB_TABLE_NAME_ENV_VAR = "DB_TABLE_NAME";
 
-    private final String STAGE_FIELD_PATH = "/stage";
+    private final String STAGE_FIELD_PATH = "/requestContext/stage";
 
     public String getTableName(JsonNode rootRequestNode)
     {
