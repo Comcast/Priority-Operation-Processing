@@ -72,4 +72,6 @@ public class ParamsMap extends HashMap<String, Object>
     {
         return put(key.name(), value);
     }
+
+    public Boolean containsKey(ParamKey fieldEnum) { return containsKey(fieldEnum.getKey()); }
 }
