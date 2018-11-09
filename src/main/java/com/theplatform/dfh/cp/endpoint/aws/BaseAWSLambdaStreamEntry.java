@@ -70,7 +70,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             logger.info("Method not found!");
         }
 
-        ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(rootRequestNode));
+        String tableName = environmentLookupUtils.getTableName(rootRequestNode);
+        logger.info("TableName: {}", tableName);
+        ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
         BaseRequestProcessor<T> requestProcessor = getRequestProcessor(rootRequestNode, objectPersister);
         Object responseBodyObject = null;
