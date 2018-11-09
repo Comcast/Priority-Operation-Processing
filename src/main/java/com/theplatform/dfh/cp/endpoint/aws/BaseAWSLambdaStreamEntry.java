@@ -29,6 +29,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class<T> persistenceObjectClazz;
+    private final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private ObjectPersisterFactory<T> objectPersisterFactory;
 
     // TODO: wrapper class for all the json parsing
@@ -69,7 +70,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             logger.info("Method not found!");
         }
 
-        ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister();
+        ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(rootRequestNode));
 
         BaseRequestProcessor<T> requestProcessor = getRequestProcessor(rootRequestNode, objectPersister);
         Object responseBodyObject = null;

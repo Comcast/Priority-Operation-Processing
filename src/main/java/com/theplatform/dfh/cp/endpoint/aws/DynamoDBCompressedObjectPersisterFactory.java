@@ -9,20 +9,18 @@ import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBCompressedObjectPers
  */
 public class DynamoDBCompressedObjectPersisterFactory<T> implements ObjectPersisterFactory<T>
 {
-    protected String tableName;
     protected String persistenceKeyFieldName;
     protected Class persistentObjectClass;
 
-    public DynamoDBCompressedObjectPersisterFactory(String tableName, String persistenceKeyFieldName, Class<T> clazz)
+    public DynamoDBCompressedObjectPersisterFactory(String persistenceKeyFieldName, Class<T> clazz)
     {
-        this.tableName = tableName;
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.persistentObjectClass = clazz;
     }
 
     @Override
-    public ObjectPersister getObjectPersister()
+    public ObjectPersister getObjectPersister(String containerName)
     {
-        return new DynamoDBCompressedObjectPersister<T>(tableName, persistenceKeyFieldName, new AWSDynamoDBFactory(), persistentObjectClass);
+        return new DynamoDBCompressedObjectPersister<T>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(), persistentObjectClass);
     }
 }

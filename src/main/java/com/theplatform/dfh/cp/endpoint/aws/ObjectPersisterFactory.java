@@ -8,5 +8,5 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
  */
 public interface ObjectPersisterFactory<T>
 {
-    ObjectPersister<T> getObjectPersister();
+    ObjectPersister<T> getObjectPersister(String containerName);
 }
