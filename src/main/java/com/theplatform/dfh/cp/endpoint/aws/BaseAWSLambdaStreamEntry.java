@@ -186,7 +186,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
 
         if(node != null)
         {
-            logger.debug("[{}]\n{}", nodeName, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node));
+            logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
         }
         else
         {
