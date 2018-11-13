@@ -12,6 +12,7 @@ public class Agenda implements IdentifiedObject
     private String id;
     private String jobId; // todo remove
     private String linkId;
+    private String progressId;
 
     public List<Operation> getOperations()
     {
@@ -61,5 +62,15 @@ public class Agenda implements IdentifiedObject
     public void setLinkId(String linkId)
     {
         this.linkId = linkId;
+    }
+
+    public String getProgressId()
+    {
+        return progressId;
+    }
+
+    public void setProgressId(String progressId)
+    {
+        this.progressId = progressId;
     }
 }
