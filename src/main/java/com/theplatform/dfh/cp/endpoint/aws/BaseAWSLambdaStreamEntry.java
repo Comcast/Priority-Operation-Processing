@@ -27,9 +27,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class<T> persistenceObjectClazz;
-    private final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
+    protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private ObjectPersisterFactory<T> objectPersisterFactory;
 
     // TODO: wrapper class for all the json parsing
