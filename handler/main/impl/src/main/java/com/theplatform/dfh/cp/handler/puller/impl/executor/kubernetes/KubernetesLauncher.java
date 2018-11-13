@@ -105,13 +105,12 @@ public class KubernetesLauncher implements BaseLauncher
         String cid = getParam(agenda.getParams(), GeneralParamKey.cid);
         if(cid != null) executionConfig.getEnvVars().put(HandlerField.CID.name(), cid);
 
-        String progressId = getParam(agenda.getParams(), GeneralParamKey.progressId);
+        String progressId = agenda.getProgressId();
 
         if(!StringUtils.isBlank(progressId))
         {
             executionConfig.getEnvVars().put(
-                HandlerField.PROGRESS_ID.name(), agenda.getParams().getString(GeneralParamKey.progressId)
-            );
+                HandlerField.PROGRESS_ID.name(), progressId);
         }
         else
         {
