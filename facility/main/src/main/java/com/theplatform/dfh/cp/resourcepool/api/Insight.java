@@ -2,11 +2,12 @@ package com.theplatform.dfh.cp.resourcepool.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Insight
 {
-    private String id;
-    private ResourcePool resourcePool;
+    private String id = UUID.randomUUID().toString();
+    private String resourcePoolId;
     private List<String> tags = new ArrayList<>();
     private String queueName;
     private int queueSize;
@@ -23,14 +24,14 @@ public class Insight
         return this;
     }
 
-    public ResourcePool getResourcePool()
+    public String getResourcePoolId()
     {
-        return resourcePool;
+        return resourcePoolId;
     }
 
-    public Insight setResourcePool(ResourcePool resourcePool)
+    public Insight setResourcePoolId(String resourcePoolId)
     {
-        this.resourcePool = resourcePool;
+        this.resourcePoolId = resourcePoolId;
         return this;
     }
 

@@ -1,3 +1,17 @@
 {
+  "id": "2u9490283912832109283091",
+  "title": "CTS Seattle",
+  "ownerId": "mpx/my.resource.pool.user@comcast.com",
+  "insights": [
+    {
+      "id": "9384932rfdiofjwoiejf",
+      "resourcePoolId": "2u9490283912832109283091",
+      "tags": [
 
+      ],
+      "queueName": "aws:queue:my-queue",
+      "queueSize": 900,
+      "schedulingAlgorithm": "FirstInFirstOut"
+    }
+  ]
 }

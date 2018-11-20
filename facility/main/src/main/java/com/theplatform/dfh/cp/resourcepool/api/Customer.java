@@ -8,7 +8,7 @@ public class Customer
     private String id;
     private String billingCode;
     private String title;
-    private List<Insight> availableInsights = new ArrayList<>();
+    private List<String> availableInsightIds = new ArrayList<>();
 
     public String getId()
     {
@@ -43,22 +43,23 @@ public class Customer
         return this;
     }
 
-    public List<Insight> getAvailableInsights()
+    public List<String> getAvailableInsightIds()
     {
-        return availableInsights;
+        return availableInsightIds;
     }
 
-    public Customer setAvailableInsights(List<Insight> availableInsights)
+    public Customer setAvailableInsightIds(List<String> availableInsightIds)
     {
-        this.availableInsights = availableInsights;
+        this.availableInsightIds = availableInsightIds;
         return this;
     }
-    public Customer addAvailableInsights(Insight availableInsight)
+
+    public Customer addAvailableInsight(Insight availableInsight)
     {
-        if(this.availableInsights == null)
-            this.availableInsights = new ArrayList<>();
+        if(this.availableInsightIds == null)
+            this.availableInsightIds = new ArrayList<>();
         
-        this.availableInsights.add(availableInsight);
+        this.availableInsightIds.add(availableInsight.getId());
         return this;
     }
 }

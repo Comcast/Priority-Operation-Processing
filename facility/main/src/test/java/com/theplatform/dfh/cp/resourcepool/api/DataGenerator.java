@@ -2,16 +2,22 @@ package com.theplatform.dfh.cp.resourcepool.api;
 
 public class DataGenerator
 {
-    public ResourcePool generateResourcePool()
+    public static ResourcePool generate()
+    {
+        ResourcePool resourcePool = generateResourcePool();
+        Insight insight = generateInsight();
+        resourcePool.addInsight(insight);
+        return resourcePool;
+    }
+    public static ResourcePool generateResourcePool()
     {
         ResourcePool resourcePool = new ResourcePool();
         resourcePool.setId("2u9490283912832109283091");
         resourcePool.setOwnerId("mpx/my.resource.pool.user@comcast.com");
         resourcePool.setTitle("CTS Seattle");
-        resourcePool.addInsight(generateInsight());
         return resourcePool;
     }
-    public Insight generateInsight()
+    public static Insight generateInsight()
     {
         Insight insight = new Insight();
         insight.setId("9384932rfdiofjwoiejf");
@@ -19,5 +25,13 @@ public class DataGenerator
         insight.setQueueSize(900);
         insight.setSchedulingAlgorithm(SchedulingAlgorithm.FirstInFirstOut);
         return insight;
+    }
+    public static Customer generateCustomer()
+    {
+        Customer customer = new Customer();
+        customer.setBillingCode("My billing code");
+        customer.setId("982048329048239jfkdsl");
+        customer.setTitle("babs account");
+        return customer;
     }
 }

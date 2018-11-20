@@ -4,10 +4,11 @@ import com.theplatform.dfh.cp.api.IdentifiedObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ResourcePool implements IdentifiedObject
 {
-    private String id;
+    private String id = UUID.randomUUID().toString();
     private String title;
     private String ownerId;
     private List<Insight> insights = new ArrayList<>();
@@ -54,7 +55,7 @@ public class ResourcePool implements IdentifiedObject
         if(insights == null)
             this.insights.clear();
         this.insights = insights;
-        this.insights.stream().map(i -> i.setResourcePool(this));
+        this.insights.stream().map(i -> i.setResourcePoolId(this.id));
         return this;
     }
     public ResourcePool addInsight(Insight insight)
@@ -62,7 +63,7 @@ public class ResourcePool implements IdentifiedObject
         if(this.insights == null)
             insights = new ArrayList<>();
         this.insights.add(insight);
-        insight.setResourcePool(this);
+        insight.setResourcePoolId(this.id);
         return this;
     }
 
