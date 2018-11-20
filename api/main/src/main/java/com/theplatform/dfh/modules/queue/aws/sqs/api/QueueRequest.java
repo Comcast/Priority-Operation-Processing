@@ -73,8 +73,9 @@ public class QueueRequest
         return arguments;
     }
 
-    public void setArguments(Map<String, String> arguments)
+    public QueueRequest setArguments(Map<String, String> arguments)
     {
         this.arguments = arguments;
+        return this;
     }
 }

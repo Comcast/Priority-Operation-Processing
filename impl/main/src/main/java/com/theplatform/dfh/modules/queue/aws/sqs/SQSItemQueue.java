@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.QueueResult;
 import com.theplatform.dfh.modules.queue.aws.sqs.api.QueueRequest;
+import com.theplatform.dfh.modules.queue.aws.sqs.api.QueueRequestArgument;
 import com.theplatform.dfh.modules.queue.aws.sqs.processor.AddRequestProcessor;
 import com.theplatform.dfh.modules.queue.aws.sqs.processor.PollRequestProcessor;
 import com.theplatform.dfh.modules.queue.aws.sqs.processor.SQSQueueResult;
@@ -15,8 +16,10 @@ import com.theplatform.dfh.modules.queue.aws.sqs.processor.SizeRequestProcessor;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +94,9 @@ public class SQSItemQueue<T> implements ItemQueue<T>
     @Override
     public QueueResult<T> poll(int maxPollCount)
     {
-        SQSQueueResult sqsQueueResult = pollRequestProcessor.processRequest(createRequestContext(new QueueRequest()));
+        Map<String, String> argMap = new HashMap<>();
+        argMap.put(QueueRequestArgument.maxResults.name(), Integer.toString(maxPollCount));
+        SQSQueueResult sqsQueueResult = pollRequestProcessor.processRequest(createRequestContext(new QueueRequest().setArguments(argMap)));
         if(clazz == String.class)
         {
             // just return it
