@@ -1,0 +1,91 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.4</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.modules.queue</groupId>
+    <artifactId>pl-dfh-modules-queue-aws-sqs-impl</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>DFH Queue AWS SQS Impl</name>
+
+    <properties>
+        <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
+        <aws-lambda.version>1.1.0</aws-lambda.version>
+        <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
+        <queue-sqs-api.version>1.0.0-SNAPSHOT</queue-sqs-api.version>
+        <apache.commons.lang.version>2.6</apache.commons.lang.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.queue</groupId>
+            <artifactId>pl-dfh-modules-queue-api</artifactId>
+            <version>${queue-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.queue</groupId>
+            <artifactId>pl-dfh-modules-queue-aws-sqs-api</artifactId>
+            <version>${queue-sqs-api.version}</version>
+        </dependency>
+
+        <!-- AWS Dependencies -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws-lambda.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sqs</artifactId>
+            <version>${aws-java-jdk.version}</version>
+        </dependency>
+
+
+        <!-- 3rd party-->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${apache.commons.lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+
+    </reporting>
+</project>
