@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.facility.api;
+package com.theplatform.dfh.cp.resourcepool.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

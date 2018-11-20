@@ -1,6 +1,5 @@
-package com.theplatform.dfh.cp.facility.api;
+package com.theplatform.dfh.cp.resourcepool.api;
 
-import com.theplatform.dfh.cp.facility.api.Facility;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,7 +12,7 @@ public class JsonUnmarshallingTest
     @Test
     public void testJsonToSources() throws Exception
     {
-        Facility job = (Facility)JsonUtil.toObject(getStringFromResourceFile("Job.json"), Facility.class);
+        ResourcePool job = (ResourcePool)JsonUtil.toObject(getStringFromResourceFile("ResourcePool.json"), ResourcePool.class);
         Assert.assertNotNull(job);
     }
 
