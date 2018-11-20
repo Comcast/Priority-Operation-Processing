@@ -21,7 +21,8 @@ public class ItemQueueReader<T>
     {
         pollCount++;
         QueueResult queueResult = itemQueue.poll();
-        if(queueResult.isSuccessful()
+        if(queueResult != null
+            && queueResult.isSuccessful()
             && queueResult.getData() != null
             && queueResult.getData().size() > 0)
         {
