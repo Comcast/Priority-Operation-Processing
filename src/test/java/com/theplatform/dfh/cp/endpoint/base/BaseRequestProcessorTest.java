@@ -1,0 +1,54 @@
+package com.theplatform.dfh.cp.endpoint.base;
+
+import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
+import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.query.ByTitle;
+import org.mockito.Mockito;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.util.Collections;
+
+public class BaseRequestProcessorTest
+{
+    ObjectPersister<SimpleObject> objectPersister = Mockito.mock(ObjectPersister.class);
+
+    @Test
+    public void testGetByQueryNull() throws BadRequestException
+    {
+        TestBaseProcessor processor = new TestBaseProcessor(objectPersister);
+        Assert.assertNull(processor.handleGET(Collections.emptyList()));
+    }
+
+    @Test(expectedExceptions = BadRequestException.class)
+    public void testGetByQueryBad() throws BadRequestException, PersistenceException
+    {
+        TestBaseProcessor processor = new TestBaseProcessor(objectPersister);
+        Mockito.when(objectPersister.retrieve(Mockito.anyList())).thenThrow(PersistenceException.class);
+        processor.handleGET(Collections.singletonList(new ByTitle("xyz")));
+    }
+
+    private class TestBaseProcessor extends BaseRequestProcessor<SimpleObject>
+    {
+        public TestBaseProcessor(ObjectPersister<SimpleObject> objectPersister)
+        {
+            super(objectPersister);
+        }
+    }
+    private class SimpleObject implements IdentifiedObject
+    {
+        @Override
+        public String getId()
+        {
+            return "98839-02394029-";
+        }
+
+        @Override
+        public void setId(String s)
+        {
+
+        }
+    }
+}

@@ -3,10 +3,14 @@ package com.theplatform.dfh.cp.endpoint.base;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.api.ObjectPersistResponse;
+import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.query.Query;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Basic implementation for request processing.
@@ -35,6 +39,27 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         catch(PersistenceException e)
         {
             throw new BadRequestException(String.format("Unable to get object by id {}", id), e);
+        }
+    }
+    /**
+     * Handles the GET of an object
+     * @param queries Queries by fields
+     * @return The object, or null if not found
+     */
+    public DataObjectFeed<T> handleGET(List<Query> queries) throws BadRequestException
+    {
+        try
+        {
+            if(queries == null || queries.size() == 0)
+            {
+                return null;
+            }
+            return objectPersister.retrieve(queries);
+        }
+        catch(PersistenceException e)
+        {
+            final String queryString = queries.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
+            throw new BadRequestException(String.format("Unable to get object by queries {}", queryString), e);
         }
     }
 
