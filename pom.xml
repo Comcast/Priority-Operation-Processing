@@ -17,7 +17,7 @@
     </properties>
     <modules>
         <module>api/main</module>
-        <module>memory/main</module>
+        <module>impl/main</module>
         <module>aws</module>
     </modules>
 </project>
