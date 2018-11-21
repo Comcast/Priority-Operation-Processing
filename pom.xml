@@ -24,6 +24,7 @@
         <commons-text.version>1.4</commons-text.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
+        <commons-io.version>2.6</commons-io.version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,12 @@
             <version>${apache.commons.collections4}</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- AWS Dependencies -->
         <dependency>
             <groupId>com.amazonaws</groupId>

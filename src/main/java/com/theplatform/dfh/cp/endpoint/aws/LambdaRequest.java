@@ -6,19 +6,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class LambdaRequest<T extends IdentifiedObject>
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
     static
     {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -27,9 +27,10 @@ public class LambdaRequest<T extends IdentifiedObject>
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private JsonNode rootNode;
     private Class dataObjectClass;
-    private HashMap<String, String> queryParamMap;
+    private HashMap<String, Object> requestParamMap;
+    private List<Query> queries;
 
-    public LambdaRequest(JsonNode rootNode, Class dataObjectClass) throws BadRequestException
+    public LambdaRequest(JsonNode rootNode, Class dataObjectClass)
     {
         // this is immediately made available for subclasses
         this.rootNode = rootNode;
@@ -41,7 +42,7 @@ public class LambdaRequest<T extends IdentifiedObject>
     protected String getMethod()
     {
         JsonNode httpMethodNode = rootNode.at("/httpMethod");
-        if(httpMethodNode.isMissingNode())
+        if (httpMethodNode.isMissingNode())
         {
             logger.info("Method not found!");
         }
@@ -52,15 +53,18 @@ public class LambdaRequest<T extends IdentifiedObject>
     {
         try
         {
-            return (T)objectMapper.readValue(StringEscapeUtils.unescapeJson(rootNode.at("/body").asText()), dataObjectClass);
+            return (T) objectMapper.readValue(StringEscapeUtils.unescapeJson(rootNode.at("/body").asText()), dataObjectClass);
         }
         catch (IOException e)
         {
-            throw new BadRequestException("Request body is not recognized as '" +dataObjectClass.getName() +"'", e);
+            throw new BadRequestException("Request body is not recognized as '" + dataObjectClass.getName() + "'", e);
         }
     }
+
     /**
-     * Gets the path parameter name based on the url -- https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
+     * Gets the path parameter name based on the url -- https://stackoverflow
+     * .com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
+     *
      * @return String containing the path parameter name.
      */
     protected String getPathParameterName()
@@ -72,11 +76,13 @@ public class LambdaRequest<T extends IdentifiedObject>
     {
         //first see if it's on the path parameter.
         String dataObjectId = getIdFromPathParameter();
-        if(dataObjectId != null) return dataObjectId;
+        if (dataObjectId != null)
+            return dataObjectId;
 
         //get the Id off the request parameters
-        dataObjectId = queryParamMap.get("id");
-        if(dataObjectId != null) return dataObjectId;
+        dataObjectId = (String) requestParamMap.get("id");
+        if (dataObjectId != null)
+            return dataObjectId;
 
         return getDataObject().getId();
     }
@@ -88,16 +94,32 @@ public class LambdaRequest<T extends IdentifiedObject>
 
     private void loadQueryParameters()
     {
+        if (rootNode == null)
+            return;
+
         JsonNode paramNode = rootNode.get("queryStringParameters");
         Iterator<Map.Entry<String, JsonNode>> iterator = paramNode.fields();
 
-        queryParamMap = new HashMap<>();
-        while(iterator.hasNext())
+        requestParamMap = new HashMap<>();
+        queries = new ArrayList<>();
+        while (iterator.hasNext())
         {
             Map.Entry<String, JsonNode> node = iterator.next();
             String value = node.getValue().textValue();
-            queryParamMap.put(node.getKey(), value);
+            requestParamMap.put(node.getKey(), value);
+            final int byIndexLoc = node.getKey().indexOf("by");
+            if (byIndexLoc == 0)
+            {
+                final String field = node.getKey().substring(byIndexLoc);
+                queries.add(new Query(field, value));
+            }
         }
+    }
+
+
+    public List<Query> getQueries()
+    {
+        return queries;
     }
     /**
      * Gets the object id from the path

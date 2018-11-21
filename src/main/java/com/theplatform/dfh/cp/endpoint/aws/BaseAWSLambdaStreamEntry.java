@@ -76,7 +76,10 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             switch (httpMethod)
             {
                 case "GET":
-                    responseBodyObject = requestProcessor.handleGET(request.getDataObjectId());
+                    if(request.getDataObjectId() != null)
+                        responseBodyObject = requestProcessor.handleGET(request.getDataObjectId());
+                    else
+                        responseBodyObject = requestProcessor.handleGET(request.getQueries());
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
