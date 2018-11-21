@@ -17,6 +17,7 @@
         <persistence-api.version>1.0.0-SNAPSHOT</persistence-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <dfh-compression.version>1.0.0-SNAPSHOT</dfh-compression.version>
+        <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
 
     <dependencies>
@@ -36,6 +37,19 @@
             <groupId>com.theplatform.dfh.modules.compression</groupId>
             <artifactId>pl-dfh-compression</artifactId>
             <version>${dfh-compression.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-impl</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${apache.commons.beanutils}</version>
         </dependency>
 
         <!-- logging -->
