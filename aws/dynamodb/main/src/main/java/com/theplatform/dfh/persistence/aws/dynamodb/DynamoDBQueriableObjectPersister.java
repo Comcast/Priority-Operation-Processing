@@ -23,6 +23,7 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBQueriableObjectPersister.class);
     private static final String KEY_CONDITION = "%s = :%s";
     private static final String QUERY_VALUE = ":%s";
+    private static final String CLASS_FIELD = "class";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Table table;
     private final Class dataObjectClass;
@@ -68,6 +69,8 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
                 // null entries cannot be persisted to dynamodb
                 if(entry.getValue() == null) continue;
                 fieldName = entry.getKey().toString();
+                // skip the class field
+                if(CLASS_FIELD.equalsIgnoreCase(fieldName)) continue;
                 item.with(fieldName, entry.getValue());
             }
             table.putItem(item);
