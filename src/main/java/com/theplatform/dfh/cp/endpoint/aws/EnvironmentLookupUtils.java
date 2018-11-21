@@ -8,21 +8,27 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EnvironmentLookupUtils
 {
-    private final String DB_TABLE_NAME_ENV_VAR = "DB_TABLE_NAME";
+    public static final String DB_TABLE_NAME_ENV_VAR = "DB_TABLE_NAME";
 
-    private final String STAGE_FIELD_PATH = "/requestContext/stage";
-    private final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
-    private final String STAGE_VARIABLES_PATH = "/stageVariables/";
+    private static final String STAGE_FIELD_PATH = "/requestContext/stage";
+    private static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
+    private static final String STAGE_VARIABLES_PATH = "/stageVariables/";
 
     public String getTableName(JsonNode rootRequestNode)
     {
-        String tableName = System.getenv(DB_TABLE_NAME_ENV_VAR);
+        return getTableName(rootRequestNode, DB_TABLE_NAME_ENV_VAR);
+    }
+
+    public String getTableName(JsonNode rootRequestNode, String tableEnvironmentVariableName)
+    {
+        String tableName = System.getenv(tableEnvironmentVariableName);
         if(tableName == null)
         {
             return null;
         }
         return tableName + "-" + getStageName(rootRequestNode);
     }
+
 
     public String getAPIEndpointURL(JsonNode rootRequestNode, String pathStageVar)
     {

@@ -23,7 +23,7 @@ import java.io.OutputStreamWriter;
  * Base for CP Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
-public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> implements RequestStreamHandler
+public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> implements JsonRequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
@@ -56,13 +56,22 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         return DEFAULT_PATH_PARAMETER_NAME;
     }
 
+    protected String getTableEnvironmentVariableName()
+    {
+        return EnvironmentLookupUtils.DB_TABLE_NAME_ENV_VAR;
+    }
+
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
-        // this is immediately made available for subclasses
         JsonNode rootRequestNode = objectMapper.readTree(inputStream);
 
         logObject("request: ", rootRequestNode);
+        handleRequest(rootRequestNode, outputStream, context);
+    }
+
+    public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
+    {
+        JsonNode rootRequestNode = inputStreamNode;
 
         JsonNode httpMethodNode = rootRequestNode.at("/httpMethod");
         if(httpMethodNode.isMissingNode())
@@ -70,7 +79,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             logger.info("Method not found!");
         }
 
-        String tableName = environmentLookupUtils.getTableName(rootRequestNode);
+        String tableName = environmentLookupUtils.getTableName(rootRequestNode, getTableEnvironmentVariableName());
         logger.info("TableName: {}", tableName);
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
