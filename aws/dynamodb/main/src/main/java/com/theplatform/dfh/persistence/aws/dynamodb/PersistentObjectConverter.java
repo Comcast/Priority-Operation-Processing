@@ -6,6 +6,10 @@ package com.theplatform.dfh.persistence.aws.dynamodb;
  */
 public interface PersistentObjectConverter<T, S>
 {
-    S getPersistentObject(T dataObject);
-    T getDataObject(S persistentObject);
+    public abstract S getPersistentObject(T dataObject);
+    public abstract T getDataObject(S persistentObject);
+
+    public Class<S> getPersistentObjectClass();
+    public Class<T> getDataObjectClass();
+
 }

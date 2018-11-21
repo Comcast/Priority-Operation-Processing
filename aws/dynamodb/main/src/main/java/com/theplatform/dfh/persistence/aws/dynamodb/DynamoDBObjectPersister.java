@@ -78,7 +78,16 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     @Override
     public T retrieve(String identifier)
     {
-        return dynamoDBMapper.load(clazz, identifier);
+        if (converter == null)
+        {
+            return dynamoDBMapper.load(clazz, identifier);
+        }
+        else
+        {
+            // todo fix this
+            Object persistentObject = dynamoDBMapper.load(converter.getPersistentObjectClass(), identifier);
+            return (T) converter.getDataObject(persistentObject);
+        }
     }
 
     @Override
