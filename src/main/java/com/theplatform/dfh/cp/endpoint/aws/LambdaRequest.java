@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,19 +29,12 @@ public class LambdaRequest<T extends IdentifiedObject>
     private Class dataObjectClass;
     private HashMap<String, String> queryParamMap;
 
-    public LambdaRequest(InputStream inputStream, Class dataObjectClass) throws BadRequestException
+    public LambdaRequest(JsonNode rootNode, Class dataObjectClass) throws BadRequestException
     {
-        try
-        {
-            // this is immediately made available for subclasses
-            this.rootNode = objectMapper.readTree(inputStream);
-            logObject("request: ", rootNode);
-            loadQueryParameters();
-        }
-        catch(IOException e)
-        {
-            throw new BadRequestException("Unrecognized request", e);
-        }
+        // this is immediately made available for subclasses
+        this.rootNode = rootNode;
+        logObject("request: ", rootNode);
+        loadQueryParameters();
         this.dataObjectClass = dataObjectClass;
     }
 

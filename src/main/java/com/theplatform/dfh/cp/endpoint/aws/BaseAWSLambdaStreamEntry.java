@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
@@ -26,7 +27,6 @@ import java.io.OutputStreamWriter;
 public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> implements JsonRequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Class<T> persistenceObjectClazz;
     protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
@@ -46,15 +46,6 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     }
 
     protected abstract BaseRequestProcessor<T> getRequestProcessor(JsonNode rootRequestNode, ObjectPersister<T> objectPersister);
-    
-    /**
-     * Gets the path parameter name based on the url -- https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
-     * @return String containing the path parameter name.
-     */
-    protected String getPathParameterName()
-    {
-        return DEFAULT_PATH_PARAMETER_NAME;
-    }
 
     protected String getTableEnvironmentVariableName()
     {
@@ -64,57 +55,46 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
         JsonNode rootRequestNode = objectMapper.readTree(inputStream);
-
-        logObject("request: ", rootRequestNode);
         handleRequest(rootRequestNode, outputStream, context);
     }
 
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
-        JsonNode rootRequestNode = inputStreamNode;
+        LambdaRequest<T> request = getRequest(inputStreamNode);
 
-        JsonNode httpMethodNode = rootRequestNode.at("/httpMethod");
-        if(httpMethodNode.isMissingNode())
-        {
-            logger.info("Method not found!");
-        }
-
-        String tableName = environmentLookupUtils.getTableName(rootRequestNode, getTableEnvironmentVariableName());
+        String tableName = environmentLookupUtils.getTableName(inputStreamNode);
         logger.info("TableName: {}", tableName);
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
-        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(rootRequestNode, objectPersister);
+        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(request.getJsonNode(), objectPersister);
         Object responseBodyObject = null;
         int httpStatusCode = 200;
-        String bodyJson;
 
         try
         {
-            switch (httpMethodNode.asText("UNKNOWN").toUpperCase())
+            final String httpMethod = request.getMethod();
+            switch (httpMethod)
             {
                 case "GET":
-                    responseBodyObject = requestProcessor.handleGET(getIdFromPathParameter(rootRequestNode));
+                    responseBodyObject = requestProcessor.handleGET(request.getDataObjectId());
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
                 case "POST":
-                    bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
-                    responseBodyObject = requestProcessor.handlePOST(objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                    responseBodyObject = requestProcessor.handlePOST(request.getDataObject());
                     break;
                 case "PUT":
-                    // TODO: decide to use the id from the path param or the id from the object (maybe put should not go to the path param endpoint anyway...)
-                    bodyJson = StringEscapeUtils.unescapeJson(rootRequestNode.at("/body").asText());
-                    requestProcessor.handlePUT(objectMapper.readValue(bodyJson, persistenceObjectClazz));
+                    requestProcessor.handlePUT(request.getDataObject());
                     break;
                 case "DELETE":
-                    requestProcessor.handleDelete(getIdFromPathParameter(rootRequestNode));
+                    requestProcessor.handleDelete(request.getDataObjectId());
                     break;
                 default:
                     // todo: some bad response code
                     httpStatusCode = 405;
                     logger.warn("Unsupported method type.");
             }
-            responseBodyObject = createResponseBodyObject(responseBodyObject, rootRequestNode);
+            responseBodyObject = createResponseBodyObject(responseBodyObject, request.getJsonNode());
         } catch (IllegalArgumentException e)
         {
             httpStatusCode = 400;
@@ -123,13 +103,17 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         }
 
         String responseBody = responseBodyObject == null ? null : objectMapper.writeValueAsString(responseBodyObject);
-        String response = objectMapper.writeValueAsString(createResponseObject(httpStatusCode, responseBody, rootRequestNode));
+        String response = objectMapper.writeValueAsString(createResponseObject(httpStatusCode, responseBody, request.getJsonNode()));
         logger.info("Response {}", response);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
         writer.write(response);
         writer.close();
     }
 
+    protected LambdaRequest<T> getRequest(JsonNode node) throws BadRequestException
+    {
+        return new LambdaRequest<>(node, persistenceObjectClazz);
+    }
     /**
      * Creates the response body object to return
      * @param object The object returned by the request processor (may be null)
@@ -167,39 +151,4 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         return node.asText(defaultValue);
     }
 
-    /**
-     * Gets the object id from the path
-     * @param rootNode The json node to extract the path from
-     * @return The id or null if not found
-     */
-    protected String getIdFromPathParameter(JsonNode rootNode)
-    {
-        String pathParam = "/pathParameters/" + getPathParameterName();
-        logger.info("Path Param: {}", pathParam);
-        JsonNode idPathParameter = rootNode.at(pathParam);
-        if(!idPathParameter.isMissingNode())
-        {
-            logger.info("objectId: {}", idPathParameter.asText());
-            return idPathParameter.asText();
-        }
-        else
-        {
-            logger.error("No path param found!");
-        }
-        return null;
-    }
-
-    private void logObject(String nodeName, JsonNode node) throws JsonProcessingException
-    {
-        if(!logger.isDebugEnabled()) return;
-
-        if(node != null)
-        {
-            logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
-        }
-        else
-        {
-            logger.debug("[{}] node not found", nodeName);
-        }
-    }
 }
