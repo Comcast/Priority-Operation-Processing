@@ -1,8 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +8,7 @@ import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
-import org.apache.commons.text.StringEscapeUtils;
+import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
