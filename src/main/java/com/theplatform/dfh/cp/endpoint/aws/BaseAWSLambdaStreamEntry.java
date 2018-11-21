@@ -78,8 +78,8 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
                 case "GET":
                     if(request.getDataObjectId() != null)
                         responseBodyObject = requestProcessor.handleGET(request.getDataObjectId());
-                    /*else
-                        responseBodyObject = requestProcessor.handleGET(request.getQueries());*/
+                    else
+                        responseBodyObject = requestProcessor.handleGET(request.getQueries());
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
