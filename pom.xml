@@ -22,9 +22,24 @@
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <cp-endpoint-base>1.0.0-SNAPSHOT</cp-endpoint-base>
         <commons-text.version>1.4</commons-text.version>
+        <apache.commons.collections4>4.1</apache.commons.collections4>
+        <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${apache.commons.beanutils}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${apache.commons.collections4}</version>
+        </dependency>
+
         <!-- AWS Dependencies -->
         <dependency>
             <groupId>com.amazonaws</groupId>
