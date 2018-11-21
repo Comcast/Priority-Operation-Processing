@@ -6,13 +6,17 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
+import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  */
@@ -45,6 +49,12 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
             .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
             .build();
         dynamoDBMapper = new DynamoDBMapper(client, mapperConfig);
+    }
+
+    @Override
+    public DataObjectFeed<T> retrieve(List<Query> queries) throws PersistenceException
+    {
+        return null;
     }
 
     @Override

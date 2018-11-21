@@ -5,14 +5,19 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
+import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +56,12 @@ public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
     public void setZlibUtil(ZlibUtil zlibUtil)
     {
         this.zlibUtil = zlibUtil;
+    }
+
+    @Override
+    public DataObjectFeed<T> retrieve(List<Query> queries) throws PersistenceException
+    {
+        throw new NotImplementedException();
     }
 
     @Override

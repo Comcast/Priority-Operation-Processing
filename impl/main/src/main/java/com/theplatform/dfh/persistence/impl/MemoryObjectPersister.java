@@ -1,8 +1,12 @@
-package com.theplatform.dfh.persistence.memory;
+package com.theplatform.dfh.persistence.impl;
 
+import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.query.Query;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MemoryObjectPersister<T> implements ObjectPersister<T>
@@ -12,6 +16,12 @@ public class MemoryObjectPersister<T> implements ObjectPersister<T>
     public MemoryObjectPersister()
     {
         objectPersistenceMap = new HashMap<>();
+    }
+
+    @Override
+    public DataObjectFeed<T> retrieve(List<Query> queries)
+    {
+        throw new NotImplementedException();
     }
 
     @Override
