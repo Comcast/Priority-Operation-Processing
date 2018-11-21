@@ -56,6 +56,7 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
     @Override
     public void persist(String id, D dataObject) throws PersistenceException
     {
+        String fieldName = null;
         try
         {
             Item item = new Item();
@@ -66,13 +67,14 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
                 Map.Entry<Object, Object> entry = propertyIterator.next();
                 // null entries cannot be persisted to dynamodb
                 if(entry.getValue() == null) continue;
-                item.with(entry.getKey().toString(), entry.getValue());
+                fieldName = entry.getKey().toString();
+                item.with(fieldName, entry.getValue());
             }
             table.putItem(item);
         }
         catch (Exception e)
         {
-            throw new PersistenceException(String.format("Unable to persist data for id {}", id), e);
+            throw new PersistenceException(String.format("Unable to persist data for id %1$s (last field attempted: %2$s)", id, fieldName), e);
         }
     }
 
