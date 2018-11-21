@@ -32,16 +32,15 @@ public class SQSItemQueue<T> implements ItemQueue<T>
 
     private final Class<T> clazz;
     private AmazonSQS amazonSQS;
-    private String queueName;
-    private AWSQueueLookup awsQueueLookup = new AWSQueueLookup();
+    private String queueURL;
     private AddRequestProcessor addRequestProcessor = new AddRequestProcessor();
     private PollRequestProcessor pollRequestProcessor = new PollRequestProcessor();
     private SizeRequestProcessor sizeRequestProcessor = new SizeRequestProcessor();
 
-    public SQSItemQueue(AmazonSQS amazonSQS, String queueName, Class clazz)
+    public SQSItemQueue(AmazonSQS amazonSQS, String queueURL, Class clazz)
     {
         this.amazonSQS = amazonSQS;
-        this.queueName = queueName;
+        this.queueURL = queueURL;
         this.clazz = clazz;
     }
 
@@ -137,10 +136,7 @@ public class SQSItemQueue<T> implements ItemQueue<T>
 
     protected SQSRequestContext createRequestContext(QueueRequest queueRequest)
     {
-        return new SQSRequestContext(
-            amazonSQS,
-            queueRequest,
-            awsQueueLookup.getQueueUrl(amazonSQS, queueName));
+        return new SQSRequestContext(amazonSQS, queueRequest, queueURL);
     }
 
     public ObjectMapper getObjectMapper()
@@ -181,15 +177,5 @@ public class SQSItemQueue<T> implements ItemQueue<T>
     public void setSizeRequestProcessor(SizeRequestProcessor sizeRequestProcessor)
     {
         this.sizeRequestProcessor = sizeRequestProcessor;
-    }
-
-    public AWSQueueLookup getAwsQueueLookup()
-    {
-        return awsQueueLookup;
-    }
-
-    public void setAwsQueueLookup(AWSQueueLookup awsQueueLookup)
-    {
-        this.awsQueueLookup = awsQueueLookup;
     }
 }

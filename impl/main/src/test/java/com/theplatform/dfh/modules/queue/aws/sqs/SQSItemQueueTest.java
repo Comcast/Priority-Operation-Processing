@@ -30,12 +30,10 @@ public abstract class SQSItemQueueTest<T>
     protected PollRequestProcessor mockPollRequestProcessor;
     protected AddRequestProcessor mockAddRequestProcessor;
     protected SizeRequestProcessor mockSizeRequestProcessor;
-    protected AWSQueueLookup mockAWSQueueLookup;
 
     @BeforeMethod
     public void setup()
     {
-        mockAWSQueueLookup = mock(AWSQueueLookup.class);
         mockAddRequestProcessor = mock(AddRequestProcessor.class);
         mockPollRequestProcessor = mock(PollRequestProcessor.class);
         mockSizeRequestProcessor = mock(SizeRequestProcessor.class);
@@ -44,7 +42,6 @@ public abstract class SQSItemQueueTest<T>
         sqsItemQueue.setAddRequestProcessor(mockAddRequestProcessor);
         sqsItemQueue.setPollRequestProcessor(mockPollRequestProcessor);
         sqsItemQueue.setSizeRequestProcessor(mockSizeRequestProcessor);
-        sqsItemQueue.setAwsQueueLookup(mockAWSQueueLookup);
     }
 
     public abstract T getTestObject();
