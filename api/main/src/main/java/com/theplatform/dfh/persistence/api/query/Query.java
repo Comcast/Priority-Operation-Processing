@@ -13,7 +13,12 @@ public class Query<T>
     public Query()
     {
     }
-
+    public Query(String field, T value)
+    {
+        this.field = new DataTypeField(field);
+        this.value = value;
+        this.isCollection = value != null && value instanceof Collection;
+    }
     public Query(DataTypeField field, T value)
     {
         this.field = field;
