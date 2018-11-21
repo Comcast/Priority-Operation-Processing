@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,10 @@ public class LambdaRequest<T extends IdentifiedObject>
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    // TODO: probably need a aws request reader
+    public static final String JSON_BODY_PATH = "/body";
+    public static final String JSON_HTTP_METHOD_PATH = "/httpMethod";
+
     static
     {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -26,7 +31,7 @@ public class LambdaRequest<T extends IdentifiedObject>
 
     private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private JsonNode rootNode;
-    private Class dataObjectClass;
+    private Class<T> dataObjectClass;
     private HashMap<String, Object> requestParamMap;
     private List<Query> queries;
 
@@ -41,7 +46,7 @@ public class LambdaRequest<T extends IdentifiedObject>
 
     protected String getMethod()
     {
-        JsonNode httpMethodNode = rootNode.at("/httpMethod");
+        JsonNode httpMethodNode = rootNode.at(JSON_HTTP_METHOD_PATH);
         if (httpMethodNode.isMissingNode())
         {
             logger.info("Method not found!");
@@ -53,7 +58,19 @@ public class LambdaRequest<T extends IdentifiedObject>
     {
         try
         {
-            return (T) objectMapper.readValue(StringEscapeUtils.unescapeJson(rootNode.at("/body").asText()), dataObjectClass);
+            JsonNode bodyNode = rootNode.at(JSON_BODY_PATH);
+            if(bodyNode.isMissingNode())
+            {
+                // TODO: further decide how this is handled...
+                return null;
+            }
+            String bodyText = bodyNode.asText();
+            if(StringUtils.isBlank(bodyText))
+            {
+                return null;
+            }
+
+            return objectMapper.readValue(StringEscapeUtils.unescapeJson(bodyText), dataObjectClass);
         }
         catch (IOException e)
         {
@@ -84,7 +101,9 @@ public class LambdaRequest<T extends IdentifiedObject>
         if (dataObjectId != null)
             return dataObjectId;
 
-        return getDataObject().getId();
+        T dataObject = getDataObject();
+        if(dataObject == null) return null;
+        return dataObject.getId();
     }
 
     public JsonNode getJsonNode()
