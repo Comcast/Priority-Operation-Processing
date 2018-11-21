@@ -64,6 +64,8 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
             while(propertyIterator.hasNext())
             {
                 Map.Entry<Object, Object> entry = propertyIterator.next();
+                // null entries cannot be persisted to dynamodb
+                if(entry.getValue() == null) continue;
                 item.with(entry.getKey().toString(), entry.getValue());
             }
             table.putItem(item);
