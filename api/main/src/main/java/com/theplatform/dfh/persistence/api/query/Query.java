@@ -92,7 +92,7 @@ public class Query<T>
     public String toString()
     {
         return "Query{" +
-                "field=" + field +
+                "field=" + field == null ? "UNKNOWN" : field.name() +
                 ", value=" + value +
                 '}';
     }
