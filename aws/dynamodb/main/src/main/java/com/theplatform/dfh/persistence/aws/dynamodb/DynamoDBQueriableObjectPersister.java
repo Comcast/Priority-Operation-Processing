@@ -154,14 +154,20 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
             if(!query.isCollection())
             {
                 scanFilters.add(new ScanFilter(query.getField().name()).eq(query.getValue()));
-                logger.info("DynamoDB scan condition {}", scanFilters.toString());
+                logger.info("DynamoDB equalilty scan condition {} == {}", query.getField().name(), query.getValue());
             }
         }
         if(scanFilters.size() == 0)
         {
             scanFilters.add(new ScanFilter("id").exists());
         }
-        return table.scan(scanFilters.toArray(new ScanFilter[scanFilters.size()]));
+        //return table.scan(scanFilters.toArray(new ScanFilter[scanFilters.size()]));
+        ItemCollection itemCollection = table.scan(scanFilters.toArray(new ScanFilter[scanFilters.size()]));
+        if(itemCollection != null)
+        {
+            logger.info("Scan Results: {} {}", itemCollection.getAccumulatedItemCount(), itemCollection.getAccumulatedScannedCount());
+        }
+        return itemCollection;
     }
 
     /**
