@@ -26,13 +26,13 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
     private static final String CLASS_FIELD = "class";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Table table;
-    private final Class dataObjectClass;
+    private final Class<D> dataObjectClass;
 
-    public DynamoDBQueriableObjectPersister(String tableName, Class dataObjectClass)
+    public DynamoDBQueriableObjectPersister(String tableName, Class<D> dataObjectClass)
     {
         this(new DynamoDB(AmazonDynamoDBClientBuilder.standard().build()), tableName, dataObjectClass);
     }
-    public DynamoDBQueriableObjectPersister(DynamoDB dynamoDB, String tableName, Class dataObjectClass)
+    public DynamoDBQueriableObjectPersister(DynamoDB dynamoDB, String tableName, Class<D> dataObjectClass)
     {
         this.table = dynamoDB.getTable(tableName);
         this.dataObjectClass = dataObjectClass;
@@ -102,10 +102,10 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
         Iterator<Item> iterator = items.iterator();
 
         if (!iterator.hasNext())
-            return new DataObjectFeed();
+            return new DataObjectFeed<>();
 
-        DataObjectFeed responseFeed = new DataObjectFeed();
-        QueryPredicate queryPredicate = new QueryPredicate(queries);
+        DataObjectFeed<D> responseFeed = new DataObjectFeed<>();
+        QueryPredicate<D> queryPredicate = new QueryPredicate<>(queries);
         while (iterator.hasNext())
         {
             Item item = iterator.next();
@@ -114,11 +114,11 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
                 break;
             try
             {
-                dataObject = (D) objectMapper.readValue(item.toJSON(), dataObjectClass);
+                dataObject = objectMapper.readValue(item.toJSON(), dataObjectClass);
             }
             catch (IOException e)
             {
-                throw new PersistenceException(String.format("Unable to parse table entry. %s" + item.toJSON()), e);
+                throw new PersistenceException(String.format("Unable to parse table entry. %1$s", item.toJSON()), e);
             }
             if (logger.isDebugEnabled())
                 logger.debug("Dynamo pulled item: {}", item.toJSONPretty());
@@ -179,7 +179,7 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
         if (queries != null)
         {
             logger.info("Performing queries");
-            List<String> keyConditions = new ArrayList();
+            List<String> keyConditions = new ArrayList<>();
             for(Query query : queries)
                 addCondition(keyConditions, awsQueryValueMap, query);
 
