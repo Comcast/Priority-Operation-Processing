@@ -59,7 +59,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     {
         LambdaObjectRequest<T> request = getRequest(inputStreamNode);
 
-        String tableName = environmentLookupUtils.getTableName(request);
+        String tableName = environmentLookupUtils.getTableName(request, getTableEnvironmentVariableName());
         logger.info("TableName: {}", tableName);
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
