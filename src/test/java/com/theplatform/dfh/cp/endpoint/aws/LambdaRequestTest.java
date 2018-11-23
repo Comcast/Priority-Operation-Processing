@@ -15,7 +15,7 @@ public class LambdaRequestTest
     @Test
     public void testGetQueriesNullMap()
     {
-        LambdaRequest request = new LambdaRequest(null, null);
+        LambdaRequest request = new LambdaRequest(null);
         Assert.assertNull(request.getQueries());
     }
     @Test
@@ -23,7 +23,7 @@ public class LambdaRequestTest
     {
         JsonNode payload = JsonUtil.toJsonNode(getStringFromResourceFile("LambdaRequestPayload.json"));
 
-        LambdaRequest request = new LambdaRequest(payload, null);
+        LambdaRequest request = new LambdaRequest(payload);
         Assert.assertNotNull(request.getQueries());
         Assert.assertEquals(request.getQueries().size(), 2);
         Assert.assertEquals(((Query)request.getQueries().get(0)).getValue(), "myTitle");

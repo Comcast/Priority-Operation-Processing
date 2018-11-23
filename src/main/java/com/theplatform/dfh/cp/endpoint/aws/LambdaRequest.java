@@ -4,83 +4,63 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.api.IdentifiedObject;
-import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
 
-public class LambdaRequest<T extends IdentifiedObject>
+public class LambdaRequest
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    // TODO: probably need a aws request reader
-    public static final String JSON_BODY_PATH = "/body";
-    public static final String JSON_HTTP_METHOD_PATH = "/httpMethod";
+    protected static final ObjectMapper objectMapper = new ObjectMapper();
+
+    protected static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
+    protected static final String BODY_PATH = "/body";
+    protected static final String HTTP_METHOD_PATH = "/httpMethod";
+    protected static final String STAGE_FIELD_PATH = "/requestContext/stage";
+    protected static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
+    protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
+    protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
+    protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
+    protected static final String HEADERS_AUTHORIZATION_PATH = "/headers/Authorization";
 
     static
     {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     private JsonNode rootNode;
-    private Class<T> dataObjectClass;
     private HashMap<String, Object> requestParamMap;
     private List<Query> queries;
 
-    public LambdaRequest(JsonNode rootNode, Class dataObjectClass)
+    public LambdaRequest(JsonNode rootNode)
     {
         // this is immediately made available for subclasses
         this.rootNode = rootNode;
         logObject("request: ", rootNode);
         loadQueryParameters();
-        this.dataObjectClass = dataObjectClass;
     }
 
-    protected String getMethod()
+    public JsonNode getJsonNode()
     {
-        JsonNode httpMethodNode = rootNode.at(JSON_HTTP_METHOD_PATH);
-        if (httpMethodNode.isMissingNode())
-        {
-            logger.info("Method not found!");
-        }
-        return httpMethodNode.asText("UNKNOWN").toUpperCase();
+        return rootNode;
     }
 
-    protected T getDataObject() throws BadRequestException
+    public List<Query> getQueries()
     {
-        try
-        {
-            JsonNode bodyNode = rootNode.at(JSON_BODY_PATH);
-            if(bodyNode.isMissingNode())
-            {
-                // TODO: further decide how this is handled...
-                return null;
-            }
-            String bodyText = bodyNode.asText();
-            if(StringUtils.isBlank(bodyText))
-            {
-                return null;
-            }
+        return queries;
+    }
 
-            return objectMapper.readValue(StringEscapeUtils.unescapeJson(bodyText), dataObjectClass);
-        }
-        catch (IOException e)
-        {
-            throw new BadRequestException("Request body is not recognized as '" + dataObjectClass.getName() + "'", e);
-        }
+    public HashMap<String, Object> getRequestParamMap()
+    {
+        return requestParamMap;
     }
 
     /**
-     * Gets the path parameter name based on the url -- https://stackoverflow
-     * .com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
+     * Gets the path parameter name based on the url --
+     * https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
      *
      * @return String containing the path parameter name.
      */
@@ -89,37 +69,16 @@ public class LambdaRequest<T extends IdentifiedObject>
         return DEFAULT_PATH_PARAMETER_NAME;
     }
 
-    protected String getDataObjectId() throws BadRequestException
-    {
-        //first see if it's on the path parameter.
-        String dataObjectId = getIdFromPathParameter();
-        if (dataObjectId != null)
-            return dataObjectId;
-
-        //get the Id off the request parameters
-        dataObjectId = (String) requestParamMap.get("id");
-        if (dataObjectId != null)
-            return dataObjectId;
-
-        T dataObject = getDataObject();
-        if(dataObject == null) return null;
-        return dataObject.getId();
-    }
-
-    public JsonNode getJsonNode()
-    {
-        return rootNode;
-    }
-
     private void loadQueryParameters()
     {
         if (rootNode == null)
             return;
 
-        JsonNode paramNode = rootNode.get("queryStringParameters");
-        Iterator<Map.Entry<String, JsonNode>> iterator = paramNode.fields();
-
+        JsonNode paramNode = rootNode.at(QUERY_STRING_PARAMETERS_PATH);
+        if(paramNode.isMissingNode()) return;
         requestParamMap = new HashMap<>();
+
+        Iterator<Map.Entry<String, JsonNode>> iterator = paramNode.fields();
         queries = new ArrayList<>();
         while (iterator.hasNext())
         {
@@ -130,36 +89,91 @@ public class LambdaRequest<T extends IdentifiedObject>
             if (byIndexLoc == 0)
             {
                 final String field = node.getKey().substring(byIndexLoc);
-                queries.add(new Query(field, value));
+                queries.add(new Query<>(field, value));
             }
         }
     }
 
-
-    public List<Query> getQueries()
-    {
-        return queries;
-    }
     /**
      * Gets the object id from the path
      * @return The id or null if not found
      */
-    protected String getIdFromPathParameter()
+    public String getIdFromPathParameter()
     {
-        String pathParam = "/pathParameters/" + getPathParameterName();
-        logger.info("Path Param: {}", pathParam);
-        JsonNode idPathParameter = rootNode.at(pathParam);
-        if(!idPathParameter.isMissingNode())
-        {
-            logger.info("objectId: {}", idPathParameter.asText());
-            return idPathParameter.asText();
-        }
-        else
+        return getIdFromPathParameter(DEFAULT_PATH_PARAMETER_NAME);
+    }
+
+    /**
+     * Gets the object id from the path
+     * @param pathParameterName The name of the parameter containing the id to query
+     * @return The id or null if not found
+     */
+    public String getIdFromPathParameter(String pathParameterName)
+    {
+        String pathParam = PATH_PARAMETER_PREFIX_PATH + pathParameterName;
+        String id = getRequestValue(pathParam);
+        if(id == null)
         {
             logger.error("No path param found!");
+            return null;
         }
-        return null;
+        logger.info("objectId: {}", id);
+        return id;
     }
+
+    /**
+     * Gets the HTTP method of the request or defaults
+     * @param defaultValue The default to return if the method cannot be found
+     * @return HTTP method or default
+     */
+    public String getHTTPMethod(String defaultValue)
+    {
+        String httpMethod = getRequestValue(HTTP_METHOD_PATH);
+        return httpMethod == null ? defaultValue : httpMethod;
+    }
+
+    public String getStageVariable(String stageVariableName)
+    {
+        return getRequestValue(STAGE_VARIABLES_PATH + stageVariableName);
+    }
+
+    public String getDomainName()
+    {
+        return getRequestValue(DOMAIN_NAME_FIELD_PATH);
+    }
+
+    public String getStageName()
+    {
+        return getRequestValue(STAGE_FIELD_PATH);
+    }
+
+    public String getAuthorizationHeader() { return getRequestValue(HEADERS_AUTHORIZATION_PATH); }
+
+    /**
+     * Gets a string value from the request at the indicated JSON pointer path
+     * @param path The JSON pointer path to attempt to read
+     * @return The String at the specified path or null if path not found
+     */
+    public String getRequestValue(String path)
+    {
+        return getRequestValue(path, null);
+    }
+
+    /**
+     * Gets a string value from the request at the indicated JSON pointer path
+     * @param path The JSON pointer path to attempt to read
+     * @return The String at the specified path or defaultValue if path not found
+     */
+    public String getRequestValue(String path, String defaultValue)
+    {
+        JsonNode requestValueNode = rootNode.at(path);
+        if(requestValueNode.isMissingNode())
+        {
+            return defaultValue;
+        }
+        return requestValueNode.asText();
+    }
+
     private void logObject(String nodeName, JsonNode node)
     {
         if(!logger.isDebugEnabled()) return;

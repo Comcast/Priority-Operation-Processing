@@ -42,7 +42,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected abstract BaseRequestProcessor<T> getRequestProcessor(JsonNode rootRequestNode, ObjectPersister<T> objectPersister);
+    protected abstract BaseRequestProcessor<T> getRequestProcessor(LambdaObjectRequest<T> lambdaRequest, ObjectPersister<T> objectPersister);
 
     protected String getTableEnvironmentVariableName()
     {
@@ -57,19 +57,19 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
 
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
-        LambdaRequest<T> request = getRequest(inputStreamNode);
+        LambdaObjectRequest<T> request = getRequest(inputStreamNode);
 
-        String tableName = environmentLookupUtils.getTableName(inputStreamNode);
+        String tableName = environmentLookupUtils.getTableName(request);
         logger.info("TableName: {}", tableName);
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
-        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(request.getJsonNode(), objectPersister);
+        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(request, objectPersister);
         Object responseBodyObject = null;
         int httpStatusCode = 200;
 
         try
         {
-            final String httpMethod = request.getMethod();
+            final String httpMethod = request.getHTTPMethod("");
             switch (httpMethod)
             {
                 case "GET":
@@ -110,9 +110,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         writer.close();
     }
 
-    protected LambdaRequest<T> getRequest(JsonNode node) throws BadRequestException
+    protected LambdaObjectRequest<T> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, persistenceObjectClazz);
+        return new LambdaObjectRequest<>(node, persistenceObjectClazz);
     }
     /**
      * Creates the response body object to return
