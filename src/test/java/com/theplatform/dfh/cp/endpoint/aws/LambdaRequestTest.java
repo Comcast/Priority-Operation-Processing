@@ -1,39 +1,37 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.persistence.api.query.Query;
-import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-
-public class LambdaRequestTest
+public class LambdaRequestTest extends LambdaRequestTestBase
 {
+    private final String PAYLOAD_WITH_QUERY_FILE = "LambdaRequestPayload.json";
+    private final String PAYLOAD_WITH_NO_PARAMS_FILE = "LambdaRequestPayload_NoParams.json";
 
     @Test
     public void testGetQueriesNullMap()
     {
         LambdaRequest request = new LambdaRequest(null);
         Assert.assertNull(request.getQueries());
+        Assert.assertNull(request.getJsonNode());
     }
-    @Test
-    public void testGetQueriesBadRequest() throws IOException
-    {
-        JsonNode payload = JsonUtil.toJsonNode(getStringFromResourceFile("LambdaRequestPayload.json"));
 
-        LambdaRequest request = new LambdaRequest(payload);
+    @Test
+    public void testGetQueries() throws IOException
+    {
+        LambdaRequest request = new LambdaRequest(getJSONNodeFromFile(PAYLOAD_WITH_QUERY_FILE));
         Assert.assertNotNull(request.getQueries());
         Assert.assertEquals(request.getQueries().size(), 2);
-        Assert.assertEquals(((Query)request.getQueries().get(0)).getValue(), "myTitle");
+        Assert.assertEquals((request.getQueries().get(0)).getValue(), "myTitle");
+        Assert.assertEquals((request.getQueries().get(1)).getValue(), "dfoweruwo3j2p2");
     }
 
-    protected String getStringFromResourceFile(String file) throws IOException
+    @Test
+    public void testGetQueriesNoParams() throws IOException
     {
-        return IOUtils.toString(
-            this.getClass().getResource(file),
-            "UTF-8"
-        );
+        LambdaRequest request = new LambdaRequest(getJSONNodeFromFile(PAYLOAD_WITH_NO_PARAMS_FILE));
+        Assert.assertNull(request.getQueries());
     }
 }

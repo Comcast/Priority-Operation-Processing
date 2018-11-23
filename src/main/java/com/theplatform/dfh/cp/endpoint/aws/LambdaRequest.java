@@ -14,7 +14,9 @@ public class LambdaRequest
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected static final ObjectMapper objectMapper = new ObjectMapper();
+    protected static final ObjectMapper staticObjectMapper = new ObjectMapper();
+
+    private ObjectMapper objectMapper = staticObjectMapper;
 
     protected static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     protected static final String BODY_PATH = "/body";
@@ -28,7 +30,7 @@ public class LambdaRequest
 
     static
     {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        staticObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private JsonNode rootNode;
@@ -56,6 +58,16 @@ public class LambdaRequest
     public HashMap<String, Object> getRequestParamMap()
     {
         return requestParamMap;
+    }
+
+    public ObjectMapper getObjectMapper()
+    {
+        return objectMapper;
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper)
+    {
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -173,6 +185,7 @@ public class LambdaRequest
         }
         return requestValueNode.asText();
     }
+
 
     private void logObject(String nodeName, JsonNode node)
     {

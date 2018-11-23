@@ -38,7 +38,7 @@ public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaReque
                 return null;
             }
 
-            return objectMapper.readValue(StringEscapeUtils.unescapeJson(bodyText), dataObjectClass);
+            return getObjectMapper().readValue(StringEscapeUtils.unescapeJson(bodyText), dataObjectClass);
         }
         catch (IOException e)
         {
