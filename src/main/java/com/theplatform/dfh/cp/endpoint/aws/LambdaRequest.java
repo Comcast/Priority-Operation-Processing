@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,24 +34,18 @@ public class LambdaRequest
 
     private JsonNode rootNode;
     private HashMap<String, Object> requestParamMap;
-    private List<Query> queries;
 
     public LambdaRequest(JsonNode rootNode)
     {
         // this is immediately made available for subclasses
         this.rootNode = rootNode;
         logObject("request: ", rootNode);
-        loadQueryParameters();
+        loadRequestParameters();
     }
 
     public JsonNode getJsonNode()
     {
         return rootNode;
-    }
-
-    public List<Query> getQueries()
-    {
-        return queries;
     }
 
     public HashMap<String, Object> getRequestParamMap()
@@ -81,7 +74,7 @@ public class LambdaRequest
         return DEFAULT_PATH_PARAMETER_NAME;
     }
 
-    private void loadQueryParameters()
+    protected void loadRequestParameters()
     {
         if (rootNode == null)
             return;
@@ -91,18 +84,10 @@ public class LambdaRequest
         requestParamMap = new HashMap<>();
 
         Iterator<Map.Entry<String, JsonNode>> iterator = paramNode.fields();
-        queries = new ArrayList<>();
         while (iterator.hasNext())
         {
             Map.Entry<String, JsonNode> node = iterator.next();
-            String value = node.getValue().textValue();
-            requestParamMap.put(node.getKey(), value);
-            final int byIndexLoc = node.getKey().indexOf("by");
-            if (byIndexLoc == 0)
-            {
-                final String field = node.getKey().substring(byIndexLoc);
-                queries.add(new Query<>(field, value));
-            }
+            requestParamMap.put(node.getKey(), node.getValue().asText());
         }
     }
 

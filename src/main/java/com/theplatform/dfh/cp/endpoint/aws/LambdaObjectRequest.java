@@ -3,23 +3,33 @@ package com.theplatform.dfh.cp.endpoint.aws;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaRequest
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private static final String BY_QUERY_PREFIX = "by";
     private Class<T> dataObjectClass;
+    private List<Query> queries;
 
     public LambdaObjectRequest(JsonNode rootNode, Class<T> dataObjectClass)
     {
         super(rootNode);
         this.dataObjectClass = dataObjectClass;
+    }
+
+    public List<Query> getQueries()
+    {
+        return queries;
     }
 
     protected T getDataObject() throws BadRequestException
@@ -61,5 +71,18 @@ public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaReque
         T dataObject = getDataObject();
         if(dataObject == null) return null;
         return dataObject.getId();
+    }
+
+    @Override
+    protected void loadRequestParameters()
+    {
+        super.loadRequestParameters();
+        if(getRequestParamMap() == null) return;
+
+        // create all the by queries (if a param has the right prefix)
+        queries = getRequestParamMap().entrySet().stream()
+            .filter(e -> e.getKey().startsWith(BY_QUERY_PREFIX))
+            .map(e -> new Query<>(e.getKey().substring(BY_QUERY_PREFIX.length()), e.getValue()))
+            .collect(Collectors.toList());
     }
 }
