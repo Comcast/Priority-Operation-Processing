@@ -73,8 +73,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             switch (httpMethod)
             {
                 case "GET":
-                    if(request.getDataObjectId() != null)
-                        responseBodyObject = requestProcessor.handleGET(request.getDataObjectId());
+                    String dataObjectId = request.getDataObjectId();
+                    if(dataObjectId != null)
+                        responseBodyObject = requestProcessor.handleGET(dataObjectId);
                     else
                         responseBodyObject = requestProcessor.handleGET(request.getQueries());
                     if (responseBodyObject == null)
