@@ -21,27 +21,34 @@ import java.util.*;
 public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
 {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBQueriableObjectPersister.class);
-    private static final String KEY_CONDITION = "%s = :%s";
+    private static final String KEY_CONDITION = "%s = %s";
     private static final String QUERY_VALUE = ":%s";
     private static final String CLASS_FIELD = "class";
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String DEFAULT_PRIMARY_KEY_FIELD = "id";
+    private final String primaryKeyField;
     private final Table table;
     private final Class<D> dataObjectClass;
 
     public DynamoDBQueriableObjectPersister(String tableName, Class<D> dataObjectClass)
     {
-        this(new DynamoDB(AmazonDynamoDBClientBuilder.standard().build()), tableName, dataObjectClass);
+        this(new DynamoDB(AmazonDynamoDBClientBuilder.standard().build()), tableName, dataObjectClass, DEFAULT_PRIMARY_KEY_FIELD);
     }
     public DynamoDBQueriableObjectPersister(DynamoDB dynamoDB, String tableName, Class<D> dataObjectClass)
     {
+        this(dynamoDB, tableName, dataObjectClass, DEFAULT_PRIMARY_KEY_FIELD);
+    }
+    public DynamoDBQueriableObjectPersister(DynamoDB dynamoDB, String tableName, Class<D> dataObjectClass, String primaryKeyField)
+    {
         this.table = dynamoDB.getTable(tableName);
         this.dataObjectClass = dataObjectClass;
+        this.primaryKeyField = primaryKeyField;
     }
 
     @Override
     public D retrieve(String id) throws PersistenceException
     {
-        ItemCollection items = query(table, Collections.singleton(new Query()));
+        ItemCollection items = query(table, Collections.singleton(new Query<>(primaryKeyField, id)));
         DataObjectFeed<D> feed = getResponseFeed(items, new ArrayList<>());
         if(feed == null || feed.getAll() == null) return null;
         return feed.getAll().get(0);
@@ -90,7 +97,7 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
     @Override
     public void delete(String id) throws PersistenceException
     {
-        table.deleteItem(new PrimaryKey("id", id));
+        table.deleteItem(new PrimaryKey(primaryKeyField, id));
     }
 
     private DataObjectFeed<D> getResponseFeed(ItemCollection items, List<Query> queries) throws PersistenceException
@@ -131,9 +138,9 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
 
     private void addCondition(List<String> conditions, ValueMap valueMap, Query query)
     {
-        final String awsQueryValueKey = String.format(QUERY_VALUE, query.getField());
+        final String awsQueryValueKey = String.format(QUERY_VALUE, query.getField().name());
         valueMap.withString(awsQueryValueKey, (String) query.getValue());
-        conditions.add(String.format(KEY_CONDITION, query.getField(), query.getField()));
+        conditions.add(String.format(KEY_CONDITION, query.getField().name(), awsQueryValueKey));
     }
 
     /**
