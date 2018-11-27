@@ -1,10 +1,12 @@
 package com.theplatform.dfh.cp.api.resourcepool;
 
+import com.theplatform.dfh.cp.api.IdentifiedObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Insight
+public class Insight implements IdentifiedObject
 {
     private String id = UUID.randomUUID().toString();
     private String resourcePoolId;
@@ -18,10 +20,9 @@ public class Insight
         return id;
     }
 
-    public Insight setId(String id)
+    public void setId(String id)
     {
         this.id = id;
-        return this;
     }
 
     public String getResourcePoolId()
@@ -29,10 +30,9 @@ public class Insight
         return resourcePoolId;
     }
 
-    public Insight setResourcePoolId(String resourcePoolId)
+    public void setResourcePoolId(String resourcePoolId)
     {
         this.resourcePoolId = resourcePoolId;
-        return this;
     }
 
     public List<String> getTags()
@@ -40,27 +40,24 @@ public class Insight
         return tags;
     }
 
-    public Insight setTags(List<String> tags)
+    public void setTags(List<String> tags)
     {
         this.tags = tags;
-        return this;
     }
-    public Insight addTag(String tag)
+    public void addTag(String tag)
     {
         if(tags == null)
             tags = new ArrayList<>();
         tags.add(tag);
-        return this;
     }
     public String getQueueName()
     {
         return queueName;
     }
 
-    public Insight setQueueName(String queueName)
+    public void setQueueName(String queueName)
     {
         this.queueName = queueName;
-        return this;
     }
 
     public int getQueueSize()
@@ -68,10 +65,9 @@ public class Insight
         return queueSize;
     }
 
-    public Insight setQueueSize(int queueSize)
+    public void setQueueSize(int queueSize)
     {
         this.queueSize = queueSize;
-        return this;
     }
 
     public SchedulingAlgorithm getSchedulingAlgorithm()
@@ -79,20 +75,17 @@ public class Insight
         return schedulingAlgorithm;
     }
 
-    public Insight setSchedulingAlgorithm(
+    public void setSchedulingAlgorithm(
             SchedulingAlgorithm schedulingAlgorithm)
     {
         this.schedulingAlgorithm = schedulingAlgorithm;
-        return this;
     }
-    public Insight setSchedulingAlgorithm(
+    public void setSchedulingAlgorithm(
             String schedulingAlgorithm)
     {
-        if(schedulingAlgorithm == null) return this;
+        if(schedulingAlgorithm == null) return;
 
         this.schedulingAlgorithm = SchedulingAlgorithm.valueOf(schedulingAlgorithm);
-
-        return this;
     }
 
 }

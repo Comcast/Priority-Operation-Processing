@@ -1,9 +1,11 @@
 package com.theplatform.dfh.cp.api.resourcepool;
 
+import com.theplatform.dfh.cp.api.IdentifiedObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer
+public class Customer implements IdentifiedObject
 {
     private String id;
     private String billingCode;
@@ -15,10 +17,9 @@ public class Customer
         return id;
     }
 
-    public Customer setId(String id)
+    public void setId(String id)
     {
         this.id = id;
-        return this;
     }
 
     public String getBillingCode()
@@ -26,10 +27,9 @@ public class Customer
         return billingCode;
     }
 
-    public Customer setBillingCode(String billingCode)
+    public void setBillingCode(String billingCode)
     {
         this.billingCode = billingCode;
-        return this;
     }
 
     public String getTitle()
@@ -37,10 +37,9 @@ public class Customer
         return title;
     }
 
-    public Customer setTitle(String title)
+    public void setTitle(String title)
     {
         this.title = title;
-        return this;
     }
 
     public List<String> getAvailableInsightIds()
@@ -48,18 +47,16 @@ public class Customer
         return availableInsightIds;
     }
 
-    public Customer setAvailableInsightIds(List<String> availableInsightIds)
+    public void setAvailableInsightIds(List<String> availableInsightIds)
     {
         this.availableInsightIds = availableInsightIds;
-        return this;
     }
 
-    public Customer addAvailableInsight(Insight availableInsight)
+    public void addAvailableInsight(Insight availableInsight)
     {
         if(this.availableInsightIds == null)
             this.availableInsightIds = new ArrayList<>();
         
         this.availableInsightIds.add(availableInsight.getId());
-        return this;
     }
 }

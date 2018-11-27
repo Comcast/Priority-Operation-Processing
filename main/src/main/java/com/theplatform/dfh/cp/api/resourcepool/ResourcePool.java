@@ -28,10 +28,9 @@ public class ResourcePool implements IdentifiedObject
         return title;
     }
 
-    public ResourcePool setTitle(String title)
+    public void setTitle(String title)
     {
         this.title = title;
-        return this;
     }
 
     public String getOwnerId()
@@ -39,10 +38,9 @@ public class ResourcePool implements IdentifiedObject
         return ownerId;
     }
 
-    public ResourcePool setOwnerId(String ownerId)
+    public void setOwnerId(String ownerId)
     {
         this.ownerId = ownerId;
-        return this;
     }
 
     public List<Insight> getInsights()
@@ -50,21 +48,19 @@ public class ResourcePool implements IdentifiedObject
         return insights;
     }
 
-    public ResourcePool setInsights(List<Insight> insights)
+    public void setInsights(List<Insight> insights)
     {
         if(insights == null)
             this.insights.clear();
         this.insights = insights;
-        this.insights.stream().map(i -> i.setResourcePoolId(this.id));
-        return this;
+        this.insights.stream().forEach(i -> i.setResourcePoolId(this.id));
     }
-    public ResourcePool addInsight(Insight insight)
+    public void addInsight(Insight insight)
     {
         if(this.insights == null)
             insights = new ArrayList<>();
         this.insights.add(insight);
         insight.setResourcePoolId(this.id);
-        return this;
     }
 
 }
