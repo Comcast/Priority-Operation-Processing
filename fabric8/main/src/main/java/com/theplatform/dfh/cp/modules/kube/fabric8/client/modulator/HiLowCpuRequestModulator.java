@@ -42,6 +42,12 @@ public class HiLowCpuRequestModulator implements CpuRequestModulator
         return getCpuRequest(modulation);
     }
 
+    @Override
+    public String getCpuLimit()
+    {
+        return null;
+    }
+
     public String getCpuRequest(HiLowCpuRequestModulation which)
     {
         String ret = null;

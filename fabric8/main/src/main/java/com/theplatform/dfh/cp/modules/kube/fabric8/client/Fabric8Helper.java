@@ -154,6 +154,7 @@ public class Fabric8Helper
             .withNewResources()
             .addToRequests("cpu", new Quantity(executionConfig.getCpuRequestModulator().getCpuRequest()))
             .addToRequests("memory", new Quantity(podConfig.getMemoryRequestCount()))
+            .addToLimits("cpu", new Quantity(executionConfig.getCpuRequestModulator().getCpuLimit()))
             .endResources();
 
         AliveCheckDetails aliveCheckDetails = podConfig.getAliveCheckDetails();
