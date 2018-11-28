@@ -23,12 +23,14 @@ public class ExecutorContext extends BaseOperationContext
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private OperationExecutorFactory operationExecutorFactory;
     private JsonContext jsonContext;
+    private Reporter reporter;
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
 
     public ExecutorContext(Reporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
     {
-        super(reporter, launchDataWrapper);
+        super(launchDataWrapper);
+        this.reporter = reporter;
         this.operationExecutorFactory = operationExecutorFactory;
         this.jsonContext = new JsonContext();
         agendaProgressThread = new AgendaProgressThread(
@@ -87,5 +89,10 @@ public class ExecutorContext extends BaseOperationContext
     public void setJsonContext(JsonContext jsonContext)
     {
         this.jsonContext = jsonContext;
+    }
+
+    public Reporter getReporter()
+    {
+        return reporter;
     }
 }

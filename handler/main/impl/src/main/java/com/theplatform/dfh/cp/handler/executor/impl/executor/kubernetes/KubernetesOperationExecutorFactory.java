@@ -53,6 +53,12 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
             {
                 return podConfig.getCpuMinRequestCount();
             }
+
+            @Override
+            public String getCpuLimit()
+            {
+                return podConfig.getCpuMaxRequestCount();
+            }
         });
 
         return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, executorContext.getLaunchDataWrapper());
