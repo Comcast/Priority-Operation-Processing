@@ -50,6 +50,12 @@ public class KubernetesLauncherFactory implements LauncherFactory
             {
                 return podConfig.getCpuMinRequestCount();
             }
+
+            @Override
+            public String getCpuLimit()
+            {
+                return podConfig.getCpuMaxRequestCount();
+            }
         });
 
 

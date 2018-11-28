@@ -13,7 +13,7 @@ public class PullerContext extends BaseOperationContext
 
     public PullerContext(LaunchDataWrapper launchDataWrapper, LauncherFactory launcherFactory)
     {
-        super(null, launchDataWrapper);
+        super(launchDataWrapper);
         this.launcherFactory = launcherFactory;
     }
 
