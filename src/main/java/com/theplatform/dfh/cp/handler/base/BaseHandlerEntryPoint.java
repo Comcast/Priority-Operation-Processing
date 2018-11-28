@@ -6,12 +6,16 @@ import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.util.UUID;
 
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
+    public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
+    private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
 
@@ -39,6 +43,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         }
         finally
         {
+            logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
         }
     }

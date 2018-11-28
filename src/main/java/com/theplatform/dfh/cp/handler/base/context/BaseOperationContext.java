@@ -5,28 +5,21 @@ import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 
 public abstract class BaseOperationContext
 {
-    private Reporter reporter;
     private LaunchDataWrapper launchDataWrapper;
 
+    @Deprecated
     public BaseOperationContext(Reporter reporter, LaunchDataWrapper launchDataWrapper)
     {
-        this.reporter = reporter;
+        this.launchDataWrapper = launchDataWrapper;
+    }
+
+    public BaseOperationContext(LaunchDataWrapper launchDataWrapper)
+    {
         this.launchDataWrapper = launchDataWrapper;
     }
 
     public void init(){}
     public void shutdown(){}
-
-    @Deprecated
-    public Reporter getReporter()
-    {
-        return reporter;
-    }
-
-    public void setReporter(Reporter reporter)
-    {
-        this.reporter = reporter;
-    }
 
     public LaunchDataWrapper getLaunchDataWrapper()
     {
