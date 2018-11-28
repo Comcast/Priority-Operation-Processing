@@ -28,9 +28,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     private final Class<T> persistenceObjectClazz;
     protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private ObjectPersisterFactory<T> objectPersisterFactory;
+    private ResponseWriter responseWriter = new ResponseWriter();
 
     // TODO: wrapper class for all the json parsing
-
     public BaseAWSLambdaStreamEntry(Class<T> clazz, ObjectPersisterFactory<T> objectPersisterFactory)
     {
         this.persistenceObjectClazz = clazz;
@@ -103,12 +103,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             // todo maybe make this message json formatted?
         }
 
-        String responseBody = responseBodyObject == null ? null : objectMapper.writeValueAsString(responseBodyObject);
-        String response = objectMapper.writeValueAsString(createResponseObject(httpStatusCode, responseBody, request.getJsonNode()));
-        logger.info("Response {}", response);
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-        writer.write(response);
-        writer.close();
+        responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
     }
 
     protected LambdaObjectRequest<T> getRequest(JsonNode node) throws BadRequestException
@@ -127,18 +122,6 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
     }
 
     /**
-     * Creates the response object to return
-     * @param httpStatusCode The http status code to set on the response
-     * @param responseBody The body to set on the response
-     * @param rootRequestNode The root node of the incoming request
-     * @return The object to respond with
-     */
-    protected AWSLambdaStreamResponseObject createResponseObject(int httpStatusCode, String responseBody, JsonNode rootRequestNode)
-    {
-        return new AWSLambdaStreamResponseObject(httpStatusCode, responseBody);
-    }
-
-    /**
      * Gets the entry from the given json node defaulting if not found
      * @param rootRequestNode The root node to search in
      * @param jsonPtrExpr The json pointer string to use
@@ -152,4 +135,8 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         return node.asText(defaultValue);
     }
 
+    public void setResponseWriter(ResponseWriter responseWriter)
+    {
+        this.responseWriter = responseWriter;
+    }
 }
