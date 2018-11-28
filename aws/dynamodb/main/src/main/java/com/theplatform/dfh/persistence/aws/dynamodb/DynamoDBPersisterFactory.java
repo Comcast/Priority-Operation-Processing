@@ -9,10 +9,10 @@ public class DynamoDBPersisterFactory<D> implements ObjectPersisterFactory<D>
 {
     protected String persistenceKeyFieldName;
     private Class dataObjectClass;
-    private PersistentObjectConverter persistentObjectConverter;
+    private DynamoDBPersistentObjectConverter persistentObjectConverter;
 
     public DynamoDBPersisterFactory(String persistenceKeyFieldName, Class dataObjectClass,
-        PersistentObjectConverter persistentObjectConverter)
+        DynamoDBPersistentObjectConverter persistentObjectConverter)
     {
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.dataObjectClass = dataObjectClass;

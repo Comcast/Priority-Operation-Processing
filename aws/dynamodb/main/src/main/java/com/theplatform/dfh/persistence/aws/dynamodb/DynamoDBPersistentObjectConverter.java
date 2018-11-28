@@ -1,5 +1,6 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
+import com.theplatform.dfh.cp.aws.api.converter.PersistentObjectConverter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +11,14 @@ import java.lang.reflect.InvocationTargetException;
  * T = api object class
  * S = persistent object class
  */
-public class PersistentObjectConverter<T, S>
+public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjectConverter<T, S>
 {
-    private static final Logger logger = LoggerFactory.getLogger(PersistentObjectConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistentObjectConverter.class);
 
     Class dataClazz;
     Class persistentClazz;
 
-    public PersistentObjectConverter(Class dataClazz, Class persistentClazz)
+    public DynamoDBPersistentObjectConverter(Class dataClazz, Class persistentClazz)
     {
         this.dataClazz = dataClazz;
         this.persistentClazz = persistentClazz;
