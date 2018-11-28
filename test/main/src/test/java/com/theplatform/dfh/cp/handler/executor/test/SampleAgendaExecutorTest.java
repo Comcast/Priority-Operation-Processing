@@ -42,6 +42,12 @@ public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
             {
                 return podConfig.getCpuMinRequestCount();
             }
+
+            @Override
+            public String getCpuLimit()
+            {
+                return podConfig.getCpuMaxRequestCount();
+            }
         });
 
         String podName = executionConfig.getName();
