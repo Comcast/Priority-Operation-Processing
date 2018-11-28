@@ -31,7 +31,6 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, S
         // if(args != null) System.out.println(String.format("ARGS: %1$s", String.join(",", args)));
         //System.out.println(System.getProperty("user.dir"));
         new HandlerEntryPoint(args).execute();
-        logger.info("SampleComplete");
     }
 
     @Override
