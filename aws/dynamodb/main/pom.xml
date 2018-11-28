@@ -46,8 +46,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.aws.api</groupId>
-            <artifactId>pl-dfh-cp-aws-api</artifactId>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 

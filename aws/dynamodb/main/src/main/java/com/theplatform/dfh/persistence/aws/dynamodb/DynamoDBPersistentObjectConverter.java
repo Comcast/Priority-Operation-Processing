@@ -1,6 +1,6 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
-import com.theplatform.dfh.cp.aws.api.converter.PersistentObjectConverter;
+import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
