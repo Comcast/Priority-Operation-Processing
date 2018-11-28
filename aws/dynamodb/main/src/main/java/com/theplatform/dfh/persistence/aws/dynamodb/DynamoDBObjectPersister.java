@@ -3,11 +3,16 @@ package com.theplatform.dfh.persistence.aws.dynamodb;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.ScanFilter;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.DeleteItemRequest;
+import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.compression.zlib.ZlibUtil;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -18,9 +23,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.Table
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  */
@@ -33,18 +36,19 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     private final String persistenceKeyFieldName;
     private final String tableName;
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
-    private final Class<T> clazz;
+    private final Class<T> dataObjectClass;
 
     private DynamoDBMapper dynamoDBMapper;
     private PersistentObjectConverter converter;
+    private QueryExpression<T> queryExpression = new QueryExpression();
 
     public DynamoDBObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> clazz)
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass)
     {
         this.tableName = tableName;
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.AWSDynamoDBFactory = AWSDynamoDBFactory;
-        this.clazz = clazz;
+        this.dataObjectClass = dataObjectClass;
 
         AmazonDynamoDB client = getAWSDynamoDBFactory().getAmazonDynamoDB();
         DynamoDBMapperConfig mapperConfig = new DynamoDBMapperConfig.Builder()
@@ -55,24 +59,24 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     }
 
     public DynamoDBObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> clazz, PersistentObjectConverter converter)
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter converter)
     {
-        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, clazz);
+        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass);
         this.converter = converter;
     }
 
     protected DynamoDBObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> clazz,
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass,
         DynamoDBMapper dynamoDBMapper)
     {
-        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, clazz);
+        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass);
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
     @Override
     public DataObjectFeed<T> retrieve(List<Query> queries) throws PersistenceException
     {
-        return null;
+        return query(queries);
     }
 
     @Override
@@ -80,7 +84,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     {
         if (converter == null)
         {
-            return dynamoDBMapper.load(clazz, identifier);
+            return dynamoDBMapper.load(dataObjectClass, identifier);
         }
         else
         {
@@ -93,7 +97,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     @Override
     public void delete(String identifier)
     {
-        logger.info("Deleting {} instance with id {}.", clazz.getSimpleName(), identifier);
+        logger.info("Deleting {} instance with id {}.", dataObjectClass.getSimpleName(), identifier);
         AmazonDynamoDB client = AWSDynamoDBFactory.getAmazonDynamoDB();
         DeleteItemRequest deleteItemRequest = new DeleteItemRequest();
         deleteItemRequest.setKey(getKey(identifier));
@@ -136,6 +140,17 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
     }
 
+    private DataObjectFeed<T> query(List<Query> queries)
+    {
+        DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
+
+        List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, queryExpression.from(queries));
+        if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+
+        responseFeed.addAll(responseObjects);
+        return responseFeed;
+    }
+
     protected Map<String, AttributeValue> getKey(String identifier)
     {
         Map<String, AttributeValue> key = new HashMap<>();
@@ -168,9 +183,9 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
-    public Class<T> getClazz()
+    public Class<T> getDataObjectClass()
     {
-        return clazz;
+        return dataObjectClass;
     }
 
     protected String getJson(T object)
@@ -189,7 +204,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     {
         try
         {
-            return objectMapper.readValue(json, getClazz());
+            return objectMapper.readValue(json, getDataObjectClass());
         }
         catch (IOException e)
         {

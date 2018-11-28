@@ -26,10 +26,11 @@ public class DataObjectFeed<D> implements Serializable
         return exception != null;
     }
 
-    public void add(D workType)
+    public void add(D dataObject)
     {
-        dataObjects.add(workType);
+        dataObjects.add(dataObject);
     }
+    public void addAll(List<D> dataObjects) { dataObjects.addAll(dataObjects); }
     public List<D> getAll()
     {
         return dataObjects;
