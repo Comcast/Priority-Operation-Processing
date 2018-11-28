@@ -15,7 +15,7 @@ public class OperationContext extends BaseOperationContext
 
     public OperationContext(Reporter reporter, LaunchDataWrapper launchDataWrapper)
     {
-        super(reporter, launchDataWrapper);
+        super(launchDataWrapper);
         operationProgressThread = new OperationProgressThread(
             new OperationProgressThreadConfig()
                 .setReporter(reporter)
