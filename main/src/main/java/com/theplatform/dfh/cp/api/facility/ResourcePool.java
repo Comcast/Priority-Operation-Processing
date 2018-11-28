@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.api.resourcepool;
+package com.theplatform.dfh.cp.api.facility;
 
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 

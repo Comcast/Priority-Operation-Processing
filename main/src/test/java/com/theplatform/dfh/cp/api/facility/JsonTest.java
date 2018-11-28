@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.api.resourcepool;
+package com.theplatform.dfh.cp.api.facility;
 
 import com.theplatform.dfh.cp.api.JsonUtil;
 import org.apache.commons.io.IOUtils;
@@ -30,8 +30,8 @@ public class JsonTest
     public void testCustomerToJson() throws Exception
     {
         Customer customer = DataGenerator.generateCustomer();
-        Insight insight = DataGenerator.generateInsight();
-        customer.addAvailableInsight(insight);
+        ResourcePool resourcePool = DataGenerator.generateResourcePool();
+        customer.addAvailableResourcePool(resourcePool);
         String json = JsonUtil.toJson(customer);
         //System.out.println(json);
         Assert.assertNotNull(json);

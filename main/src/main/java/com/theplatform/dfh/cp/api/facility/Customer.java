@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.api.resourcepool;
+package com.theplatform.dfh.cp.api.facility;
 
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 
@@ -10,7 +10,7 @@ public class Customer implements IdentifiedObject
     private String id;
     private String billingCode;
     private String title;
-    private List<String> availableInsightIds = new ArrayList<>();
+    private List<String> availableResourcePoolIds = new ArrayList<>();
 
     public String getId()
     {
@@ -42,21 +42,21 @@ public class Customer implements IdentifiedObject
         this.title = title;
     }
 
-    public List<String> getAvailableInsightIds()
+    public List<String> getAvailableResourcePoolIds()
     {
-        return availableInsightIds;
+        return availableResourcePoolIds;
     }
 
-    public void setAvailableInsightIds(List<String> availableInsightIds)
+    public void setAvailableResourcePoolIds(List<String> availableResourcePoolIds)
     {
-        this.availableInsightIds = availableInsightIds;
+        this.availableResourcePoolIds = availableResourcePoolIds;
     }
 
-    public void addAvailableInsight(Insight availableInsight)
+    public void addAvailableResourcePool(ResourcePool availableResourcePool)
     {
-        if(this.availableInsightIds == null)
-            this.availableInsightIds = new ArrayList<>();
+        if(this.availableResourcePoolIds == null)
+            this.availableResourcePoolIds = new ArrayList<>();
         
-        this.availableInsightIds.add(availableInsight.getId());
+        this.availableResourcePoolIds.add(availableResourcePool.getId());
     }
 }
