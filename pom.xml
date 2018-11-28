@@ -16,7 +16,6 @@
 
     <modules>
         <module>main</module>
-        <module>facility/main</module>
         <module>scheduling/main</module>
     </modules>
 </project>
