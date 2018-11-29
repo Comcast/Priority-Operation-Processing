@@ -22,7 +22,7 @@ public class PersistentAgendaProgress extends AgendaProgress
     }
 
     @Override
-    @DynamoDBTypeConverted(converter = ProcessingStateConverter.class)
+//    @DynamoDBTypeConverted(converter = ProcessingStateConverter.class)
     public ProcessingState getProcessingState()
     {
         return super.getProcessingState();
