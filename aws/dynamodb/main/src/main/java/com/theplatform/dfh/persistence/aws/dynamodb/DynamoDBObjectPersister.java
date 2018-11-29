@@ -3,6 +3,8 @@ package com.theplatform.dfh.persistence.aws.dynamodb;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.DeleteItemRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -135,14 +137,24 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
     }
 
-    private DataObjectFeed<T> query(List<Query> queries)
+    private DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
+        DynamoDBQueryExpression dynamoQueryExpression = queryExpression.from(queries);
+        if(dynamoQueryExpression == null) return responseFeed;
+        try
+        {
+            List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
+            if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
 
-        List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, queryExpression.from(queries));
-        if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+            responseFeed.addAll(responseObjects);
+        }
+        catch(AmazonDynamoDBException e)
+        {
+             throw new PersistenceException(String.format("Unable to run query for index {}, key {}, values {}", dynamoQueryExpression.getIndexName(),
+                 dynamoQueryExpression.getKeyConditionExpression(), dynamoQueryExpression.getExpressionAttributeValues().toString()));
+        }
 
-        responseFeed.addAll(responseObjects);
         return responseFeed;
     }
 
