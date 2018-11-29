@@ -30,7 +30,10 @@ public class DataObjectFeed<D> implements Serializable
     {
         dataObjects.add(dataObject);
     }
-    public void addAll(List<D> dataObjects) { dataObjects.addAll(dataObjects); }
+    public void addAll(List<D> dataObjects)
+    {
+        this.dataObjects.addAll(dataObjects);
+    }
     public List<D> getAll()
     {
         return dataObjects;
