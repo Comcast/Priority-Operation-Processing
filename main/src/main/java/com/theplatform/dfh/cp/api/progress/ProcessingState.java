@@ -7,21 +7,7 @@ package com.theplatform.dfh.cp.api.progress;
  */
 public enum ProcessingState
 {
-    WAITING("waiting"),
-    EXECUTING("executing"),
-    COMPLETE("complete");
-
-
-    private final String name;
-
-    private ProcessingState(String name)
-    {
-        this.name = name;
-    }
-
-    @Override
-    public String toString()
-    {
-        return name;
-    }
+    WAITING,
+    EXECUTING,
+    COMPLETE
 }
