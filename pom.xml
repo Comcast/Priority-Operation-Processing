@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.4</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+    <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Endpoint API</name>
+
+    <properties>
+        <cp-persistence-api.version>1.0.0-SNAPSHOT</cp-persistence-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${cp-persistence-api.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.theplatform.plugins</groupId>
+                <artifactId>buildproperty-plugin</artifactId>
+                <configuration>
+                    <service>true</service>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>buildprops</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>plbuild-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
