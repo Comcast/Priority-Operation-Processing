@@ -2,7 +2,8 @@ package com.theplatform.dfh.persistence.aws.dynamodb.api.progress;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTyped;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
@@ -22,7 +23,7 @@ public class PersistentAgendaProgress extends AgendaProgress
     }
 
     @Override
-//    @DynamoDBTypeConverted(converter = ProcessingStateConverter.class)
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     public ProcessingState getProcessingState()
     {
         return super.getProcessingState();
