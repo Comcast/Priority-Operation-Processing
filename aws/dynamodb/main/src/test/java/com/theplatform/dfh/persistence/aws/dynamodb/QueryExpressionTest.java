@@ -1,7 +1,7 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.theplatform.dfh.persistence.api.query.ByTitle;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -19,7 +19,7 @@ public class QueryExpressionTest
     @Test
     public void testByTitle()
     {
-        DynamoDBQueryExpression expression = queryExpression.from(Collections.singletonList(new ByTitle("xyz")));
+        DynamoDBQueryExpression expression = queryExpression.from(Collections.singletonList(new Query("title","xyz")));
         Assert.assertEquals(expression.getKeyConditionExpression(), "title = :title");
         Assert.assertTrue(expression.getExpressionAttributeValues().get(":title").toString().contains("xyz"));
     }

@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
-import com.theplatform.dfh.persistence.api.query.ById;
+import com.theplatform.dfh.persistence.api.query.Query;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
@@ -22,7 +22,7 @@ public class DynamoDBObjectPersisterTest
     public void testQueryException() throws PersistenceException
     {
          Mockito.when(dbMapper.query(Mockito.eq(MyTest.class), Mockito.any())).thenThrow(new AmazonDynamoDBException("bad params"));
-         DataObjectFeed<MyTest> returnedFeed = persister.retrieve(Collections.singletonList(new ById("xyz")));
+         DataObjectFeed<MyTest> returnedFeed = persister.retrieve(Collections.singletonList(new Query("id","xyz")));
     }
 
 
