@@ -26,7 +26,7 @@ public class QueryExpression<T>
         Map<String, AttributeValue> awsQueryValueMap = new HashMap<String, AttributeValue>();
         for(Query query : queries)
             addCondition(keyConditions, awsQueryValueMap, query);
-        final String indexName = queries.get(0).getField().name().toUpperCase() +"INDEX";
+        final String indexName = queries.get(0).getField().name().toUpperCase() +"_INDEX";
         DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>()
             .withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
