@@ -4,6 +4,7 @@ import java.util.Date;
 
 public interface AgendaInfo
 {
+    String getId();
     String getInsightId();
     String getAgendaId();
     String getCustomerId();
