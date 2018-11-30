@@ -26,6 +26,7 @@ public class LambdaRequest
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
     protected static final String HEADERS_AUTHORIZATION_PATH = "/headers/Authorization";
+    protected static final String HEADERS = "/headers";
 
     static
     {
@@ -145,6 +146,11 @@ public class LambdaRequest
     }
 
     public String getAuthorizationHeader() { return getRequestValue(HEADERS_AUTHORIZATION_PATH); }
+
+    public String getHeader(String header)
+    {
+        return getRequestValue(HEADERS + "/" + header);
+    }
 
     /**
      * Gets a string value from the request at the indicated JSON pointer path
