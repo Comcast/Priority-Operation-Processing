@@ -15,6 +15,7 @@
 
     <properties>
         <cp-persistence-api.version>1.0.0-SNAPSHOT</cp-persistence-api.version>
+        <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
     </properties>
 
     <dependencies>
@@ -23,26 +24,10 @@
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${cp-persistence-api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.theplatform.plugins</groupId>
-                <artifactId>buildproperty-plugin</artifactId>
-                <configuration>
-                    <service>true</service>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>buildprops</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>plbuild-properties</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
