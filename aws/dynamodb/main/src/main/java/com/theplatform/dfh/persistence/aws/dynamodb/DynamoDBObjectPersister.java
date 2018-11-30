@@ -151,7 +151,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
         catch(AmazonDynamoDBException e)
         {
-             throw new PersistenceException(String.format("Unable to run query for index {}, key {}, values {}", dynamoQueryExpression.getIndexName(),
+             throw new PersistenceException(String.format("Unable to run query for index %1$s, key %2$s, values %3$s", dynamoQueryExpression.getIndexName(),
                  dynamoQueryExpression.getKeyConditionExpression(), dynamoQueryExpression.getExpressionAttributeValues().toString()));
         }
 

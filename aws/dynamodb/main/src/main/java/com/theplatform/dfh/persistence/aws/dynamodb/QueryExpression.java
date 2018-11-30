@@ -29,7 +29,8 @@ public class QueryExpression<T>
         DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>()
             .withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
-            .withIndexName(queries.get(0).getField().name() +"Index");
+            .withIndexName(queries.get(0).getField().name() +"Index")
+            .withConsistentRead(false);
 
         logger.info("DynamoDB key condition {}", queryExpression.getKeyConditionExpression());
         logger.info("DynamoDB value map {}", awsQueryValueMap.toString());
