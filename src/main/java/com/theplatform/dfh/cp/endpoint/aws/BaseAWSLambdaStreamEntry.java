@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.IdentifiedObject;
-import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;

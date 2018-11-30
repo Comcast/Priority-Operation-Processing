@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.BadRequestException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
