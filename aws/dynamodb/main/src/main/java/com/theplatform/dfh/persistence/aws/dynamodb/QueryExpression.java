@@ -26,10 +26,11 @@ public class QueryExpression<T>
         Map<String, AttributeValue> awsQueryValueMap = new HashMap<String, AttributeValue>();
         for(Query query : queries)
             addCondition(keyConditions, awsQueryValueMap, query);
+        final String indexName = queries.get(0).getField().name().toUpperCase() +"INDEX";
         DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>()
             .withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
-            .withIndexName(queries.get(0).getField().name() +"Index")
+            .withIndexName(indexName)
             .withConsistentRead(false);
 
         logger.info("DynamoDB key condition {}", queryExpression.getKeyConditionExpression());
