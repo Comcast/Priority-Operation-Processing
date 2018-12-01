@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
@@ -16,17 +17,18 @@ public class DynamoDBObjectPersisterTest
 {
     AWSDynamoDBFactory awsDynamoDBFactory = Mockito.mock(AWSDynamoDBFactory.class);
     DynamoDBMapper dbMapper = Mockito.mock(DynamoDBMapper.class);
-    DynamoDBObjectPersister persister = new DynamoDBObjectPersister("table", "id", awsDynamoDBFactory, MyTest.class, dbMapper);
+    PersistentObjectConverter<MyTest, PersistentMyTest> mockPersistentObjectConverter = Mockito.mock(PersistentObjectConverter.class);
+    DynamoDBObjectPersister persister = new DynamoDBObjectPersister("table", "id", awsDynamoDBFactory, MyTest.class, mockPersistentObjectConverter);
+
 
     @Test(expectedExceptions = PersistenceException.class)
     public void testQueryException() throws PersistenceException
     {
-         Mockito.when(dbMapper.query(Mockito.eq(MyTest.class), Mockito.any())).thenThrow(new AmazonDynamoDBException("bad params"));
-         DataObjectFeed<MyTest> returnedFeed = persister.retrieve(Collections.singletonList(new Query("id","xyz")));
+        persister.setDynamoDBMapper(dbMapper);
+        Mockito.doReturn(PersistentMyTest.class).when(mockPersistentObjectConverter).getPersistentObjectClass();
+        Mockito.when(dbMapper.query(Mockito.eq(PersistentMyTest.class), Mockito.any())).thenThrow(new AmazonDynamoDBException("bad params"));
+        DataObjectFeed<MyTest> returnedFeed = persister.retrieve(Collections.singletonList(new Query("id","xyz")));
     }
-
-
-
 
     private class MyTest
     {
@@ -42,5 +44,9 @@ public class DynamoDBObjectPersisterTest
         {
             this.id = id;
         }
+    }
+
+    private class PersistentMyTest extends MyTest
+    {
     }
 }

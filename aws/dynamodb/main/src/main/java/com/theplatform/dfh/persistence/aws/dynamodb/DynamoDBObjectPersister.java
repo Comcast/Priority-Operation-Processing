@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * TODO: Make one with and without the converter!
  */
 public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
 {
@@ -144,10 +145,21 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         if(dynamoQueryExpression == null) return responseFeed;
         try
         {
-            List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
-            if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+            if(converter == null)
+            {
+                // based on enum conversions this code will only work on very boring pojos
+                List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
+                if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
 
-            responseFeed.addAll(responseObjects);
+                responseFeed.addAll(responseObjects);
+            }
+            else
+            {
+                List responseObjects = dynamoDBMapper.query(converter.getPersistentObjectClass(), dynamoQueryExpression);
+                if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+
+                responseObjects.forEach(po -> responseFeed.add((T)converter.getDataObject(po)));
+            }
         }
         catch(AmazonDynamoDBException e)
         {
