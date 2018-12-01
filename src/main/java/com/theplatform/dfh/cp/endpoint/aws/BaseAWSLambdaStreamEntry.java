@@ -96,11 +96,18 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
                     logger.warn("Unsupported method type.");
             }
             responseBodyObject = createResponseBodyObject(responseBodyObject, request.getJsonNode());
-        } catch (IllegalArgumentException e)
+        }
+        catch (IllegalArgumentException e)
         {
             httpStatusCode = 400;
             responseBodyObject = e.getMessage();
             // todo maybe make this message json formatted?
+        }
+        catch(Exception e)
+        {
+            httpStatusCode = 500;
+            responseBodyObject = e.getMessage();
+            logger.error("Failed to process request.", e);
         }
 
         responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
