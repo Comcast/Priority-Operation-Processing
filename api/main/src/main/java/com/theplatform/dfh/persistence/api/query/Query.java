@@ -9,6 +9,7 @@ public class Query<T>
     private DataTypeField field;
     private T value;
     private boolean isCollection;
+    private final String BY_PREFIX = "by";
 
     public Query()
     {
@@ -57,6 +58,11 @@ public class Query<T>
     public void setCollection(boolean collection)
     {
         isCollection = collection;
+    }
+
+    public String toQueryParam()
+    {
+        return BY_PREFIX + field.name() + "=" + value.toString();
     }
 
     public T getValue()
