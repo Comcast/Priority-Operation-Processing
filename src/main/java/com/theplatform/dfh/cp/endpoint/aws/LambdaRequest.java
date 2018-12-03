@@ -27,6 +27,7 @@ public class LambdaRequest
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
     protected static final String HEADERS_AUTHORIZATION_PATH = "/headers/Authorization";
     protected static final String HEADERS = "/headers";
+    protected static final String HEADER_CID = "X-thePlatform-cid";
 
     static
     {
@@ -150,6 +151,11 @@ public class LambdaRequest
     public String getHeader(String header)
     {
         return getRequestValue(HEADERS + "/" + header);
+    }
+
+    public String getCID()
+    {
+        return getHeader(HEADER_CID);
     }
 
     /**
