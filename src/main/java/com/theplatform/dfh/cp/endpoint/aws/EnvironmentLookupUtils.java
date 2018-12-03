@@ -21,7 +21,7 @@ public class EnvironmentLookupUtils
         {
             return null;
         }
-        getTableName(tableName, lambdaRequest.getStageName());
+        return getTableName(tableName, lambdaRequest.getStageName());
     }
 
     public String getTableName(String tablePrefix, String stageName)
