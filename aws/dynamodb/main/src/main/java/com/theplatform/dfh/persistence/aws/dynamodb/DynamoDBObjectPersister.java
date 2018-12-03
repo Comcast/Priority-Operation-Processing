@@ -128,7 +128,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
 
         Map<String, ExpectedAttributeValue> expected = new HashMap<>();
-        expected.put("status", new ExpectedAttributeValue().withExists(true));
+        expected.put("id", new ExpectedAttributeValue());
         DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
         saveExpression.setExpected(expected);
 
