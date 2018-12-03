@@ -4,9 +4,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.DeleteItemRequest;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
@@ -127,14 +126,28 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     public void update(String identifier, T object)
     {
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
+
+        Map<String, ExpectedAttributeValue> expected = new HashMap<>();
+        expected.put("status", new ExpectedAttributeValue().withExists(true));
+        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
+        saveExpression.setExpected(expected);
+
         if (converter == null)
         {
-            dynamoDBMapper.save(object);
+            dynamoDBMapper.save(object, saveExpression);
         }
         else
         {
             Object persistentObject = converter.getPersistentObject(object);
-            dynamoDBMapper.save(persistentObject);
+
+            try
+            {
+                dynamoDBMapper.save(persistentObject, saveExpression);
+            }
+            catch (ConditionalCheckFailedException e)
+            {
+                throw new IllegalArgumentException("Could not update object.  No object with id " + identifier + " exists.", e);
+            }
         }
     }
 
