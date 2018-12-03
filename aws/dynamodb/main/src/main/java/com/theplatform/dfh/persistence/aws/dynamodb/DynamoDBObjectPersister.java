@@ -127,8 +127,9 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     {
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
 
+        // initial attempt at only saving if an object with that id exists
         Map<String, ExpectedAttributeValue> expected = new HashMap<>();
-        expected.put("id", new ExpectedAttributeValue());
+        expected.put("id", new ExpectedAttributeValue().withValue(new AttributeValue(identifier)));
         DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
         saveExpression.setExpected(expected);
 
