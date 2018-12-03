@@ -21,9 +21,25 @@ public class EnvironmentLookupUtils
         {
             return null;
         }
-        return tableName + "-" + lambdaRequest.getStageName();
+        getTableName(tableName, lambdaRequest.getStageName());
     }
 
+    public String getTableName(String tablePrefix, String stageName)
+    {
+        return tablePrefix + "-" + stageName;
+    }
+
+    /**
+     * Builds a url using the base url, stage name and path
+     * @param baseURL The base url (no '/' at the end)
+     * @param stageName The name of the stage
+     * @param path The path with '/' prefix
+     * @return
+     */
+    public String getAPIEndpointURL(String baseURL, String stageName, String path)
+    {
+        return baseURL + "/" + stageName + path;
+    }
 
     public String getAPIEndpointURL(LambdaRequest lambdaRequest, String pathStageVar)
     {
@@ -36,8 +52,7 @@ public class EnvironmentLookupUtils
         {
             return null;
         }
-
-        return "https://" + domainName + "/" + stageName + path;
+        return getAPIEndpointURL("https://" + domainName, stageName, path);
     }
 
 }
