@@ -1,6 +1,13 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
+import com.amazonaws.services.kms.AWSKMS;
+import com.amazonaws.services.kms.AWSKMSClientBuilder;
+import com.amazonaws.services.kms.model.DecryptRequest;
+import com.amazonaws.util.Base64;
 import org.apache.commons.lang3.StringUtils;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 /**
  * Utility class for performing lookups against the given environment (AWS in this case)
@@ -53,6 +60,25 @@ public class EnvironmentLookupUtils
             return null;
         }
         return getAPIEndpointURL("https://" + domainName, stageName, path);
+    }
+
+    public String getEncryptedVarFromEnvironment(String varName)
+    {
+        // hacked from the pipeline modules
+        String encryptedEnvVar = System.getenv(varName);
+        if(encryptedEnvVar == null)
+        {
+            return null;
+        }
+
+        byte[] encryptedData = Base64.decode(encryptedEnvVar);
+
+        AWSKMS client = AWSKMSClientBuilder.defaultClient();
+
+        DecryptRequest request = new DecryptRequest().withCiphertextBlob(ByteBuffer.wrap(encryptedData));
+
+        ByteBuffer plainTextKey = client.decrypt(request).getPlaintext();
+        return new String(plainTextKey.array(), Charset.forName("UTF-8"));
     }
 
 }
