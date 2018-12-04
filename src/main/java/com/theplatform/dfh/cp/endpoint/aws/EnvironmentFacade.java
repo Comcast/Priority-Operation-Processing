@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * Wrapper class for environment variable access (primarily helpful for unit testing)
  */
-public class EnvironmentWrapper
+public class EnvironmentFacade
 {
     public String getEnv(String var)
     {
