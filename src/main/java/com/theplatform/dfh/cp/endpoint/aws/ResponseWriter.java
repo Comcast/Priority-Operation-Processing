@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,6 +18,7 @@ import java.util.Set;
  */
 public class ResponseWriter
 {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * Writes a standard AWS response object to the OutputStream
      * @param outputStream The OutputStream to write to
@@ -31,11 +34,13 @@ public class ResponseWriter
         //Putting the headers on the response for CORS @todo Remove if we don't use a browser for access to endpoints
         Map<String, String> headers = new HashMap<>();
         responseObject.setHeaders(headers);
+        headers.put("Access-Control-Expose-Headers", "Access-Control-Allow-Origin");
         headers.put("Access-Control-Allow-Headers", "DNL,origin,accept,Content-Type,Authorization,Referer,User-Agent");
         headers.put("Access-Control-Allow-Origin", "*");
         headers.put("Access-Control-Allow-Credentials", "true");
         headers.put("Access-Control-Allow-Methods", "GET,OPTIONS");
         String response = objectMapper.writeValueAsString(responseObject);
+        logger.info(response);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
         writer.write(response);
         writer.close();
