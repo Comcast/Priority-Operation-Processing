@@ -38,27 +38,23 @@ function authorizeWithLambda(e) {
         success: function (resp) {
             $.ajax({
                 type: "GET",
-                url: "https://3io93ms3z8.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/progress/agenda/" +id_value,
-                dataType: "json",
-                crossDomain: "true",
+                url: "https://fission.aort.theplatform.com/dev/dfh/idm/progress/agenda/" +id_value,
+                crossDomain: true,
+                jsonp: true,
                 contentType: "application/json",
-
                 headers: {
-                    "Authorization": "Basic " + btoa(resp),
-                    "Access-Control-Allow-Origin": "*",
+                    'Authorization': "Basic " +  btoa(resp.signInResponse.token),
                     "Content-Type": "application/json"
                 },
-                //data: JSON.stringify(resp),
-
                 success: function () {
                     // clear form and show a success message
                     alert("Successfull");
                     document.getElementById("contact-form").reset();
                     location.reload();
                 },
-                error: function () {
+                error: function (error) {
                     // show an error message
-                    alert("UnSuccessfull");
+                    alert("UnSuccessfull" +JSON.stringify(error));
                 }
             });
         },
