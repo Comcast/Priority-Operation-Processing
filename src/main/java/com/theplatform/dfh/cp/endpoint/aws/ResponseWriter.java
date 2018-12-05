@@ -31,7 +31,7 @@ public class ResponseWriter
         //Putting the headers on the response for CORS @todo Remove if we don't use a browser for access to endpoints
         Map<String, String> headers = new HashMap<>();
         responseObject.setHeaders(headers);
-        headers.put("Access-Control-Allow-Headers", "origin,accept,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token");
+        headers.put("Access-Control-Allow-Headers", "DNL,origin,accept,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token");
         headers.put("Access-Control-Allow-Origin", "*");
         headers.put("Access-Control-Allow-Credentials", "true");
         headers.put("Access-Control-Allow-Methods", "GET,OPTIONS");
