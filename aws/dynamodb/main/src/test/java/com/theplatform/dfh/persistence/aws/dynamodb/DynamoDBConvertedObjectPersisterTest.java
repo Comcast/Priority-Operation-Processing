@@ -13,12 +13,12 @@ import java.util.Collections;
 
 /**
  */
-public class DynamoDBObjectPersisterTest
+public class DynamoDBConvertedObjectPersisterTest
 {
     AWSDynamoDBFactory awsDynamoDBFactory = Mockito.mock(AWSDynamoDBFactory.class);
     DynamoDBMapper dbMapper = Mockito.mock(DynamoDBMapper.class);
     PersistentObjectConverter<MyTest, PersistentMyTest> mockPersistentObjectConverter = Mockito.mock(PersistentObjectConverter.class);
-    DynamoDBObjectPersister persister = new DynamoDBObjectPersister("table", "id", awsDynamoDBFactory, MyTest.class, mockPersistentObjectConverter);
+    DynamoDBConvertedObjectPersister persister = new DynamoDBConvertedObjectPersister("table", "id", awsDynamoDBFactory, MyTest.class, mockPersistentObjectConverter);
 
 
     @Test(expectedExceptions = PersistenceException.class)

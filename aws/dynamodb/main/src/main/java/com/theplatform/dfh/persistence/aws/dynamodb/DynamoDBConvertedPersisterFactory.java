@@ -5,21 +5,23 @@ import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 
 /**
  */
-public class DynamoDBPersisterFactory<D> implements ObjectPersisterFactory<D>
+public class DynamoDBConvertedPersisterFactory<D> implements ObjectPersisterFactory<D>
 {
     protected String persistenceKeyFieldName;
     private Class dataObjectClass;
+    private DynamoDBPersistentObjectConverter persistentObjectConverter;
 
-    public DynamoDBPersisterFactory(String persistenceKeyFieldName, Class dataObjectClass,
+    public DynamoDBConvertedPersisterFactory(String persistenceKeyFieldName, Class dataObjectClass,
         DynamoDBPersistentObjectConverter persistentObjectConverter)
     {
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.dataObjectClass = dataObjectClass;
+        this.persistentObjectConverter = persistentObjectConverter;
     }
 
     @Override
     public ObjectPersister<D> getObjectPersister(String containerName)
     {
-       return new DynamoDBObjectPersister<D>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(), dataObjectClass);
+        return new DynamoDBConvertedObjectPersister<D>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(), dataObjectClass, persistentObjectConverter);
     }
 }
