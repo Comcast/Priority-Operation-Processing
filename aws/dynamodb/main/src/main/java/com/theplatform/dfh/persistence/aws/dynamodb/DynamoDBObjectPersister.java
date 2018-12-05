@@ -21,9 +21,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 import java.io.IOException;
 import java.util.*;
 
-/**
- * TODO: Make one with and without the converter!
- */
 public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
 {
     protected static Logger logger = LoggerFactory.getLogger(DynamoDBObjectPersister.class);
@@ -36,7 +33,6 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     private final Class<T> dataObjectClass;
 
     private DynamoDBMapper dynamoDBMapper;
-    private PersistentObjectConverter converter;
     private QueryExpression<T> queryExpression = new QueryExpression();
 
     public DynamoDBObjectPersister(String tableName,
@@ -53,13 +49,6 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
             .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
             .build();
         this.dynamoDBMapper = new DynamoDBMapper(client, mapperConfig);
-    }
-
-    public DynamoDBObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter converter)
-    {
-        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass);
-        this.converter = converter;
     }
 
     protected DynamoDBObjectPersister(String tableName,
@@ -79,16 +68,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     @Override
     public T retrieve(String identifier)
     {
-        if (converter == null)
-        {
-            return dynamoDBMapper.load(dataObjectClass, identifier);
-        }
-        else
-        {
-            // todo fix this
-            Object persistentObject = dynamoDBMapper.load(converter.getPersistentObjectClass(), identifier);
-            return (T) converter.getDataObject(persistentObject);
-        }
+        return dynamoDBMapper.load(dataObjectClass, identifier);
     }
 
     @Override
@@ -106,74 +86,29 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     public void persist(String identifier, T object)
     {
         logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), identifier);
-        if (converter == null)
-        {
-            dynamoDBMapper.save(object);
-        }
-        else
-        {
-            Object persistentObject = converter.getPersistentObject(object);
-            dynamoDBMapper.save(persistentObject);
-        }
+        dynamoDBMapper.save(object);
     }
 
-    /**
-     * Uses the persist method to simply overwrite the object.
-     * @param identifier The key to update the item by
-     * @param object The object to update
-     */
     @Override
     public void update(String identifier, T object)
     {
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
 
-        // initial attempt at only saving if an object with that id exists
-        Map<String, ExpectedAttributeValue> expected = new HashMap<>();
-        expected.put("id", new ExpectedAttributeValue().withValue(new AttributeValue(identifier)));
-        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
-        saveExpression.setExpected(expected);
-
-        if (converter == null)
-        {
-            dynamoDBMapper.save(object, saveExpression);
-        }
-        else
-        {
-            Object persistentObject = converter.getPersistentObject(object);
-
-            try
-            {
-                dynamoDBMapper.save(persistentObject, saveExpression);
-            }
-            catch (ConditionalCheckFailedException e)
-            {
-                throw new IllegalArgumentException("Could not update object.  No object with id " + identifier + " exists.", e);
-            }
-        }
+        updateWithCondition(identifier, object);
     }
 
-    private DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
+    protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
         DynamoDBQueryExpression dynamoQueryExpression = queryExpression.from(queries);
         if(dynamoQueryExpression == null) return responseFeed;
         try
         {
-            if(converter == null)
-            {
                 // based on enum conversions this code will only work on very boring pojos
                 List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
                 if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
 
                 responseFeed.addAll(responseObjects);
-            }
-            else
-            {
-                List responseObjects = dynamoDBMapper.query(converter.getPersistentObjectClass(), dynamoQueryExpression);
-                if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
-
-                responseObjects.forEach(po -> responseFeed.add((T)converter.getDataObject(po)));
-            }
         }
         catch(AmazonDynamoDBException e)
         {
@@ -199,6 +134,11 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     public String getTableName()
     {
         return tableName;
+    }
+
+    public QueryExpression<T> getQueryExpression()
+    {
+        return queryExpression;
     }
 
     public AWSDynamoDBFactory getAWSDynamoDBFactory()
@@ -242,6 +182,23 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         catch (IOException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    protected void updateWithCondition(String identifier, Object object)
+    {
+        // only save if an object with that id exists
+        Map<String, ExpectedAttributeValue> expected = new HashMap<>();
+        expected.put("id", new ExpectedAttributeValue().withValue(new AttributeValue(identifier)));
+        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression();
+        saveExpression.setExpected(expected);
+        try
+        {
+            dynamoDBMapper.save(object, saveExpression);
+        }
+        catch (ConditionalCheckFailedException e)
+        {
+            throw new IllegalArgumentException("Could not update object.  No object with id " + identifier + " exists.", e);
         }
     }
 }
