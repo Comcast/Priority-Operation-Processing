@@ -1,6 +1,8 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -51,14 +53,20 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
-        DynamoDBQueryExpression dynamoQueryExpression = getQueryExpression().from(queries);
+        DynamoDBQueryExpression dynamoQueryExpression = getQueryExpression().forQuery(queries);
         if(dynamoQueryExpression == null) return responseFeed;
         try
         {
-                List responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
-                if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+            List responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
 
-                responseObjects.forEach(po -> responseFeed.add((T)converter.getDataObject(po)));
+            if(responseObjects == null || responseObjects.size() == 0)
+            {
+                DynamoDBScanExpression dynamoScanExpression = getQueryExpression().forScan(queries);
+
+                responseObjects =  getDynamoDBMapper().scan(converter.getPersistentObjectClass(), dynamoScanExpression);
+            }
+
+            responseObjects.forEach(po -> responseFeed.add((T)converter.getDataObject(po)));
         }
         catch(AmazonDynamoDBException e)
         {

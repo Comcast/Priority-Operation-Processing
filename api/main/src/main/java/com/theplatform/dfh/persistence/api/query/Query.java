@@ -1,12 +1,13 @@
 package com.theplatform.dfh.persistence.api.query;
 
-import com.theplatform.dfh.persistence.api.DataTypeField;
+import com.theplatform.dfh.persistence.api.field.DataField;
+import com.theplatform.dfh.persistence.api.field.DataObjectField;
 
 import java.util.Collection;
 
 public class Query<T>
 {
-    private DataTypeField field;
+    private DataField field;
     private T value;
     private boolean isCollection;
     private final String BY_PREFIX = "by";
@@ -16,30 +17,30 @@ public class Query<T>
     }
     public Query(String field, T value)
     {
-        this.field = new DataTypeField(field);
+        this.field = new DataObjectField(field);
         this.value = value;
         this.isCollection = value != null && value instanceof Collection;
     }
-    public Query(DataTypeField field, T value)
+    public Query(DataField field, T value)
     {
         this.field = field;
         this.value = value;
         this.isCollection = value != null && value instanceof Collection;
     }
 
-    public Query(DataTypeField field, T value, boolean isCollection)
+    public Query(DataField field, T value, boolean isCollection)
     {
         this.field = field;
         this.value = value;
         this.isCollection = isCollection;
     }
 
-    public DataTypeField getField()
+    public DataField getField()
     {
         return field;
     }
 
-    public void setField(DataTypeField field)
+    public void setField(DataField field)
     {
         this.field = field;
     }
@@ -69,6 +70,15 @@ public class Query<T>
     {
         return value;
     }
+
+    public Integer getIntValue()
+    {
+        if(value instanceof Integer) return (Integer) value;
+        return Integer.valueOf(value.toString());
+    }
+
+
+
     @Override
     public int hashCode()
     {
@@ -107,4 +117,7 @@ public class Query<T>
                 ", value=" + value +
                 '}';
     }
+
+
+
 }

@@ -14,14 +14,15 @@ public class QueryExpressionTest
     @Test
     public void testByTitle()
     {
-        DynamoDBQueryExpression expression = queryExpression.from(Collections.singletonList(new Query("title","xyz")));
+        DynamoDBQueryExpression expression = queryExpression.forQuery(Collections.singletonList(new Query("title","xyz")));
         Assert.assertEquals(expression.getKeyConditionExpression(), "title = :title");
         Assert.assertTrue(expression.getExpressionAttributeValues().get(":title").toString().contains("xyz"));
     }
+
     @Test
     public void testAll()
     {
-        DynamoDBQueryExpression expression = queryExpression.from(null);
-        Assert.assertEquals(expression.getLimit(), new Integer(100));
+        DynamoDBQueryExpression expression = queryExpression.forQuery(null);
+        Assert.assertNull(expression);
     }
 }

@@ -1,16 +1,14 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,15 +97,25 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
-        DynamoDBQueryExpression dynamoQueryExpression = queryExpression.from(queries);
+        DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery(queries);
         if(dynamoQueryExpression == null) return responseFeed;
         try
         {
-                // based on enum conversions this code will only work on very boring pojos
-                List<T> responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
-                if(responseObjects == null || responseObjects.size() == 0) return responseFeed;
+            List<T> responseObjects;
+            // based on enum conversions this code will only work on very boring pojos
+            if(queries != null && queries.size() > 0)
+            {
+                responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
+            }
+            else
+            {
+                queries = Collections.singletonList(new Query(new LimitField(), LimitField.defaultValue()));
+                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan(queries);
 
-                responseFeed.addAll(responseObjects);
+                responseObjects =  dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
+            }
+
+            responseFeed.addAll(responseObjects);
         }
         catch(AmazonDynamoDBException e)
         {

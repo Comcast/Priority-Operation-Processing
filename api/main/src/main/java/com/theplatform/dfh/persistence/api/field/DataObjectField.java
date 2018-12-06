@@ -1,10 +1,10 @@
-package com.theplatform.dfh.persistence.api;
+package com.theplatform.dfh.persistence.api.field;
 
-public class DataTypeField
+public class DataObjectField implements DataField
 {
    private String fieldName;
 
-    public DataTypeField(String fieldName)
+    public DataObjectField(String fieldName)
     {
         this.fieldName = fieldName;
     }
