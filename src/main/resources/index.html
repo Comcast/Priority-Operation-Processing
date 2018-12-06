@@ -17,8 +17,13 @@
         <label for="mpx_password"><b>Password</b></label>
         <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" required>
 
-        <label for="id_value"><b>Agenda Progress ID</b></label>
+        <label for="id_value"><b>ID</b></label>
         <input id="id_value" placeholder="Enter Agenda Progress ID" name="id_value" required>
+
+        <select id="endpointURL">
+            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/agenda">Agenda</option>
+            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/progress/agenda?">Agenda Progress</option>
+        </select>
 
         <input type="submit" value="Log In" onclick="authorizeWithLambda(event)"/>
     </div>

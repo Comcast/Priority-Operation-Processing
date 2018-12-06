@@ -10,8 +10,10 @@ function authorizeWithLambda(e) {
         return;
     }
     var username = $("#mpx_username").val();
-    var  password = $("#mpx_password").val();
-    var  id_value = $("#id_value").val();
+    var password = $("#mpx_password").val();
+    var id_value = $("#id_value").val();
+    var endpointURL = $("#endpointURL").val();
+    var CID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
     $.ajax({
         type: "POST",
@@ -32,15 +34,17 @@ function authorizeWithLambda(e) {
 //    {"signInResponse":{"token":"-4mfRXUCyoskRI-Q5taOYdBQAPBOkHBE","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/6111539","userName":"admin@theplatform.com","duration":86400000,"idleTimeout":14400000}}
 
         success: function (idmResponse) {
+            var url = id_value == "" ? endpointURL : endpointURL +"/" +id_value
             $.ajax({
                 type: "GET",
-                url: "https://fission.aort.theplatform.com/dev/dfh/idm/progress/agenda/" +id_value,
+                url: url,
                 crossDomain: true,
                 jsonp: true,
                 contentType: "application/json",
                 headers: {
                     'Authorization': "Basic " +  btoa(idmResponse.signInResponse.token),
-                    "Content-Type": "application/json"
+                    'Content-Type': "application/json",
+                    'X-thePlatform-cid': CID
                 },
                 success: function (response) {
                     document.getElementById("response").value = JSON.stringify(response, null, 2);
@@ -48,7 +52,7 @@ function authorizeWithLambda(e) {
                 },
                 error: function () {
                     // show an error message
-                    alert("UnSuccessfull");
+                    alert("UnSuccessfull CID '" +CID +"'");
                 }
             });
         },
