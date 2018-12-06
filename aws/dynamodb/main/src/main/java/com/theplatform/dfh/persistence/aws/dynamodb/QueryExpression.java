@@ -26,6 +26,7 @@ public class QueryExpression<T>
             //getAll with limit
             queryExpression.withLimit(LIMIT)
                     .withConsistentRead(false);
+            logger.info("DynamoDB limit:100");
         }
         else
         {
@@ -36,10 +37,10 @@ public class QueryExpression<T>
                     .withExpressionAttributeValues(awsQueryValueMap)
                     .withIndexName(indexName)
                     .withConsistentRead(false);
+            logger.info("DynamoDB key condition {}", queryExpression.getKeyConditionExpression());
+            logger.info("DynamoDB value map {}", awsQueryValueMap.toString());
         }
 
-        logger.info("DynamoDB key condition {}", queryExpression.getKeyConditionExpression());
-        logger.info("DynamoDB value map {}", awsQueryValueMap.toString());
         return queryExpression;
     }
     private void addCondition(List<String> conditions, Map<String, AttributeValue> valueMap, Query query)
