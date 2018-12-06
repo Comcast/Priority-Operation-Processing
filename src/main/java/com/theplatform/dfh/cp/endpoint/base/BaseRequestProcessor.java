@@ -50,10 +50,6 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
     {
         try
         {
-            if(queries == null || queries.size() == 0)
-            {
-                return null;
-            }
             return objectPersister.retrieve(queries);
         }
         catch(PersistenceException e)

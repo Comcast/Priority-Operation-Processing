@@ -15,13 +15,6 @@ public class BaseRequestProcessorTest
 {
     ObjectPersister<SimpleObject> objectPersister = Mockito.mock(ObjectPersister.class);
 
-    @Test
-    public void testGetByQueryNull() throws BadRequestException
-    {
-        TestBaseProcessor processor = new TestBaseProcessor(objectPersister);
-        Assert.assertNull(processor.handleGET(Collections.emptyList()));
-    }
-
     @Test(expectedExceptions = BadRequestException.class)
     public void testGetByQueryBad() throws BadRequestException, PersistenceException
     {
