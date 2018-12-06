@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
