@@ -44,6 +44,7 @@ function authorizeWithLambda(e) {
                 },
                 success: function (response) {
                     document.getElementById("response").value = JSON.stringify(response, null, 2);
+                    $('#json-renderer').jsonViewer(response);
                 },
                 error: function () {
                     // show an error message

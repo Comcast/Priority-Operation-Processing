@@ -1,23 +1,28 @@
 <html>
-<script type="text/javascript" src="login.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<head>
+    <link rel="stylesheet" href="/css/jquery.json-viewer.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.json-viewer.js"></script>
+    <script type="text/javascript" src="login.js"></script>
+</head>
 <form id="loginForm">
     <div class="container">
         <label for="mpx_username"><b>Username</b></label>
-        <input id="mpx_username" placeholder="Enter Username" name="mpx_username" required>
+        <input id="mpx_username" placeholder="Enter Username" name="mpx_username" value="admin@theplatform.com" required>
 
         <label for="mpx_password"><b>Password</b></label>
-        <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" required>
+        <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" value="Admin!!!" required>
 
         <label for="id_value"><b>Agenda Progress ID</b></label>
-        <input id="id_value" placeholder="Enter Agenda Progress ID" name="id_value" required>
+        <input id="id_value" placeholder="Enter Agenda Progress ID" name="id_value" value="456" required>
 
         <input type="submit" value="Log In" onclick="authorizeWithLambda(event)"/>
     </div>
     <div>
         <br>
         <label for="response">Response</label>
-        <textarea id="response" name="response" cols="200" rows="500"></textarea>
+        <textarea id="response" name="response" cols="200" rows="20"></textarea>
+        <pre id="json-renderer"></pre>
     </div>
 </form>
 </html>
