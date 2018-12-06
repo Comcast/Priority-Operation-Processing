@@ -1,19 +1,12 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
-import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
 import com.theplatform.dfh.persistence.api.query.Query;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  */
