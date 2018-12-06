@@ -12,15 +12,16 @@ public class QueryExpressionTest
     QueryExpression queryExpression = new QueryExpression();
 
     @Test
-    public void testNull()
-    {
-        Assert.assertNull(queryExpression.from(null));
-    }
-    @Test
     public void testByTitle()
     {
         DynamoDBQueryExpression expression = queryExpression.from(Collections.singletonList(new Query("title","xyz")));
         Assert.assertEquals(expression.getKeyConditionExpression(), "title = :title");
         Assert.assertTrue(expression.getExpressionAttributeValues().get(":title").toString().contains("xyz"));
+    }
+    @Test
+    public void testAll()
+    {
+        DynamoDBQueryExpression expression = queryExpression.from(null);
+        Assert.assertEquals(expression.getLimit(), new Integer(100));
     }
 }
