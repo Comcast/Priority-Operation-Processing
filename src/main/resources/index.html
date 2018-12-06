@@ -1,5 +1,6 @@
 <html>
 <head>
+    <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="/css/jquery.json-viewer.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="jquery.json-viewer.js"></script>
@@ -22,12 +23,13 @@
         <input type="submit" value="Log In" onclick="authorizeWithLambda(event)"/>
     </div>
     <div>
-        <br>
         <label for="response">Response</label>
         <textarea id="response" name="response" cols="200" rows="20"></textarea>
-        <p><pre id="json-renderer"></pre></p>
     </div>
 </form>
+<div class="container">
+    <pre id="json-renderer"></pre>
+</div>
 </body>
 </html>
 
