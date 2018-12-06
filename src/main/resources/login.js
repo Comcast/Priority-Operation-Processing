@@ -9,10 +9,6 @@ function authorizeWithLambda(e) {
         alert ("Please enter your password");
         return;
     }
-    if ($("#id_value").val()=="") {
-        alert ("Please enter your agenda progress ID");
-        return;
-    }
     var username = $("#mpx_username").val();
     var  password = $("#mpx_password").val();
     var  id_value = $("#id_value").val();
@@ -35,7 +31,7 @@ function authorizeWithLambda(e) {
 
 //    {"signInResponse":{"token":"-4mfRXUCyoskRI-Q5taOYdBQAPBOkHBE","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/6111539","userName":"admin@theplatform.com","duration":86400000,"idleTimeout":14400000}}
 
-        success: function (resp) {
+        success: function (idmResponse) {
             $.ajax({
                 type: "GET",
                 url: "https://fission.aort.theplatform.com/dev/dfh/idm/progress/agenda/" +id_value,
@@ -43,18 +39,15 @@ function authorizeWithLambda(e) {
                 jsonp: true,
                 contentType: "application/json",
                 headers: {
-                    'Authorization': "Basic " +  btoa(resp.signInResponse.token),
+                    'Authorization': "Basic " +  btoa(idmResponse.signInResponse.token),
                     "Content-Type": "application/json"
                 },
-                success: function () {
-                    // clear form and show a success message
-                    alert("Successfull");
-                    document.getElementById("contact-form").reset();
-                    location.reload();
+                success: function (response) {
+                    document.getElementById("response").value = JSON.stringify(response, null, 2);
                 },
-                error: function (error) {
+                error: function () {
                     // show an error message
-                    alert("UnSuccessfull" +JSON.stringify(error));
+                    alert("UnSuccessfull");
                 }
             });
         },
