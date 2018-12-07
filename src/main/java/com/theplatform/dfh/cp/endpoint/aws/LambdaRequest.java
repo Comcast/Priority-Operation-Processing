@@ -150,7 +150,7 @@ public class LambdaRequest
 
     public String getHeader(String header)
     {
-        if(header == null) return;
+        if(header == null) return null;
         String value = getRequestValue(HEADERS + "/" + header);
         if(value == null) return getRequestValue(HEADERS + "/" + header.toLowerCase());
     }
