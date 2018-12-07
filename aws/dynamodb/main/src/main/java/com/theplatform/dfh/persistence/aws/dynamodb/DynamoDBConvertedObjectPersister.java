@@ -7,7 +7,10 @@ import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
+import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,10 +60,14 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
         if(dynamoQueryExpression == null) return responseFeed;
         try
         {
-            List responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
-
-            if(responseObjects == null || responseObjects.size() == 0)
+            List responseObjects;
+            if(queries != null && queries.size() > 0)
             {
+                responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
+            }
+            else
+            {
+                queries = Collections.singletonList(new Query(new LimitField(), LimitField.defaultValue()));
                 DynamoDBScanExpression dynamoScanExpression = getQueryExpression().forScan(queries);
 
                 responseObjects =  getDynamoDBMapper().scan(converter.getPersistentObjectClass(), dynamoScanExpression);
