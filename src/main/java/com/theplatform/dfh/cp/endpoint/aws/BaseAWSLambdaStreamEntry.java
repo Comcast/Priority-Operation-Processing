@@ -106,7 +106,14 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         {
             httpStatusCode = 500;
             responseBodyObject = e.getMessage();
-            logger.error("Failed to process request.", e);
+            try
+            {
+                logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)), e);
+            }
+            catch(Exception ex)
+            {
+                logger.error("Failed to process request.", e);
+            }
         }
 
         responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
