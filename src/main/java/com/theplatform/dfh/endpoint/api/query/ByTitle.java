@@ -8,6 +8,7 @@ import com.theplatform.dfh.persistence.api.query.Query;
  */
 public class ByTitle extends Query<String>
 {
+    private static final DataObjectField field = new DataObjectField("title");
     public ByTitle(String value)
     {
         if(value == null || value.isEmpty())
@@ -15,10 +16,14 @@ public class ByTitle extends Query<String>
             throw new IllegalArgumentException("ByTitle query requires a non-empty value.");
         }
 
-        setField(new DataObjectField("title"));
+        setField(field);
         setValue(value);
         setCollection(false);
     }
 
+    public static String fieldName()
+    {
+        return field.name();
+    }
 }
 

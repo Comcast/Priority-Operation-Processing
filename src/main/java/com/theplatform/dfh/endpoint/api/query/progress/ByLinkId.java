@@ -8,6 +8,7 @@ import com.theplatform.dfh.persistence.api.query.Query;
  */
 public class ByLinkId extends Query<String>
 {
+    private static final DataObjectField field = new DataObjectField("linkId");
     public ByLinkId(String value)
     {
         if(value == null || value.isEmpty())
@@ -15,9 +16,14 @@ public class ByLinkId extends Query<String>
             throw new IllegalArgumentException("ByLinkId query requires a non-empty value.");
         }
 
-        setField(new DataObjectField("linkId"));
+        setField(field);
         setValue(value);
         setCollection(false);
+    }
+
+    public static String fieldName()
+    {
+        return field.name();
     }
 }
 
