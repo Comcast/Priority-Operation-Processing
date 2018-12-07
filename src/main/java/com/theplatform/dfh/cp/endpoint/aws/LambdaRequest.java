@@ -153,6 +153,7 @@ public class LambdaRequest
         if(header == null) return null;
         String value = getRequestValue(HEADERS + "/" + header);
         if(value == null) return getRequestValue(HEADERS + "/" + header.toLowerCase());
+        return null;
     }
 
     public String getCID()
