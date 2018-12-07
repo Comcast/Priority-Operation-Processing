@@ -98,14 +98,14 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
-        DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery(queries);
-        if(dynamoQueryExpression == null) return responseFeed;
         try
         {
             List<T> responseObjects;
             // based on enum conversions this code will only work on very boring pojos
             if(queries != null && queries.size() > 0)
             {
+                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery(queries);
+                if(dynamoQueryExpression == null) return responseFeed;
                 responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
             }
             else
@@ -120,8 +120,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
         catch(AmazonDynamoDBException e)
         {
-             throw new PersistenceException(String.format("Unable to run query for index %1$s, key %2$s, values %3$s", dynamoQueryExpression.getIndexName(),
-                 dynamoQueryExpression.getKeyConditionExpression(), dynamoQueryExpression.getExpressionAttributeValues().toString()));
+             throw new PersistenceException("Unable to run query", e);
         }
 
         return responseFeed;
