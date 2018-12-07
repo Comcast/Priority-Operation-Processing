@@ -19,6 +19,12 @@ public class QueryExpression<T>
     protected static Logger logger = LoggerFactory.getLogger(QueryExpression.class);
     private static final String KEY_CONDITION = "%s = %s";
     private static final String QUERY_VALUE = ":%s";
+    private TableIndexes tableIndexes;
+
+    public QueryExpression(TableIndexes tableIndexes)
+    {
+        this.tableIndexes = tableIndexes;
+    }
 
     public DynamoDBQueryExpression<T> forQuery(List<Query> queries)
     {
@@ -27,6 +33,7 @@ public class QueryExpression<T>
         List<String> keyConditions = new ArrayList<>();
         Map<String, AttributeValue> awsQueryValueMap = new HashMap<String, AttributeValue>();
         DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>();
+        List<String> fields = new ArrayList<>();
         for(Query query : queries)
         {
             if (LimitField.fieldName().equals(query.getField().name()))
@@ -36,12 +43,14 @@ public class QueryExpression<T>
             else
             {
                 addCondition(keyConditions, awsQueryValueMap, query);
+                fields.add(query.getField().name());
             }
         }
-        final String indexName = queries.get(0).getField().name().toLowerCase() +"_index";
+        if(tableIndexes != null)
+            queryExpression.withIndexName(tableIndexes.getIndex(fields));
+
         queryExpression.withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
-            .withIndexName(indexName)
             .withConsistentRead(false);
         logger.info("DynamoDB query with key condition {} and value map {}", queryExpression.getKeyConditionExpression(), awsQueryValueMap.toString());
 

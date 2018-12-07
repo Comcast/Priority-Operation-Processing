@@ -20,9 +20,9 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
     private PersistentObjectConverter converter;
 
     public DynamoDBConvertedObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter converter)
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter converter, TableIndexes tableIndexes)
     {
-        super(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass);
+        super(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass, tableIndexes);
 
         if (converter == null)
             throw new IllegalArgumentException("Must provide a PersistendObjectConverter.");

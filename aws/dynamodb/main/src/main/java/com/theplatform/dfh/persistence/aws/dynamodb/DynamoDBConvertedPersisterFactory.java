@@ -10,18 +10,21 @@ public class DynamoDBConvertedPersisterFactory<D> implements ObjectPersisterFact
     protected String persistenceKeyFieldName;
     private Class dataObjectClass;
     private DynamoDBPersistentObjectConverter persistentObjectConverter;
+    private TableIndexes tableIndexes;
 
     public DynamoDBConvertedPersisterFactory(String persistenceKeyFieldName, Class dataObjectClass,
-        DynamoDBPersistentObjectConverter persistentObjectConverter)
+        DynamoDBPersistentObjectConverter persistentObjectConverter, TableIndexes tableIndexes)
     {
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.dataObjectClass = dataObjectClass;
         this.persistentObjectConverter = persistentObjectConverter;
+        this.tableIndexes = tableIndexes;
     }
 
     @Override
     public ObjectPersister<D> getObjectPersister(String containerName)
     {
-        return new DynamoDBConvertedObjectPersister<D>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(), dataObjectClass, persistentObjectConverter);
+        return new DynamoDBConvertedObjectPersister<D>(containerName, persistenceKeyFieldName,
+            new AWSDynamoDBFactory(), dataObjectClass, persistentObjectConverter, tableIndexes);
     }
 }

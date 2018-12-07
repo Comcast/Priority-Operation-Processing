@@ -9,7 +9,7 @@ import java.util.Collections;
 
 public class QueryExpressionTest
 {
-    QueryExpression queryExpression = new QueryExpression();
+    QueryExpression queryExpression = new QueryExpression(null);
 
     @Test
     public void testByTitle()

@@ -30,10 +30,10 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     private final Class<T> dataObjectClass;
 
     private DynamoDBMapper dynamoDBMapper;
-    private QueryExpression<T> queryExpression = new QueryExpression();
+    private QueryExpression<T> queryExpression;
 
     public DynamoDBObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass)
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, TableIndexes tableIndexes)
     {
         this.tableName = tableName;
         this.persistenceKeyFieldName = persistenceKeyFieldName;
@@ -46,13 +46,14 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
             .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
             .build();
         this.dynamoDBMapper = new DynamoDBMapper(client, mapperConfig);
+        this.queryExpression = new QueryExpression(tableIndexes);
     }
 
     protected DynamoDBObjectPersister(String tableName,
         String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass,
-        DynamoDBMapper dynamoDBMapper)
+        DynamoDBMapper dynamoDBMapper, TableIndexes tableIndexes)
     {
-        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass);
+        this(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass, tableIndexes);
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
