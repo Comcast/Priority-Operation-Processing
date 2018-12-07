@@ -1,6 +1,6 @@
 package com.theplatform.dfh.endpoint.api.query;
 
-import com.theplatform.dfh.persistence.api.DataTypeField;
+import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 /**
@@ -15,7 +15,7 @@ public class ById extends Query<String>
             throw new IllegalArgumentException("ById query requires a non-empty value.");
         }
 
-        setField(new DataTypeField("id"));
+        setField(new DataObjectField("id"));
         setValue(value);
         setCollection(false);
     }

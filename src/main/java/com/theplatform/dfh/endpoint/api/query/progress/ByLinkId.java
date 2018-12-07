@@ -1,6 +1,6 @@
 package com.theplatform.dfh.endpoint.api.query.progress;
 
-import com.theplatform.dfh.persistence.api.DataTypeField;
+import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 /**
@@ -15,7 +15,7 @@ public class ByLinkId extends Query<String>
             throw new IllegalArgumentException("ByLinkId query requires a non-empty value.");
         }
 
-        setField(new DataTypeField("linkId"));
+        setField(new DataObjectField("linkId"));
         setValue(value);
         setCollection(false);
     }

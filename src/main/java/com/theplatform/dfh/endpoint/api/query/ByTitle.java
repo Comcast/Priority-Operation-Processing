@@ -1,6 +1,6 @@
 package com.theplatform.dfh.endpoint.api.query;
 
-import com.theplatform.dfh.persistence.api.DataTypeField;
+import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 /**
@@ -15,7 +15,7 @@ public class ByTitle extends Query<String>
             throw new IllegalArgumentException("ByTitle query requires a non-empty value.");
         }
 
-        setField(new DataTypeField("title"));
+        setField(new DataObjectField("title"));
         setValue(value);
         setCollection(false);
     }
