@@ -108,7 +108,8 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
             responseBodyObject = e.getMessage();
             try
             {
-                logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)), e);
+                // Don't bother to log the exception as a param, it's broken across newlines and won't have the CID
+                logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)));
             }
             catch(Exception ex)
             {
