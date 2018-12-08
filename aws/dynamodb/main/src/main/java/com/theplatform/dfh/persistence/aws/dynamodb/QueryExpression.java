@@ -14,6 +14,23 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/**
+ * Creates the necessary DynamoDB Query and Scan expressions from our ByQuery objects.
+ * DynamoDB requires you have a primary or index key for queries. This class requires you specify
+ * the table indexes.
+ * Example:
+ * The following would query by primary key 'id' then filter the results by title before returning the results.
+ * byId() and byTitle()
+ * keyExpression : id, filterExpression : title
+ *
+ * If linkId is associated to an index we do the same type of query but with the index specified.
+ * byLinkId() and byTitle()
+ * keyExpression : linkId, filterExpression : title
+ * indexName = link_index
+ *
+ * Span is also supported and should only be used in cases where a full table scan is necessary, ie: getAll()
+ * @param <T>
+ */
 public class QueryExpression<T>
 {
     protected static Logger logger = LoggerFactory.getLogger(QueryExpression.class);
@@ -37,12 +54,12 @@ public class QueryExpression<T>
         List<String> keyConditions = new ArrayList<>();
         List<String> filterConditions = new ArrayList<>();
         Map<String, AttributeValue> awsQueryValueMap = new HashMap<>();
-        DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>();
+        DynamoDBQueryExpression<T> expression = new DynamoDBQueryExpression<T>();
 
         //The first query that has an index is the index we use, the rest are filters off the data coming back.
         if (limitQuery != null)
         {
-            queryExpression.withLimit(limitQuery.getIntValue());
+            expression.withLimit(limitQuery.getIntValue());
         }
 
         addCondition(keyConditions, awsQueryValueMap, primaryOrIndexQuery);
@@ -50,47 +67,50 @@ public class QueryExpression<T>
         String index = tableIndexes.getIndex(primaryOrIndexQuery.getField().name());
         if (index != null)
         {
-            queryExpression.withIndexName(index);
+            expression.withIndexName(index);
         }
         if(filterQueries != null)
         {
             for(Query filterQuery : filterQueries)
                 addCondition(filterConditions, awsQueryValueMap, filterQuery);
-            queryExpression.withFilterExpression(StringUtils.join(" AND ", filterConditions.toArray(new String[filterConditions.size()])));
+            expression.withFilterExpression(StringUtils.join(" AND ", filterConditions.toArray(new String[filterConditions.size()])));
         }
 
-        queryExpression.withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
+        expression.withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
             .withConsistentRead(false);
 
-        logger.info("DynamoDB query with key condition {} and value map {}", queryExpression.getKeyConditionExpression(), awsQueryValueMap.toString());
+        logger.info("DynamoDB query with key condition {} and value map {}", expression.getKeyConditionExpression(), awsQueryValueMap.toString());
 
-        return queryExpression;
+        return expression;
     }
-    public DynamoDBScanExpression forScan(List<Query> queries)
+
+    /**
+     * Where no primary key is available.
+     * @return DynanoDBScanExpression The scan expression dynamodb needs for scanning
+     */
+    public DynamoDBScanExpression forScan()
     {
         DynamoDBScanExpression expression = new DynamoDBScanExpression();
-        for(Query query : queries)
+        Integer limit = limitQuery != null ? limitQuery.getIntValue() : LimitField.defaultValue();
+        expression.withLimit(limit);
+
+        for(Query query : filterQueries)
         {
-            if (!query.isCollection())
-            {
-                final String queryFieldName = query.getField().name();
-                if (LimitField.fieldName().equals(queryFieldName))
-                {
-                    expression.withLimit(query.getIntValue());
-                }
-                else
-                {
-                    logger.info("DynamoDB scan with {} == {}", queryFieldName, query.getValue());
-                    Condition condition =
-                        new Condition()
+            String queryFieldName = query.getField().name();
+            logger.info("DynamoDB scan with {} == {}", queryFieldName, query.getValue());
+            Condition condition =
+                    new Condition()
                             .withComparisonOperator(ComparisonOperator.EQ)
                             .withAttributeValueList(new AttributeValue().withS(query.getValue().toString()));
-                    expression.addFilterCondition(query.getField().name(), condition);
-                }
-            }
+            expression.addFilterCondition(query.getField().name(), condition);
         }
         return expression;
+    }
+
+    public boolean hasKey()
+    {
+        return this.primaryOrIndexQuery != null;
     }
     private void addCondition(List<String> conditions, Map<String, AttributeValue> valueMap, Query query)
     {
@@ -99,6 +119,10 @@ public class QueryExpression<T>
         conditions.add(String.format(KEY_CONDITION, query.getField().name(), awsQueryValueKey));
     }
 
+    /**
+     * The Query objects are separated by primary/index, limit, or filter.
+     * @param queries byQueries to query upon
+     */
     private void analyzeQueryTypes(List<Query> queries)
     {
         if(queries == null) return;

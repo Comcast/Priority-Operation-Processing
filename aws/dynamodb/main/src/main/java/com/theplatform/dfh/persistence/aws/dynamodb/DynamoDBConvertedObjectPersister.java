@@ -59,9 +59,9 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
         try
         {
             List responseObjects;
-            if(queries != null && queries.size() > 0)
+            QueryExpression queryExpression = new QueryExpression(getTableIndexes(), queries);
+            if(queryExpression.hasKey())
             {
-                QueryExpression queryExpression = new QueryExpression(getTableIndexes(), queries);
                 DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
                 if(dynamoQueryExpression == null) return responseFeed;
 
@@ -69,9 +69,7 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
             }
             else
             {
-                queries = Collections.singletonList(new Query(new LimitField(), LimitField.defaultValue()));
-                QueryExpression queryExpression = new QueryExpression(getTableIndexes(), queries);
-                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan(queries);
+                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan();
 
                 responseObjects =  getDynamoDBMapper().scan(converter.getPersistentObjectClass(), dynamoScanExpression);
             }

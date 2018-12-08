@@ -104,20 +104,17 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         {
             List<T> responseObjects;
             // based on enum conversions this code will only work on very boring pojos
-            if(queries != null && queries.size() > 0)
+            QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
+            if(queryExpression.hasKey())
             {
-                QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
                 DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
                     return responseFeed;
-                responseObjects = filter(dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression), queries);
+                responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
             }
             else
             {
-                queries = Collections.singletonList(new Query(new LimitField(), LimitField.defaultValue()));
-                QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
-                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan(queries);
-
+                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan();
                 responseObjects =  dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
             }
 
@@ -131,15 +128,6 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
 
         return responseFeed;
-    }
-
-    private List<T> filter(List<T> objects, List<Query> queries)
-    {
-        if(objects == null) return null;
-        if(logger.isDebugEnabled())
-            logger.debug("Filtering returned object count {} ", objects.size());
-        QueryPredicate<T> queryPredicate = new QueryPredicate<T>(queries);
-        return objects.stream().filter(o -> queryPredicate.evaluate(o)).collect(Collectors.toList());
     }
 
     protected Map<String, AttributeValue> getKey(String identifier)
