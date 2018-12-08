@@ -10,6 +10,7 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
+import com.theplatform.dfh.persistence.impl.QueryPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
@@ -17,6 +18,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
 {
@@ -30,7 +32,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     private final Class<T> dataObjectClass;
 
     private DynamoDBMapper dynamoDBMapper;
-    private QueryExpression<T> queryExpression;
+    private TableIndexes tableIndexes;
 
     public DynamoDBObjectPersister(String tableName,
         String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, TableIndexes tableIndexes)
@@ -46,7 +48,7 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
             .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
             .build();
         this.dynamoDBMapper = new DynamoDBMapper(client, mapperConfig);
-        this.queryExpression = new QueryExpression(tableIndexes);
+        this.tableIndexes = tableIndexes;
     }
 
     protected DynamoDBObjectPersister(String tableName,
@@ -104,18 +106,23 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
             // based on enum conversions this code will only work on very boring pojos
             if(queries != null && queries.size() > 0)
             {
-                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery(queries);
-                if(dynamoQueryExpression == null) return responseFeed;
-                responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
+                QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
+                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
+                if (dynamoQueryExpression == null)
+                    return responseFeed;
+                responseObjects = filter(dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression), queries);
             }
             else
             {
                 queries = Collections.singletonList(new Query(new LimitField(), LimitField.defaultValue()));
+                QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
                 DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan(queries);
 
                 responseObjects =  dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
             }
 
+            if(logger.isDebugEnabled())
+                logger.debug("Total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
             responseFeed.addAll(responseObjects);
         }
         catch(AmazonDynamoDBException e)
@@ -124,6 +131,15 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         }
 
         return responseFeed;
+    }
+
+    private List<T> filter(List<T> objects, List<Query> queries)
+    {
+        if(objects == null) return null;
+        if(logger.isDebugEnabled())
+            logger.debug("Filtering returned object count {} ", objects.size());
+        QueryPredicate<T> queryPredicate = new QueryPredicate<T>(queries);
+        return objects.stream().filter(o -> queryPredicate.evaluate(o)).collect(Collectors.toList());
     }
 
     protected Map<String, AttributeValue> getKey(String identifier)
@@ -143,10 +159,6 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         return tableName;
     }
 
-    public QueryExpression<T> getQueryExpression()
-    {
-        return queryExpression;
-    }
 
     public AWSDynamoDBFactory getAWSDynamoDBFactory()
     {
@@ -207,5 +219,10 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
         {
             throw new IllegalArgumentException("Could not update object.  No object with id " + identifier + " exists.", e);
         }
+    }
+
+    public TableIndexes getTableIndexes()
+    {
+        return tableIndexes;
     }
 }

@@ -20,38 +20,49 @@ public class QueryExpression<T>
     private static final String KEY_CONDITION = "%s = %s";
     private static final String QUERY_VALUE = ":%s";
     private TableIndexes tableIndexes;
+    private Query primaryOrIndexQuery;
+    private Query limitQuery;
+    private List<Query> filterQueries = new ArrayList<>();
 
-    public QueryExpression(TableIndexes tableIndexes)
+    public QueryExpression(TableIndexes tableIndexes, List<Query> queries)
     {
-        this.tableIndexes = tableIndexes;
+        this.tableIndexes = tableIndexes == null ? new TableIndexes() : tableIndexes;
+        analyzeQueryTypes(queries);
     }
 
-    public DynamoDBQueryExpression<T> forQuery(List<Query> queries)
+    public DynamoDBQueryExpression<T> forQuery()
     {
-        if(queries == null || queries.size() == 0) return null;
+        if(primaryOrIndexQuery == null) return null;
 
         List<String> keyConditions = new ArrayList<>();
-        Map<String, AttributeValue> awsQueryValueMap = new HashMap<String, AttributeValue>();
+        List<String> filterConditions = new ArrayList<>();
+        Map<String, AttributeValue> awsQueryValueMap = new HashMap<>();
         DynamoDBQueryExpression<T> queryExpression = new DynamoDBQueryExpression<T>();
-        List<String> fields = new ArrayList<>();
-        for(Query query : queries)
+
+        //The first query that has an index is the index we use, the rest are filters off the data coming back.
+        if (limitQuery != null)
         {
-            if (LimitField.fieldName().equals(query.getField().name()))
-            {
-                queryExpression.withLimit(query.getIntValue());
-            }
-            else
-            {
-                addCondition(keyConditions, awsQueryValueMap, query);
-                fields.add(query.getField().name());
-            }
+            queryExpression.withLimit(limitQuery.getIntValue());
         }
-        if(tableIndexes != null)
-            queryExpression.withIndexName(tableIndexes.getIndex(fields));
+
+        addCondition(keyConditions, awsQueryValueMap, primaryOrIndexQuery);
+
+        String index = tableIndexes.getIndex(primaryOrIndexQuery.getField().name());
+        if (index != null)
+        {
+            queryExpression.withIndexName(index);
+        }
+        if(filterQueries != null)
+        {
+            for(Query filterQuery : filterQueries)
+                addCondition(filterConditions, awsQueryValueMap, filterQuery);
+            queryExpression.withFilterExpression(StringUtils.join(" AND ", filterConditions.toArray(new String[filterConditions.size()])));
+        }
 
         queryExpression.withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
             .withConsistentRead(false);
+
         logger.info("DynamoDB query with key condition {} and value map {}", queryExpression.getKeyConditionExpression(), awsQueryValueMap.toString());
 
         return queryExpression;
@@ -87,4 +98,40 @@ public class QueryExpression<T>
         valueMap.put(awsQueryValueKey, new AttributeValue().withS(query.getValue().toString()));
         conditions.add(String.format(KEY_CONDITION, query.getField().name(), awsQueryValueKey));
     }
+
+    private void analyzeQueryTypes(List<Query> queries)
+    {
+        if(queries == null) return;
+        
+        boolean foundIndex = false;
+        for(Query query : queries)
+        {
+            String queryFieldName = query.getField().name();
+            //The first query that has an index is the index we use, the rest are filters off the data coming back.
+            if (LimitField.fieldName().equals(queryFieldName))
+            {
+                limitQuery = query;
+            }
+            else
+            {
+                if (!foundIndex)
+                {
+                    if (tableIndexes.isPrimary(queryFieldName) || tableIndexes.getIndex(queryFieldName) != null)
+                    {
+                        foundIndex = true;
+                        primaryOrIndexQuery = query;
+                    }
+                    else
+                    {
+                        filterQueries.add(query);
+                    }
+                }
+                else
+                {
+                    filterQueries.add(query);
+                }
+            }
+        }
+    }
+
 }

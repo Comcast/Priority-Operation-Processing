@@ -4,34 +4,27 @@ import java.util.*;
 
 public class TableIndexes
 {
-    private List<TableIndex> indexes = new ArrayList<>();
+    private HashMap<String, String> fieldToIndexMap = new HashMap<>();
+    private String primaryKey = "id";
 
-    public TableIndexes withIndex(String indexName, String ... fieldNames)
+    public TableIndexes withPrimaryKey(String fieldName)
     {
-        this.indexes.add(new TableIndex(indexName, new HashSet(Arrays.asList(fieldNames))));
+        this.primaryKey = fieldName;
+        return this;
+    }
+    public TableIndexes withIndex(String indexName, String fieldName)
+    {
+        this.fieldToIndexMap.put(fieldName, indexName);
         return this;
     }
 
-    public String getIndex(List<String> fields)
+    public boolean isPrimary(String field)
     {
-        for(TableIndex index : indexes)
-        {
-            if (index.fieldNames.containsAll(fields))
-                return index.indexName;
-        }
-        return null;
+       return field != null && primaryKey != null && field.equals(primaryKey);
     }
-
-    private class TableIndex
+    public String getIndex(String field)
     {
-        private String indexName;
-        private Set<String> fieldNames;
-
-        public TableIndex(String indexName, Set<String> fieldNames)
-        {
-            this.indexName = indexName;
-            this.fieldNames = fieldNames;
-        }
-
+        if(field == null) return null;
+        return fieldToIndexMap.get(field);
     }
 }
