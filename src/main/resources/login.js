@@ -31,7 +31,7 @@ function authorizeWithLambda(e) {
         data: "{\"signIn\": {\"duration\": 86400000, \"idleTimeout\": 14400000}}",
 
 
-//    {"signInResponse":{"token":"-4mfRXUCyoskRI-Q5taOYdBQAPBOkHBE","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/6111539","userName":"admin@theplatform.com","duration":86400000,"idleTimeout":14400000}}
+//    {"signInResponse":{"token":"XYZ","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/ZZZ","userName":"me@me.com","duration":86400000,"idleTimeout":14400000}}
 
         success: function (idmResponse) {
             var url = id_value == "" ? endpointURL : endpointURL +"/" +id_value
