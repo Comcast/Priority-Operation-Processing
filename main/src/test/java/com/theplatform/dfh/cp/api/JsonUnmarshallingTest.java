@@ -18,7 +18,7 @@ public class JsonUnmarshallingTest
     @Test
     public void testJsonToSources() throws Exception
     {
-        TransformJob job = (TransformJob)JsonUtil.toObject(getStringFromResourceFile("Job.json"), TransformJob.class);
+        TransformRequest job = (TransformRequest)JsonUtil.toObject(getStringFromResourceFile("Job.json"), TransformRequest.class);
         Assert.assertNotNull(job);
         List<FileResource> videoSources = job.getResourcesByType(FileResourceType.MEZZANINE.getLabel());
         List<FileResource> textSources = job.getResourcesByType(FileResourceType.TEXT_TRACK_SIDECAR.getLabel());
