@@ -69,7 +69,7 @@ public class QueryExpression<T>
         {
             expression.withIndexName(index);
         }
-        if(filterQueries != null)
+        if(filterQueries != null && filterQueries.size() > 0)
         {
             for(Query filterQuery : filterQueries)
                 addCondition(filterConditions, awsQueryValueMap, filterQuery);
