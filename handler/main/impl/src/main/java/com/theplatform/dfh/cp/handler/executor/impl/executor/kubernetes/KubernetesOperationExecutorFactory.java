@@ -44,7 +44,7 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
         // cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
         // TODO: values should be settings from the properties file
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
-            .addEnvVar("LOG_LEVEL", "DEBUG");
+            .addEnvVar("LOG_LEVEL", "INFO");
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
