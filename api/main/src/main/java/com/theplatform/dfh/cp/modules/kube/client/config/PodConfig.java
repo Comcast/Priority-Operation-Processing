@@ -69,6 +69,9 @@ public class PodConfig
     private int podRetryCount = 0;
     private int retryDelayMilliSecs = RETRY_DELAY;
 
+    // Docker securityContext
+    private boolean dockerPrivileged;
+
     private List<Class<? extends Throwable>> nonRetryableExceptions;
     private List<Class<? extends Throwable>> retryableExceptions;
 
@@ -363,6 +366,13 @@ public class PodConfig
     public PodConfig setNfsDetails(NfsDetails nfsDetails)
     {
         this.nfsDetails = nfsDetails;
+        return this;
+    }
+
+    public boolean isDockerPrivileged() { return dockerPrivileged; }
+
+    public PodConfig setDockerPrivileged(boolean dockerPrivileged) {
+        this.dockerPrivileged = dockerPrivileged;
         return this;
     }
 }

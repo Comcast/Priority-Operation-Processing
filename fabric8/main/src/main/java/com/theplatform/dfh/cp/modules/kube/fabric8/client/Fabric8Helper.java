@@ -86,6 +86,7 @@ public class Fabric8Helper
                                           : new NFSVolumeSource(
             podConfig.getNfsDetails().getNfsServerPath(), podConfig.getNfsDetails().getNfsReadOnly(), podConfig.getNfsDetails().getNfsServer());
 
+
         final PodSpecFluent.ContainersNested<PodFluent.SpecNested<PodBuilder>> containerSpec = new PodBuilder()
             .withApiVersion(KUBE_API_VERSION)
             .withKind("Pod")
@@ -101,6 +102,16 @@ public class Fabric8Helper
             .withImage(podConfig.getImageName())
             .withArgs(podConfig.getArguments())
             .withVolumeMounts();
+
+        // IMPORTANT: this must be within `addNewContainer()`
+        // if isDockerPrivileged we need to set a SecurityContext at the Image level
+        if (podConfig.isDockerPrivileged())
+        {
+            SecurityContext secContext = new SecurityContext();
+            secContext.setPrivileged(true);
+
+            containerSpec.withSecurityContext(secContext);
+        }
 
         if (podConfig.hasEnvVars())
         {
