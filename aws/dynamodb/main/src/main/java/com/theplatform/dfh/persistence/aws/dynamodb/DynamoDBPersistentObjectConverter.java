@@ -52,7 +52,7 @@ public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjec
         return copy(dataObject, persistentObject) ? dataObject : null;
     }
 
-    private boolean copy(Object dest, Object orig)
+    public boolean copy(Object dest, Object orig)
     {
         try
         {
