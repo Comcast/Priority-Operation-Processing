@@ -4,11 +4,15 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,6 +40,26 @@ public class AwsAgendaProviderClientTest
         String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
         Assert.assertEquals(agendaResponseJson, expectedAgenda);
         verify(webClient, times(1)).getAgenda();
+    }
+
+    @Test
+    public void testGetAgendaWithInsight()
+    {
+        Agenda agenda = new Agenda();
+        agenda.setId(UUID.randomUUID().toString());
+        GetAgendaResponse expectedResponse = new GetAgendaResponse(Arrays.asList(agenda));
+
+        CPWebClientAPI webClient = mock(CPWebClientAPI.class);
+        when(webClient.getAgenda(any())).thenReturn(expectedResponse);
+
+        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
+
+        GetAgendaRequest getAgendaRequest = new GetAgendaRequest("foo", 1);
+        GetAgendaResponse agendaResponse = awsClient.getAgenda(getAgendaRequest);
+        String expectedAgenda =jsonHelper.getJSONString(expectedResponse);
+        String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
+        Assert.assertEquals(agendaResponseJson, expectedAgenda);
+        verify(webClient, times(1)).getAgenda(getAgendaRequest);
     }
 
     @Test

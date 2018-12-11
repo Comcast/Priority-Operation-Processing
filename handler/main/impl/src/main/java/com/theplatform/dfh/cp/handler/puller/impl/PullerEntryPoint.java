@@ -4,17 +4,14 @@ import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;
-import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerWithInsightProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.retriever.PullerArgumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +47,10 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     @Override
     protected PullerProcessor createHandlerProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
     {
+        if (launchDataWrapper.getPullerConfig().useInsights())
+        {
+            return new PullerWithInsightProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
+        }
         return new PullerProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
     }
 

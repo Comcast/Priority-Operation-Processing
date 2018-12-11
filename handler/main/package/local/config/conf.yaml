@@ -3,6 +3,8 @@ identityUrl: 'http://identity.auth.test.corp.theplatform.com/idm'
 username: 'service/dfh.filehandler.user.dev1@theplatform.com'
 encryptedPassword: 'iVcsBRR0FPee/pgnFI+mAw=='
 pullWait: 10
+insightId:
+agendaRequestCount: 1
 logging:
   level: INFO
   loggers:
