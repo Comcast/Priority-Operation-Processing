@@ -41,7 +41,7 @@ public class LambdaRequest
     {
         // this is immediately made available for subclasses
         this.rootNode = rootNode;
-        logObject("request: ", rootNode);
+        //logObject("request: ", rootNode);
         loadRequestParameters();
     }
 
