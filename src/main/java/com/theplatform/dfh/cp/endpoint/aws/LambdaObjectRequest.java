@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +84,18 @@ public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaReque
         // create all the by queries (if a param has the right prefix)
         queries = getRequestParamMap().entrySet().stream()
             .filter(e -> e.getKey().startsWith(BY_QUERY_PREFIX))
-            .map(e -> new Query<>(e.getKey().substring(BY_QUERY_PREFIX.length()), e.getValue()))
+            .map(e ->
+            {
+                try
+                {
+                    return new Query<>(e.getKey().substring(BY_QUERY_PREFIX.length()), URLDecoder.decode(e.getValue().toString(), StandardCharsets.UTF_8.name()));
+                }
+                catch(UnsupportedEncodingException ex)
+                {
+                    logger.error(String.format("%1$s encoding is not supported. The world is ending.", StandardCharsets.UTF_8.name()), ex);
+                }
+                return new Query<>(e.getKey().substring(BY_QUERY_PREFIX.length()), e.getValue());
+            })
             .collect(Collectors.toList());
     }
 }
