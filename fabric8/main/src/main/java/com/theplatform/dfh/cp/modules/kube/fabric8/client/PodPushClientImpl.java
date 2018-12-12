@@ -9,9 +9,11 @@ import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.dsl.PodResource;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,9 @@ import java.util.concurrent.CountDownLatch;
  */
 public class PodPushClientImpl implements PodPushClient
 {
+    private static final String START_POD_TEMPLATE = "Starting pod [%s] on node [%s]";
+    private static final String DELETE_POD_TEMPLATE = "Deleting pod [%s] on node [%s]";
+    public static final String UNDEFINED_NODE_NAME = "Node for pod not defined";
     private static Logger logger = LoggerFactory.getLogger(PodPushClientImpl.class);
 
     private KubeConfig kubeConfig;
@@ -100,8 +105,7 @@ public class PodPushClientImpl implements PodPushClient
             executionConfig.getLogLineAccumulator());
         Watch watch = initializePodWatcher(podResource, podWatcherImpl);
         podWatcherImpl.setWatch(watch);
-        startPod(podToCreate);
-        logger.info("Created Pod: " + podName);
+        logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
         return podWatcherImpl;
     }
 
@@ -116,12 +120,8 @@ public class PodPushClientImpl implements PodPushClient
         {
             throw new IllegalArgumentException("Must provide podConfig.imageName.");
         }
-
         Pod podToCreate = Fabric8Helper.getPodSpec(kubeConfig, podConfig, executionConfig);
-
-        String podName = podToCreate.getMetadata().getName();
-        logger.info("Created Pod: " + podName);
-        startPod(podToCreate);
+        logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
     }
 
     private PodWatcherImpl getPodWatcher(CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
@@ -136,9 +136,18 @@ public class PodPushClientImpl implements PodPushClient
         return podWatcherImpl;
     }
 
-    private void  startPod(Pod podToCreate)
+    private Pod startPod(Pod podToCreate)
     {
-        fabric8Client.pods().create(podToCreate);
+        return fabric8Client.pods().create(podToCreate);
+    }
+
+    private void logPodSpecs(Pod pod, String logTemplate)
+    {
+        PodSpec podSpec = pod.getSpec();
+        String nodeName = podSpec.getNodeName();
+        nodeName = StringUtils.isEmpty(nodeName)? UNDEFINED_NODE_NAME : nodeName;
+        String podName = pod.getMetadata().getName();
+        logger.info(String.format(logTemplate,podName, nodeName));
     }
 
     public void editPodAnnotations(String podName, Map<String, String> annotations)
@@ -161,8 +170,8 @@ public class PodPushClientImpl implements PodPushClient
     {
         try
         {
+            logPodSpecs(getPodResource(podName).get(), DELETE_POD_TEMPLATE);
             getPodResource(podName).delete();
-            logger.info("Pod with pod name {} deleted.", podName);
             return true;
         }
         catch (Exception e)
