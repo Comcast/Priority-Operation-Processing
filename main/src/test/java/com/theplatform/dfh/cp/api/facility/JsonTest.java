@@ -31,7 +31,7 @@ public class JsonTest
     {
         Customer customer = DataGenerator.generateCustomer();
         ResourcePool resourcePool = DataGenerator.generateResourcePool();
-        customer.addAvailableResourcePool(resourcePool);
+        customer.setResourcePoolId(resourcePool.getId());
         String json = JsonUtil.toJson(customer);
         //System.out.println(json);
         Assert.assertNotNull(json);

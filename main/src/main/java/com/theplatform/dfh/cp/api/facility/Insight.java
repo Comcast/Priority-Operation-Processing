@@ -2,18 +2,17 @@ package com.theplatform.dfh.cp.api.facility;
 
 import com.theplatform.dfh.cp.api.IdentifiedObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Insight implements IdentifiedObject
 {
     private String id = UUID.randomUUID().toString();
     private String resourcePoolId;
-    private List<String> tags = new ArrayList<>();
     private String queueName;
     private int queueSize;
     private SchedulingAlgorithm schedulingAlgorithm;
+    private Map<String, Set<String>> mappers;
+    private Set<String> allowedCustomerIds;
 
     public String getId()
     {
@@ -35,20 +34,59 @@ public class Insight implements IdentifiedObject
         this.resourcePoolId = resourcePoolId;
     }
 
-    public List<String> getTags()
+    public Map<String, Set<String>> getMappers()
     {
-        return tags;
+        return mappers;
     }
 
-    public void setTags(List<String> tags)
+    public void addMapper(InsightMapper mapper)
     {
-        this.tags = tags;
+        if(mapper == null) return;
+
+        if(mappers == null)
+            mappers = new TreeMap<>();
+        mappers.put(mapper.getName(), mapper.getMatchValues());
     }
-    public void addTag(String tag)
+
+    public void setMappers(Map<String, Set<String>> mappers)
     {
-        if(tags == null)
-            tags = new ArrayList<>();
-        tags.add(tag);
+        this.mappers = mappers;
+    }
+
+    public boolean isGlobal()
+    {
+        return allowedCustomerIds == null || allowedCustomerIds.size() == 0;
+    }
+
+    public void addAllowedCustomer(String customerId)
+    {
+        if (customerId != null)
+        {
+            if(allowedCustomerIds == null)
+                allowedCustomerIds = new TreeSet<>();
+            this.allowedCustomerIds.add(customerId.toLowerCase());
+        }
+    }
+    public void setAllowedCustomerIds(Set<String> customerIds)
+    {
+        if(customerIds != null)
+        {
+            for(String customerId : customerIds)
+                addAllowedCustomer(customerId);
+        }
+    }
+
+    public Set<String> getAllowedCustomerIds()
+    {
+        return allowedCustomerIds;
+    }
+
+    public boolean isVisible(final String customerId)
+    {
+        if(isGlobal()) return true;
+        if(customerId == null) return false;
+
+        return allowedCustomerIds.contains(customerId.toLowerCase());
     }
     public String getQueueName()
     {
