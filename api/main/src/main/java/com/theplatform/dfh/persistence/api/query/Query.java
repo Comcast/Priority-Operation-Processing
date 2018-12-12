@@ -80,7 +80,7 @@ public class Query<T>
             logger.error(String.format("%1$s encoding is not supported. The world is ending.", StandardCharsets.UTF_8.name()), e);
         }
 
-        return BY_PREFIX + field.name() + "=" + value.toString();
+        return BY_PREFIX + field.name() + "=" + translatedValue;
     }
 
     public T getValue()
