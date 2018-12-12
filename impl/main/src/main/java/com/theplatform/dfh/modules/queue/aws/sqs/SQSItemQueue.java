@@ -105,6 +105,10 @@ public class SQSItemQueue<T> implements ItemQueue<T>
         {
             List<T> pojos = new LinkedList<>();
             QueueResult<T> queueResult = new QueueResult<>(true, null, null);
+
+            if (sqsQueueResult.getData() == null)
+                return queueResult;
+
             for (String json : sqsQueueResult.getData())
             {
                 try
