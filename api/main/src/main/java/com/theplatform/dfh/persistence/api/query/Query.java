@@ -2,11 +2,18 @@ package com.theplatform.dfh.persistence.api.query;
 
 import com.theplatform.dfh.persistence.api.field.DataField;
 import com.theplatform.dfh.persistence.api.field.DataObjectField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 public class Query<T>
 {
+    protected static Logger logger = LoggerFactory.getLogger(Query.class);
+
     private DataField field;
     private T value;
     private boolean isCollection;
@@ -63,6 +70,16 @@ public class Query<T>
 
     public String toQueryParam()
     {
+        String translatedValue = value.toString();
+        try
+        {
+            translatedValue = URLEncoder.encode(translatedValue, StandardCharsets.UTF_8.name());
+        }
+        catch(UnsupportedEncodingException e)
+        {
+            logger.error(String.format("%1$s encoding is not supported. The world is ending.", StandardCharsets.UTF_8.name()), e);
+        }
+
         return BY_PREFIX + field.name() + "=" + value.toString();
     }
 
