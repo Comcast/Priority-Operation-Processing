@@ -82,9 +82,10 @@ public abstract class RuntimeServiceException
      *
      * @param correlationId the correlation ID
      */
-    public void setCorrelationId(String correlationId)
+    public RuntimeServiceException withCorrelationId(String correlationId)
     {
         this.correlationId = correlationId;
+        return this;
     }
 
 }
