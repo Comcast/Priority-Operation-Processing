@@ -11,6 +11,7 @@ public class PullerConfig extends Configuration
     private String encryptedPassword;
     private int pullWait;
     private String insightId;
+    private String execConfigMapName;
     private int agendaRequestCount=1;
 
     public String getAgendaProviderUrl()
@@ -93,5 +94,15 @@ public class PullerConfig extends Configuration
     {
         this.agendaRequestCount = agendaRequestCount;
         return this;
+    }
+
+    public String getExecConfigMapName()
+    {
+        return execConfigMapName;
+    }
+
+    public void setExecConfigMapName(String execConfigMapName)
+    {
+        this.execConfigMapName = execConfigMapName;
     }
 }
