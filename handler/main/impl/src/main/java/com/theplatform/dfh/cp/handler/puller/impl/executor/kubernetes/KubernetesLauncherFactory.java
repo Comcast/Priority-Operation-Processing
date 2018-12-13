@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
+import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.registry.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
@@ -23,6 +24,8 @@ public class KubernetesLauncherFactory implements LauncherFactory
 
     private int podRetryDelay = 2000;
 
+    private final String EXEC_CONFIG_MAP_FIELD = "execConfigMapName";
+
     private PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
 
@@ -39,6 +42,12 @@ public class KubernetesLauncherFactory implements LauncherFactory
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
+
+        FieldRetriever propertyRetriever = pullerContext.getLaunchDataWrapper().getPropertyRetriever();
+
+        String execConfigMapName = propertyRetriever.getField(EXEC_CONFIG_MAP_FIELD, null);
+        if(execConfigMapName != null)
+            podConfig.getConfigMapDetails().setConfigMapName(execConfigMapName);
 
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .addEnvVar("LOG_LEVEL", "DEBUG");
