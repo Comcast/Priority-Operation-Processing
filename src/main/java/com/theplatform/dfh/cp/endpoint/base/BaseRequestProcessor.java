@@ -30,7 +30,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      * @param id id of the object to get
      * @return The object, or null if not found
      */
-    public T handleGET(String id) throws BadRequestException
+    public T handleGET(String id)
     {
         try
         {
@@ -46,7 +46,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      * @param queries Queries by fields
      * @return The object, or null if not found
      */
-    public DataObjectFeed<T> handleGET(List<Query> queries) throws BadRequestException
+    public DataObjectFeed<T> handleGET(List<Query> queries)
     {
         try
         {
@@ -64,7 +64,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      * @param objectToPersist The object to persist
      * @return Resulting id of the persisted object
      */
-    public ObjectPersistResponse handlePOST(T objectToPersist) throws BadRequestException
+    public ObjectPersistResponse handlePOST(T objectToPersist)
     {
         String objectId = UUID.randomUUID().toString();
         objectToPersist.setId(objectId);
@@ -83,7 +83,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      * Handles a PUT of an object
      * @param objectToUpdate object to persist
      */
-    public void handlePUT(T objectToUpdate) throws BadRequestException
+    public void handlePUT(T objectToUpdate)
     {
         // NOTE: the default update implementation is just a persist call
         try
@@ -101,7 +101,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      * Handles the DELETE of an object // TODO: should this return an object?
      * @param id The id of the object to delete
      */
-    public void handleDelete(String id) throws BadRequestException{
+    public void handleDelete(String id) {
         try
         {
             objectPersister.delete(id);
