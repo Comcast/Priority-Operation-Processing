@@ -1,23 +1,26 @@
 package com.theplatform.dfh.endpoint.api;
 
-import java.io.IOException;
-
-public class ValidationException extends IOException
+public class ValidationException extends RuntimeServiceException
 {
     private static final int statusCode = 422;
 
+    public ValidationException()
+    {
+        super(statusCode);
+    }
+
     public ValidationException(String message)
     {
-        super("status[" +statusCode +"]" +message);
+        super(message, statusCode);
     }
 
     public ValidationException(String message, Throwable cause)
     {
-        super("status[" +statusCode +"]" +message, cause);
+        super(message, cause, statusCode);
     }
 
     public ValidationException(Throwable cause)
     {
-        super("status[" +statusCode +"]", cause);
+        super(cause, statusCode);
     }
 }

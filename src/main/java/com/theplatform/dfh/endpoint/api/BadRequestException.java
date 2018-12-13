@@ -1,23 +1,27 @@
 package com.theplatform.dfh.endpoint.api;
 
-import java.io.IOException;
 
-public class BadRequestException extends IOException
+public class BadRequestException extends RuntimeServiceException
 {
     private static final int statusCode = 400;
 
+    public BadRequestException()
+    {
+        super(statusCode);
+    }
+
     public BadRequestException(String message)
     {
-        super("status[" +statusCode +"]" +message);
+        super(message, statusCode);
     }
 
     public BadRequestException(String message, Throwable cause)
     {
-        super("status[" +statusCode +"]" +message, cause);
+        super(message, cause, statusCode);
     }
 
     public BadRequestException(Throwable cause)
     {
-        super("status[" +statusCode +"]", cause);
+        super(cause, statusCode);
     }
 }
