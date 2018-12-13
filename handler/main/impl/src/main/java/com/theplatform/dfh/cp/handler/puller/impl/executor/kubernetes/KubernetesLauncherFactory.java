@@ -24,8 +24,6 @@ public class KubernetesLauncherFactory implements LauncherFactory
 
     private int podRetryDelay = 2000;
 
-    private final String EXEC_CONFIG_MAP_FIELD = "execConfigMapName";
-
     private PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
 
@@ -43,9 +41,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
 
-        FieldRetriever propertyRetriever = pullerContext.getLaunchDataWrapper().getPropertyRetriever();
-
-        String execConfigMapName = propertyRetriever.getField(EXEC_CONFIG_MAP_FIELD, null);
+        String execConfigMapName = pullerContext.getPullerLaunchDataWrapper().getPullerConfig().getExecConfigMapName();
         if(execConfigMapName != null)
             podConfig.getConfigMapDetails().setConfigMapName(execConfigMapName);
 
