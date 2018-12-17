@@ -37,7 +37,6 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
 
     /**
      * Executes the ops in the Agenda in order
-     * @return
      */
     public void execute()
     {

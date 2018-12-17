@@ -27,7 +27,6 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
     /**
      * Executes the Agenda processing
-     * @return null (always)
      */
     @Override
     public void execute()
