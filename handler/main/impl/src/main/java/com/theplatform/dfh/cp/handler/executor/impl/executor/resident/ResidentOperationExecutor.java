@@ -44,11 +44,11 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
         }
         catch(JsonHelperException je)
         {
-            logger.error("Unable to convert progress string to OperationProgress");
+            logger.error("Unable to convert progress string to OperationProgress", je);
         }
         catch(Exception e)
         {
-            logger.error("Unable to pull last progress form resident handler.");
+            logger.error("Unable to pull last progress form resident handler.",  e);
         }
         return null;
     }
