@@ -81,7 +81,7 @@ public class PayloadGenerator
             }
         });
 
-        new ParallelOperationAgendaProcessor(launchDataWrapper, new ExecutorContextFactory(launchDataWrapper).createOperationContext()).execute();
+        new ParallelOperationAgendaProcessor(new ExecutorContextFactory(launchDataWrapper).createOperationContext()).execute();
     }
 
     protected void addSampleOperation(int count)

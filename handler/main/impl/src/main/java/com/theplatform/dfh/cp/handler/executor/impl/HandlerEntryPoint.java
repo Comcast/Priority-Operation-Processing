@@ -54,10 +54,10 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
     }
 
     @Override
-    protected BaseAgendaProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    protected BaseAgendaProcessor createHandlerProcessor(ExecutorContext executorContext)
     {
         //return new SequentialAgendaProcessor(launchDataWrapper, executorContext);
         // TODO: when ready we'll switch over (right now the sequence would need to use the yet-to-be-implemented dependsOn functionality)
-        return new ParallelOperationAgendaProcessor(launchDataWrapper, executorContext);
+        return new ParallelOperationAgendaProcessor(executorContext);
     }
 }

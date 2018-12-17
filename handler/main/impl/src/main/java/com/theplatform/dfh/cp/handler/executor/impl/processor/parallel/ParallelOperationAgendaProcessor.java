@@ -19,9 +19,9 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
     private OperationConductorFactory operationAdviserFactory;
 
-    public ParallelOperationAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    public ParallelOperationAgendaProcessor(ExecutorContext executorContext)
     {
-        super(launchDataWrapper, executorContext);
+        super(executorContext.getLaunchDataWrapper(), executorContext);
         this.operationAdviserFactory = new OperationConductorFactory();
     }
 
@@ -30,7 +30,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
      * @return null (always)
      */
     @Override
-    public Void execute()
+    public void execute()
     {
         ExecutorHandlerInput handlerInput;
 
@@ -51,13 +51,13 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
         if (handlerInput == null)
         {
             agendaProgressReporter.addFailed("Invalid input. No payload.");
-            return null;
+            return;
         }
 
         if (handlerInput.getOperations() == null)
         {
             agendaProgressReporter.addFailed("No operations in Agenda. Nothing to do.");
-            return null;
+            return;
         }
 
         try
@@ -75,8 +75,6 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
             agendaProgressReporter.addFailed(null);
             logger.error("", e);
         }
-
-        return null;
     }
 
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * The context for this instance of the Executor
  */
-public class ExecutorContext extends BaseOperationContext
+public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private OperationExecutorFactory operationExecutorFactory;

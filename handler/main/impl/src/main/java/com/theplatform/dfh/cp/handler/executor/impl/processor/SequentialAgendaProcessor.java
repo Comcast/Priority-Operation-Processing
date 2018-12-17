@@ -27,9 +27,9 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     private JsonContextUpdater jsonContextUpdater;
     private Set<OperationWrapper> completedOperations;
 
-    public SequentialAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    public SequentialAgendaProcessor(ExecutorContext executorContext)
     {
-        super(launchDataWrapper, executorContext);
+        super(executorContext.getLaunchDataWrapper(), executorContext);
         operationRunnerFactory = new OperationRunnerFactory();
         jsonContextUpdater = new JsonContextUpdater(executorContext);
         completedOperations = new HashSet<>();
@@ -39,7 +39,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      * Executes the ops in the Agenda in order
      * @return
      */
-    public Void execute()
+    public void execute()
     {
         AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
 
@@ -56,19 +56,19 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
         catch (Exception e)
         {
             agendaProgressReporter.addFailed("Invalid input. Failed to load payload.");
-            return null;
+            return;
         }
 
         if (handlerInput == null)
         {
             agendaProgressReporter.addFailed("Invalid input. No payload.");
-            return null;
+            return;
         }
 
         if (handlerInput.getOperations() == null)
         {
             agendaProgressReporter.addFailed("No operations in Agenda. Nothing to do.");
-            return null;
+            return;
         }
 
         try
@@ -83,7 +83,6 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
             // TODO: some diagnostic back...
             agendaProgressReporter.addFailed(null);
         }
-        return null;
     }
 
     /**

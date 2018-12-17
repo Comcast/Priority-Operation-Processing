@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
-public abstract class BaseAgendaProcessor implements HandlerProcessor<Void>
+public abstract class BaseAgendaProcessor implements HandlerProcessor
 {
     protected LaunchDataWrapper launchDataWrapper;
     protected ExecutorContext executorContext;
