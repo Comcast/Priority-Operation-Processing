@@ -2,11 +2,11 @@ package com.theplatform.dfh.cp.handler.base.context;
 
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 
-public abstract class BaseOperationContext
+public abstract class BaseOperationContext<T extends LaunchDataWrapper>
 {
-    private LaunchDataWrapper launchDataWrapper;
+    private T launchDataWrapper;
 
-    public BaseOperationContext(LaunchDataWrapper launchDataWrapper)
+    public BaseOperationContext(T launchDataWrapper)
     {
         this.launchDataWrapper = launchDataWrapper;
     }
@@ -14,12 +14,12 @@ public abstract class BaseOperationContext
     public void init(){}
     public void shutdown(){}
 
-    public LaunchDataWrapper getLaunchDataWrapper()
+    public T getLaunchDataWrapper()
     {
         return launchDataWrapper;
     }
 
-    public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
+    public void setLaunchDataWrapper(T launchDataWrapper)
     {
         this.launchDataWrapper = launchDataWrapper;
     }

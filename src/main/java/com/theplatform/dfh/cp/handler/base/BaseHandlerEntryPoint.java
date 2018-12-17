@@ -21,7 +21,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 
     protected abstract W createLaunchDataWrapper(String[] args);
     protected abstract BaseOperationContextFactory<C> createOperationContextFactory(W launchDataWrapper);
-    protected abstract P createHandlerProcessor(W launchDataWrapper, C operationContext);
+    protected abstract P createHandlerProcessor(C operationContext);
 
     public BaseHandlerEntryPoint(String[] args)
     {
@@ -39,7 +39,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         try
         {
             operationContext.init();
-            createHandlerProcessor(launchDataWrapper, operationContext).execute();
+            createHandlerProcessor(operationContext).execute();
         }
         finally
         {
