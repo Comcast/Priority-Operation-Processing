@@ -34,7 +34,6 @@ public class PullerWithInsightProcessor extends PullerProcessor
 
     /**
      * Executes the ops in the Agenda in order
-     * @return
      */
     public void execute()
     {
