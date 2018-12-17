@@ -43,24 +43,15 @@ public class OperationRunner implements Runnable
             String outputPayload = executor.execute(operationWrapper.getInputPayload());
             // get the last progress
             OperationProgress operationProgress = executor.retrieveOperationProgress();
-            if(operationProgress == null)
+            switch (operationProgress.getProcessingState())
             {
-                // TEMP HACK while residential handlers are evaluated
-                operationWrapper.setOutputPayload(outputPayload);
-                operationWrapper.setSuccess(true);
-            }
-            else
-            {
-                switch (operationProgress.getProcessingState())
-                {
-                    case COMPLETE:
-                        evaluateCompletedOperation(operationWrapper, operationProgress, outputPayload);
-                        break;
-                    default:
-                        // TODO: make a new diagnostic indicating things went wrong ?
-                        operationWrapper.setSuccess(false);
-                        break;
-                }
+                case COMPLETE:
+                    evaluateCompletedOperation(operationWrapper, operationProgress, outputPayload);
+                    break;
+                default:
+                    // TODO: make a new diagnostic indicating things went wrong ?
+                    operationWrapper.setSuccess(false);
+                    break;
             }
         }
         catch(Throwable t)

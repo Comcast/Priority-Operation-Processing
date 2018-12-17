@@ -143,8 +143,6 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         logger.info("Done with execution of pod: {}", executionConfig.getName());
 
         Map<String,String> podAnnotations = follower.getPodAnnotations();
-        // TODO: When all the handlers are updated the payload will come out of a payload annotation (not the success one)
-        // for now (backwards compatibility) the handlers are writing to multiple annotations via kubernetes
-        return podAnnotations.get(KubernetesReporter.REPORT_SUCCESS_ANNOTATION);
+        return podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);
     }
 }
