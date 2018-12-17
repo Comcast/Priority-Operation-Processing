@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgr
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressThread;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressThreadConfig;
 
-public class OperationContext extends BaseOperationContext
+public class OperationContext extends BaseOperationContext<LaunchDataWrapper>
 {
     private OperationProgressReporter operationProgressReporter;
     private OperationProgressThread operationProgressThread;

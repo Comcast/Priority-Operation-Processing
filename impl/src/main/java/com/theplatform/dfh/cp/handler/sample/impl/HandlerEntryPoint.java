@@ -46,8 +46,8 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, S
     }
 
     @Override
-    protected SampleActionProcessor createHandlerProcessor(DefaultLaunchDataWrapper launchDataWrapper, OperationContext operationContext)
+    protected SampleActionProcessor createHandlerProcessor(OperationContext operationContext)
     {
-        return new SampleActionProcessor(launchDataWrapper, operationContext);
+        return new SampleActionProcessor(operationContext);
     }
 }

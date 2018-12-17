@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Basic processor for running the sample action and requesting the output is parsed
  */
-public class SampleActionProcessor implements HandlerProcessor<Void>
+public class SampleActionProcessor implements HandlerProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(SampleActionProcessor.class);
 
@@ -28,9 +28,9 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
     private JsonHelper jsonHelper;
     private ActionMap actionMap;
 
-    public SampleActionProcessor(LaunchDataWrapper launchDataWrapper, OperationContext operationContext)
+    public SampleActionProcessor(OperationContext operationContext)
     {
-        this.launchDataWrapper = launchDataWrapper;
+        this.launchDataWrapper = operationContext.getLaunchDataWrapper();
         this.operationContext = operationContext;
         this.jsonHelper = new JsonHelper();
         this.actionMap = new ActionMap();
@@ -39,7 +39,7 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
     /**
      * Executes the necessary steps to perform the action
      */
-    public Void execute()
+    public void execute()
     {
         try
         {
@@ -58,7 +58,6 @@ public class SampleActionProcessor implements HandlerProcessor<Void>
             // TODO: handlers should exit gracefully...
             throw new RuntimeException("Failed to load/execute payload.", e);
         }
-        return null;
     }
 
     public void performAction(SampleAction sampleAction, OperationProgressReporter reporter)
