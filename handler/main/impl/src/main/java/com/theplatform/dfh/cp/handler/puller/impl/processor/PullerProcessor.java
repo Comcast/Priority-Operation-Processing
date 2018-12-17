@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
  */
-public class PullerProcessor implements HandlerProcessor<Void>
+public class PullerProcessor implements HandlerProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
 
@@ -25,9 +25,9 @@ public class PullerProcessor implements HandlerProcessor<Void>
 
     private AgendaClient agendaClient;
 
-    public PullerProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
+    public PullerProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
-        this.launchDataWrapper = launchDataWrapper;
+        this.launchDataWrapper = pullerContext.getLaunchDataWrapper();
         this.agendaClient = agendaClientFactory.getClient();
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
     }
@@ -40,7 +40,7 @@ public class PullerProcessor implements HandlerProcessor<Void>
      * Executes the ops in the Agenda in order
      * @return
      */
-    public Void execute()
+    public void execute()
     {
         Agenda agenda = agendaClient.getAgenda();
 
@@ -63,8 +63,6 @@ public class PullerProcessor implements HandlerProcessor<Void>
                 logger.warn("Puller execution was stopped. {}", e);
             }
         }
-
-        return null;
     }
 
     public PullerLaunchDataWrapper getLaunchDataWrapper()

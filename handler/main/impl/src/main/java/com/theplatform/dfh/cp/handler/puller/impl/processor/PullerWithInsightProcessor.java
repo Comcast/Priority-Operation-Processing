@@ -19,9 +19,9 @@ public class PullerWithInsightProcessor extends PullerProcessor
     private int agendaRequestCount = 1;
     private String insightId;
 
-    public PullerWithInsightProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
+    public PullerWithInsightProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
-        super(launchDataWrapper, pullerContext, agendaClientFactory);
+        super(pullerContext, agendaClientFactory);
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
         agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
     }
@@ -36,7 +36,7 @@ public class PullerWithInsightProcessor extends PullerProcessor
      * Executes the ops in the Agenda in order
      * @return
      */
-    public Void execute()
+    public void execute()
     {
         GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
         GetAgendaResponse getAgendaResponse;
@@ -46,7 +46,7 @@ public class PullerWithInsightProcessor extends PullerProcessor
         } catch (Exception e)
         {
             logger.error("Failed to getAgenda: {}", e);
-            return null;
+            return;
         }
         // todo what to do if getAgenda returns null?
 
@@ -72,7 +72,5 @@ public class PullerWithInsightProcessor extends PullerProcessor
                 logger.warn("Puller execution was stopped. {}", e);
             }
         }
-
-        return null;
     }
 }

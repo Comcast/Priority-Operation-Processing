@@ -8,16 +8,14 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 
-public class PullerContext extends BaseOperationContext
+public class PullerContext extends BaseOperationContext<PullerLaunchDataWrapper>
 {
     private LauncherFactory launcherFactory;
-    private PullerLaunchDataWrapper pullerLaunchDataWrapper;
 
     public PullerContext(PullerLaunchDataWrapper launchDataWrapper, LauncherFactory launcherFactory)
     {
         super(launchDataWrapper);
         this.launcherFactory = launcherFactory;
-        this.pullerLaunchDataWrapper = launchDataWrapper;
     }
 
     public LauncherFactory getLauncherFactory()
@@ -28,15 +26,5 @@ public class PullerContext extends BaseOperationContext
     public void setLauncherFactory(LauncherFactory launcherFactory)
     {
         this.launcherFactory = launcherFactory;
-    }
-
-    public PullerLaunchDataWrapper getPullerLaunchDataWrapper()
-    {
-        return pullerLaunchDataWrapper;
-    }
-
-    public void setPullerLaunchDataWrapper(PullerLaunchDataWrapper pullerLaunchDataWrapper)
-    {
-        this.pullerLaunchDataWrapper = pullerLaunchDataWrapper;
     }
 }

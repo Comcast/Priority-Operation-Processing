@@ -41,7 +41,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
 
         PodConfig podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
 
-        String execConfigMapName = pullerContext.getPullerLaunchDataWrapper().getPullerConfig().getExecConfigMapName();
+        String execConfigMapName = pullerContext.getLaunchDataWrapper().getPullerConfig().getExecConfigMapName();
         if(execConfigMapName != null)
             podConfig.getConfigMapDetails().setConfigMapName(execConfigMapName);
 

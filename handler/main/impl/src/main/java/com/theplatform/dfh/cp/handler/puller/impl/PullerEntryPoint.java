@@ -45,13 +45,13 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     }
 
     @Override
-    protected PullerProcessor createHandlerProcessor(PullerLaunchDataWrapper launchDataWrapper, PullerContext handlerContext)
+    protected PullerProcessor createHandlerProcessor(PullerContext handlerContext)
     {
-        if (launchDataWrapper.getPullerConfig().useInsights())
+        if (handlerContext.getLaunchDataWrapper().getPullerConfig().useInsights())
         {
-            return new PullerWithInsightProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
+            return new PullerWithInsightProcessor(handlerContext, agendaClientFactory);
         }
-        return new PullerProcessor(launchDataWrapper, handlerContext, agendaClientFactory);
+        return new PullerProcessor(handlerContext, agendaClientFactory);
     }
 
     /**
