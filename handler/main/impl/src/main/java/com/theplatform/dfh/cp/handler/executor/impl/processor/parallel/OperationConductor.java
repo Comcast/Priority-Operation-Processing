@@ -30,14 +30,18 @@ public class OperationConductor implements OnOperationCompleteListener
     private BlockingQueue<OperationWrapper> postProcessingOperationQueue;
 
     // conductor tracking collections
-    private Collection<OperationWrapper> pendingOperations;
-    private Collection<OperationWrapper> runningOperations;
-    private Collection<OperationWrapper> completedOperations;
+    private List<OperationWrapper> pendingOperations;
+    private List<OperationWrapper> runningOperations;
+    private List<OperationWrapper> completedOperations;
+
+    // This list is independent of the others (
+    private List<OperationWrapper> failedOperations;
 
     private ExecutorContext executorContext;
     private OperationRunnerFactory operationRunnerFactory;
     private ExecutorService executorService;
     private JsonContextUpdater jsonContextUpdater;
+    private int operationFailureCount = 0;
 
     /**
      * Ctor
@@ -50,6 +54,7 @@ public class OperationConductor implements OnOperationCompleteListener
         // thread safety is not actually important on these collections. They are only adjusted/read in the OperationAdviser thread
         this.runningOperations = new ArrayList<>();
         this.completedOperations = new ArrayList<>();
+        this.failedOperations = new ArrayList<>();
 
         this.executorContext = executorContext;
         this.jsonContextUpdater = new JsonContextUpdater(executorContext);
@@ -193,6 +198,14 @@ public class OperationConductor implements OnOperationCompleteListener
         {
             jsonContextUpdater.onComplete(operationWrapper);
 
+            if(!operationWrapper.getSuccess())
+            {
+                failedOperations.add(operationWrapper);
+                logger.warn("{} operation failed. Clearing all pending operations.", operationWrapper.getOperation().getName());
+                // remove all pending operations
+                pendingOperations.clear();
+            }
+
             runningOperations.remove(operationWrapper);
             completedOperations.add(operationWrapper);
         }
@@ -250,18 +263,27 @@ public class OperationConductor implements OnOperationCompleteListener
         return postProcessingOperationQueue;
     }
 
-    protected Collection<OperationWrapper> getRunningOperations()
+    protected List<OperationWrapper> getRunningOperations()
     {
         return runningOperations;
     }
 
-    protected Collection<OperationWrapper> getPendingOperations()
+    protected List<OperationWrapper> getPendingOperations()
     {
         return pendingOperations;
     }
 
-    protected Collection<OperationWrapper> getCompletedOperations()
+    protected List<OperationWrapper> getCompletedOperations()
     {
         return completedOperations;
+    }
+
+    /**
+     * Indicates if any operations have failed. This method should only be used after the conclusion of execution.
+     * @return Indicator of any failed operations.
+     */
+    public boolean haveAnyOperationsFailed()
+    {
+        return failedOperations.size() > 0;
     }
 }

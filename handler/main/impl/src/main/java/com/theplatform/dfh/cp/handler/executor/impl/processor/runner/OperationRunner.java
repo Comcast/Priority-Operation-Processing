@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.runner;
 
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
@@ -32,22 +34,49 @@ public class OperationRunner implements Runnable
      */
     public void run()
     {
+        // TODO: should this perform any retries?
         try
         {
             BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operationWrapper.getOperation());
             // register the executor as a provider of operation progress
             executorContext.getAgendaProgressReporter().registerOperationProgressProvider(executor);
             String outputPayload = executor.execute(operationWrapper.getInputPayload());
-            operationWrapper.setOutputPayload(outputPayload);
-            // TODO: op wrapper success flag
+            // get the last progress
+            OperationProgress operationProgress = executor.retrieveOperationProgress();
+            switch(operationProgress.getProcessingState())
+            {
+                case COMPLETE:
+                    evaluateCompletedOperation(operationWrapper, operationProgress, outputPayload);
+                    break;
+                default:
+                    // TODO: make a new diagnostic indicating things went wrong ?
+                    operationWrapper.setSuccess(false);
+                    break;
+            }
         }
         catch(Throwable t)
         {
-            // TODO: op wrapper fail flag
             logger.error(String.format("Failed to execute operation: %1$s", operationWrapper.getOperation() == null ? "unknown!" : operationWrapper.getOperation().getName())
                 , t);
+            operationWrapper.setSuccess(false);
+            // TODO: consider a diagnostic at this point
         }
         // always call the onComplete (critical for the operation conductor)
         if(onOperationCompleteListener != null) onOperationCompleteListener.onComplete(operationWrapper);
+    }
+
+    private void evaluateCompletedOperation(OperationWrapper operationWrapper, OperationProgress operationProgress, String outputPayload)
+    {
+        if(CompleteStateMessage.SUCCEEDED.toString().equals(operationProgress.getProcessingStateMessage()))
+        {
+            operationWrapper.setOutputPayload(outputPayload);
+            operationWrapper.setSuccess(true);
+        }
+        else
+        {
+            // TODO: new diagnostic
+            //operationWrapper.setOutputPayload();
+            operationWrapper.setSuccess(false);
+        }
     }
 }

@@ -77,6 +77,22 @@ public class OperationConductorTest
         verify(mockExecutorService, times(operationsToLaunch.size())).submit(any(Runnable.class));
     }
 
+    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Unable to launch operation.*")
+    public void testLaunchReadyPendingOperationsExecutorServiceException()
+    {
+        addOperations(3, true, operationConductor.getPendingOperations());
+        doAnswer(new Answer()
+        {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock)
+            {
+                throw new RuntimeException("ERROR");
+            }
+        }).when(mockExecutorService).submit(any(Runnable.class));
+
+        operationConductor.launchReadyPendingOperations();
+    }
+
     @Test
     public void testDrainCompletedQueueEmpty()
     {
@@ -111,6 +127,17 @@ public class OperationConductorTest
         }).when(mockOperationRunnerFactory).createOperationRunner(any(OperationWrapper.class), any(ExecutorContext.class), any(OnOperationCompleteListener.class));
         operationConductor.run();
         Assert.assertEquals(operationConductor.getCompletedOperations().size(), OP_COUNT);
+    }
+
+    @Test
+    public void testPostProcessCompletedOperationFailed()
+    {
+        addOperations(5, true, operationConductor.getPendingOperations());
+        OperationWrapper operationWrapper = operationConductor.getPendingOperations().get(0);
+        operationWrapper.setSuccess(false);
+        operationConductor.postProcessCompletedOperation(operationWrapper);
+        Assert.assertEquals(operationConductor.getPendingOperations().size(), 0);
+        Assert.assertTrue(operationConductor.haveAnyOperationsFailed());
     }
 
     private Collection<String> addOperations(int count, boolean ready, Collection<OperationWrapper> listToAppend)

@@ -19,7 +19,8 @@ public class OperationWrapper
     private Operation operation;
     private boolean ready;
     private String inputPayload;
-    private String outputPayload;
+    private String outputPayload; // TODO: make a new field for diagnostic or reuse and this is contextual based on success?
+    private boolean success = false;
 
     public OperationWrapper(Operation operation)
     {
@@ -159,5 +160,15 @@ public class OperationWrapper
     protected void setDependencies(Set<String> dependencies)
     {
         this.dependencies = dependencies;
+    }
+
+    public Boolean getSuccess()
+    {
+        return success;
+    }
+
+    public void setSuccess(Boolean success)
+    {
+        this.success = success;
     }
 }

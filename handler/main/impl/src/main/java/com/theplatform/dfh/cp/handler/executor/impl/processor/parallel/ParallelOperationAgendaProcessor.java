@@ -62,8 +62,12 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
         try
         {
-            operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext).run();
-            agendaProgressReporter.addSucceeded(null);
+            OperationConductor operationConductor = operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext);
+            operationConductor.run();
+            if(operationConductor.haveAnyOperationsFailed())
+                agendaProgressReporter.addFailed(null);
+            else
+                agendaProgressReporter.addSucceeded(null);
         }
         catch (AgendaExecutorException e)
         {
