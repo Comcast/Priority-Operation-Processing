@@ -66,7 +66,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      */
     public ObjectPersistResponse handlePOST(T objectToPersist)
     {
-        String objectId = UUID.randomUUID().toString();
+        String objectId = objectToPersist.getId() == null ? UUID.randomUUID().toString() : objectToPersist.getId();
         objectToPersist.setId(objectId);
         try
         {
