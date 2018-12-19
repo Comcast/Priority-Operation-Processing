@@ -19,8 +19,9 @@ public class LambdaRequest
 
     protected static final String DEFAULT_PATH_PARAMETER_NAME = "objectid";
     protected static final String BODY_PATH = "/body";
-    protected static final String HTTP_METHOD_PATH = "/httpMethod";
+    protected static final String HTTP_METHOD_PATH = "/requestContext/httpMethod";
     protected static final String STAGE_FIELD_PATH = "/requestContext/stage";
+    protected static final String REQUEST_PATH = "/requestContext/path";
     protected static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
     protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
@@ -127,8 +128,12 @@ public class LambdaRequest
      */
     public String getHTTPMethod(String defaultValue)
     {
-        String httpMethod = getRequestValue(HTTP_METHOD_PATH);
-        return httpMethod == null ? defaultValue : httpMethod;
+        return getRequestValue(HTTP_METHOD_PATH, defaultValue);
+    }
+
+    public String getEndpoint()
+    {
+        return getRequestValue(REQUEST_PATH, null);
     }
 
     public String getStageVariable(String stageVariableName)
