@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.*;
 
@@ -191,6 +192,14 @@ public class LambdaRequest
         return requestValueNode.asText();
     }
 
+    /**
+     * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
+     */
+    public void setupLoggingCid()
+    {
+        String cid = getCID();
+        MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
+    }
 
     private void logObject(String nodeName, JsonNode node)
     {
