@@ -2,6 +2,7 @@ package com.theplatform.dfh.modules.queue.aws.sqs.processor;
 
 import com.amazonaws.services.sqs.model.*;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSRequestContext;
+import com.theplatform.dfh.object.api.IDGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,12 @@ public class AddRequestProcessor implements SQSRequestProcessor
     private static final Logger logger = LoggerFactory.getLogger(AddRequestProcessor.class);
 
     private MessageDigestUtil messageDigestUtil;
-    private UUIDGenerator uuidGenerator;
+    private IDGenerator uuidGenerator;
 
     public AddRequestProcessor()
     {
         messageDigestUtil = new MessageDigestUtil();
-        uuidGenerator = new UUIDGenerator();
+        uuidGenerator = new IDGenerator();
     }
 
     @Override
@@ -125,7 +126,7 @@ public class AddRequestProcessor implements SQSRequestProcessor
         this.messageDigestUtil = messageDigestUtil;
     }
 
-    public void setUuidGenerator(UUIDGenerator uuidGenerator)
+    public void setIdGenerator(IDGenerator uuidGenerator)
     {
         this.uuidGenerator = uuidGenerator;
     }
