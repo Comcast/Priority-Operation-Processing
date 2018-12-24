@@ -5,6 +5,7 @@ import com.amazonaws.services.sqs.model.*;
 import com.theplatform.dfh.modules.queue.api.QueueResult;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSRequestContext;
 import com.theplatform.dfh.modules.queue.aws.sqs.api.QueueRequest;
+import com.theplatform.dfh.object.api.IDGenerator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,13 +26,13 @@ public class AddRequestProcessorTest
     private AddRequestProcessor addRequestProcessor;
     private MessageDigestUtil mockMessageDigestUtil;
     private AmazonSQS mockAmazonSQS;
-    private UUIDGenerator uuidGenerator = new UUIDGenerator();
+    private IDGenerator uuidGenerator = new IDGenerator();
 
     @BeforeMethod
     public void setup()
     {
         addRequestProcessor = new AddRequestProcessor();
-        addRequestProcessor.setUuidGenerator(new TestUUIDGenerator());
+        addRequestProcessor.setIdGenerator(new TestUUIDGenerator());
         mockMessageDigestUtil = mock(MessageDigestUtil.class);
         mockAmazonSQS = mock(AmazonSQS.class);
         addRequestProcessor.setMessageDigestUtil(mockMessageDigestUtil);
@@ -79,7 +80,7 @@ public class AddRequestProcessorTest
         Assert.assertFalse(result.isSuccessful());
     }
 
-    private class TestUUIDGenerator extends UUIDGenerator
+    private class TestUUIDGenerator extends IDGenerator
     {
         private int id = 0;
         @Override
