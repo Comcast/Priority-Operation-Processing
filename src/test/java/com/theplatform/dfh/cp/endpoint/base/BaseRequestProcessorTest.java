@@ -1,12 +1,11 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
-import com.theplatform.dfh.cp.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.query.ByTitle;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.mockito.Mockito;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
