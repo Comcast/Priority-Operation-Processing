@@ -22,7 +22,7 @@ public class LambdaRequest
     protected static final String BODY_PATH = "/body";
     protected static final String HTTP_METHOD_PATH = "/requestContext/httpMethod";
     protected static final String STAGE_FIELD_PATH = "/requestContext/stage";
-    protected static final String REQUEST_PATH = "/requestContext/path";
+    protected static final String REQUEST_PATH = "/requestContext/resourcePath";
     protected static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
     protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
