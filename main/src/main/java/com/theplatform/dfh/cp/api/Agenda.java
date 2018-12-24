@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.List;
 

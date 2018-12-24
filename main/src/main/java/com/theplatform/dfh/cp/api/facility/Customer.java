@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 
 public class Customer implements IdentifiedObject
 {

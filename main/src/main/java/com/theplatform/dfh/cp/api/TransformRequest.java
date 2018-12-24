@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.List;
 

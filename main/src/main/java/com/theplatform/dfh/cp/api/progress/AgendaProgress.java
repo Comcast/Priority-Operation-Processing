@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.Arrays;
 import java.util.Date;
