@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.apache.commons.lang3.StringUtils;
