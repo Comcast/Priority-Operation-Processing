@@ -1,9 +1,12 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
+import com.theplatform.dfh.object.api.IdentifiedObject;
+
 import java.util.Map;
 
-public class TestTrackedObject
+public class TestTrackedObject implements IdentifiedObject
 {
+    private String id;
     private String valueString;
     private Map<String, String> stringAttributes;
 
@@ -12,8 +15,21 @@ public class TestTrackedObject
 
     }
 
-    public TestTrackedObject(String valueString)
+    @Override
+    public String getId()
     {
+        return id;
+    }
+
+    @Override
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public TestTrackedObject(String id, String valueString)
+    {
+        this.id = id;
         this.valueString = valueString;
     }
 

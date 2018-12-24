@@ -5,12 +5,11 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
-import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
-import com.theplatform.dfh.persistence.impl.QueryPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
@@ -18,9 +17,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
+public class DynamoDBObjectPersister<T extends IdentifiedObject> implements ObjectPersister<T>
 {
     protected static Logger logger = LoggerFactory.getLogger(DynamoDBObjectPersister.class);
 
@@ -83,18 +81,18 @@ public class DynamoDBObjectPersister<T> implements ObjectPersister<T>
     }
 
     @Override
-    public void persist(String identifier, T object)
+    public void persist(T object)
     {
-        logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), identifier);
+        logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
         dynamoDBMapper.save(object);
     }
 
     @Override
-    public void update(String identifier, T object)
+    public void update(T object)
     {
-        logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
+        logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
 
-        updateWithCondition(identifier, object);
+        updateWithCondition(object.getId(), object);
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException

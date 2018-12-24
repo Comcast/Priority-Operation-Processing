@@ -1,21 +1,19 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
-import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  */
-public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister<T>
+public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extends DynamoDBObjectPersister<T>
 {
     private PersistentObjectConverter converter;
 
@@ -37,20 +35,20 @@ public class DynamoDBConvertedObjectPersister<T> extends DynamoDBObjectPersister
     }
 
     @Override
-    public void persist(String identifier, T object)
+    public void persist(T object)
     {
-        logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), identifier);
+        logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
         Object persistentObject = converter.getPersistentObject(object);
         getDynamoDBMapper().save(persistentObject);
     }
 
     @Override
-    public void update(String identifier, T object)
+    public void update(T object)
     {
-        logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), identifier);
+        logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
 
         Object persistentObject = converter.getPersistentObject(object);
-        updateWithCondition(identifier, persistentObject);
+        updateWithCondition(object.getId(), persistentObject);
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException

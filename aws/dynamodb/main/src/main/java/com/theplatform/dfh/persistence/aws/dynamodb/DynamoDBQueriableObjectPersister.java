@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
+public class DynamoDBQueriableObjectPersister<D extends IdentifiedObject> implements ObjectPersister<D>
 {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBQueriableObjectPersister.class);
     private static final String KEY_CONDITION = "%s = %s";
@@ -62,7 +63,7 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
     }
 
     @Override
-    public void persist(String id, D dataObject) throws PersistenceException
+    public void persist(D dataObject) throws PersistenceException
     {
         String fieldName = null;
         try
@@ -84,12 +85,12 @@ public class DynamoDBQueriableObjectPersister<D> implements ObjectPersister<D>
         }
         catch (Exception e)
         {
-            throw new PersistenceException(String.format("Unable to persist data for id %1$s (last field attempted: %2$s)", id, fieldName), e);
+            throw new PersistenceException(String.format("Unable to persist data for id %1$s (last field attempted: %2$s)", dataObject.getId(), fieldName), e);
         }
     }
 
     @Override
-    public void update(String id, D dataObject) throws PersistenceException
+    public void update(D dataObject) throws PersistenceException
     {
 //@todo
     }

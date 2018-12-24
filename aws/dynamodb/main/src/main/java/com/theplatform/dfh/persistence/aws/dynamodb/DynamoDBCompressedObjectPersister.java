@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -23,7 +24,7 @@ import java.util.Map;
 /**
  * Persists, retrieves, and deletes TrackedObjects in DynamoDB (compressed)
  */
-public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
+public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> implements ObjectPersister<T>
 {
     protected static Logger logger = LoggerFactory.getLogger(DynamoDBCompressedObjectPersister.class);
 
@@ -92,23 +93,22 @@ public class DynamoDBCompressedObjectPersister<T> implements ObjectPersister<T>
     }
 
     @Override
-    public void persist(String identifier, T object)
+    public void persist(T object)
     {
         logger.info("Persisting {} instance.", object.getClass().getSimpleName());
         AmazonDynamoDB client = AWSDynamoDBFactory.getAmazonDynamoDB();
-        PutItemRequest putItemRequest = getPutItemRequest(identifier, tableName, object);
+        PutItemRequest putItemRequest = getPutItemRequest(object.getId(), tableName, object);
         client.putItem(putItemRequest);
     }
 
     /**
      * Uses the persist method to simply overwrite the object.
-     * @param identifier The key to update the item by
      * @param object The object to update
      */
     @Override
-    public void update(String identifier, T object)
+    public void update(T object)
     {
-        persist(identifier, object);
+        persist(object);
     }
 
     @Override

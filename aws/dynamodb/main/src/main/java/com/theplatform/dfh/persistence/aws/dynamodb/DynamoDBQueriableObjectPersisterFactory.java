@@ -1,12 +1,13 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 
 /**
  * Wrapper factory for DynamoDBCompressedObjectPersister objects so we can swap in others later (and convenient unit testing)
  */
-public class DynamoDBQueriableObjectPersisterFactory<T> implements ObjectPersisterFactory<T>
+public class DynamoDBQueriableObjectPersisterFactory<T extends IdentifiedObject> implements ObjectPersisterFactory<T>
 {
     protected String persistenceKeyFieldName;
     protected Class persistentObjectClass;

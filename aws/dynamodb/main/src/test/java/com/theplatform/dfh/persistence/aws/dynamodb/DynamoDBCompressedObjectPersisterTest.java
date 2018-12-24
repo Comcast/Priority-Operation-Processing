@@ -47,7 +47,7 @@ public class DynamoDBCompressedObjectPersisterTest
     @Test
     public void testPersistAndRetrieve()
     {
-        TestTrackedObject testTrackedObject = new TestTrackedObject(TEST_VALUE);
+        TestTrackedObject testTrackedObject = new TestTrackedObject(TEST_ITEM_ID, TEST_VALUE);
 
         final Map<String, AttributeValue> storedItem = new HashMap<>();
 
@@ -77,7 +77,7 @@ public class DynamoDBCompressedObjectPersisterTest
             }
         }).when(mockAmazonDynamoDB).getItem(any(GetItemRequest.class));
 
-        objectPersister.persist(TEST_ITEM_ID, testTrackedObject);
+        objectPersister.persist(testTrackedObject);
         verify(mockAmazonDynamoDB, times(1)).putItem(any(PutItemRequest.class));
         validateAlwaysRequiredFields(storedItem);
 

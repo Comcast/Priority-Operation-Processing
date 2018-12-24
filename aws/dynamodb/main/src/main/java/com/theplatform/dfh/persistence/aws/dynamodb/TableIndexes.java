@@ -1,6 +1,6 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class TableIndexes
 {

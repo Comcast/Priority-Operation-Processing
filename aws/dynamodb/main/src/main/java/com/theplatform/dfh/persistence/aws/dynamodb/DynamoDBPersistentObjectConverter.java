@@ -15,21 +15,21 @@ public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjec
 {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistentObjectConverter.class);
 
-    Class dataClazz;
-    Class persistentClazz;
+    private Class<T> dataClazz;
+    private Class<S> persistentClazz;
 
-    public DynamoDBPersistentObjectConverter(Class dataClazz, Class persistentClazz)
+    public DynamoDBPersistentObjectConverter(Class<T> dataClazz, Class<S> persistentClazz)
     {
         this.dataClazz = dataClazz;
         this.persistentClazz = persistentClazz;
     }
 
-    public Class getPersistentObjectClass()
+    public Class<S> getPersistentObjectClass()
     {
         return persistentClazz;
     }
 
-    public Class getDataObjectClass()
+    public Class<T> getDataObjectClass()
     {
         return dataClazz;
     }

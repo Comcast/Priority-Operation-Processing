@@ -1,10 +1,11 @@
 package com.theplatform.dfh.persistence.api;
 
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 import java.util.List;
 
-public interface ObjectPersister<T>
+public interface ObjectPersister<T extends IdentifiedObject>
 {
 
     DataObjectFeed<T> retrieve(List<Query> queries) throws PersistenceException;
@@ -18,17 +19,15 @@ public interface ObjectPersister<T>
 
     /**
      * Persists the item to the specified table by the given identifier
-     * @param identifier The key to store the item by
      * @param object The object to persist
      */
-    void persist(String identifier, T object) throws PersistenceException;
+    void persist(T object) throws PersistenceException;
 
     /**
      * Updates the item specified in the table
-     * @param identifier The key to update the item by
      * @param object The object to update
      */
-    void update(String identifier, T object) throws PersistenceException;
+    void update(T object) throws PersistenceException;
 
     /**
      * Deletes the item from the specified table by the given idendifier

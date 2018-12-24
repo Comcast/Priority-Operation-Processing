@@ -1,5 +1,6 @@
 package com.theplatform.dfh.persistence.impl;
 
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.query.Query;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MemoryObjectPersister<T> implements ObjectPersister<T>
+public class MemoryObjectPersister<T extends IdentifiedObject> implements ObjectPersister<T>
 {
     private Map<String, T> objectPersistenceMap;
 
@@ -31,20 +32,19 @@ public class MemoryObjectPersister<T> implements ObjectPersister<T>
     }
 
     @Override
-    public void persist(String identifier, T object)
+    public void persist(T object)
     {
-        objectPersistenceMap.put(identifier, object);
+        objectPersistenceMap.put(object.getId(), object);
     }
 
     /**
      * Uses the persist method to simply overwrite the object.
-     * @param identifier The key to update the item by
      * @param object The object to update
      */
     @Override
-    public void update(String identifier, T object)
+    public void update(T object)
     {
-        persist(identifier, object);
+        persist(object);
     }
 
     @Override
