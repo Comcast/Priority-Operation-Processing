@@ -13,7 +13,16 @@
     <packaging>jar</packaging>
     <name>Persistence API</name>
 
+    <properties>
+        <dfh-object-api.version>1.0.0-SNAPSHOT</dfh-object-api.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.object</groupId>
+            <artifactId>pl-dfh-object-api</artifactId>
+            <version>${dfh-object-api.version}</version>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
