@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.api;
+package com.theplatform.dfh.object.api;
 
 public interface IdentifiedObject
 {
