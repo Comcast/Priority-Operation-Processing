@@ -1,14 +1,13 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.cp.api.IdentifiedObject;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ResourcePool implements IdentifiedObject
 {
-    private String id = UUID.randomUUID().toString();
+    private String id;
     private String title;
     private String ownerId;
     private List<Insight> insights = new ArrayList<>();
