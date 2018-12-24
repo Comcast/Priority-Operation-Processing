@@ -20,6 +20,7 @@
         <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
         <queue-sqs-api.version>1.0.0-SNAPSHOT</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
+        <dfh-object-api.version>1.0.0-SNAPSHOT</dfh-object-api.version>
     </properties>
     
     <dependencies>
@@ -32,6 +33,11 @@
             <groupId>com.theplatform.dfh.modules.queue</groupId>
             <artifactId>pl-dfh-modules-queue-aws-sqs-api</artifactId>
             <version>${queue-sqs-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.object</groupId>
+            <artifactId>pl-dfh-object-api</artifactId>
+            <version>${dfh-object-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->
