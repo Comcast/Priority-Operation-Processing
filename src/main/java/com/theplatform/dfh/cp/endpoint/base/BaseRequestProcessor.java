@@ -38,7 +38,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to get object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to get object by id %1$s", id), e);
         }
     }
     /**
@@ -55,7 +55,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         catch(PersistenceException e)
         {
             final String queryString = queries.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
-            throw new BadRequestException(String.format("Unable to get object by queries {}", queryString), e);
+            throw new BadRequestException(String.format("Unable to get object by queries %1$s", queryString), e);
         }
     }
 
@@ -70,7 +70,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         objectToPersist.setId(objectId);
         try
         {
-            objectPersister.persist(objectId, objectToPersist);
+            objectPersister.persist(objectToPersist);
         }
         catch(PersistenceException e)
         {
@@ -88,12 +88,12 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         // NOTE: the default update implementation is just a persist call
         try
         {
-            objectPersister.update(objectToUpdate.getId(), objectToUpdate);
+            objectPersister.update(objectToUpdate);
         }
         catch(PersistenceException e)
         {
             final String id = objectToUpdate == null ? "UNKNOWN" : objectToUpdate.getId();
-            throw new BadRequestException(String.format("Unable to update object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to update object by id %1$s", id), e);
         }
     }
 
@@ -108,7 +108,7 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to delete object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to delete object by id %1$s", id), e);
         }
     }
 }
