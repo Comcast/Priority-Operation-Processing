@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.object.api.IDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -28,6 +29,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     private final String tableName;
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
     private final Class<T> dataObjectClass;
+    private IDGenerator idGenerator = new IDGenerator();
 
     private DynamoDBMapper dynamoDBMapper;
     private TableIndexes tableIndexes;
@@ -81,18 +83,23 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     }
 
     @Override
-    public void persist(T object)
+    public T persist(T object)
     {
+        if(object.getId() == null)
+            object.setId(generateId());
         logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
         dynamoDBMapper.save(object);
+        return object;
     }
 
     @Override
-    public void update(T object)
+    public T update(T object)
     {
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
 
         updateWithCondition(object.getId(), object);
+
+        return object;
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
@@ -190,6 +197,11 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         }
     }
 
+    protected String generateId()
+    {
+        return idGenerator.generate();
+    }
+
     protected void updateWithCondition(String identifier, Object object)
     {
         // only save if an object with that id exists
@@ -210,5 +222,10 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     public TableIndexes getTableIndexes()
     {
         return tableIndexes;
+    }
+
+    public void setIdGenerator(IDGenerator idGenerator)
+    {
+        this.idGenerator = idGenerator;
     }
 }

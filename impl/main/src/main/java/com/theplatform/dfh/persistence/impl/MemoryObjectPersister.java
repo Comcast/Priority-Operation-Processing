@@ -32,9 +32,10 @@ public class MemoryObjectPersister<T extends IdentifiedObject> implements Object
     }
 
     @Override
-    public void persist(T object)
+    public T persist(T object)
     {
         objectPersistenceMap.put(object.getId(), object);
+        return object;
     }
 
     /**
@@ -42,9 +43,10 @@ public class MemoryObjectPersister<T extends IdentifiedObject> implements Object
      * @param object The object to update
      */
     @Override
-    public void update(T object)
+    public T update(T object)
     {
         persist(object);
+        return object;
     }
 
     @Override

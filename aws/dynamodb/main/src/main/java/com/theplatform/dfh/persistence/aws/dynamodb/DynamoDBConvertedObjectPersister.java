@@ -35,20 +35,24 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extend
     }
 
     @Override
-    public void persist(T object)
+    public T persist(T object)
     {
+        if(object.getId() == null)
+            object.setId(generateId());
         logger.info("Persisting {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
         Object persistentObject = converter.getPersistentObject(object);
         getDynamoDBMapper().save(persistentObject);
+        return object;
     }
 
     @Override
-    public void update(T object)
+    public T update(T object)
     {
         logger.info("Updating {} instance with id {}.", object.getClass().getSimpleName(), object.getId());
 
         Object persistentObject = converter.getPersistentObject(object);
         updateWithCondition(object.getId(), persistentObject);
+        return object;
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException

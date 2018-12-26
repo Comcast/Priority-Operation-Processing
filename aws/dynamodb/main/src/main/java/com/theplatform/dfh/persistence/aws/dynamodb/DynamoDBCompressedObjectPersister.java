@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
+import com.theplatform.dfh.object.api.IDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -37,6 +38,7 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
     private final String tableName;
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
     private final Class<T> clazz;
+    private IDGenerator idGenerator = new IDGenerator();
 
     /**
      * Constructor for the persister
@@ -93,12 +95,16 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
     }
 
     @Override
-    public void persist(T object)
+    public T persist(T object)
     {
+        if(object.getId() == null)
+            object.setId(idGenerator.generate());
+
         logger.info("Persisting {} instance.", object.getClass().getSimpleName());
         AmazonDynamoDB client = AWSDynamoDBFactory.getAmazonDynamoDB();
         PutItemRequest putItemRequest = getPutItemRequest(object.getId(), tableName, object);
         client.putItem(putItemRequest);
+        return object;
     }
 
     /**
@@ -106,9 +112,10 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
      * @param object The object to update
      */
     @Override
-    public void update(T object)
+    public T update(T object)
     {
         persist(object);
+        return object;
     }
 
     @Override
@@ -197,5 +204,10 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
     public String getTableName()
     {
         return tableName;
+    }
+
+    public void setIdGenerator(IDGenerator idGenerator)
+    {
+        this.idGenerator = idGenerator;
     }
 }

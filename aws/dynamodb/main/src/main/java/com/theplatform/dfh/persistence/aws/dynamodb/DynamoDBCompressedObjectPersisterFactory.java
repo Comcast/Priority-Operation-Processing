@@ -1,5 +1,6 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
+import com.theplatform.dfh.object.api.IDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
@@ -11,6 +12,7 @@ public class DynamoDBCompressedObjectPersisterFactory<T extends IdentifiedObject
 {
     protected String persistenceKeyFieldName;
     protected Class<T> persistentObjectClass;
+    private IDGenerator idGenerator = new IDGenerator();
 
     public DynamoDBCompressedObjectPersisterFactory(String persistenceKeyFieldName, Class<T> clazz)
     {
@@ -21,6 +23,15 @@ public class DynamoDBCompressedObjectPersisterFactory<T extends IdentifiedObject
     @Override
     public ObjectPersister<T> getObjectPersister(String containerName)
     {
-        return new DynamoDBCompressedObjectPersister<>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(), persistentObjectClass);
+        DynamoDBCompressedObjectPersister<T> objectPersister = new DynamoDBCompressedObjectPersister<>(containerName, persistenceKeyFieldName, new AWSDynamoDBFactory(),
+            persistentObjectClass);
+        objectPersister.setIdGenerator(idGenerator);
+        return objectPersister;
+    }
+
+    public DynamoDBCompressedObjectPersisterFactory<T> setIdGenerator(IDGenerator idGenerator)
+    {
+        this.idGenerator = idGenerator;
+        return this;
     }
 }

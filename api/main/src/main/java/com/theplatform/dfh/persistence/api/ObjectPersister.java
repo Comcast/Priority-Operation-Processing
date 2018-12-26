@@ -21,13 +21,13 @@ public interface ObjectPersister<T extends IdentifiedObject>
      * Persists the item to the specified table by the given identifier
      * @param object The object to persist
      */
-    void persist(T object) throws PersistenceException;
+    T persist(T object) throws PersistenceException;
 
     /**
      * Updates the item specified in the table
      * @param object The object to update
      */
-    void update(T object) throws PersistenceException;
+    T update(T object) throws PersistenceException;
 
     /**
      * Deletes the item from the specified table by the given idendifier
