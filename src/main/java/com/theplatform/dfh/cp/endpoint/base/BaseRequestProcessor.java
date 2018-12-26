@@ -9,7 +9,6 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -66,11 +65,12 @@ public abstract class BaseRequestProcessor<T extends IdentifiedObject>
      */
     public ObjectPersistResponse handlePOST(T objectToPersist)
     {
-        String objectId = objectToPersist.getId() == null ? UUID.randomUUID().toString() : objectToPersist.getId();
-        objectToPersist.setId(objectId);
+        String objectId = null;
         try
         {
-            objectPersister.persist(objectToPersist);
+            T persistedObject = objectPersister.persist(objectToPersist);
+            objectId = persistedObject.getId();
+
         }
         catch(PersistenceException e)
         {
