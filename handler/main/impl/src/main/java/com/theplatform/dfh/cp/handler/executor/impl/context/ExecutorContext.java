@@ -40,8 +40,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         String progressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
         if(progressId == null)
         {
-            progressId = UUID.randomUUID().toString();
-            logger.warn("{} was unset, defaulting to generated: {}", HandlerField.PROGRESS_ID.name(), progressId);
+            logger.warn("{} was unset, defaulting null", HandlerField.PROGRESS_ID.name());
         }
         agendaProgressReporter = new
             AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
