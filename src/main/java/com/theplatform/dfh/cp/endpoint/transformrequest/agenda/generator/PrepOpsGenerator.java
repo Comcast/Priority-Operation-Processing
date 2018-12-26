@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 public class PrepOpsGenerator
 {
@@ -102,7 +101,6 @@ public class PrepOpsGenerator
     protected void addOp(List<Operation> ops, String name, String type, Object payload)
     {
         Operation operation = new Operation();
-        operation.setId(UUID.randomUUID().toString());
         operation.setName(name);
         operation.setType(type);
         operation.setPayload(payload);

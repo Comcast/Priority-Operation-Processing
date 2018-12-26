@@ -11,6 +11,7 @@ import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
@@ -50,7 +51,7 @@ public class AgendaRequestProcessorTest
     }
 
     @Test
-    void testHandlePost() throws BadRequestException
+    void testHandlePost() throws PersistenceException
     {
         Operation operation1 = new Operation();
         operation1.setName(RandomStringUtils.randomAlphabetic(10));
@@ -68,6 +69,8 @@ public class AgendaRequestProcessorTest
         ObjectPersistResponse agendaProgressResponse = new ObjectPersistResponse();
         agendaProgressResponse.setId(UUID.randomUUID().toString());
         doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        doReturn(new Agenda()).when(mockAgendaPersister).persist(any());
 
         agendaRequestProcessor.handlePOST(agenda);
 

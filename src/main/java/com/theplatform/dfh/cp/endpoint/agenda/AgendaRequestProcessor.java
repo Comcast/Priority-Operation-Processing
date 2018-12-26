@@ -25,7 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Agenda specific RequestProcessor
@@ -99,11 +103,11 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
         if (objectToPersist.getOperations() != null)
             persistOperationProgresses(objectToPersist, agendaProgressId);
 
-        String objectId = UUID.randomUUID().toString();
-        objectToPersist.setId(objectId);
+        String agendaId = null;
         try
         {
-            objectPersister.persist(objectToPersist);
+            Agenda persistedAgenda = objectPersister.persist(objectToPersist);
+            agendaId = persistedAgenda.getId();
         }
         catch(PersistenceException e)
         {
@@ -115,10 +119,9 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
             try
             {
                 ReadyAgenda readyAgenda = new ReadyAgenda();
-                readyAgenda.setId(UUID.randomUUID().toString());
                 readyAgenda.setInsightId(insight.getId());
                 readyAgenda.setAdded(new Date());
-                readyAgenda.setAgendaId(objectId);
+                readyAgenda.setAgendaId(agendaId);
                 readyAgenda.setCustomerId(objectToPersist.getCustomerId());
                 readyAgendaObjectPersister.persist(readyAgenda);
             }
@@ -129,10 +132,10 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
         }
         else
         {
-            logger.warn("No insight was found for new agenda: {}", objectId);
+            logger.warn("No insight was found for new agenda: {}", agendaId);
         }
 
-        ObjectPersistResponse response = new ObjectPersistResponse(objectId);
+        ObjectPersistResponse response = new ObjectPersistResponse(agendaId);
         if(response.getParams() == null) response.setParams(new ParamsMap());
         response.getParams().put(GeneralParamKey.progressId, agendaProgressId);
         return response;
