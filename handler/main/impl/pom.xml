@@ -15,8 +15,6 @@
     <name>Executor Handler Impl</name>
 
     <properties>
-        <testng.version>6.9.10</testng.version>
-        <mockito.version>1.9.5</mockito.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
         <handler-field-api.version>1.0.0-SNAPSHOT</handler-field-api.version>
@@ -109,21 +107,6 @@
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-logging-extension-logback</artifactId>
             <version>${logging-extension.version}</version>
-        </dependency>
-
-        <!-- Testing dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-            <optional>true</optional>
         </dependency>
 
         <!-- move to funcitonal -->
