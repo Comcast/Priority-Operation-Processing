@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Insight implements IdentifiedObject
 {
-    private String id = UUID.randomUUID().toString();
+    private String id;
     private String resourcePoolId;
     private String queueName;
     private int queueSize;
