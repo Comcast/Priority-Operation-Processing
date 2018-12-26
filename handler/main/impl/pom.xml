@@ -27,6 +27,7 @@
         <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
         <puller-handler-api.version>1.0.0-SNAPSHOT</puller-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
+        <endpoint-client.version>1.0.0-SNAPSHOT</endpoint-client.version>
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
         <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
         <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
@@ -34,7 +35,6 @@
         <fasterxml.jackson.core.version>2.9.0</fasterxml.jackson.core.version>
         <fasterxml.jackson.core.databind.version>2.9.5</fasterxml.jackson.core.databind.version>
         <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
-        <dfh-endpoint-http-client.version>1.0.0-SNAPSHOT</dfh-endpoint-http-client.version>
         <auth-client.version>1.2.6</auth-client.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-api.version>1.0.0-SNAPSHOT</endpoint-api.version>
@@ -53,25 +53,21 @@
             <artifactId>jackson-databind</artifactId>
             <version>${fasterxml.jackson.core.databind.version}</version>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>18.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-api</artifactId>
@@ -87,6 +83,11 @@
                     <artifactId>jackson-databind</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-client</artifactId>
+            <version>${endpoint-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -140,19 +141,11 @@
             <artifactId>pl-dfh-cp-endpoint-api</artifactId>
             <version>${endpoint-api.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-web-client-http</artifactId>
-            <version>${dfh-endpoint-http-client.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-authentication-client</artifactId>
@@ -163,7 +156,6 @@
             <artifactId>pl-dfh-http-idm</artifactId>
             <version>${dfh-http-idm.version}</version>
         </dependency>
-
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>

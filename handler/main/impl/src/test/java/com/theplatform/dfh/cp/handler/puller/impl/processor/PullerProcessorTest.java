@@ -1,16 +1,12 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.endpoint.web.client.api.CPWebClientAPI;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import java.util.UUID;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
