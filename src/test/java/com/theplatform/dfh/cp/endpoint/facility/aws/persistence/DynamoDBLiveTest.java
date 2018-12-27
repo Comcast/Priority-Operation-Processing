@@ -6,7 +6,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.object.api.IDGenerator;
+import com.theplatform.dfh.object.api.UUIDGenerator;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedObjectPersister;
 import org.mockito.Mockito;
@@ -29,7 +29,7 @@ public class DynamoDBLiveTest
         DynamoDBConvertedObjectPersister<Insight> persister = new DynamoDBConvertedObjectPersister<Insight>(tableName, "id",
             dynamoDBFactory, Insight.class, new PersistentInsightConverter(), DynamoDBInsightPersisterFactory.tableIndexes);
 
-        final String id = new IDGenerator().generate();
+        final String id = new UUIDGenerator().generate();
         Insight insight = DataGenerator.generateInsight(id);
         insight.setId(id);
         persister.persist(insight);

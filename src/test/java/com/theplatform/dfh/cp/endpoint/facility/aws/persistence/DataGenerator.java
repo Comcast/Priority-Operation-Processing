@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.facility.SchedulingAlgorithm;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.OperationTypeMapper;
-import com.theplatform.dfh.object.api.IDGenerator;
+import com.theplatform.dfh.object.api.UUIDGenerator;
 
 /**
  */
@@ -30,7 +30,7 @@ public class DataGenerator
 
     public static Insight generateInsight()
     {
-        return generateInsight(new IDGenerator().generate());
+        return generateInsight(new UUIDGenerator().generate());
     }
     public static Insight generateInsight(String id)
     {
