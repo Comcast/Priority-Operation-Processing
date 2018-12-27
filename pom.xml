@@ -28,25 +28,22 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${apache.commons.beanutils}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${apache.commons.collections4}</version>
         </dependency>
-
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-            <scope>test</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
         </dependency>
+
         <!-- AWS Dependencies -->
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -85,10 +82,13 @@
             <artifactId>pl-dfh-module-version-info</artifactId>
             <version>${dfh-module-version-info.version}</version>
         </dependency>
+
+        <!-- Test dependencies -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
