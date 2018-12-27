@@ -5,7 +5,8 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
-import com.theplatform.dfh.object.api.IDGenerator;
+import com.theplatform.dfh.object.api.IdGenerator;
+import com.theplatform.dfh.object.api.UUIDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -38,7 +39,7 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
     private final String tableName;
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
     private final Class<T> clazz;
-    private IDGenerator idGenerator = new IDGenerator();
+    private IdGenerator idGenerator = new UUIDGenerator();
 
     /**
      * Constructor for the persister
@@ -206,7 +207,7 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
         return tableName;
     }
 
-    public void setIdGenerator(IDGenerator idGenerator)
+    public void setIdGenerator(IdGenerator idGenerator)
     {
         this.idGenerator = idGenerator;
     }

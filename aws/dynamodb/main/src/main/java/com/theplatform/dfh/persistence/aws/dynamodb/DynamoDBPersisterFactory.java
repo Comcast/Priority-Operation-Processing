@@ -1,6 +1,7 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
-import com.theplatform.dfh.object.api.IDGenerator;
+import com.theplatform.dfh.object.api.IdGenerator;
+import com.theplatform.dfh.object.api.UUIDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
@@ -12,7 +13,7 @@ public class DynamoDBPersisterFactory<D extends IdentifiedObject> implements Obj
     protected String persistenceKeyFieldName;
     private Class<D> dataObjectClass;
     private TableIndexes tableIndexes;
-    private IDGenerator idGenerator = new IDGenerator();
+    private IdGenerator idGenerator = new UUIDGenerator();
 
     public DynamoDBPersisterFactory(String persistenceKeyFieldName, Class<D> dataObjectClass, TableIndexes tableIndexes)
     {
@@ -30,7 +31,7 @@ public class DynamoDBPersisterFactory<D extends IdentifiedObject> implements Obj
         return objectPersister;
     }
 
-    public DynamoDBPersisterFactory<D> setIdGenerator(IDGenerator idGenerator)
+    public DynamoDBPersisterFactory<D> setIdGenerator(IdGenerator idGenerator)
     {
         this.idGenerator = idGenerator;
         return this;

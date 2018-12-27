@@ -5,7 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.object.api.IDGenerator;
+import com.theplatform.dfh.object.api.IdGenerator;
+import com.theplatform.dfh.object.api.UUIDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -29,7 +30,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     private final String tableName;
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
     private final Class<T> dataObjectClass;
-    private IDGenerator idGenerator = new IDGenerator();
+    private IdGenerator idGenerator = new UUIDGenerator();
 
     private DynamoDBMapper dynamoDBMapper;
     private TableIndexes tableIndexes;
@@ -224,7 +225,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         return tableIndexes;
     }
 
-    public void setIdGenerator(IDGenerator idGenerator)
+    public void setIdGenerator(IdGenerator idGenerator)
     {
         this.idGenerator = idGenerator;
     }
