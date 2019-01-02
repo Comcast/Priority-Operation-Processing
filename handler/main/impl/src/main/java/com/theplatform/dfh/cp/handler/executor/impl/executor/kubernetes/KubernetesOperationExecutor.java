@@ -73,9 +73,11 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         {
             Map<String,String> podAnnotations = follower.getPodAnnotations();
             String progressJson = podAnnotations.getOrDefault(KubernetesReporter.REPORT_PROGRESS_ANNOTATION, null);
+            String resultPayload = podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);
             if(progressJson == null) return null;
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
             operationProgress.setOperation(operation.getName());
+            operationProgress.setResultPayload(resultPayload);
             return operationProgress;
         }
         catch(JsonHelperException je)

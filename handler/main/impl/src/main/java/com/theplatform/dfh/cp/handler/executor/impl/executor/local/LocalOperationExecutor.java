@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 public class LocalOperationExecutor extends BaseOperationExecutor
 {
     private static final Logger logger = LoggerFactory.getLogger(LocalOperationExecutor.class);
+    private String outputPayload;
 
     public LocalOperationExecutor(Operation operation, LaunchDataWrapper launchDataWrapper)
     {
@@ -29,6 +30,7 @@ public class LocalOperationExecutor extends BaseOperationExecutor
     {
         OperationProgress operationProgress = new OperationProgress();
         operationProgress.setOperation(operation.getName());
+        operationProgress.setResultPayload(outputPayload);
         return operationProgress;
     }
 
@@ -36,7 +38,7 @@ public class LocalOperationExecutor extends BaseOperationExecutor
     public String execute(String payload)
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
-        String outputPayload = new SampleResidentHandler().execute(payload, launchDataWrapper, new LogReporter());
+        outputPayload = new SampleResidentHandler().execute(payload, launchDataWrapper, new LogReporter());
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
     }

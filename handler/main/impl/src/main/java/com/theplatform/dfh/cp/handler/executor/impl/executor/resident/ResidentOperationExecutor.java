@@ -23,6 +23,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     private ResidentHandler residentHandler;
     private JsonReporter reporter;
     private JsonHelper jsonHelper;
+    private String outputPayload;
 
     public ResidentOperationExecutor(Operation operation, ResidentHandler residentHandler, LaunchDataWrapper launchDataWrapper)
     {
@@ -40,6 +41,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
             String progressJson = reporter.getLastProgress();
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
             operationProgress.setOperation(operation.getName());
+            operationProgress.setResultPayload(outputPayload);
             return operationProgress;
         }
         catch(JsonHelperException je)
@@ -57,7 +59,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     public String execute(String payload)
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
-        String outputPayload = residentHandler.execute(payload, launchDataWrapper, reporter);
+        outputPayload = residentHandler.execute(payload, launchDataWrapper, reporter);
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
     }
