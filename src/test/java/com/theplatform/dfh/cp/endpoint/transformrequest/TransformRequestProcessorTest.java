@@ -26,6 +26,7 @@ public class TransformRequestProcessorTest
     private final String PROGRESS_ID = "theProgressId";
     private final String EXEC_PROGRESS_ID = "theExecProgressId";
     private final String AGENDA_ID = "theAgendaId";
+    private final String CUSTOMER_ID = "theCustomer";
 
     private TransformRequestProcessor transformRequestProcessor;
     private ObjectPersister<TransformRequest> mockTransformRequestPersister;
@@ -89,6 +90,7 @@ public class TransformRequestProcessorTest
     protected TransformRequest createTransformRequest()
     {
         TransformRequest transformRequest = new TransformRequest();
+        transformRequest.setCustomerId(CUSTOMER_ID);
         return transformRequest;
     }
 }
