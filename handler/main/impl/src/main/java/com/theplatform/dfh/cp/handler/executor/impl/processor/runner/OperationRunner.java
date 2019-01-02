@@ -43,6 +43,7 @@ public class OperationRunner implements Runnable
             String outputPayload = executor.execute(operationWrapper.getInputPayload());
             // get the last progress
             OperationProgress operationProgress = executor.retrieveOperationProgress();
+            operationProgress.setResultPayload(outputPayload);
             switch (operationProgress.getProcessingState())
             {
                 case COMPLETE:
