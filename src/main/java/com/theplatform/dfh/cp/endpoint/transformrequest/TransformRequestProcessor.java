@@ -31,14 +31,13 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
     private PrepOpsGenerator prepOpsGenerator;
     private HttpCPObjectClient<AgendaProgress> agendaProgressClient;
     private HttpCPObjectClient<Agenda> agendaClient;
-
+    private TransformValidator transformValidator = new TransformValidator();
 
     public TransformRequestProcessor(ObjectPersister<TransformRequest> transformRequestObjectPersister, HttpURLConnectionFactory httpURLConnectionFactory,
         String agendaProgressURL, String agendaURL)
     {
         super(transformRequestObjectPersister);
         prepOpsGenerator = new PrepOpsGenerator();
-        // TODO: pull these from stage vars? (could also just use relative pathing based on the incoming request...)
         agendaProgressClient = new HttpCPObjectClient<>(agendaProgressURL, httpURLConnectionFactory, AgendaProgress.class);
         agendaClient = new HttpCPObjectClient<>(agendaURL, httpURLConnectionFactory, Agenda.class);
     }
@@ -46,6 +45,8 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
     @Override
     public ObjectPersistResponse handlePOST(TransformRequest transformRequest) throws BadRequestException
     {
+        transformValidator.validate(transformRequest);
+
         String objectId = UUID.randomUUID().toString();
         transformRequest.setId(objectId);
 
