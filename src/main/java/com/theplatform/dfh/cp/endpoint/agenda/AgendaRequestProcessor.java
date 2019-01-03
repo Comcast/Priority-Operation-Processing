@@ -27,9 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Agenda specific RequestProcessor
@@ -42,6 +39,7 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
     private HttpCPObjectClient<AgendaProgress> agendaProgressClient;
     private HttpCPObjectClient<OperationProgress> operationProgressClient;
     private ObjectPersister<ReadyAgenda> readyAgendaObjectPersister;
+    private AgendaValidator agendaValidator = new AgendaValidator();
     private InsightSelector insightSelector;
 
     public AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,
@@ -75,8 +73,7 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
     @Override
     public ObjectPersistResponse handlePOST(Agenda objectToPersist)
     {
-        // verify that all Operations have different names
-        if (objectToPersist.getOperations() != null) verifyUniqueOperationsName(objectToPersist.getOperations());
+        agendaValidator.validate(objectToPersist);
 
         // verify we have a valid insight for this agenda
         Insight insight = insightSelector.select(objectToPersist);
@@ -171,20 +168,6 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
         }
     }
 
-    void verifyUniqueOperationsName(List<Operation> operations)
-    {
-        Set<String> opNames = new HashSet<>();
-        for (Operation op : operations)
-        {
-            String opName = op.getName();
-            if (opName == null || opName.isEmpty())
-                throw new IllegalArgumentException("Operations must have names.");
-            boolean unique = opNames.add(op.getName().toLowerCase());
-            if (!unique)
-                throw new IllegalArgumentException("Operation names must be unique.");
-        }
-    }
-
     String persistAgendaProgress(Agenda agenda)
     {
         ////
@@ -234,5 +217,10 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
                 throw new RuntimeException("Failed to create the OperationProgress generated from the TransformRequest.", e);
             }
         }
+    }
+
+    public void setAgendaValidator(AgendaValidator agendaValidator)
+    {
+        this.agendaValidator = agendaValidator;
     }
 }
