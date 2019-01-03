@@ -60,6 +60,8 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
                 {
                     try
                     {
+                        op.setAgendaProgressId(objectToUpdate.getId());
+                        op.setId(OperationProgress.generateId(objectToUpdate.getId(), op.getOperation()));
                         operationProgressClient.updateObject(op, op.getId());
                     }
                     catch (Exception e)
