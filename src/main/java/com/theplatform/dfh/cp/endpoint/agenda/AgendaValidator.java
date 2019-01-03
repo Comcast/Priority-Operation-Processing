@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
+import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,30 +35,49 @@ public class AgendaValidator
 
         JsonNode rootTransformNode = jsonHelper.getObjectMapper().valueToTree(agenda);
 
-        validateReferences(agenda, rootTransformNode);
+        validateOperations(agenda);
 
         if(validationIssues.size() > 0)
         {
             int lastIssueIndex = Math.min(validationIssues.size(), MAX_ISSUES);
-            throw new ValidationException(String.format("Issues detected: %1$s%2$s",
+            throw new ValidationException(String.format("Validation Issues detected: %1$s%2$s",
                 String.join(",", validationIssues.subList(0, lastIssueIndex)),
                 lastIssueIndex < validationIssues.size() ? "[Truncating additional issues]" : "")
             );
         }
     }
 
-    protected void validateOperations(Agenda agenda, JsonNode rootTransformNode)
+    protected void validateOperations(Agenda agenda)
     {
         if(agenda.getOperations() == null || agenda.getOperations().size() == 0)
             throw new ValidationException("No operations specified in Agenda.");
 
         verifyUniqueOperationsName(agenda.getOperations());
+
+        validateReferences(agenda);
     }
 
-    protected void validateReferences(Agenda agenda, JsonNode rootTransformNode)
+    protected void validateReferences(Agenda agenda)
     {
         if(agenda.getOperations() == null || agenda.getOperations().size() == 0)
             throw new ValidationException("No operations specified in Agenda.");
+
+        JsonContext jsonContext = new JsonContext();
+        // populate the context with temp data to validate operation name references
+        agenda.getOperations().forEach(op -> jsonContext.addData(op.getName(), "{}"));
+
+        agenda.getOperations().forEach(op ->
+        {
+            ReferenceReplacementResult result = jsonContext.processReferences(op.getPayload());
+            // Can only check for missing. The invalid references check would require knowledge of the output payload format of every handler...
+            if(result.getMissingReferences().size() > 0)
+            {
+                validationIssues.add(String.format(
+                    "Invalid references found in operation [%1$s] payload: %2$s",
+                    op.getName(),
+                    String.join(",", result.getInvalidReferences())));
+            }
+        });
     }
 
     void verifyUniqueOperationsName(List<Operation> operations)
