@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
  */
 public class JsonReferenceReplacer
 {
-    private static final String DEFAULT_REFERENCE_PREFIX = "@@";
-    private static final String DEFAULT_REFERENCE_SEPARATOR = "::";
-    private static final String JACKSON_PATH_SEPARATOR = "/";
+    public static final String DEFAULT_REFERENCE_PREFIX = "@@";
+    public static final String DEFAULT_REFERENCE_SEPARATOR = "::";
+    public static final String JACKSON_PATH_SEPARATOR = "/";
     public static final String REFERENCE_GROUP = "reference";
     public static final String PATH_GROUP = "path";
 
