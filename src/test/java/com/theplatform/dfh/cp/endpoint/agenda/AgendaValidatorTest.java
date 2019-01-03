@@ -79,7 +79,7 @@ public class AgendaValidatorTest
         Operation op1 = new Operation();
         op1.setName("Op1");
         Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2", "/"));
+        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2.out", "/"));
         op1.setPayload(payloadMap);
         agenda.setOperations(Collections.singletonList(op1));
 
@@ -94,7 +94,7 @@ public class AgendaValidatorTest
         Operation op1 = new Operation();
         op1.setName("Op1");
         Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2", "/"));
+        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2.out", "/"));
         op1.setPayload(payloadMap);
 
         Operation op2 = new Operation();

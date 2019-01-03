@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +63,7 @@ public class AgendaValidator
 
         JsonContext jsonContext = new JsonContext();
         // populate the context with temp data to validate operation name references
-        agenda.getOperations().forEach(op -> jsonContext.addData(op.getName(), "{}"));
+        agenda.getOperations().forEach(op -> jsonContext.addData(op.getName() + ".out", "{}"));
 
         agenda.getOperations().forEach(op ->
         {
