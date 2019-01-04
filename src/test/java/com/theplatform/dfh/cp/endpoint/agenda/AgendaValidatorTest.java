@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class AgendaValidatorTest
 {
@@ -52,36 +53,23 @@ public class AgendaValidatorTest
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Operation names must be unique.*")
     public void testDuplicateOperationNames()
     {
-        Operation op1 = new Operation();
-        op1.setName("foo");
-        Operation op2 = new Operation();
-        op2.setName("FOo");
-        List<Operation> operations = new ArrayList<>();
-        operations.add(op1);
-        operations.add(op2);
-
-        validator.verifyUniqueOperationsName(operations);
+        validator.verifyUniqueOperationsName(Arrays.asList(
+            createOperation("foo"),
+            createOperation("FOo")
+        ));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Operations must have names.*")
     public void testMissingOperationNames()
     {
-        Operation op1 = new Operation();
-        op1.setName("");
-
-        validator.verifyUniqueOperationsName(Collections.singletonList(op1));
+        validator.verifyUniqueOperationsName(Collections.singletonList(createOperation("")));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid references found in operation.*")
     public void testInvalidReferences()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
-        Operation op1 = new Operation();
-        op1.setName("Op1");
-        Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2.out", "/"));
-        op1.setPayload(payloadMap);
-        agenda.setOperations(Collections.singletonList(op1));
+        agenda.setOperations(Collections.singletonList(createOperation("Op1", "Op2.out")));
 
         validator.validate(agenda);
     }
@@ -90,20 +78,75 @@ public class AgendaValidatorTest
     public void testValidReference()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
-
-        Operation op1 = new Operation();
-        op1.setName("Op1");
-        Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put("arg", jsonReferenceReplacer.generateReference("Op2.out", "/"));
-        op1.setPayload(payloadMap);
-
-        Operation op2 = new Operation();
-        op2.setName("Op2");
-        op2.setPayload(new HashMap<>());
-
-        agenda.setOperations(Arrays.asList(op1, op2));
+        agenda.setOperations(Arrays.asList(
+            createOperation("Op1", "Op2.out"),
+            createOperation("Op2")
+        ));
 
         validator.validate(agenda);
+    }
+
+    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    public void testCircularReferenceSimple()
+    {
+        Agenda agenda = createAgenda(CUSTOMER_ID);
+        agenda.setOperations(Collections.singletonList(createOperation("Op1", "Op1.out")));
+
+        validator.validate(agenda);
+    }
+
+    @DataProvider
+    public Object[][] circularReferenceProvider()
+    {
+        return new Object[][]
+            {
+                {
+                    // direct loop
+                    Arrays.asList(
+                        createOperation("Op1", "Op2.out"),
+                        createOperation("Op2", "Op3.out"),
+                        createOperation("Op3", "Op4.out"),
+                        createOperation("Op4", "Op1.out")
+                    )
+                },
+                {
+                    // indirect loop
+                    Arrays.asList(
+                        createOperation("Op1", "Op2.out", "Op3.out", "Op4.out"),
+                        createOperation("Op2", "Op3.out"),
+                        createOperation("Op3", "Op4.out"),
+                        createOperation("Op4", "Op2.out")
+                    )
+                }
+            };
+    }
+
+    @Test(dataProvider = "circularReferenceProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    public void testCircularReference(List<Operation> operations)
+    {
+        Agenda agenda = createAgenda(CUSTOMER_ID);
+        agenda.setOperations(operations);
+        validator.validate(agenda);
+    }
+
+    private Operation createOperation(String name)
+    {
+        Operation operation = new Operation();
+        operation.setName(name);
+        operation.setPayload(new HashMap<>());
+        return operation;
+    }
+
+    private Operation createOperation(String name, String... references)
+    {
+        Operation operation = createOperation(name);
+        Map<String, String> payloadMap = new HashMap<>();
+        Arrays.stream(references).forEach(ref ->
+        {
+            payloadMap.put(UUID.randomUUID().toString(), jsonReferenceReplacer.generateReference(ref, "/"));
+        });
+        operation.setPayload(payloadMap);
+        return operation;
     }
 
     private Agenda createAgenda(String customerId)
