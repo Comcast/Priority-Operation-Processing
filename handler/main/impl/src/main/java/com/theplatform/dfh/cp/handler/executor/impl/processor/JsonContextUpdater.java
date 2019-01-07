@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.operation.OperationReference;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ public class JsonContextUpdater implements OnOperationCompleteListener, JsonCont
 {
     private static Logger logger = LoggerFactory.getLogger(JsonContextUpdater.class);
 
-    public static final String OUTPUT_SUFFIX = ".out";
     private ExecutorContext executorContext;
 
     public JsonContextUpdater(ExecutorContext executorContext)
@@ -35,7 +35,7 @@ public class JsonContextUpdater implements OnOperationCompleteListener, JsonCont
         Operation operation = operationWrapper.getOperation();
         String outputPayload = operationWrapper.getOutputPayload();
 
-        String contextKey = operation.getName() + OUTPUT_SUFFIX;
+        String contextKey = operation.getName() + OperationReference.OUTPUT.getSuffix();
         logger.info("Persisting ContextKey: [{}] OperationId: [{}] with OUTPUT Payload: {}", contextKey, operation.getId(), outputPayload);
         executorContext.getJsonContext().addData(contextKey, outputPayload);
     }
@@ -66,8 +66,8 @@ public class JsonContextUpdater implements OnOperationCompleteListener, JsonCont
         {
             // TODO: if we end up with other suffix values this should be broken out...
             // OUTPUT_SUFFIX is generally appended to the reference. Remove it so it is just the operation name.
-            return referenceName.endsWith(OUTPUT_SUFFIX)
-                   ? referenceName.substring(0, referenceName.length() - OUTPUT_SUFFIX.length())
+            return referenceName.endsWith(OperationReference.OUTPUT.getSuffix())
+                   ? referenceName.substring(0, referenceName.length() - OperationReference.OUTPUT.getSuffix().length())
                    : referenceName;
         }
         else
