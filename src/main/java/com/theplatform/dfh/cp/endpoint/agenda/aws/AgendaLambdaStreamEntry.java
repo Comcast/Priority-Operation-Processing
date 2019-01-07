@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPers
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
@@ -22,6 +23,7 @@ import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgendaConve
 public class AgendaLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Agenda>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
+    private DynamoDBAgendaProgressPersisterFactory agendaProgressPersisterFactory;
 
     public AgendaLambdaStreamEntry()
     {
@@ -29,6 +31,7 @@ public class AgendaLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Agenda>
             Agenda.class,
             new DynamoDBAgendaPersisterFactory()
         );
+        agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
     }
 
     @Override
@@ -53,17 +56,21 @@ public class AgendaLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Agenda>
             readyAgendaTableIndexes
         );
 
-        String progressURL = environmentLookupUtils.getAPIEndpointURL(lambdaObjectRequest, "progressPath");
         String operationProgressURL = environmentLookupUtils.getAPIEndpointURL(lambdaObjectRequest, "operationProgressPath");
         String customerURL = environmentLookupUtils.getAPIEndpointURL(lambdaObjectRequest, "customerPath");
         String insightURL = environmentLookupUtils.getAPIEndpointURL(lambdaObjectRequest, "insightPath");
         return new AgendaRequestProcessor(objectPersister,
+            agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaObjectRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
             readyAgendaPersister,
             new IDMHTTPUrlConnectionFactory(authHeader).setCid(lambdaObjectRequest.getCID()),
-            progressURL,
             operationProgressURL,
             insightURL,
             customerURL);
+    }
+
+    protected void setAgendaProgressPersisterFactory(DynamoDBAgendaProgressPersisterFactory agendaProgressPersisterFactory)
+    {
+        this.agendaProgressPersisterFactory = agendaProgressPersisterFactory;
     }
 
     @Override
