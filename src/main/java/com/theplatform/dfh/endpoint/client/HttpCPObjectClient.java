@@ -24,7 +24,7 @@ import java.util.List;
  * Http specific implementation of the CPObjectClient
  * @param <T>
  */
-public class HttpCPObjectClient<T>
+public class HttpCPObjectClient<T> implements ObjectClient<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(HttpCPObjectClient.class);
 
@@ -65,7 +65,7 @@ public class HttpCPObjectClient<T>
         }
     }
 
-    public DataObjectFeed<T> getObjects(Collection<Query> queries)
+    public DataObjectFeed<T> getObjects(List<Query> queries)
     {
         return getObjects(getQueryParams(queries));
     }
