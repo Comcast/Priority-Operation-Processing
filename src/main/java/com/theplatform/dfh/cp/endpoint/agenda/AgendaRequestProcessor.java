@@ -8,6 +8,8 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
@@ -17,6 +19,7 @@ import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.query.scheduling.ByAgendaId;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -36,30 +39,30 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
     private static final Logger logger = LoggerFactory.getLogger(AgendaRequestProcessor.class);
     private JsonHelper jsonHelper = new JsonHelper();
 
-    private HttpCPObjectClient<AgendaProgress> agendaProgressClient;
+    private ObjectClient<AgendaProgress> agendaProgressClient;
     private HttpCPObjectClient<OperationProgress> operationProgressClient;
     private ObjectPersister<ReadyAgenda> readyAgendaObjectPersister;
     private AgendaValidator agendaValidator = new AgendaValidator();
     private InsightSelector insightSelector;
 
     public AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,
+        ObjectPersister<AgendaProgress> agendaProgressObjectPersister,
         ObjectPersister<ReadyAgenda> readyAgendaObjectPersister,
         HttpURLConnectionFactory httpURLConnectionFactory,
-        String agendaProgressURL,
         String operationProgressURL,
         String insightURL,
         String customerURL)
     {
         this(agendaRequestObjectPersister,
             readyAgendaObjectPersister,
-            new HttpCPObjectClient<>(agendaProgressURL, httpURLConnectionFactory, AgendaProgress.class),
+            new RequestProcessorAdapter<>(new AgendaProgressRequestProcessor(agendaProgressObjectPersister, httpURLConnectionFactory, operationProgressURL)),
             new HttpCPObjectClient<>(operationProgressURL, httpURLConnectionFactory, OperationProgress.class),
             new InsightSelector(httpURLConnectionFactory, insightURL, customerURL));
     }
 
     AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,
         ObjectPersister<ReadyAgenda> readyAgendaObjectPersister,
-        HttpCPObjectClient<AgendaProgress> agendaProgressClient,
+        ObjectClient<AgendaProgress> agendaProgressClient,
         HttpCPObjectClient<OperationProgress> operationProgressClient,
         InsightSelector insightSelector)
     {
