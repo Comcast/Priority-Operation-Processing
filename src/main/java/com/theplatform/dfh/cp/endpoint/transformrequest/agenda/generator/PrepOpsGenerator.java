@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.operation.OperationReference;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.handler.analysis.mediainfo.api.MediaInfoHandlerInput;
@@ -23,7 +24,6 @@ public class PrepOpsGenerator
     private JsonReferenceReplacer jsonReferenceReplacer = new JsonReferenceReplacer();
     private JsonHelper jsonHelper = new JsonHelper();
     private static ObjectMapper objectMapper = new ObjectMapper();
-    final String OUT_SUFFIX = ".out";
 
     public Agenda generateAgenda(TransformRequest transformRequest, String progressId)
     {
@@ -43,7 +43,7 @@ public class PrepOpsGenerator
         MediaInfoHandlerInput mediaInfoHandlerInput = new MediaInfoHandlerInput();
         JsonNode mediaInfoPayload = objectMapper.valueToTree(mediaInfoHandlerInput);
 
-        jsonHelper.setNodeValue(mediaInfoPayload, "/transformRequest", jsonReferenceReplacer.generateReference(LDAP_NAME + OUT_SUFFIX, "/transformRequest"));
+        jsonHelper.setNodeValue(mediaInfoPayload, "/transformRequest", jsonReferenceReplacer.generateReference(LDAP_NAME + OperationReference.OUTPUT.getSuffix(), "/transformRequest"));
 
         addOp(ops, ANALYSIS_NAME, "analysis", mediaInfoPayload);
 
@@ -52,7 +52,7 @@ public class PrepOpsGenerator
         accelerateHandlerInput.setOriginalRequest(transformRequest);
         JsonNode acceleratePayload = objectMapper.valueToTree(accelerateHandlerInput);
 
-        jsonHelper.setNodeValue(acceleratePayload, "/originalRequest", jsonReferenceReplacer.generateReference(ANALYSIS_NAME + OUT_SUFFIX, "/transformRequest"));
+        jsonHelper.setNodeValue(acceleratePayload, "/originalRequest", jsonReferenceReplacer.generateReference(ANALYSIS_NAME + OperationReference.OUTPUT.getSuffix(), "/transformRequest"));
 
         addOp(ops, ACCELERATE_NAME, "accelerate", acceleratePayload);
 
@@ -61,7 +61,7 @@ public class PrepOpsGenerator
         HttpRequestHandlerInput httpRequestHandlerInput = new HttpRequestHandlerInput()
             .setPostDataEncoding("json")
             // this field will be replaced with the output of the accelerate operation
-            .setPostData(jsonReferenceReplacer.generateReference(ACCELERATE_NAME + OUT_SUFFIX, "/agenda"));
+            .setPostData(jsonReferenceReplacer.generateReference(ACCELERATE_NAME + OperationReference.OUTPUT.getSuffix(), "/agenda"));
         addOp(ops, "agendaPost.1", "agendaPost", httpRequestHandlerInput);
 
         Agenda agenda = new Agenda();
