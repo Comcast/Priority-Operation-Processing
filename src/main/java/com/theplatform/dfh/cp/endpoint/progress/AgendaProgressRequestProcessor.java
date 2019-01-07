@@ -2,12 +2,13 @@ package com.theplatform.dfh.cp.endpoint.progress;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.endpoint.client.CPObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.endpoint.api.query.progress.ByAgendaProgressId;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -26,14 +27,14 @@ import java.util.stream.Collectors;
 public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaProgress>
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private HttpCPObjectClient<OperationProgress> operationProgressClient;
+    private ObjectClient<OperationProgress> operationProgressClient;
 
-    public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaRequestObjectPersister, HttpURLConnectionFactory httpURLConnectionFactory,
-        String operationProgressURL)
+    public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaRequestPersister,
+        ObjectPersister<OperationProgress> operationProgressPersister)
     {
-        super(agendaRequestObjectPersister);
+        super(agendaRequestPersister);
 
-        operationProgressClient = new HttpCPObjectClient<>(operationProgressURL, httpURLConnectionFactory, OperationProgress.class);
+        operationProgressClient = new RequestProcessorAdapter<>(new OperationProgressRequestProcessor(operationProgressPersister));
     }
 
 //    @Override

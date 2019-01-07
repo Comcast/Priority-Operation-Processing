@@ -3,9 +3,9 @@ package com.theplatform.dfh.cp.endpoint.progress.service;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResult;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -15,21 +15,21 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 public class ProgressSummaryRequestProcessorTest
 {
-    private HttpCPObjectClient<AgendaProgress> mockAgendaProgressClient;
+    private ObjectClient<AgendaProgress> mockAgendaProgressClient;
     private ProgressSummaryRequestProcessor progressSummaryRequestProcessor;
 
     @BeforeMethod
     public void setup()
     {
-        mockAgendaProgressClient = (HttpCPObjectClient<AgendaProgress>)mock(HttpCPObjectClient.class);
-        progressSummaryRequestProcessor = new ProgressSummaryRequestProcessor(mockAgendaProgressClient);
+        progressSummaryRequestProcessor = new ProgressSummaryRequestProcessor();
+        mockAgendaProgressClient = (ObjectClient<AgendaProgress>)mock(ObjectClient.class);
+        progressSummaryRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
     }
 
     @Test
@@ -77,6 +77,6 @@ public class ProgressSummaryRequestProcessorTest
                 return agendaProgress;
             }).collect(Collectors.toList())
         );
-        doReturn(dataObjectFeed).when(mockAgendaProgressClient).getObjects(anyString());
+        doReturn(dataObjectFeed).when(mockAgendaProgressClient).getObjects(anyList());
     }
 }

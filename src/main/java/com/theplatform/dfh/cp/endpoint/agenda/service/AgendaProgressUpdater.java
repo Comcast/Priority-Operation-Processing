@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +12,9 @@ public class AgendaProgressUpdater
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaProgressUpdater.class);
 
-    private HttpCPObjectClient<AgendaProgress> agendaProgressClient;
+    private ObjectClient<AgendaProgress> agendaProgressClient;
 
-    public AgendaProgressUpdater(HttpCPObjectClient<AgendaProgress> agendaProgressClient)
+    public AgendaProgressUpdater(ObjectClient<AgendaProgress> agendaProgressClient)
     {
         this.agendaProgressClient = agendaProgressClient;
     }

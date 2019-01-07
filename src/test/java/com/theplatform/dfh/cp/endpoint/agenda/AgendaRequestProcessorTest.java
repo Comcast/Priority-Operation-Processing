@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -30,8 +30,8 @@ public class AgendaRequestProcessorTest
     private AgendaRequestProcessor agendaRequestProcessor;
     private ObjectPersister<Agenda> mockAgendaPersister;
     private ObjectPersister<ReadyAgenda> mockReadyAgendaPersister;
-    private HttpCPObjectClient<AgendaProgress> mockAgendaProgressClient;
-    private HttpCPObjectClient<OperationProgress> mockOperationProgressClient;
+    private ObjectClient<AgendaProgress> mockAgendaProgressClient;
+    private ObjectClient<OperationProgress> mockOperationProgressClient;
     private InsightSelector mockInsightSelector;
 
     @BeforeMethod
@@ -39,8 +39,8 @@ public class AgendaRequestProcessorTest
     {
         mockAgendaPersister = mock(ObjectPersister.class);
         mockReadyAgendaPersister = mock(ObjectPersister.class);
-        mockAgendaProgressClient = mock(HttpCPObjectClient.class);
-        mockOperationProgressClient = mock(HttpCPObjectClient.class);
+        mockAgendaProgressClient = mock(ObjectClient.class);
+        mockOperationProgressClient = mock(ObjectClient.class);
         mockInsightSelector = mock(InsightSelector.class);
         agendaRequestProcessor = new AgendaRequestProcessor(mockAgendaPersister, mockReadyAgendaPersister, mockAgendaProgressClient, mockOperationProgressClient, mockInsightSelector);
         Mockito.when(mockInsightSelector.select(Mockito.any())).thenReturn(new Insight());
