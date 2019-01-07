@@ -3,10 +3,10 @@ package com.theplatform.dfh.cp.endpoint.progress.aws;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**
@@ -14,12 +14,15 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
  */
 public class ProgressLambdaStreamEntry extends BaseAWSLambdaStreamEntry<AgendaProgress>
 {
+    private DynamoDBOperationProgressPersisterFactory operationProgressPersisterFactory;
+
     public ProgressLambdaStreamEntry()
     {
         super(
             AgendaProgress.class,
             new DynamoDBAgendaProgressPersisterFactory()
         );
+        operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
     }
 
     @Override
@@ -31,8 +34,10 @@ public class ProgressLambdaStreamEntry extends BaseAWSLambdaStreamEntry<AgendaPr
             throw new RuntimeException("No Authorization node found. Unable to process request.");
         }
 
-        String operationProgressUrl = environmentLookupUtils.getAPIEndpointURL(lambdaObjectRequest, "operationProgressPath");
-        return new AgendaProgressRequestProcessor(objectPersister, new IDMHTTPUrlConnectionFactory(authHeader).setCid(lambdaObjectRequest.getCID()), operationProgressUrl);
+        return new AgendaProgressRequestProcessor(
+            objectPersister,
+            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaObjectRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
+        );
     }
 
     @Override

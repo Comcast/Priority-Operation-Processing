@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.compression.zlib.ZlibUtil;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.service.AgendaProgressUpdater;
@@ -18,6 +20,8 @@ import com.theplatform.dfh.cp.endpoint.agenda.service.AgendaProgressUpdaterFacto
 import com.theplatform.dfh.cp.endpoint.agenda.service.AgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.*;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
@@ -57,6 +61,8 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
     private ItemQueueFactory<AgendaInfo> infoItemQueueFactory;
     private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
     private ObjectPersisterFactory<Insight> insightPersisterFactory;
+    private ObjectPersisterFactory<AgendaProgress> agendaProgressPersisterFactory;
+    private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
 
     public AgendaServiceLambdaStreamEntry()
     {
@@ -64,6 +70,8 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
 
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
+        this.agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
+        this.operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
     }
 
     protected AgendaServiceRequestProcessor getRequestProcessor(ObjectPersister<Insight> insightPersister, ObjectPersister<Agenda> agendaPersister)
@@ -108,23 +116,6 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         writer.close();
     }
 
-    private HttpURLConnectionFactory getHttpUrlConnectFactory(LambdaRequest request)
-    {
-        String authHeader = getRequestEntry(request.getJsonNode(), "/headers/Authorization", null);
-        if(authHeader == null)
-        {
-            throw new RuntimeException("No Authorization node found. Unable to process request.");
-        }
-        return new IDMHTTPUrlConnectionFactory(authHeader).setCid(request.getCID());
-    }
-
-    public String getRequestEntry(JsonNode rootRequestNode, String jsonPtrExpr, String defaultValue)
-    {
-        JsonNode node = rootRequestNode.at(jsonPtrExpr);
-        if(node.isMissingNode()) return null;
-        return node.asText(defaultValue);
-    }
-
     public String handlePost(LambdaServiceRequest<GetAgendaRequest> lambdaRequest) throws IOException
     {
         // if no insights were provided, do the old mode (just send back any Agenda)
@@ -146,10 +137,11 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         }
         else
         {
-            Agenda responseObject = null;
-            String progressURL = environmentLookupUtils.getAPIEndpointURL(lambdaRequest, "progressPath");
-            responseObject = handlePostNoInsight(
-                agendaProgressUpdaterFactory.getAgendaProgressUpdater(getHttpUrlConnectFactory(lambdaRequest), progressURL),
+            Agenda responseObject = handlePostNoInsight(
+                agendaProgressUpdaterFactory.createAgendaProgressUpdater(
+                    agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
+                    operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
+                ),
                 lambdaRequest);
             responseBody = responseObject == null ? null : jsonHelper.getJSONString(responseObject);
         }

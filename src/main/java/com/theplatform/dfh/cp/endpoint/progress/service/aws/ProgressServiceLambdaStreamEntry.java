@@ -2,18 +2,17 @@ package com.theplatform.dfh.cp.endpoint.progress.service.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
 import com.theplatform.dfh.cp.endpoint.aws.ResponseWriter;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
+import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.service.ProgressSummaryRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResult;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +26,14 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final JsonHelper jsonHelper = new JsonHelper();
     private final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
+    private DynamoDBAgendaProgressPersisterFactory agendaProgressPersisterFactory;
+    private DynamoDBOperationProgressPersisterFactory operationProgressPersisterFactory;
     private ResponseWriter responseWriter = new ResponseWriter();
 
     public ProgressServiceLambdaStreamEntry()
     {
+        agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
+        operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
     }
 
     @Override
@@ -63,7 +66,8 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
                 case "POST":
                     String bodyJson = StringEscapeUtils.unescapeJson(inputStreamNode.at("/body").asText());
                     ProgressSummaryRequest progressSummaryRequest = jsonHelper.getObjectFromString(bodyJson, ProgressSummaryRequest.class);
-                    responseObject = new ProgressSummaryRequestProcessor(createAgendaProgressClient(lambdaRequest)).getProgressSummary(progressSummaryRequest);
+                    responseObject = createProgressSummaryRequestProcessor(lambdaRequest)
+                        .getProgressSummary(progressSummaryRequest);
                     break;
                 default:
                     // todo: some bad response code
@@ -80,12 +84,11 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
         responseWriter.writeResponse(outputStream, jsonHelper.getObjectMapper(), httpStatusCode, responseObject);
     }
 
-    private HttpCPObjectClient<AgendaProgress> createAgendaProgressClient(LambdaRequest lambdaRequest)
+    private ProgressSummaryRequestProcessor createProgressSummaryRequestProcessor(LambdaRequest lambdaRequest)
     {
-        return new HttpCPObjectClient<>(
-            environmentLookupUtils.getAPIEndpointURL(lambdaRequest, "progressPath"),
-            new IDMHTTPUrlConnectionFactory(lambdaRequest.getAuthorizationHeader()).setCid(lambdaRequest.getCID()),
-            AgendaProgress.class
+        return new ProgressSummaryRequestProcessor(
+            agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
+            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
         );
     }
 }
