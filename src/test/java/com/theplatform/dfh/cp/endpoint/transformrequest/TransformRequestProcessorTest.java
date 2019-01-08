@@ -7,8 +7,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -29,17 +28,15 @@ public class TransformRequestProcessorTest
 
     private TransformRequestProcessor transformRequestProcessor;
     private ObjectPersister<TransformRequest> mockTransformRequestPersister;
-    private HttpURLConnectionFactory mockHttpURLConnectionFactory;
-    private HttpCPObjectClient<AgendaProgress> mockAgendaProgressClient;
-    private HttpCPObjectClient<Agenda> mockAgendaClient;
+    private ObjectClient<AgendaProgress> mockAgendaProgressClient;
+    private ObjectClient<Agenda> mockAgendaClient;
 
     @BeforeMethod
     public void setup()
     {
         mockTransformRequestPersister = mock(ObjectPersister.class);
-        mockHttpURLConnectionFactory = mock(HttpURLConnectionFactory.class);
-        mockAgendaProgressClient = mock(HttpCPObjectClient.class);
-        mockAgendaClient = mock(HttpCPObjectClient.class);
+        mockAgendaProgressClient = mock(ObjectClient.class);
+        mockAgendaClient = mock(ObjectClient.class);
 
         transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, null, null);
         transformRequestProcessor.setAgendaClient(mockAgendaClient);
