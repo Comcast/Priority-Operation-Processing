@@ -5,13 +5,18 @@ import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
+import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
-import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -29,17 +34,32 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
     private JsonHelper jsonHelper = new JsonHelper();
 
     private PrepOpsGenerator prepOpsGenerator;
-    private HttpCPObjectClient<AgendaProgress> agendaProgressClient;
-    private HttpCPObjectClient<Agenda> agendaClient;
+    private ObjectClient<AgendaProgress> agendaProgressClient;
+    private ObjectClient<Agenda> agendaClient;
     private TransformValidator transformValidator = new TransformValidator();
 
-    public TransformRequestProcessor(ObjectPersister<TransformRequest> transformRequestObjectPersister, HttpURLConnectionFactory httpURLConnectionFactory,
-        String agendaProgressURL, String agendaURL)
+    public TransformRequestProcessor(
+        ObjectPersister<TransformRequest> transformRequestObjectPersister,
+        ObjectPersister<Agenda> agendaPersister,
+        ObjectPersister<AgendaProgress> agendaProgressPersister,
+        ObjectPersister<OperationProgress> operationProgressPersister,
+        ObjectPersister<ReadyAgenda> readyAgendaPersister,
+        HttpURLConnectionFactory httpURLConnectionFactory,
+        String insightURL,
+        String customerURL)
     {
         super(transformRequestObjectPersister);
         prepOpsGenerator = new PrepOpsGenerator();
-        agendaProgressClient = new HttpCPObjectClient<>(agendaProgressURL, httpURLConnectionFactory, AgendaProgress.class);
-        agendaClient = new HttpCPObjectClient<>(agendaURL, httpURLConnectionFactory, Agenda.class);
+        agendaProgressClient = new RequestProcessorAdapter<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister));
+        agendaClient = new RequestProcessorAdapter<>(new AgendaRequestProcessor(
+            agendaPersister,
+            agendaProgressPersister,
+            readyAgendaPersister,
+            operationProgressPersister,
+            httpURLConnectionFactory,
+            insightURL,
+            customerURL
+        ));
     }
 
     @Override
@@ -132,12 +152,12 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
         this.jsonHelper = jsonHelper;
     }
 
-    public void setAgendaProgressClient(HttpCPObjectClient<AgendaProgress> agendaProgressClient)
+    public void setAgendaProgressClient(ObjectClient<AgendaProgress> agendaProgressClient)
     {
         this.agendaProgressClient = agendaProgressClient;
     }
 
-    public void setAgendaClient(HttpCPObjectClient<Agenda> agendaClient)
+    public void setAgendaClient(ObjectClient<Agenda> agendaClient)
     {
         this.agendaClient = agendaClient;
     }

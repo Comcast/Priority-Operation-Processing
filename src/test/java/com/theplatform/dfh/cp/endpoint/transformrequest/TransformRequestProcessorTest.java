@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.endpoint.client.HttpCPObjectClient;
@@ -31,7 +30,6 @@ public class TransformRequestProcessorTest
     private TransformRequestProcessor transformRequestProcessor;
     private ObjectPersister<TransformRequest> mockTransformRequestPersister;
     private HttpURLConnectionFactory mockHttpURLConnectionFactory;
-    private PrepOpsGenerator mockPrepOpsGenerator;
     private HttpCPObjectClient<AgendaProgress> mockAgendaProgressClient;
     private HttpCPObjectClient<Agenda> mockAgendaClient;
 
@@ -40,11 +38,10 @@ public class TransformRequestProcessorTest
     {
         mockTransformRequestPersister = mock(ObjectPersister.class);
         mockHttpURLConnectionFactory = mock(HttpURLConnectionFactory.class);
-        mockPrepOpsGenerator = mock(PrepOpsGenerator.class);
         mockAgendaProgressClient = mock(HttpCPObjectClient.class);
         mockAgendaClient = mock(HttpCPObjectClient.class);
 
-        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, mockHttpURLConnectionFactory, null, null);
+        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, mockHttpURLConnectionFactory, null, null);
         transformRequestProcessor.setAgendaClient(mockAgendaClient);
         transformRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
     }
