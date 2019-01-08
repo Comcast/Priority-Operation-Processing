@@ -12,15 +12,11 @@ import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoD
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.transformrequest.TransformRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
-import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBCompressedObjectPersisterFactory;
-import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedObjectPersister;
-import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
-import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgendaConverter;
+import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
  * Main entry point class for the AWS TransformRequest endpoint
@@ -30,6 +26,7 @@ public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Transfo
     private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
     private ObjectPersisterFactory<AgendaProgress> agendaProgressPersisterFactory;
     private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
+    private ObjectPersisterFactory<ReadyAgenda> readyAgendaPersisterFactory;
 
     public TransformLambdaStreamEntry()
     {
@@ -40,6 +37,7 @@ public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Transfo
         agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
         operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
+        readyAgendaPersisterFactory = new DynamoDbReadyAgendaPersisterFactory();
     }
 
     @Override
@@ -50,18 +48,6 @@ public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Transfo
         {
             throw new RuntimeException("No Authorization node found. Unable to process request.");
         }
-        //@todo we need another non hardcoded way...
-        TableIndexes readyAgendaTableIndexes =
-            new TableIndexes().withIndex("customer_index", ByCustomerId.fieldName());
-        DynamoDBConvertedObjectPersister<ReadyAgenda> readyAgendaPersister = new DynamoDBConvertedObjectPersister<>
-            (
-                environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.READY_AGENDA),
-                "id",
-                new AWSDynamoDBFactory(),
-                ReadyAgenda.class,
-                new PersistentReadyAgendaConverter(),
-                readyAgendaTableIndexes
-            );
 
         String insightURL = environmentLookupUtils.getAPIEndpointURL(lambdaRequest, "insightPath");
         String customerURL = environmentLookupUtils.getAPIEndpointURL(lambdaRequest, "customerPath");
@@ -71,7 +57,7 @@ public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Transfo
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
             agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
             operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
-            readyAgendaPersister,
+            readyAgendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.READY_AGENDA)),
             new IDMHTTPUrlConnectionFactory(authHeader).setCid(lambdaRequest.getCID()),
             insightURL,
             customerURL);
