@@ -5,12 +5,12 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 
 import java.util.List;
 
-public class ProgressSummaryResult
+public class ProgressSummaryResponse
 {
     private List<AgendaProgress> progressList;
     private ProcessingState processingState;
 
-    public ProgressSummaryResult()
+    public ProgressSummaryResponse()
     {
     }
 
