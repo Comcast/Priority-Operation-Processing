@@ -11,7 +11,7 @@ import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoD
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.service.ProgressSummaryRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResult;
+import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
         logger.info("Progress Service endpoint request received.");
         LambdaRequest lambdaRequest = new LambdaRequest(inputStreamNode);
 
-        ProgressSummaryResult responseObject = null;
+        ProgressSummaryResponse responseObject = null;
         int httpStatusCode = 200;
 
         if(lambdaRequest.getAuthorizationHeader() == null)
