@@ -24,9 +24,9 @@ import java.util.List;
  * Http specific implementation of the CPObjectClient
  * @param <T>
  */
-public class HttpCPObjectClient<T> implements ObjectClient<T>
+public class HttpObjectClient<T> implements ObjectClient<T>
 {
-    private static final Logger logger = LoggerFactory.getLogger(HttpCPObjectClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpObjectClient.class);
 
     private final String endpointURL;
     private final HttpURLConnectionFactory httpUrlConnectionFactory;
@@ -34,7 +34,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
     private JsonHelper jsonHelper = new JsonHelper();
     private URLRequestPerformer urlRequestPerformer = new URLRequestPerformer();
     
-    public HttpCPObjectClient(String endpointURL, HttpURLConnectionFactory httpUrlConnectionFactory, Class clazz)
+    public HttpObjectClient(String endpointURL, HttpURLConnectionFactory httpUrlConnectionFactory, Class clazz)
     {
         this.endpointURL = endpointURL;
         this.httpUrlConnectionFactory = httpUrlConnectionFactory;
@@ -61,7 +61,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
         }
         catch(IOException e)
         {
-            throw new CPObjectClientException(String.format("Failed to perform retrieve for query %1$s: %2$s", objectClass.getSimpleName(), queryParams), e);
+            throw new ObjectClientException(String.format("Failed to perform retrieve for query %1$s: %2$s", objectClass.getSimpleName(), queryParams), e);
         }
     }
 
@@ -88,7 +88,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
         }
         catch(IOException e)
         {
-            throw new CPObjectClientException(String.format("Failed to perform retrieve for %1$s: %2$s", objectClass.getSimpleName(), id), e);
+            throw new ObjectClientException(String.format("Failed to perform retrieve for %1$s: %2$s", objectClass.getSimpleName(), id), e);
         }
     }
 
@@ -106,7 +106,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
         }
         catch(IOException e)
         {
-            throw new CPObjectClientException(String.format("Failed to perform persist for %1$s", objectClass.getSimpleName()), e);
+            throw new ObjectClientException(String.format("Failed to perform persist for %1$s", objectClass.getSimpleName()), e);
         }
     }
 
@@ -123,7 +123,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
         }
         catch(IOException e)
         {
-            throw new CPObjectClientException(String.format("Failed to perform update for %1$s", objectClass.getSimpleName()), e);
+            throw new ObjectClientException(String.format("Failed to perform update for %1$s", objectClass.getSimpleName()), e);
         }
     }
 
@@ -137,7 +137,7 @@ public class HttpCPObjectClient<T> implements ObjectClient<T>
         }
         catch (IOException e)
         {
-            throw new CPObjectClientException(String.format("Failed to perform delete for %1$s:%2$s", objectClass.getSimpleName(), id), e);
+            throw new ObjectClientException(String.format("Failed to perform delete for %1$s:%2$s", objectClass.getSimpleName(), id), e);
         }
     }
 

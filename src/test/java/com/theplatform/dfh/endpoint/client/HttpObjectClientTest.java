@@ -23,10 +23,10 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class HttpCPObjectClientTest
+public class HttpObjectClientTest
 {
     private Class<?> clazz = AgendaProgress.class;
-    private HttpCPObjectClient<AgendaProgress> client;
+    private HttpObjectClient<AgendaProgress> client;
     private HttpURLConnectionFactory mockHttpURLConnectionFactory;
     private HttpURLConnection mockHttpURLConnection;
     private URLRequestPerformer mockURLRequestPerformer;
@@ -40,7 +40,7 @@ public class HttpCPObjectClientTest
         mockHttpURLConnection = mock(HttpURLConnection.class);
         mockHttpURLConnectionFactory = mock(HttpURLConnectionFactory.class);
         doReturn(mockHttpURLConnection).when(mockHttpURLConnectionFactory).getHttpURLConnection(anyString());
-        client = new HttpCPObjectClient<>("", mockHttpURLConnectionFactory ,clazz);
+        client = new HttpObjectClient<>("", mockHttpURLConnectionFactory ,clazz);
         client.setUrlRequestPerformer(mockURLRequestPerformer);
     }
 
