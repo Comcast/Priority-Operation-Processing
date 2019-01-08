@@ -4,8 +4,9 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.HttpCPWebClient;
+import com.theplatform.dfh.endpoint.client.FissionClient;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -21,24 +22,29 @@ import static org.mockito.Mockito.when;
  */
 public class AwsAgendaProviderClientTest
 {
-
     private JsonHelper jsonHelper = new JsonHelper();
+    private FissionClient mockFissionClient;
+
+    @BeforeMethod
+    public void setup()
+    {
+        mockFissionClient = mock(FissionClient.class);
+    }
 
     @Test
     public void testGetAgenda()
     {
         Agenda agenda = new Agenda();
         agenda.setId(UUID.randomUUID().toString());
-        HttpCPWebClient webClient = mock(HttpCPWebClient.class);
-        when(webClient.getAgenda()).thenReturn(agenda);
+        when(mockFissionClient.getAgenda()).thenReturn(agenda);
 
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
+        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(mockFissionClient);
 
         Agenda agendaResponse = awsClient.getAgenda();
         String expectedAgenda =jsonHelper.getJSONString(agenda);
         String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
         Assert.assertEquals(agendaResponseJson, expectedAgenda);
-        verify(webClient, times(1)).getAgenda();
+        verify(mockFissionClient, times(1)).getAgenda();
     }
 
     @Test
@@ -48,29 +54,27 @@ public class AwsAgendaProviderClientTest
         agenda.setId(UUID.randomUUID().toString());
         GetAgendaResponse expectedResponse = new GetAgendaResponse(Arrays.asList(agenda));
 
-        HttpCPWebClient webClient = mock(HttpCPWebClient.class);
-        when(webClient.getAgenda(any())).thenReturn(expectedResponse);
+        when(mockFissionClient.getAgenda(any())).thenReturn(expectedResponse);
 
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
+        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(mockFissionClient);
 
         GetAgendaRequest getAgendaRequest = new GetAgendaRequest("foo", 1);
         GetAgendaResponse agendaResponse = awsClient.getAgenda(getAgendaRequest);
         String expectedAgenda =jsonHelper.getJSONString(expectedResponse);
         String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
         Assert.assertEquals(agendaResponseJson, expectedAgenda);
-        verify(webClient, times(1)).getAgenda(getAgendaRequest);
+        verify(mockFissionClient, times(1)).getAgenda(getAgendaRequest);
     }
 
     @Test
     public void testGetAgendaReturnsNull()
     {
-        HttpCPWebClient webClient = mock(HttpCPWebClient.class);
-        when(webClient.getAgenda()).thenReturn(null);
+        when(mockFissionClient.getAgenda()).thenReturn(null);
 
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(webClient);
+        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(mockFissionClient);
 
         Agenda agendaResponse = awsClient.getAgenda();
         Assert.assertNull(agendaResponse);
-        verify(webClient, times(1)).getAgenda();
+        verify(mockFissionClient, times(1)).getAgenda();
     }
 }
