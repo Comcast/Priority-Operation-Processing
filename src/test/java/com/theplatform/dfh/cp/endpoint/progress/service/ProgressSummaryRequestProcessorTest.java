@@ -2,9 +2,9 @@ package com.theplatform.dfh.cp.endpoint.progress.service;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResult;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import org.testng.Assert;
@@ -56,8 +56,8 @@ public class ProgressSummaryRequestProcessorTest
     public void testGetProgressSummary(ProcessingState expectedState, ProcessingState[] states) throws Exception
     {
         setupAgendaProgress(states);
-        ProgressSummaryResult progressSummaryResult = progressSummaryRequestProcessor.getProgressSummary(new ProgressSummaryRequest().setLinkId("theLinkId"));
-        Assert.assertEquals(progressSummaryResult.getProcessingState(), expectedState);
+        ProgressSummaryResponse progressSummaryResponse = progressSummaryRequestProcessor.getProgressSummary(new ProgressSummaryRequest().setLinkId("theLinkId"));
+        Assert.assertEquals(progressSummaryResponse.getProcessingState(), expectedState);
     }
 
     @Test(expectedExceptions = BadRequestException.class)

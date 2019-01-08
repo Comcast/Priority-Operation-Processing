@@ -5,10 +5,10 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.query.progress.ByLinkId;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResult;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -39,7 +39,7 @@ public class ProgressSummaryRequestProcessor
         ));
     }
 
-    public ProgressSummaryResult getProgressSummary(ProgressSummaryRequest progressSummaryRequest) throws Exception
+    public ProgressSummaryResponse getProgressSummary(ProgressSummaryRequest progressSummaryRequest) throws Exception
     {
         if(progressSummaryRequest == null)
         {
@@ -58,7 +58,7 @@ public class ProgressSummaryRequestProcessor
 
         logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
             feed.getAll().size(), progressSummaryRequest.getLinkId(), waiting, executing);
-        ProgressSummaryResult result = new ProgressSummaryResult();
+        ProgressSummaryResponse result = new ProgressSummaryResponse();
         result.setProgressList(feed.getAll());
         result.setProcessingState(evaluateOverallState(progressList, waiting, executing));
         return result;

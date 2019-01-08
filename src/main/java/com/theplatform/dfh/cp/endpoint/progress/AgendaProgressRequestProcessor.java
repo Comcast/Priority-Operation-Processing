@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
-import com.theplatform.dfh.endpoint.client.CPObjectClientException;
+import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.endpoint.api.query.progress.ByAgendaProgressId;
@@ -136,7 +136,7 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
             DataObjectFeed<OperationProgress> opProgresses = operationProgressClient.getObjects(Collections.singletonList(byAgendaProgressId));
             return opProgresses.getAll().toArray(new OperationProgress[0]);
         }
-        catch (CPObjectClientException e)
+        catch (ObjectClientException e)
         {
             logger.warn("Failed to retrieve OperationProgress objects. {}", e);
         }
