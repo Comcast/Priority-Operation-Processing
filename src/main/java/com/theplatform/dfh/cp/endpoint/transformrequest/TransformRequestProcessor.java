@@ -2,6 +2,8 @@ package com.theplatform.dfh.cp.endpoint.transformrequest;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.TransformRequest;
+import com.theplatform.dfh.cp.api.facility.Customer;
+import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
@@ -17,7 +19,6 @@ import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
@@ -44,9 +45,8 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
         ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister,
         ObjectPersister<ReadyAgenda> readyAgendaPersister,
-        HttpURLConnectionFactory httpURLConnectionFactory,
-        String insightURL,
-        String customerURL)
+        ObjectPersister<Insight> insightPersister,
+        ObjectPersister<Customer> customerPersister)
     {
         super(transformRequestObjectPersister);
         prepOpsGenerator = new PrepOpsGenerator();
@@ -56,9 +56,8 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
             agendaProgressPersister,
             readyAgendaPersister,
             operationProgressPersister,
-            httpURLConnectionFactory,
-            insightURL,
-            customerURL
+            insightPersister,
+            customerPersister
         ));
     }
 

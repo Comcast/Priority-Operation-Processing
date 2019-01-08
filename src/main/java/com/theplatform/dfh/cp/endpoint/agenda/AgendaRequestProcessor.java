@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
@@ -9,6 +10,8 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.facility.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
@@ -20,7 +23,6 @@ import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.query.scheduling.ByAgendaId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -49,15 +51,18 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
         ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<ReadyAgenda> readyAgendaPersister,
         ObjectPersister<OperationProgress> operationProgressPersister,
-        HttpURLConnectionFactory httpURLConnectionFactory,
-        String insightURL,
-        String customerURL)
+        ObjectPersister<Insight> insightPersister,
+        ObjectPersister<Customer> customerPersister)
     {
         this(agendaRequestPersister,
             readyAgendaPersister,
             new RequestProcessorAdapter<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister)),
             new RequestProcessorAdapter<>(new OperationProgressRequestProcessor(operationProgressPersister)),
-            new InsightSelector(httpURLConnectionFactory, insightURL, customerURL));
+            new InsightSelector(
+                new RequestProcessorAdapter<>(new InsightRequestProcessor(insightPersister)),
+                new RequestProcessorAdapter<>(new CustomerRequestProcessor(customerPersister))
+            )
+        );
     }
 
     AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,

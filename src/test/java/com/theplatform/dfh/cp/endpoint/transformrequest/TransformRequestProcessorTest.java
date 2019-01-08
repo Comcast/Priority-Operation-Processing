@@ -41,7 +41,7 @@ public class TransformRequestProcessorTest
         mockAgendaProgressClient = mock(HttpCPObjectClient.class);
         mockAgendaClient = mock(HttpCPObjectClient.class);
 
-        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, mockHttpURLConnectionFactory, null, null);
+        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, null, null);
         transformRequestProcessor.setAgendaClient(mockAgendaClient);
         transformRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
     }
