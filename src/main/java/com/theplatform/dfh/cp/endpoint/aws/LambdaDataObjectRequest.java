@@ -1,65 +1,59 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaRequest
+public class LambdaDataObjectRequest<T extends IdentifiedObject> extends LambdaRequest<T> implements DataObjectRequest<T>
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String BY_QUERY_PREFIX = "by";
-    private Class<T> dataObjectClass;
-    private List<Query> queries;
+    private DefaultDataObjectRequest<T> dataObjectRequest = new DefaultDataObjectRequest<>();
 
-    public LambdaObjectRequest(JsonNode rootNode, Class<T> dataObjectClass)
+    public LambdaDataObjectRequest(JsonNode rootNode, Class<T> dataObjectClass)
     {
-        super(rootNode);
-        this.dataObjectClass = dataObjectClass;
+        super(rootNode, dataObjectClass);
+
+        if(rootNode == null) return;
+        T dataObject = getPayload();
+        dataObjectRequest.setDataObject(dataObject);
+
+        String id = parseId();
+        dataObjectRequest.setId(id);
+
+        parseQueries();
     }
 
     public List<Query> getQueries()
     {
-        return queries;
+        return dataObjectRequest.getQueries();
     }
 
-    protected T getDataObject() throws BadRequestException
+    @Override
+    public String getId()
     {
-        try
-        {
-            JsonNode bodyNode = getJsonNode().at(BODY_PATH);
-            if(bodyNode.isMissingNode())
-            {
-                // TODO: further decide how this is handled...
-                return null;
-            }
-            String bodyText = bodyNode.asText();
-            if(StringUtils.isBlank(bodyText))
-            {
-                return null;
-            }
-
-            return getObjectMapper().readValue(bodyText, dataObjectClass);
-        }
-        catch (IOException e)
-        {
-            throw new BadRequestException("Request body is not recognized as '" + dataObjectClass.getName() + "'", e);
-        }
+        return dataObjectRequest.getId();
     }
 
-    protected String getDataObjectId() throws BadRequestException
+    @Override
+    public T getDataObject()
+    {
+        return dataObjectRequest.getDataObject();
+    }
+
+    public String parseId() throws BadRequestException
     {
         //first see if it's on the path parameter.
         String dataObjectId = getIdFromPathParameter();
@@ -76,17 +70,16 @@ public class LambdaObjectRequest<T extends IdentifiedObject> extends LambdaReque
         return dataObject.getId();
     }
 
-    @Override
-    protected void loadRequestParameters()
+    private void parseQueries()
     {
-        super.loadRequestParameters();
         if(getRequestParamMap() == null) return;
 
         // create all the by queries (if a param has the right prefix)
-        queries = getRequestParamMap().entrySet().stream()
+        List<Query> queries = getRequestParamMap().entrySet().stream()
             .filter(e -> e.getKey().startsWith(BY_QUERY_PREFIX))
             .map(e -> new Query<>(e.getKey().substring(BY_QUERY_PREFIX.length()), getURLDecodedValue(e.getValue().toString())))
             .collect(Collectors.toList());
+        dataObjectRequest.setQueries(queries);
     }
 
     protected String getURLDecodedValue(String value)

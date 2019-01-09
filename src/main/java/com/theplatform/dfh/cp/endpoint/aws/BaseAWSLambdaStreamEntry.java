@@ -1,39 +1,32 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
-import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * Base for CP Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
-public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> implements JsonRequestStreamHandler
+public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> extends AbstractLambdaStreamEntry<LambdaDataObjectRequest<T>>
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Class<T> persistenceObjectClazz;
-    protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private ObjectPersisterFactory<T> objectPersisterFactory;
-    private ResponseWriter responseWriter = new ResponseWriter();
+    private Class<T> payloadClass;
 
     // TODO: wrapper class for all the json parsing
     public BaseAWSLambdaStreamEntry(Class<T> clazz, ObjectPersisterFactory<T> objectPersisterFactory)
     {
-        this.persistenceObjectClazz = clazz;
         this.objectPersisterFactory = objectPersisterFactory;
+        this.payloadClass = clazz;
     }
 
     static
@@ -41,88 +34,26 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected abstract BaseRequestProcessor<T> getRequestProcessor(LambdaObjectRequest<T> lambdaRequest, ObjectPersister<T> objectPersister);
+    protected abstract RequestProcessor getRequestProcessor(LambdaDataObjectRequest<T> lambdaRequest, ObjectPersister<T> objectPersister);
 
     protected String getTableEnvironmentVariableName()
     {
         return EnvironmentLookupUtils.DB_TABLE_NAME_ENV_VAR;
     }
 
-    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
+    @Override
+    public RequestProcessor getRequestProcessor(LambdaDataObjectRequest lambdaRequest)
     {
-        JsonNode rootRequestNode = objectMapper.readTree(inputStream);
-        handleRequest(rootRequestNode, outputStream, context);
-    }
-
-    public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
-    {
-        LambdaObjectRequest<T> request = getRequest(inputStreamNode);
-
-        String tableName = environmentLookupUtils.getTableName(request, getTableEnvironmentVariableName());
+        String tableName = environmentLookupUtils.getTableName(lambdaRequest, getTableEnvironmentVariableName());
         logger.info("TableName: {}", tableName);
         ObjectPersister<T> objectPersister = objectPersisterFactory.getObjectPersister(tableName);
 
-        BaseRequestProcessor<T> requestProcessor = getRequestProcessor(request, objectPersister);
-        Object responseBodyObject = null;
-        int httpStatusCode = 200;
-
-        try
-        {
-            final String httpMethod = request.getHTTPMethod("");
-            switch (httpMethod)
-            {
-                case "GET":
-                    String dataObjectId = request.getDataObjectId();
-                    if(dataObjectId != null)
-                        responseBodyObject = requestProcessor.handleGET(dataObjectId);
-                    else
-                        responseBodyObject = requestProcessor.handleGET(request.getQueries());
-                    if (responseBodyObject == null)
-                        httpStatusCode = 404;
-                    break;
-                case "POST":
-                    responseBodyObject = requestProcessor.handlePOST(request.getDataObject());
-                    break;
-                case "PUT":
-                    requestProcessor.handlePUT(request.getDataObject());
-                    break;
-                case "DELETE":
-                    requestProcessor.handleDelete(request.getDataObjectId());
-                    break;
-                default:
-                    // todo: some bad response code
-                    httpStatusCode = 405;
-                    logger.warn("Unsupported method type.");
-            }
-            responseBodyObject = createResponseBodyObject(responseBodyObject, request.getJsonNode());
-        }
-        catch (IllegalArgumentException e)
-        {
-            httpStatusCode = 400;
-            responseBodyObject = e.getMessage();
-            // todo maybe make this message json formatted?
-        }
-        catch(Exception e)
-        {
-            httpStatusCode = 500;
-            responseBodyObject = e.getMessage();
-            try
-            {
-                // Don't bother to log the exception as a param, it's broken across newlines and won't have the CID
-                logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)));
-            }
-            catch(Exception ex)
-            {
-                logger.error("Failed to process request.", e);
-            }
-        }
-
-        responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
+        return getRequestProcessor(lambdaRequest, objectPersister);
     }
 
-    protected LambdaObjectRequest<T> getRequest(JsonNode node) throws BadRequestException
+    public LambdaDataObjectRequest<T> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaObjectRequest<>(node, persistenceObjectClazz);
+        return new LambdaDataObjectRequest<>(node, payloadClass);
     }
     /**
      * Creates the response body object to return
@@ -147,10 +78,5 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> imple
         JsonNode node = rootRequestNode.at(jsonPtrExpr);
         if(node.isMissingNode()) return null;
         return node.asText(defaultValue);
-    }
-
-    public void setResponseWriter(ResponseWriter responseWriter)
-    {
-        this.responseWriter = responseWriter;
     }
 }

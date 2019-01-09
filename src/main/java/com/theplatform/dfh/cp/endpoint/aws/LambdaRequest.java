@@ -4,13 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.io.IOException;
 import java.util.*;
 
-public class LambdaRequest
+public class LambdaRequest<T> extends DefaultServiceRequest<T>
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -39,12 +43,24 @@ public class LambdaRequest
     private JsonNode rootNode;
     private HashMap<String, Object> requestParamMap;
 
+    public LambdaRequest(JsonNode rootNode, Class<T> requestObjectClass)
+    {
+        this(rootNode);
+        if(rootNode == null) return;
+        setPayload(parsePayloadObject(requestObjectClass));
+    }
     public LambdaRequest(JsonNode rootNode)
     {
         // this is immediately made available for subclasses
         this.rootNode = rootNode;
+        if(rootNode == null) return;
+
         //logObject("request: ", rootNode);
-        loadRequestParameters();
+        parseRequestParameters();
+        setCid(parseCID());
+        setHttpMethod(parseHTTPMethod("GET"));
+        setAuthorizationHeader(parseAuthorizationHeader());
+        setEndpoint(parseEndpoint());
     }
 
     public JsonNode getJsonNode()
@@ -62,11 +78,6 @@ public class LambdaRequest
         return objectMapper;
     }
 
-    public void setObjectMapper(ObjectMapper objectMapper)
-    {
-        this.objectMapper = objectMapper;
-    }
-
     /**
      * Gets the path parameter name based on the url --
      * https://stackoverflow.com/questions/31329958/how-to-pass-a-querystring-or-route-parameter-to-aws-lambda-from-amazon-api-gatew
@@ -78,7 +89,7 @@ public class LambdaRequest
         return DEFAULT_PATH_PARAMETER_NAME;
     }
 
-    protected void loadRequestParameters()
+    private void parseRequestParameters()
     {
         if (rootNode == null)
             return;
@@ -127,12 +138,12 @@ public class LambdaRequest
      * @param defaultValue The default to return if the method cannot be found
      * @return HTTP method or default
      */
-    public String getHTTPMethod(String defaultValue)
+    private String parseHTTPMethod(String defaultValue)
     {
         return getRequestValue(HTTP_METHOD_PATH, defaultValue);
     }
 
-    public String getEndpoint()
+    public String parseEndpoint()
     {
         return getRequestValue(REQUEST_PATH, null);
     }
@@ -152,8 +163,9 @@ public class LambdaRequest
         return getRequestValue(STAGE_FIELD_PATH);
     }
 
-    public String getAuthorizationHeader() { return getRequestValue(HEADERS_AUTHORIZATION_PATH); }
+    private String parseAuthorizationHeader() { return getRequestValue(HEADERS_AUTHORIZATION_PATH); }
 
+    @Override
     public String getHeader(String header)
     {
         if(header == null) return null;
@@ -162,7 +174,7 @@ public class LambdaRequest
         return value;
     }
 
-    public String getCID()
+    private String parseCID()
     {
         return getHeader(HEADER_CID);
     }
@@ -192,34 +204,32 @@ public class LambdaRequest
         return requestValueNode.asText();
     }
 
-    /**
-     * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
-     */
-    public void setupLoggingCid()
+    public T parsePayloadObject(Class<T> requestObjectClass) throws BadRequestException
     {
-        String cid = getCID();
-        MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
-    }
-
-    private void logObject(String nodeName, JsonNode node)
-    {
-        if(!logger.isDebugEnabled()) return;
-
         try
         {
-            if (node != null)
+            JsonNode bodyNode = getJsonNode().at(BODY_PATH);
+            if(bodyNode.isMissingNode())
             {
-                logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
+                // TODO: further decide how this is handled...
+                return null;
             }
-            else
+            String bodyText = bodyNode.asText();
+            if(StringUtils.isBlank(bodyText))
             {
-                logger.debug("[{}] node not found", nodeName);
+                return null;
             }
+
+            return (getObjectMapper().readValue(bodyText, requestObjectClass));
         }
-        catch (JsonProcessingException e)
+        catch (IOException e)
         {
-            //ignore our bad logging
-            logger.error("Unable to log JsonNode '{}'", nodeName, e);
+            throw new BadRequestException("Request body is not recognized as '" + requestObjectClass.getName() + "'", e);
         }
+    }
+    
+    protected void setObjectMapper(ObjectMapper objectMapper)
+    {
+        this.objectMapper = objectMapper;
     }
 }
