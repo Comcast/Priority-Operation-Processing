@@ -2,6 +2,7 @@ package com.theplatform.dfh.endpoint.client;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.mock;
 
 public class HttpObjectClientTest
 {
-    private Class<?> clazz = AgendaProgress.class;
+    private Class<AgendaProgress> clazz = AgendaProgress.class;
     private HttpObjectClient<AgendaProgress> client;
     private HttpURLConnectionFactory mockHttpURLConnectionFactory;
     private HttpURLConnection mockHttpURLConnection;
@@ -40,7 +41,7 @@ public class HttpObjectClientTest
         mockHttpURLConnection = mock(HttpURLConnection.class);
         mockHttpURLConnectionFactory = mock(HttpURLConnectionFactory.class);
         doReturn(mockHttpURLConnection).when(mockHttpURLConnectionFactory).getHttpURLConnection(anyString());
-        client = new HttpObjectClient<>("", mockHttpURLConnectionFactory ,clazz);
+        client = new HttpObjectClient<>("", mockHttpURLConnectionFactory, clazz);
         client.setUrlRequestPerformer(mockURLRequestPerformer);
     }
 
@@ -49,7 +50,7 @@ public class HttpObjectClientTest
     {
         final int ITEM_COUNT = 3;
         doReturn(getAgendaProgressJson(ITEM_COUNT)).when(mockURLRequestPerformer).performURLRequest(any(), any());
-        DataObjectFeed<AgendaProgress> dataObjectFeed = client.getObjects("");
+        DataObjectResponse<AgendaProgress> dataObjectFeed = client.getObjects("");
         Assert.assertEquals(dataObjectFeed.getAll().size(), ITEM_COUNT);
         // This is necessary as jackson issues were observed
         Assert.assertEquals(dataObjectFeed.getAll().get(0).getClass(), AgendaProgress.class);

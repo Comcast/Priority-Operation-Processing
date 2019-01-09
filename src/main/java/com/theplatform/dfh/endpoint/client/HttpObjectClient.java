@@ -2,11 +2,12 @@ package com.theplatform.dfh.endpoint.client;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
-import com.theplatform.dfh.persistence.api.DataObjectFeed;
+import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import java.util.List;
  * Http specific implementation of the CPObjectClient
  * @param <T>
  */
-public class HttpObjectClient<T> implements ObjectClient<T>
+public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClient<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(HttpObjectClient.class);
 
@@ -34,14 +35,14 @@ public class HttpObjectClient<T> implements ObjectClient<T>
     private JsonHelper jsonHelper = new JsonHelper();
     private URLRequestPerformer urlRequestPerformer = new URLRequestPerformer();
     
-    public HttpObjectClient(String endpointURL, HttpURLConnectionFactory httpUrlConnectionFactory, Class clazz)
+    public HttpObjectClient(String endpointURL, HttpURLConnectionFactory httpUrlConnectionFactory, Class<T> clazz)
     {
         this.endpointURL = endpointURL;
         this.httpUrlConnectionFactory = httpUrlConnectionFactory;
         this.objectClass = clazz;
     }
 
-    public DataObjectFeed<T> getObjects(String queryParams)
+    public DataObjectResponse<T> getObjects(String queryParams)
     {
         try
         {
@@ -56,7 +57,7 @@ public class HttpObjectClient<T> implements ObjectClient<T>
                 return null;
             }
             ObjectMapper objectMapper = jsonHelper.getObjectMapper();
-            JavaType type = objectMapper.getTypeFactory().constructParametricType(DataObjectFeed.class, objectClass);
+            JavaType type = objectMapper.getTypeFactory().constructParametricType(DefaultDataObjectResponse.class, objectClass);
             return objectMapper.readValue(otherResult, type);
         }
         catch(IOException e)
@@ -65,7 +66,7 @@ public class HttpObjectClient<T> implements ObjectClient<T>
         }
     }
 
-    public DataObjectFeed<T> getObjects(List<Query> queries)
+    public DataObjectResponse getObjects(List<Query> queries)
     {
         return getObjects(getQueryParams(queries));
     }
@@ -92,7 +93,7 @@ public class HttpObjectClient<T> implements ObjectClient<T>
         }
     }
 
-    public ObjectPersistResponse persistObject(T object)
+    public T persistObject(T object)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
         try
@@ -102,7 +103,8 @@ public class HttpObjectClient<T> implements ObjectClient<T>
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 postData);
-            return jsonHelper.getObjectFromString(result, ObjectPersistResponse.class);
+            DataObjectResponse<T> response = parseDataObjectResponse(result);
+            return response.getFirst();
         }
         catch(IOException e)
         {
@@ -110,7 +112,7 @@ public class HttpObjectClient<T> implements ObjectClient<T>
         }
     }
 
-    public void updateObject(T object, String id)
+    public T updateObject(T object, String id)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
         try
@@ -120,6 +122,9 @@ public class HttpObjectClient<T> implements ObjectClient<T>
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 postData);
+            DataObjectResponse<T> response = parseDataObjectResponse(result);
+            return response.getFirst();
+
         }
         catch(IOException e)
         {
@@ -173,5 +178,12 @@ public class HttpObjectClient<T> implements ObjectClient<T>
     public void setUrlRequestPerformer(URLRequestPerformer urlRequestPerformer)
     {
         this.urlRequestPerformer = urlRequestPerformer;
+    }
+
+    private DataObjectResponse<T> parseDataObjectResponse(String response) throws IOException
+    {
+        ObjectMapper objectMapper = jsonHelper.getObjectMapper();
+        JavaType type = jsonHelper.getObjectMapper().getTypeFactory().constructParametricType(DefaultDataObjectResponse.class, objectClass);
+        return objectMapper.readValue(response, type);
     }
 }
