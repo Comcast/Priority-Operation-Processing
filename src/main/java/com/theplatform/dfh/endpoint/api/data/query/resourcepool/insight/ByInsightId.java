@@ -1,12 +1,12 @@
-package com.theplatform.dfh.endpoint.api.query.resourcepool.insight;
+package com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight;
 
 import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
-public class ByResourcePoolId extends Query<String>
+public class ByInsightId extends Query<String>
 {
-    private static final DataObjectField field = new DataObjectField("resourcePoolId");
-    public ByResourcePoolId(String value)
+    private static final DataObjectField field = new DataObjectField("insightId");
+    public ByInsightId(String value)
     {
         if(value == null || value.isEmpty())
         {

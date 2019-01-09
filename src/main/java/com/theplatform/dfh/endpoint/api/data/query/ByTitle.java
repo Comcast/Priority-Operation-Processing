@@ -1,16 +1,19 @@
-package com.theplatform.dfh.endpoint.api.query.resourcepool.insight;
+package com.theplatform.dfh.endpoint.api.data.query;
 
 import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
-public class ByInsightId extends Query<String>
+/**
+ * ByTitle field equality query.
+ */
+public class ByTitle extends Query<String>
 {
-    private static final DataObjectField field = new DataObjectField("insightId");
-    public ByInsightId(String value)
+    private static final DataObjectField field = new DataObjectField("title");
+    public ByTitle(String value)
     {
         if(value == null || value.isEmpty())
         {
-            throw new IllegalArgumentException("By Query requires a non-empty value.");
+            throw new IllegalArgumentException("ByTitle query requires a non-empty value.");
         }
 
         setField(field);
@@ -23,3 +26,4 @@ public class ByInsightId extends Query<String>
         return field.name();
     }
 }
+

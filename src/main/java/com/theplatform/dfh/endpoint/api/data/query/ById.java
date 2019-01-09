@@ -1,4 +1,4 @@
-package com.theplatform.dfh.endpoint.api.query;
+package com.theplatform.dfh.endpoint.api.data.query;
 
 import com.theplatform.dfh.persistence.api.field.IdField;
 import com.theplatform.dfh.persistence.api.query.Query;

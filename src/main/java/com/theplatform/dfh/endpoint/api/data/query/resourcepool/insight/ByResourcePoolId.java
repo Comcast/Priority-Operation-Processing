@@ -1,19 +1,16 @@
-package com.theplatform.dfh.endpoint.api.query.progress;
+package com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight;
 
 import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
 
-/**
- * ByLinkId field equality query.
- */
-public class ByLinkId extends Query<String>
+public class ByResourcePoolId extends Query<String>
 {
-    private static final DataObjectField field = new DataObjectField("linkId");
-    public ByLinkId(String value)
+    private static final DataObjectField field = new DataObjectField("resourcePoolId");
+    public ByResourcePoolId(String value)
     {
         if(value == null || value.isEmpty())
         {
-            throw new IllegalArgumentException("ByLinkId query requires a non-empty value.");
+            throw new IllegalArgumentException("By Query requires a non-empty value.");
         }
 
         setField(field);
@@ -26,4 +23,3 @@ public class ByLinkId extends Query<String>
         return field.name();
     }
 }
-

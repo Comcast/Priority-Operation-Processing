@@ -1,4 +1,4 @@
-package com.theplatform.dfh.endpoint.api.query.progress;
+package com.theplatform.dfh.endpoint.api.data.query.progress;
 
 import com.theplatform.dfh.persistence.api.field.DataObjectField;
 import com.theplatform.dfh.persistence.api.query.Query;
