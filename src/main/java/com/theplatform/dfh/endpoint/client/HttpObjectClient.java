@@ -48,17 +48,15 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         {
             HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + queryParams);
             urlConnection.setRequestMethod("GET");
-            String otherResult = urlRequestPerformer.performURLRequest(
+            String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 null);
-            logger.info("Object: {}", otherResult);
+            logger.info("Object: {}", result);
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
             {
                 return null;
             }
-            ObjectMapper objectMapper = jsonHelper.getObjectMapper();
-            JavaType type = objectMapper.getTypeFactory().constructParametricType(DefaultDataObjectResponse.class, objectClass);
-            return objectMapper.readValue(otherResult, type);
+            return parseDataObjectResponse(result);
         }
         catch(IOException e)
         {
@@ -66,26 +64,27 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
     }
 
-    public DataObjectResponse getObjects(List<Query> queries)
+    public DataObjectResponse<T> getObjects(List<Query> queries)
     {
         return getObjects(getQueryParams(queries));
     }
 
-    public T getObject(String id)
+    public DataObjectResponse<T> getObject(String id)
     {
         try
         {
             HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
             urlConnection.setRequestMethod("GET");
-            String otherResult = urlRequestPerformer.performURLRequest(
+            String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 null);
-            logger.info("Object: {}", otherResult);
+            logger.info("Object: {}", result);
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
             {
                 return null;
             }
-            return jsonHelper.getObjectFromString(otherResult, objectClass);
+            return parseDataObjectResponse(result);
+
         }
         catch(IOException e)
         {
@@ -93,7 +92,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
     }
 
-    public T persistObject(T object)
+    public DataObjectResponse<T> persistObject(T object)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
         try
@@ -103,8 +102,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 postData);
-            DataObjectResponse<T> response = parseDataObjectResponse(result);
-            return response.getFirst();
+            return parseDataObjectResponse(result);
         }
         catch(IOException e)
         {
@@ -112,7 +110,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
     }
 
-    public T updateObject(T object, String id)
+    public DataObjectResponse<T> updateObject(T object, String id)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
         try
@@ -122,8 +120,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 postData);
-            DataObjectResponse<T> response = parseDataObjectResponse(result);
-            return response.getFirst();
+            return parseDataObjectResponse(result);
 
         }
         catch(IOException e)
@@ -132,13 +129,14 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
     }
 
-    public void deleteObject(String id)
+    public DataObjectResponse<T> deleteObject(String id)
     {
         try
         {
             HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
             urlConnection.setRequestMethod("DELETE");
-            urlRequestPerformer.performURLRequest(urlConnection, null);
+            String result = urlRequestPerformer.performURLRequest(urlConnection, null);
+            return parseDataObjectResponse(result);
         }
         catch (IOException e)
         {
