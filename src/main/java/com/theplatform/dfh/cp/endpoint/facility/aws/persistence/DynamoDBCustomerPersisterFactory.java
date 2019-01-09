@@ -2,13 +2,16 @@ package com.theplatform.dfh.cp.endpoint.facility.aws.persistence;
 
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
+import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 /**
  */
 public class DynamoDBCustomerPersisterFactory extends DynamoDBConvertedPersisterFactory<Customer>
 {
+    protected static final TableIndexes tableIndexes = new TableIndexes().withIndex("resourcepoolid_index", "resourcePoolId");
+
     public DynamoDBCustomerPersisterFactory()
     {
-        super("id", Customer.class, new PersistentCustomerConverter(), null);
+        super("id", Customer.class, new PersistentCustomerConverter(), tableIndexes);
     }
 }
