@@ -9,7 +9,8 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
+import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
@@ -17,11 +18,12 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
-import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.query.scheduling.ByAgendaId;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByAgendaId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -36,7 +38,7 @@ import java.util.Date;
 /**
  * Agenda specific RequestProcessor
  */
-public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
+public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaRequestProcessor.class);
     private JsonHelper jsonHelper = new JsonHelper();
@@ -56,11 +58,11 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
     {
         this(agendaRequestPersister,
             readyAgendaPersister,
-            new RequestProcessorAdapter<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister)),
-            new RequestProcessorAdapter<>(new OperationProgressRequestProcessor(operationProgressPersister)),
+            new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister)),
+            new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister)),
             new InsightSelector(
-                new RequestProcessorAdapter<>(new InsightRequestProcessor(insightPersister)),
-                new RequestProcessorAdapter<>(new CustomerRequestProcessor(customerPersister))
+                new DataObjectRequestProcessorClient<>(new InsightRequestProcessor(insightPersister)),
+                new DataObjectRequestProcessorClient<>(new CustomerRequestProcessor(customerPersister))
             )
         );
     }
@@ -79,8 +81,9 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
     }
 
     @Override
-    public ObjectPersistResponse handlePOST(Agenda objectToPersist)
+    public DataObjectResponse handlePOST(DataObjectRequest<Agenda> request)
     {
+        Agenda objectToPersist = request.getDataObject();
         agendaValidator.validate(objectToPersist);
 
         // verify we have a valid insight for this agenda
@@ -140,10 +143,13 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
             logger.warn("No insight was found for new agenda: {}", agendaId);
         }
 
-        ObjectPersistResponse response = new ObjectPersistResponse(agendaId);
+        Agenda response = new Agenda();
+        response.setId(agendaId);
         if(response.getParams() == null) response.setParams(new ParamsMap());
         response.getParams().put(GeneralParamKey.progressId, agendaProgressId);
-        return response;
+        DataObjectResponse dataObjectResponse = new DefaultDataObjectResponse();
+        dataObjectResponse.add(response);
+        return dataObjectResponse;
     }
 
     /**
@@ -181,7 +187,7 @@ public class AgendaRequestProcessor extends BaseRequestProcessor<Agenda>
         ////
         // persist the progress
         ////
-        ObjectPersistResponse agendaProgressResponse;
+        AgendaProgress agendaProgressResponse;
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setLinkId(agenda.getLinkId());
         agendaProgress.setProcessingState(ProcessingState.WAITING);

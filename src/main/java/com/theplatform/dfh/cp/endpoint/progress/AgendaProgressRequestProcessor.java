@@ -2,12 +2,14 @@ package com.theplatform.dfh.cp.endpoint.progress;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
+import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
-import com.theplatform.dfh.endpoint.api.query.progress.ByAgendaProgressId;
+import com.theplatform.dfh.endpoint.api.data.query.progress.ByAgendaProgressId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Agenda specific RequestProcessor
  */
-public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaProgress>
+public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<AgendaProgress>
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private ObjectClient<OperationProgress> operationProgressClient;
@@ -34,7 +36,7 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
     {
         super(agendaRequestPersister);
 
-        operationProgressClient = new RequestProcessorAdapter<>(new OperationProgressRequestProcessor(operationProgressPersister));
+        operationProgressClient = new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister));
     }
 
 //    @Override
@@ -49,11 +51,16 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
 
 
     @Override
-    public void handlePUT(AgendaProgress objectToUpdate) throws BadRequestException
+    public DataObjectResponse<AgendaProgress> handlePUT(DataObjectRequest<AgendaProgress> request) throws BadRequestException
     {
+        AgendaProgress objectToUpdate = request.getDataObject();
+        DataObjectResponse response;
         try
         {
             objectToUpdate.setUpdatedTime(new Date());
+            response = super.handlePUT(request);
+            if(response.isError())
+                return response;
             objectPersister.update(objectToUpdate);
             if(objectToUpdate.getOperationProgress() != null)
             {
@@ -78,6 +85,7 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
             final String id = objectToUpdate == null ? "UNKNOWN" : objectToUpdate.getId();
             throw new BadRequestException(String.format("Unable to update object by id {}", id), e);
         }
+        return response;
     }
 
     /**
@@ -133,7 +141,7 @@ public class AgendaProgressRequestProcessor extends BaseRequestProcessor<AgendaP
         ByAgendaProgressId byAgendaProgressId = new ByAgendaProgressId(agendaProgressId);
         try
         {
-            DataObjectFeed<OperationProgress> opProgresses = operationProgressClient.getObjects(Collections.singletonList(byAgendaProgressId));
+            DataObjectResponse<OperationProgress> opProgresses = operationProgressClient.getObjects(Collections.singletonList(byAgendaProgressId));
             return opProgresses.getAll().toArray(new OperationProgress[0]);
         }
         catch (ObjectClientException e)

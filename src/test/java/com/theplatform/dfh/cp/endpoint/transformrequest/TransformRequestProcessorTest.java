@@ -7,6 +7,10 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.mockito.invocation.InvocationOnMock;
@@ -55,7 +59,8 @@ public class TransformRequestProcessorTest
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable
             {
-                Object result = new ObjectPersistResponse(callCount > 0 ? EXEC_PROGRESS_ID : PROGRESS_ID);
+                AgendaProgress result = new AgendaProgress();
+                result.setId(callCount > 0 ? EXEC_PROGRESS_ID : PROGRESS_ID);
                 callCount++;
                 return result;
             }
@@ -66,7 +71,8 @@ public class TransformRequestProcessorTest
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable
             {
                 Agenda agenda = (Agenda)invocationOnMock.getArguments()[0];
-                ObjectPersistResponse response =  new ObjectPersistResponse(AGENDA_ID);
+                Agenda response =  new Agenda();
+                response.setId(AGENDA_ID);
                 ParamsMap paramsMap = new ParamsMap();
                 paramsMap.put(GeneralParamKey.progressId, PROGRESS_ID);
                 response.setParams(paramsMap);
@@ -75,10 +81,13 @@ public class TransformRequestProcessorTest
         }).when(mockAgendaClient).persistObject(any());
 
 
-        ObjectPersistResponse objectPersistResponse = transformRequestProcessor.handlePOST(transformRequest);
-        Assert.assertEquals(objectPersistResponse.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
-        Assert.assertEquals(objectPersistResponse.getParams().getString(GeneralParamKey.execProgressId), EXEC_PROGRESS_ID);
-        Assert.assertEquals(objectPersistResponse.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
+        DataObjectRequest request = new DefaultDataObjectRequest();
+        ((DefaultDataObjectRequest) request).setDataObject(transformRequest);
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        TransformRequest responseObject = objectPersistResponse.getFirst();
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.execProgressId), EXEC_PROGRESS_ID);
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
     }
 
     protected TransformRequest createTransformRequest()

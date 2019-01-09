@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import org.testng.Assert;
@@ -68,7 +70,7 @@ public class ProgressSummaryRequestProcessorTest
 
     private void setupAgendaProgress(ProcessingState[] states) throws Exception
     {
-        DataObjectFeed<AgendaProgress> dataObjectFeed = new DataObjectFeed<>();
+        DataObjectResponse<AgendaProgress> dataObjectFeed = new DefaultDataObjectResponse<>();
         dataObjectFeed.addAll(Arrays.stream(states)
             .map(processingState ->
             {

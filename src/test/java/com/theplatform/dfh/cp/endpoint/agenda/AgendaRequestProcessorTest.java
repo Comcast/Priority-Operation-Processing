@@ -8,6 +8,8 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -63,13 +65,15 @@ public class AgendaRequestProcessorTest
         agenda.setJobId(UUID.randomUUID().toString());
         agenda.setOperations(Arrays.asList(operation1, operation2));
 
-        ObjectPersistResponse agendaProgressResponse = new ObjectPersistResponse();
+        AgendaProgress agendaProgressResponse = new AgendaProgress();
         agendaProgressResponse.setId(UUID.randomUUID().toString());
         doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
 
         doReturn(new Agenda()).when(mockAgendaPersister).persist(any());
 
-        agendaRequestProcessor.handlePOST(agenda);
+        DataObjectRequest request = new DefaultDataObjectRequest();
+        ((DefaultDataObjectRequest) request).setDataObject(agenda);
+        agendaRequestProcessor.handlePOST(request);
 
         verify(mockOperationProgressClient, times(2)).persistObject(any());
     }

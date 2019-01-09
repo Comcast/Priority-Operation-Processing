@@ -9,15 +9,17 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.endpoint.adapter.client.RequestProcessorAdapter;
+import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
-import com.theplatform.dfh.cp.endpoint.base.BaseRequestProcessor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
@@ -29,7 +31,7 @@ import java.util.UUID;
 /**
  * TransformRequest specific RequestProcessor
  */
-public class TransformRequestProcessor extends BaseRequestProcessor<TransformRequest>
+public class TransformRequestProcessor extends DataObjectRequestProcessor<TransformRequest>
 {
     private static final Logger logger = LoggerFactory.getLogger(TransformRequestProcessor.class);
     private JsonHelper jsonHelper = new JsonHelper();
@@ -50,8 +52,8 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
     {
         super(transformRequestObjectPersister);
         prepOpsGenerator = new PrepOpsGenerator();
-        agendaProgressClient = new RequestProcessorAdapter<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister));
-        agendaClient = new RequestProcessorAdapter<>(new AgendaRequestProcessor(
+        agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister));
+        agendaClient = new DataObjectRequestProcessorClient<>(new AgendaRequestProcessor(
             agendaPersister,
             agendaProgressPersister,
             readyAgendaPersister,
@@ -62,8 +64,9 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
     }
 
     @Override
-    public ObjectPersistResponse handlePOST(TransformRequest transformRequest) throws BadRequestException
+    public DataObjectResponse handlePOST(DataObjectRequest<TransformRequest> request) throws BadRequestException
     {
+        TransformRequest transformRequest = request.getDataObject();
         transformValidator.validate(transformRequest);
 
         String objectId = UUID.randomUUID().toString();
@@ -74,8 +77,8 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
         ////
         // persist the prep/exec progress
         ////
-        ObjectPersistResponse prepAgendaProgressResponse = createAgendaProgress(transformRequest);
-        ObjectPersistResponse execAgendaProgressResponse = createAgendaProgress(transformRequest);
+        AgendaProgress prepAgendaProgressResponse = createAgendaProgress(transformRequest);
+        AgendaProgress execAgendaProgressResponse = createAgendaProgress(transformRequest);
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
         // this information is used for prep agenda generation, maybe these don't belong on the transform request itself
@@ -88,7 +91,7 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
         Agenda prepAgenda = prepOpsGenerator.generateAgenda(transformRequest, prepAgendaProgressResponse.getId());
 
         //logger.debug("Generated Agenda: {}", jsonHelper.getJSONString(agenda));
-        ObjectPersistResponse prepAgendaResponse;
+        Agenda prepAgendaResponse;
         try
         {
             prepAgendaResponse = agendaClient.persistObject(prepAgenda);
@@ -112,18 +115,20 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
 
         ////
         // set the progress id on the response object
-        ObjectPersistResponse response = new ObjectPersistResponse(objectId);
-        if(response.getParams() == null) response.setParams(new ParamsMap());
-        response.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getId());
-        response.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getId());
-        response.getParams().put(GeneralParamKey.agendaId, prepAgendaResponse.getId());
+        TransformRequest requestResp = new TransformRequest();
+        requestResp.setId(objectId);
+        if(requestResp.getParams() == null) requestResp.setParams(new ParamsMap());
+        requestResp.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getId());
+        requestResp.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getId());
+        requestResp.getParams().put(GeneralParamKey.agendaId, prepAgendaResponse.getId());
 
+        DataObjectResponse<TransformRequest> response = new DefaultDataObjectResponse<>();
+        response.add(requestResp);
         return response;
     }
 
-    private ObjectPersistResponse createAgendaProgress(TransformRequest transformRequest)
+    private AgendaProgress createAgendaProgress(TransformRequest transformRequest)
     {
-        ObjectPersistResponse agendaProgressResponse;
         AgendaProgress agendaProgress = new AgendaProgress();
         // NOTE: link id is the transformRequest id
         agendaProgress.setLinkId(transformRequest.getId());
@@ -132,14 +137,13 @@ public class TransformRequestProcessor extends BaseRequestProcessor<TransformReq
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            agendaProgressResponse = agendaProgressClient.persistObject(agendaProgress);
+            return agendaProgressClient.persistObject(agendaProgress);
         }
         catch(Exception e)
         {
             throw new RuntimeException("Failed to create connection to persist the Progress generated from the TransformRequest.", e);
         }
-        return agendaProgressResponse;
-    }
+     }
 
     public void setPrepOpsGenerator(PrepOpsGenerator prepOpsGenerator)
     {
