@@ -64,7 +64,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     }
 
     @Override
-    public DataObjectResponse handlePOST(DataObjectRequest<TransformRequest> request) throws BadRequestException
+    public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request) throws BadRequestException
     {
         TransformRequest transformRequest = request.getDataObject();
         transformValidator.validate(transformRequest);
@@ -91,7 +91,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         Agenda prepAgenda = prepOpsGenerator.generateAgenda(transformRequest, prepAgendaProgressResponse.getId());
 
         //logger.debug("Generated Agenda: {}", jsonHelper.getJSONString(agenda));
-        Agenda prepAgendaResponse;
+        DataObjectResponse<Agenda> prepAgendaResponse;
         try
         {
             prepAgendaResponse = agendaClient.persistObject(prepAgenda);
@@ -99,6 +99,11 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         catch(Exception e)
         {
             throw new RuntimeException("Failed to create connection to persist the Agenda generated from the TransformRequest.", e);
+        }
+
+        if(prepAgendaResponse.isError() || prepAgendaResponse.getFirst() == null)
+        {
+            throw new RuntimeException("Failed to create prep Agenda.", prepAgendaResponse.getException());
         }
 
         ////
@@ -120,7 +125,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         if(requestResp.getParams() == null) requestResp.setParams(new ParamsMap());
         requestResp.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getId());
         requestResp.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getId());
-        requestResp.getParams().put(GeneralParamKey.agendaId, prepAgendaResponse.getId());
+        requestResp.getParams().put(GeneralParamKey.agendaId, prepAgendaResponse.getFirst().getId());
 
         DataObjectResponse<TransformRequest> response = new DefaultDataObjectResponse<>();
         response.add(requestResp);
@@ -137,11 +142,13 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            return agendaProgressClient.persistObject(agendaProgress);
+            DataObjectResponse<AgendaProgress> response = agendaProgressClient.persistObject(agendaProgress);
+            if(response.isError()) throw response.getException();
+            return response.getFirst();
         }
         catch(Exception e)
         {
-            throw new RuntimeException("Failed to create connection to persist the Progress generated from the TransformRequest.", e);
+            throw new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequest.getId()), e);
         }
      }
 

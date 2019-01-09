@@ -37,40 +37,35 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     }
 
     @Override
-    public T getObject(String id)
+    public DataObjectResponse<T> getObject(String id)
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
-        DataObjectResponse<T> response = requestProcessor.handleGET(request);
-        if(response == null) return null;
-        return response.getFirst();
+        return requestProcessor.handleGET(request);
     }
 
     @Override
-    public T persistObject(T object)
+    public DataObjectResponse<T> persistObject(T object)
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
-        DataObjectResponse<T> response = requestProcessor.handlePOST(request);
-        return response.getFirst();
+        return requestProcessor.handlePOST(request);
     }
 
     @Override
-    public T updateObject(T object, String id)
+    public DataObjectResponse<T> updateObject(T object, String id)
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
         request.setId(id);
-        DataObjectResponse<T> response = requestProcessor.handlePUT(request);
-        return response.getFirst();
+        return requestProcessor.handlePUT(request);
     }
 
     @Override
-    public void deleteObject(String id)
+    public DataObjectResponse<T> deleteObject(String id)
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
-
-        requestProcessor.handleDelete(request);
+        return requestProcessor.handleDelete(request);
     }
 }

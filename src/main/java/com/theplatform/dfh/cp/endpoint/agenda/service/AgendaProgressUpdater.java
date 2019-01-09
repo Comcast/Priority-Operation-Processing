@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,11 @@ public class AgendaProgressUpdater
 
         try
         {
-            AgendaProgress agendaProgress = agendaProgressClient.getObject(progressId);
+            DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.getObject(progressId);
+            if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
+
+            AgendaProgress agendaProgress = dataObjectResponse.getFirst();
+            if(agendaProgress == null) throw new RuntimeException(String.format("No AgendaProgress was found by id: %1$s", progressId));
             // TODO: bit of a truth stretch...
 //            if(jobProgress.getJobStatus() == null || jobProgress.getJobStatus() == JobStatus.INITIALIZE_QUEUED)
 //            {

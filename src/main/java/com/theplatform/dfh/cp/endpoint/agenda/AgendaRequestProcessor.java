@@ -201,12 +201,17 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            agendaProgressResponse = agendaProgressClient.persistObject(agendaProgress);
+            DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.persistObject(agendaProgress);
+            if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
+            agendaProgressResponse = dataObjectResponse.getFirst();
         }
         catch (Exception e)
         {
             throw new RuntimeException("Failed to create the Progress generated from the Agenda.", e);
         }
+
+        if(agendaProgressResponse == null)
+            throw new RuntimeException("AgendaProgress persistence failed.");
 
         return agendaProgressResponse.getId();
     }

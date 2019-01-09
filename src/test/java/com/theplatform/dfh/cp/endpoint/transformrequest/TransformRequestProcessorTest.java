@@ -62,7 +62,9 @@ public class TransformRequestProcessorTest
                 AgendaProgress result = new AgendaProgress();
                 result.setId(callCount > 0 ? EXEC_PROGRESS_ID : PROGRESS_ID);
                 callCount++;
-                return result;
+                DataObjectResponse<AgendaProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
+                dataObjectResponse.add(result);
+                return dataObjectResponse;
             }
         }).when(mockAgendaProgressClient).persistObject(any());
         doAnswer(new Answer()
@@ -76,7 +78,9 @@ public class TransformRequestProcessorTest
                 ParamsMap paramsMap = new ParamsMap();
                 paramsMap.put(GeneralParamKey.progressId, PROGRESS_ID);
                 response.setParams(paramsMap);
-                return response;
+                DataObjectResponse<Agenda> dataObjectResponse = new DefaultDataObjectResponse<>();
+                dataObjectResponse.add(response);
+                return dataObjectResponse;
             }
         }).when(mockAgendaClient).persistObject(any());
 
