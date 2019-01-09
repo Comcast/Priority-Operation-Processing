@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,10 +9,12 @@ import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> implements JsonRequestStreamHandler
 {
@@ -27,11 +30,6 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
 
     public abstract RequestProcessor getRequestProcessor(R lambdaRequest);
     public abstract R getRequest(JsonNode node) throws BadRequestException;
-
-    protected String getTableEnvironmentVariableName()
-    {
-        return EnvironmentLookupUtils.DB_TABLE_NAME_ENV_VAR;
-    }
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
@@ -122,8 +120,43 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
         return node.asText(defaultValue);
     }
 
+    public static ObjectMapper getObjectMapper()
+    {
+        return objectMapper;
+    }
+
+    public ResponseWriter getResponseWriter()
+    {
+        return responseWriter;
+    }
+
     public void setResponseWriter(ResponseWriter responseWriter)
     {
         this.responseWriter = responseWriter;
+    }
+
+
+    public void logObject(String nodeName, JsonNode node) throws JsonProcessingException
+    {
+        if(!logger.isDebugEnabled()) return;
+
+        if(node != null)
+        {
+            logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
+        }
+        else
+        {
+            logger.debug("[{}] node not found", nodeName);
+        }
+    }
+
+    /**
+     * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
+     */
+    protected void setupLoggingCid(JsonNode rootRequestNode)
+    {
+        // TODO: the request extractor should probably just be static...
+        String cid = new LambdaRequest(rootRequestNode).getHeader("X-thePlatform-cid");
+        MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
     }
 }
