@@ -1,5 +1,6 @@
 package com.theplatform.dfh.endpoint.api.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.theplatform.dfh.endpoint.api.DefaultServiceResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
@@ -25,6 +26,7 @@ public class DefaultDataObjectResponse<D extends IdentifiedObject> extends Defau
         return dataObjects;
     }
 
+    @JsonIgnore
     public D getFirst()
     {
         if(dataObjects == null || dataObjects.size() == 0) return null;
