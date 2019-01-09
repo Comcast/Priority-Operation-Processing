@@ -36,6 +36,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                         .setNamePrefix("dfh-encode")
         );
 
+        podConfigMap.put("thumbnail",
+                makeDfhBasePod("lab-main-t-aor-fhtff-t01")
+                        .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.0")
+                        .setNamePrefix("dfh-thumbnail")
+        );
+
         podConfigMap.put("package",
                 makeDfhBasePod("lab-main-t-aor-fhpkm-t01")
                 .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.0")
