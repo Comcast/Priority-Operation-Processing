@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBCustomerPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
@@ -44,7 +44,7 @@ public class AgendaLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Agenda>
     }
 
     @Override
-    protected AgendaRequestProcessor getRequestProcessor(LambdaObjectRequest<Agenda> lambdaRequest, ObjectPersister<Agenda> objectPersister)
+    protected AgendaRequestProcessor getRequestProcessor(LambdaDataObjectRequest<Agenda> lambdaRequest, ObjectPersister<Agenda> objectPersister)
     {
         String authHeader = lambdaRequest.getAuthorizationHeader();
         if(authHeader == null)

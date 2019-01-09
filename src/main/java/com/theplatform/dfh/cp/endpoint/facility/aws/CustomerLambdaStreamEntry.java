@@ -3,7 +3,8 @@ package com.theplatform.dfh.cp.endpoint.facility.aws;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentCustomerConverter;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -24,7 +25,7 @@ public class CustomerLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Customer
     }
 
     @Override
-    protected CustomerRequestProcessor getRequestProcessor(LambdaObjectRequest<Customer> lambdaObjectRequest, ObjectPersister<Customer> objectPersister)
+    protected RequestProcessor getRequestProcessor(LambdaDataObjectRequest<Customer> lambdaDataObjectRequest, ObjectPersister<Customer> objectPersister)
     {
         return new CustomerRequestProcessor(objectPersister);
     }

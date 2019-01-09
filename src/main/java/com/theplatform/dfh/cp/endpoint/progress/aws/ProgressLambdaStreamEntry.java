@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.progress.aws;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
@@ -26,9 +26,9 @@ public class ProgressLambdaStreamEntry extends BaseAWSLambdaStreamEntry<AgendaPr
     }
 
     @Override
-    protected AgendaProgressRequestProcessor getRequestProcessor(LambdaObjectRequest<AgendaProgress> lambdaObjectRequest, ObjectPersister<AgendaProgress> objectPersister)
+    protected AgendaProgressRequestProcessor getRequestProcessor(LambdaDataObjectRequest<AgendaProgress> lambdaDataObjectRequest, ObjectPersister<AgendaProgress> objectPersister)
     {
-        String authHeader = lambdaObjectRequest.getAuthorizationHeader();
+        String authHeader = lambdaDataObjectRequest.getAuthorizationHeader();
         if(authHeader == null)
         {
             throw new RuntimeException("No Authorization node found. Unable to process request.");
@@ -36,7 +36,7 @@ public class ProgressLambdaStreamEntry extends BaseAWSLambdaStreamEntry<AgendaPr
 
         return new AgendaProgressRequestProcessor(
             objectPersister,
-            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaObjectRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
+            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaDataObjectRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
         );
     }
 

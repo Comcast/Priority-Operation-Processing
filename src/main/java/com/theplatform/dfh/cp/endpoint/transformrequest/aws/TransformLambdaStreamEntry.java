@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBCustomerPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
@@ -48,7 +48,7 @@ public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Transfo
     }
 
     @Override
-    protected TransformRequestProcessor getRequestProcessor(LambdaObjectRequest<TransformRequest> lambdaRequest, ObjectPersister<TransformRequest> objectPersister)
+    protected TransformRequestProcessor getRequestProcessor(LambdaDataObjectRequest<TransformRequest> lambdaRequest, ObjectPersister<TransformRequest> objectPersister)
     {
         String authHeader = lambdaRequest.getAuthorizationHeader();
         if(authHeader == null)

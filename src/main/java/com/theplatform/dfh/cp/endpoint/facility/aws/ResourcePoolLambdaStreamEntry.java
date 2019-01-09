@@ -2,8 +2,9 @@ package com.theplatform.dfh.cp.endpoint.facility.aws;
 
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaObjectRequest;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.ResourcePoolRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentResourcePoolConverter;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -25,7 +26,7 @@ public class ResourcePoolLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Reso
     }
 
     @Override
-    protected ResourcePoolRequestProcessor getRequestProcessor(LambdaObjectRequest<ResourcePool> lambdaObjectRequest, ObjectPersister<ResourcePool> objectPersister)
+    protected RequestProcessor getRequestProcessor(LambdaDataObjectRequest<ResourcePool> lambdaDataObjectRequest, ObjectPersister<ResourcePool> objectPersister)
     {
         return new ResourcePoolRequestProcessor(objectPersister);
     }
