@@ -9,9 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.AgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agenda.service.aws.AgendaServiceLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
 import com.theplatform.dfh.cp.endpoint.aws.ResponseWriter;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.aws.CustomerLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.facility.aws.InsightLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.facility.aws.ResourcePoolLambdaStreamEntry;
@@ -19,6 +21,7 @@ import com.theplatform.dfh.cp.endpoint.operationprogress.aws.OperationProgressLa
 import com.theplatform.dfh.cp.endpoint.progress.aws.ProgressLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.progress.service.aws.ProgressServiceLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.transformrequest.aws.TransformLambdaStreamEntry;
+import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,23 +38,19 @@ import java.util.UUID;
 /**
  * Main entry point class for the AWS Endpoint Lambda (will map into another)
  */
-public class AWSLambdaStreamEntry implements RequestStreamHandler
+public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String RESOURCE_PATH_FIELD_PATH = "/requestContext/resourcePath";
-    private ResponseWriter responseWriter = new ResponseWriter();
 
     private static final Map<String, JsonRequestStreamHandler> endpointHandlers = new HashMap<>();
 
     public AWSLambdaStreamEntry()
     {
-
     }
 
     static
     {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         endpointHandlers.put("/dfh/idm/agenda", new AgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/agenda/service", new AgendaServiceLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/progress/operation", new OperationProgressLambdaStreamEntry());
@@ -63,6 +62,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         endpointHandlers.put("/dfh/idm/customer", new CustomerLambdaStreamEntry());
     }
 
+    @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
         ServiceBuildPropertiesContainer.logServiceBuildString(logger);
@@ -70,7 +70,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         byte[] inputData = IOUtils.toByteArray(inputStream);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputData);
         byteArrayInputStream.mark(Integer.MAX_VALUE);
-        JsonNode rootRequestNode = objectMapper.readTree(byteArrayInputStream);
+        JsonNode rootRequestNode = getObjectMapper().readTree(byteArrayInputStream);
         byteArrayInputStream.reset();
         setupLoggingCid(rootRequestNode);
 
@@ -103,7 +103,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         try
         {
             // TODO: write some kind of error object as the body?
-            responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, null);
+            getResponseWriter().writeResponse(outputStream, getObjectMapper(), httpStatusCode, null);
         }
         catch(IOException e)
         {
@@ -111,32 +111,15 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         }
     }
 
-    private void logObject(String nodeName, JsonNode node) throws JsonProcessingException
+    @Override
+    public RequestProcessor getRequestProcessor(LambdaRequest lambdaRequest)
     {
-        if(!logger.isDebugEnabled()) return;
-
-        if(node != null)
-        {
-            logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
-        }
-        else
-        {
-            logger.debug("[{}] node not found", nodeName);
-        }
+        return null;      //not used
     }
 
-    /**
-     * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
-     */
-    protected void setupLoggingCid(JsonNode rootRequestNode)
+    @Override
+    public LambdaRequest getRequest(JsonNode node) throws BadRequestException
     {
-        // TODO: the request extractor should probably just be static...
-        String cid = new LambdaRequest(rootRequestNode).getHeader("X-thePlatform-cid");
-        MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
-    }
-
-    public void setResponseWriter(ResponseWriter responseWriter)
-    {
-        this.responseWriter = responseWriter;
+        return null;      //not used
     }
 }
