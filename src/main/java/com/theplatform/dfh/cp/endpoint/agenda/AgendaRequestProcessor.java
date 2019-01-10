@@ -152,22 +152,19 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         return dataObjectResponse;
     }
 
-    /**
-     * DELETE an Agenda and it's 
-     * @param id The id of the object to delete
-     */
-    public void handleDelete(String id)
+    @Override
+    public DataObjectResponse<Agenda> handleDELETE(DataObjectRequest<Agenda> request)
     {
         try
         {
-            objectPersister.delete(id);
+            objectPersister.delete(request.getId());
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to delete object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to delete object by id: %1$s", request.getId()), e);
         }
 
-        ByAgendaId byAgendaId = new ByAgendaId(id);
+        ByAgendaId byAgendaId = new ByAgendaId(request.getId());
         try
         {
             DataObjectFeed<ReadyAgenda> dataObjectFeed = readyAgendaObjectPersister.retrieve(Collections.singletonList(byAgendaId));
@@ -180,6 +177,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         {
             logger.error("Unable to delete ReadyAgenda.", e);
         }
+        return new DefaultDataObjectResponse<>();
     }
 
     String persistAgendaProgress(Agenda agenda)

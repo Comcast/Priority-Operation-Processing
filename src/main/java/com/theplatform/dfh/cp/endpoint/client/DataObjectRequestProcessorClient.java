@@ -66,6 +66,6 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
-        return requestProcessor.handleDelete(request);
+        return requestProcessor.handleDELETE(request);
     }
 }

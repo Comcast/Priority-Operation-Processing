@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByAgendaProgressId;
@@ -54,7 +55,7 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
     public DataObjectResponse<AgendaProgress> handlePUT(DataObjectRequest<AgendaProgress> request) throws BadRequestException
     {
         AgendaProgress objectToUpdate = request.getDataObject();
-        DataObjectResponse response;
+        DataObjectResponse<AgendaProgress> response;
         try
         {
             objectToUpdate.setUpdatedTime(new Date());
@@ -90,50 +91,29 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
 
     /**
      * Handles the GET of an object
-     * @param id id of the object to get
+     * @param request The request to operate with
      * @return The object, or null if not found
      */
-    public AgendaProgress handleGET(String id)
+    @Override
+    public DataObjectResponse<AgendaProgress> handleGET(DataObjectRequest<AgendaProgress> request)
     {
         AgendaProgress agendaProgress;
         try
         {
-            agendaProgress = objectPersister.retrieve(id);
+            agendaProgress = objectPersister.retrieve(request.getId());
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to get object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to get object by id %1$s", request.getId()), e);
         }
 
         if(agendaProgress != null)
         {
             agendaProgress.setOperationProgress(getOperationProgressObjects(agendaProgress.getId()));
         }
-        return agendaProgress;
-    }
-    /**
-     * Handles the GET of an object
-     * @param queries Queries by fields
-     * @return The object, or null if not found
-     */
-    public DataObjectFeed<AgendaProgress> handleGET(List<Query> queries)
-    {
-        DataObjectFeed<AgendaProgress> agendaProgressFeed;
-        try
-        {
-            agendaProgressFeed = objectPersister.retrieve(queries);
-        }
-        catch(PersistenceException e)
-        {
-            final String queryString = queries.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
-            throw new BadRequestException(String.format("Unable to get object by queries {}", queryString), e);
-        }
-
-        for (AgendaProgress agendaProgress : agendaProgressFeed.getAll())
-        {
-            agendaProgress.setOperationProgress(getOperationProgressObjects(agendaProgress.getId()));
-        }
-        return agendaProgressFeed;
+        DefaultDataObjectResponse<AgendaProgress> defaultDataObjectResponse = new DefaultDataObjectResponse<>();
+        defaultDataObjectResponse.add(agendaProgress);
+        return defaultDataObjectResponse;
     }
 
     private OperationProgress[] getOperationProgressObjects(String agendaProgressId)
@@ -151,26 +131,27 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
         return null;
     }
 
-    /**
-     * Handles the DELETE of an object
-     * @param id The id of the object to delete
-     */
-    public void handleDelete(String id) {
+    @Override
+    public DataObjectResponse<AgendaProgress> handleDELETE(DataObjectRequest<AgendaProgress> request) {
         try
         {
-            objectPersister.delete(id);
+            objectPersister.delete(request.getId());
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to delete object by id {}", id), e);
+            throw new BadRequestException(String.format("Unable to delete object by id %1$s", request.getId()), e);
         }
 
         // todo this will result in SO many calls.  Is there a better way to do this?
         // delete operationProgress objects
-        OperationProgress[] operationProgressObjects = getOperationProgressObjects(id);
-        for (int i = 0; i < operationProgressObjects.length; i++)
+        OperationProgress[] operationProgressObjects = getOperationProgressObjects(request.getId());
+        if(operationProgressObjects != null)
         {
-            operationProgressClient.deleteObject(operationProgressObjects[i].getId());
+            for (int i = 0; i < operationProgressObjects.length; i++)
+            {
+                operationProgressClient.deleteObject(operationProgressObjects[i].getId());
+            }
         }
+        return new DefaultDataObjectResponse<>();
     }
 }
