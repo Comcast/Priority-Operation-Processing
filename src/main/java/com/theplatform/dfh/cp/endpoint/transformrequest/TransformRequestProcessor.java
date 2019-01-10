@@ -153,7 +153,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     }
 
     @Override
-    public RequestValidator getRequestValidator()
+    public RequestValidator<DataObjectRequest<TransformRequest>> getRequestValidator()
     {
         return new TransformValidator();
     }

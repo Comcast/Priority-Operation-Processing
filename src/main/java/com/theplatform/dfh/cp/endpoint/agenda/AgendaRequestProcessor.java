@@ -82,7 +82,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
     }
 
     @Override
-    public DataObjectResponse handlePOST(DataObjectRequest<Agenda> request)
+    public DataObjectResponse<Agenda> handlePOST(DataObjectRequest<Agenda> request)
     {
         Agenda objectToPersist = request.getDataObject();
 
@@ -237,7 +237,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
     }
 
     @Override
-    public RequestValidator getRequestValidator()
+    public RequestValidator<DataObjectRequest<Agenda>> getRequestValidator()
     {
         return new AgendaValidator();
     }
