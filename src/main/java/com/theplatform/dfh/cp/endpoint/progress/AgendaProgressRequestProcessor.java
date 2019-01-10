@@ -97,14 +97,21 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
     @Override
     public DataObjectResponse<AgendaProgress> handleGET(DataObjectRequest<AgendaProgress> request)
     {
+        return request.getId() == null
+               ? handleGETQuery(request.getQueries())
+               : handleGETAgendaProgress(request.getId());
+    }
+
+    private DefaultDataObjectResponse<AgendaProgress> handleGETAgendaProgress(String id)
+    {
         AgendaProgress agendaProgress;
         try
         {
-            agendaProgress = objectPersister.retrieve(request.getId());
+            agendaProgress = objectPersister.retrieve(id);
         }
         catch(PersistenceException e)
         {
-            throw new BadRequestException(String.format("Unable to get object by id %1$s", request.getId()), e);
+            throw new BadRequestException(String.format("Unable to get object by id %1$s", id), e);
         }
 
         if(agendaProgress != null)
@@ -115,6 +122,29 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
         defaultDataObjectResponse.add(agendaProgress);
         return defaultDataObjectResponse;
     }
+
+    private DefaultDataObjectResponse<AgendaProgress> handleGETQuery(List<Query> queries)
+    {
+        DataObjectFeed<AgendaProgress> agendaProgressFeed;
+        try
+        {
+            agendaProgressFeed = objectPersister.retrieve(queries);
+        }
+        catch(PersistenceException e)
+        {
+            final String queryString = queries.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
+            throw new BadRequestException(String.format("Unable to get object by queries %1$s", queryString), e);
+        }
+
+        for (AgendaProgress agendaProgress : agendaProgressFeed.getAll())
+        {
+            agendaProgress.setOperationProgress(getOperationProgressObjects(agendaProgress.getId()));
+        }
+        DefaultDataObjectResponse<AgendaProgress> defaultDataObjectResponse = new DefaultDataObjectResponse<>();
+        defaultDataObjectResponse.addAll(agendaProgressFeed.getAll());
+        return defaultDataObjectResponse;
+    }
+
 
     private OperationProgress[] getOperationProgressObjects(String agendaProgressId)
     {
