@@ -95,16 +95,16 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     }
 
     /**
-     * Handles the DELETE of an object // TODO: should this return an object?
+     * Handles the DELETE of an object
      * @param request The request holding the id of the object to delete
      */
     @Override
-    public DataObjectResponse<T> handleDelete(DataObjectRequest<T> request) {
+    public DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
+    {
         try
         {
             objectPersister.delete(request.getId());
-            DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
-            return response;
+            return new DefaultDataObjectResponse<>();
         }
         catch(PersistenceException e)
         {

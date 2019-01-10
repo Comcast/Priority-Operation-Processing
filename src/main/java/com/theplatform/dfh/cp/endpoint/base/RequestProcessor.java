@@ -11,6 +11,6 @@ public interface RequestProcessor<Res extends ServiceResponse, Req extends Servi
 
     Res handlePUT(Req request);
 
-    Res handleDelete(Req request);
+    Res handleDELETE(Req request);
 
 }
