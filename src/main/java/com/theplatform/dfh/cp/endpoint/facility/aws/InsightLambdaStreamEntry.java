@@ -2,14 +2,14 @@ package com.theplatform.dfh.cp.endpoint.facility.aws;
 
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
-import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
-public class InsightLambdaStreamEntry extends BaseAWSLambdaStreamEntry<Insight>
+public class InsightLambdaStreamEntry extends DataObjectLambdaStreamEntry<Insight>
 {
     public InsightLambdaStreamEntry()
     {

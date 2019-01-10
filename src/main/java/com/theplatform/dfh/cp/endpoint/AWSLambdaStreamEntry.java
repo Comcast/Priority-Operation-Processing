@@ -1,18 +1,13 @@
 package com.theplatform.dfh.cp.endpoint;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.amazonaws.util.IOUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.AgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agenda.service.aws.AgendaServiceLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
-import com.theplatform.dfh.cp.endpoint.aws.ResponseWriter;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.aws.CustomerLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.facility.aws.InsightLambdaStreamEntry;
@@ -22,10 +17,10 @@ import com.theplatform.dfh.cp.endpoint.progress.aws.ProgressLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.progress.service.aws.ProgressServiceLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.transformrequest.aws.TransformLambdaStreamEntry;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,7 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Main entry point class for the AWS Endpoint Lambda (will map into another)
@@ -112,9 +106,9 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
     }
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest lambdaRequest)
+    public RequestProcessor getRequestProcessor(ServiceRequest lambdaRequest)
     {
-        return null;      //not used
+        return null;
     }
 
     @Override

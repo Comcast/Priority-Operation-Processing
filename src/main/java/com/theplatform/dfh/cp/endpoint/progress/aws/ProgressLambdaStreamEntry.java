@@ -5,14 +5,14 @@ import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**
  * Main entry point class for the AWS Agenda endpoint
  */
-public class ProgressLambdaStreamEntry extends BaseAWSLambdaStreamEntry<AgendaProgress>
+public class ProgressLambdaStreamEntry extends DataObjectLambdaStreamEntry<AgendaProgress>
 {
     private DynamoDBOperationProgressPersisterFactory operationProgressPersisterFactory;
 

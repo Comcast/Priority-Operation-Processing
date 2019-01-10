@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.aws.BaseAWSLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBCustomerPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
@@ -24,7 +24,7 @@ import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersist
 /**
  * Main entry point class for the AWS TransformRequest endpoint
  */
-public class TransformLambdaStreamEntry extends BaseAWSLambdaStreamEntry<TransformRequest>
+public class TransformLambdaStreamEntry extends DataObjectLambdaStreamEntry<TransformRequest>
 {
     private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
     private ObjectPersisterFactory<AgendaProgress> agendaProgressPersisterFactory;
