@@ -62,7 +62,7 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
                     responseBodyObject = requestProcessor.handlePUT(request);
                     break;
                 case "DELETE":
-                    responseBodyObject = requestProcessor.handleDelete(request);
+                    responseBodyObject = requestProcessor.handleDELETE(request);
                     break;
                 default:
                     // todo: some bad response code
