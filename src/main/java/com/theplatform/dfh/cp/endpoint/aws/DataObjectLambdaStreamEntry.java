@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -12,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base for CP Object Endpoints on AWS
+ * Base for Data Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
-public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> extends AbstractLambdaStreamEntry<LambdaDataObjectRequest<T>>
+public abstract class DataObjectLambdaStreamEntry<T extends IdentifiedObject> extends AbstractLambdaStreamEntry<LambdaDataObjectRequest<T>>
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -23,7 +25,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> exten
     private Class<T> payloadClass;
 
     // TODO: wrapper class for all the json parsing
-    public BaseAWSLambdaStreamEntry(Class<T> clazz, ObjectPersisterFactory<T> objectPersisterFactory)
+    public DataObjectLambdaStreamEntry(Class<T> clazz, ObjectPersisterFactory<T> objectPersisterFactory)
     {
         this.objectPersisterFactory = objectPersisterFactory;
         this.payloadClass = clazz;
@@ -34,7 +36,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> exten
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    protected abstract RequestProcessor getRequestProcessor(LambdaDataObjectRequest<T> lambdaRequest, ObjectPersister<T> objectPersister);
+    protected abstract RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>> getRequestProcessor(LambdaDataObjectRequest<T> lambdaRequest, ObjectPersister<T> objectPersister);
 
     protected String getTableEnvironmentVariableName()
     {
@@ -42,7 +44,7 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> exten
     }
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaDataObjectRequest lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaDataObjectRequest<T> lambdaRequest)
     {
         String tableName = environmentLookupUtils.getTableName(lambdaRequest, getTableEnvironmentVariableName());
         logger.info("TableName: {}", tableName);
@@ -55,13 +57,9 @@ public abstract class BaseAWSLambdaStreamEntry<T extends IdentifiedObject> exten
     {
         return new LambdaDataObjectRequest<>(node, payloadClass);
     }
-    /**
-     * Creates the response body object to return
-     * @param object The object returned by the request processor (may be null)
-     * @param rootRequestNode The root node of the incoming request
-     * @return The body object to respond with
-     */
-    protected Object createResponseBodyObject(Object object, JsonNode rootRequestNode)
+
+    @Override
+    protected Object createResponseBodyObject(Object object, LambdaDataObjectRequest<T> request)
     {
         return object;
     }

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.theplatform.dfh.endpoint.api.ServiceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -16,7 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> implements JsonRequestStreamHandler
+public abstract class AbstractLambdaStreamEntry<Req extends ServiceRequest> implements JsonRequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,8 +30,8 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public abstract RequestProcessor getRequestProcessor(R lambdaRequest);
-    public abstract R getRequest(JsonNode node) throws BadRequestException;
+    public abstract RequestProcessor getRequestProcessor(Req lambdaRequest);
+    public abstract Req getRequest(JsonNode node) throws BadRequestException;
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
@@ -39,9 +41,9 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
 
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
-        R request = getRequest(inputStreamNode);
+        Req request = getRequest(inputStreamNode);
 
-        RequestProcessor requestProcessor = getRequestProcessor(request);
+        RequestProcessor<ServiceResponse, ServiceRequest> requestProcessor = getRequestProcessor(request);
         Object responseBodyObject = null;
         int httpStatusCode = 200;
 
@@ -51,17 +53,21 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
             switch (httpMethod)
             {
                 case "GET":
+                    requestProcessor.getRequestValidator().validateGET(request);
                     responseBodyObject = requestProcessor.handleGET(request);
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
                 case "POST":
+                    requestProcessor.getRequestValidator().validatePOST(request);
                     responseBodyObject = requestProcessor.handlePOST(request);
                     break;
                 case "PUT":
+                    requestProcessor.getRequestValidator().validatePUT(request);
                     responseBodyObject = requestProcessor.handlePUT(request);
                     break;
                 case "DELETE":
+                    requestProcessor.getRequestValidator().validateDELETE(request);
                     responseBodyObject = requestProcessor.handleDELETE(request);
                     break;
                 default:
@@ -69,7 +75,7 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
                     httpStatusCode = 405;
                     logger.warn("Unsupported method type.");
             }
-            responseBodyObject = createResponseBodyObject(responseBodyObject, request.getJsonNode());
+            responseBodyObject = createResponseBodyObject(responseBodyObject, request);
         }
         catch (IllegalArgumentException e)
         {
@@ -98,10 +104,10 @@ public abstract class AbstractLambdaStreamEntry<R extends LambdaRequest> impleme
     /**
      * Creates the response body object to return
      * @param object The object returned by the request processor (may be null)
-     * @param rootRequestNode The root node of the incoming request
+     * @param request The request object
      * @return The body object to respond with
      */
-    protected Object createResponseBodyObject(Object object, JsonNode rootRequestNode)
+    protected Object createResponseBodyObject(Object object, Req request)
     {
         return object;
     }
