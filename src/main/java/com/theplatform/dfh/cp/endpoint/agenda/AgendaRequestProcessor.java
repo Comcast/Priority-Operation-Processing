@@ -9,12 +9,14 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.validation.AgendaValidator;
 import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
@@ -46,7 +48,6 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
     private ObjectClient<AgendaProgress> agendaProgressClient;
     private ObjectClient<OperationProgress> operationProgressClient;
     private ObjectPersister<ReadyAgenda> readyAgendaObjectPersister;
-    private AgendaValidator agendaValidator = new AgendaValidator();
     private InsightSelector insightSelector;
 
     public AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestPersister,
@@ -84,7 +85,6 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
     public DataObjectResponse handlePOST(DataObjectRequest<Agenda> request)
     {
         Agenda objectToPersist = request.getDataObject();
-        agendaValidator.validate(objectToPersist);
 
         // verify we have a valid insight for this agenda
         Insight insight = insightSelector.select(objectToPersist);
@@ -147,7 +147,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         response.setId(agendaId);
         if(response.getParams() == null) response.setParams(new ParamsMap());
         response.getParams().put(GeneralParamKey.progressId, agendaProgressId);
-        DataObjectResponse dataObjectResponse = new DefaultDataObjectResponse();
+        DataObjectResponse<Agenda> dataObjectResponse = new DefaultDataObjectResponse<>();
         dataObjectResponse.add(response);
         return dataObjectResponse;
     }
@@ -236,8 +236,9 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         }
     }
 
-    public void setAgendaValidator(AgendaValidator agendaValidator)
+    @Override
+    public RequestValidator getRequestValidator()
     {
-        this.agendaValidator = agendaValidator;
+        return new AgendaValidator();
     }
 }

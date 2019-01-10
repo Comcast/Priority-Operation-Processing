@@ -9,11 +9,13 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
+import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
@@ -39,7 +41,6 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     private PrepOpsGenerator prepOpsGenerator;
     private ObjectClient<AgendaProgress> agendaProgressClient;
     private ObjectClient<Agenda> agendaClient;
-    private TransformValidator transformValidator = new TransformValidator();
 
     public TransformRequestProcessor(
         ObjectPersister<TransformRequest> transformRequestObjectPersister,
@@ -67,7 +68,6 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request) throws BadRequestException
     {
         TransformRequest transformRequest = request.getDataObject();
-        transformValidator.validate(transformRequest);
 
         String objectId = UUID.randomUUID().toString();
         transformRequest.setId(objectId);
@@ -150,7 +150,13 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         {
             throw new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequest.getId()), e);
         }
-     }
+    }
+
+    @Override
+    public RequestValidator getRequestValidator()
+    {
+        return new TransformValidator();
+    }
 
     public void setPrepOpsGenerator(PrepOpsGenerator prepOpsGenerator)
     {

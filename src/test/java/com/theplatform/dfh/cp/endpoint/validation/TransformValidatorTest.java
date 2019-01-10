@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.transformrequest;
+package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.input.InputFileResource;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-public class TransformValidatorTest
+public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
 {
     private final String CUSTOMER_ID = "theCustomer";
     private TransformValidator validator;
@@ -24,13 +24,13 @@ public class TransformValidatorTest
     @Test
     public void testValidCustomer()
     {
-        validator.validate(createTransform(CUSTOMER_ID));
+        validator.validatePOST(createRequest(createTransform(CUSTOMER_ID)));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*The customer id must be specified on the transform.*")
     public void testInvalidCustomer()
     {
-        validator.validate(createTransform(null));
+        validator.validatePOST(createRequest(createTransform(null)));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TransformValidatorTest
         InputFileResource inputFileResource = new InputFileResource();
         transformRequest.setInputs(Collections.singletonList(inputFileResource));
 
-        validator.validate(transformRequest);
+        validator.validatePOST(createRequest(transformRequest));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid stream reference found.*")
@@ -61,7 +61,7 @@ public class TransformValidatorTest
         inputStreams.setVideo(Collections.singletonList(inputStream));
         transformRequest.setInputStreams(inputStreams);
 
-        validator.validate(transformRequest);
+        validator.validatePOST(createRequest(transformRequest));
     }
 
     private TransformRequest createTransform(String customerId)

@@ -1,13 +1,14 @@
-package com.theplatform.dfh.cp.endpoint.agenda;
+package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.api.operation.OperationReference;
+import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import com.theplatform.dfh.endpoint.api.ValidationException;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -24,20 +25,21 @@ import java.util.stream.Collectors;
  *
  * Checks fields for glaring issues (customerId, references)
  */
-public class AgendaValidator
+public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectRequest<Agenda>>
 {
-    private JsonHelper jsonHelper = new JsonHelper();
     private List<String> validationIssues;
     private final int MAX_ISSUES = 10;
 
-    public void validate(Agenda agenda)
+    @Override
+    public void validatePOST(DataObjectRequest<Agenda> request)
     {
+        super.validatePOST(request);
         validationIssues = new LinkedList<>();
+
+        Agenda agenda = request.getDataObject();
 
         if(StringUtils.isBlank(agenda.getCustomerId()))
             throw new ValidationException("The customer id must be specified on the agenda.");
-
-        JsonNode rootTransformNode = jsonHelper.getObjectMapper().valueToTree(agenda);
 
         validateOperations(agenda);
 
@@ -67,8 +69,8 @@ public class AgendaValidator
             throw new ValidationException("No operations specified in Agenda.");
 
         JsonContext jsonContext = new JsonContext();
-        // populate the context with temp data to validate operation name references
-        agenda.getOperations().forEach(op -> jsonContext.addData(op.getName() + ".out", "{}"));
+        // populate the context with temp data to validatePOST operation name references
+        agenda.getOperations().forEach(op -> jsonContext.addData(op.getName() + OperationReference.OUTPUT.getSuffix(), "{}"));
 
         agenda.getOperations().forEach(op ->
         {
@@ -100,7 +102,7 @@ public class AgendaValidator
             referenceMap.put(op.getName(), result.getMissingReferences() == null
                                            ? new HashSet<>()
                                            : result.getMissingReferences().stream().map(ref ->
-                                               replacer.getReferenceName(ref).replace(".out", ""))
+                                               replacer.getReferenceName(ref).replace(OperationReference.OUTPUT.getSuffix(), ""))
                                                .collect(Collectors.toSet()));
         });
 
@@ -150,10 +152,5 @@ public class AgendaValidator
     protected void setValidationIssues(List<String> validationIssues)
     {
         this.validationIssues = validationIssues;
-    }
-
-    public void setJsonHelper(JsonHelper jsonHelper)
-    {
-        this.jsonHelper = jsonHelper;
     }
 }

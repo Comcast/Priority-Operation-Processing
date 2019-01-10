@@ -1,12 +1,15 @@
-package com.theplatform.dfh.cp.endpoint.transformrequest;
+package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.AbstractStream;
+import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.input.InputStream;
 import com.theplatform.dfh.cp.api.output.OutputStream;
+import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ValidationException;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
@@ -17,15 +20,19 @@ import java.util.List;
  *
  * Checks fields for glaring issues (customerId, references)
  */
-public class TransformValidator
+public class TransformValidator extends DataObjectValidator<TransformRequest, DataObjectRequest<TransformRequest>>
 {
     private JsonHelper jsonHelper = new JsonHelper();
     private List<String> validationIssues;
     private final int MAX_ISSUES = 10;
 
-    public void validate(TransformRequest transform)
+    @Override
+    public void validatePOST(DataObjectRequest<TransformRequest> request)
     {
+        super.validatePOST(request);
         validationIssues = new LinkedList<>();
+
+        TransformRequest transform = request.getDataObject();
 
         if(StringUtils.isBlank(transform.getCustomerId()))
             throw new ValidationException("The customer id must be specified on the transform.");

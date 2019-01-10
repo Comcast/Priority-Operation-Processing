@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.agenda;
+package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class AgendaValidatorTest
+public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
 {
     private final String CUSTOMER_ID = "theCustomer";
     private JsonReferenceReplacer jsonReferenceReplacer = new JsonReferenceReplacer();
@@ -31,7 +31,7 @@ public class AgendaValidatorTest
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*The customer id must be specified on the agenda.*")
     public void testInvalidCustomer()
     {
-        validator.validate(createAgenda(null));
+        validator.validatePOST(createRequest(createAgenda(null)));
     }
 
     @DataProvider
@@ -47,7 +47,7 @@ public class AgendaValidatorTest
     @Test(dataProvider = "invalidOperationsProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*No operations specified in Agenda.*")
     public void testInvalidOperations(Agenda agenda)
     {
-        validator.validate(agenda);
+        validator.validatePOST(createRequest(agenda));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Operation names must be unique.*")
@@ -71,7 +71,7 @@ public class AgendaValidatorTest
         Agenda agenda = createAgenda(CUSTOMER_ID);
         agenda.setOperations(Collections.singletonList(createOperation("Op1", "Op2.out")));
 
-        validator.validate(agenda);
+        validator.validatePOST(createRequest(agenda));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AgendaValidatorTest
             createOperation("Op2")
         ));
 
-        validator.validate(agenda);
+        validator.validatePOST(createRequest(agenda));
     }
 
     @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
@@ -92,7 +92,7 @@ public class AgendaValidatorTest
         Agenda agenda = createAgenda(CUSTOMER_ID);
         agenda.setOperations(Collections.singletonList(createOperation("Op1", "Op1.out")));
 
-        validator.validate(agenda);
+        validator.validatePOST(createRequest(agenda));
     }
 
     @DataProvider
@@ -126,7 +126,7 @@ public class AgendaValidatorTest
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
         agenda.setOperations(operations);
-        validator.validate(agenda);
+        validator.validatePOST(createRequest(agenda));
     }
 
     private Operation createOperation(String name)
