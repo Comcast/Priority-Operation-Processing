@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Base for Data Object Endpoints on AWS
  * @param <T> The type of object persist/retrieve
  */
-public abstract class DataObjectLambdaStreamEntry<T extends IdentifiedObject> extends AbstractLambdaStreamEntry<LambdaDataObjectRequest<T>>
+public abstract class DataObjectLambdaStreamEntry<T extends IdentifiedObject> extends AbstractLambdaStreamEntry<DataObjectResponse<T>, LambdaDataObjectRequest<T>>
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public abstract class AbstractLambdaStreamEntry<Req extends ServiceRequest> implements JsonRequestStreamHandler
+public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req extends ServiceRequest> implements JsonRequestStreamHandler
 {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -43,7 +43,7 @@ public abstract class AbstractLambdaStreamEntry<Req extends ServiceRequest> impl
     {
         Req request = getRequest(inputStreamNode);
 
-        RequestProcessor<ServiceResponse, ServiceRequest> requestProcessor = getRequestProcessor(request);
+        RequestProcessor<Res, Req> requestProcessor = getRequestProcessor(request);
         Object responseBodyObject = null;
         int httpStatusCode = 200;
 
