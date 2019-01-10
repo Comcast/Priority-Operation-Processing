@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceResponse;
 
@@ -13,4 +14,5 @@ public interface RequestProcessor<Res extends ServiceResponse, Req extends Servi
 
     Res handleDELETE(Req request);
 
+    RequestValidator<Req> getRequestValidator();
 }

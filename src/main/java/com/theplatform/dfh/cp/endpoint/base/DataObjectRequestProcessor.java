@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
+import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -110,5 +112,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
         {
             throw new BadRequestException(String.format("Unable to delete object by id %1$s", request.getId()), e);
         }
+    }
+
+    @Override
+    public RequestValidator<DataObjectRequest<T>> getRequestValidator()
+    {
+        return new DataObjectValidator<>();
     }
 }
