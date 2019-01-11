@@ -81,9 +81,8 @@ public class Agenda implements IdentifiedObject
         return customerId;
     }
 
-    public Agenda setCustomerId(String customerId)
+    public void setCustomerId(String customerId)
     {
         this.customerId = customerId;
-        return this;
     }
 }

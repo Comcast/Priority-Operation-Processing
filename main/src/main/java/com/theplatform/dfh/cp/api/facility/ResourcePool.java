@@ -9,7 +9,7 @@ public class ResourcePool implements IdentifiedObject
 {
     private String id;
     private String title;
-    private String ownerId;
+    private String customerId;
     private List<Insight> insights = new ArrayList<>();
 
     public String getId()
@@ -32,14 +32,14 @@ public class ResourcePool implements IdentifiedObject
         this.title = title;
     }
 
-    public String getOwnerId()
+    public String getCustomerId()
     {
-        return ownerId;
+        return customerId;
     }
 
-    public void setOwnerId(String ownerId)
+    public void setCustomerId(String customerId)
     {
-        this.ownerId = ownerId;
+        this.customerId = customerId;
     }
 
     public List<Insight> getInsights()

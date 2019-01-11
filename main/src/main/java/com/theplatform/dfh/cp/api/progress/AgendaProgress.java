@@ -22,6 +22,7 @@ public class AgendaProgress implements IdentifiedObject
     private Date startedTime;
     private Date completedTime;
     private Double percentComplete;
+    private String customerId;
 
     public AgendaProgress()
     {
@@ -42,6 +43,18 @@ public class AgendaProgress implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     public String getLinkId()

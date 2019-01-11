@@ -13,6 +13,7 @@ public class Insight implements IdentifiedObject
     private SchedulingAlgorithm schedulingAlgorithm;
     private Map<String, Set<String>> mappers;
     private Set<String> allowedCustomerIds;
+    private String customerId;
 
     public String getId()
     {
@@ -22,6 +23,18 @@ public class Insight implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     public String getResourcePoolId()

@@ -15,7 +15,7 @@ public class OperationDiagnostics implements IdentifiedObject
     private Date errorTime;
     private Integer attempt;
     private Date attemptTime;
-
+    private String customerId;
 
     @Override
     public String getId()
@@ -27,6 +27,18 @@ public class OperationDiagnostics implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     public String getErrorCode()

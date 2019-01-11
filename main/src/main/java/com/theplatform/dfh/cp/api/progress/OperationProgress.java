@@ -17,6 +17,7 @@ public class OperationProgress implements IdentifiedObject
     private Date startedTime;
     private Date completedTime;
     private String resultPayload;
+    private String customerId;
 
     public String getId()
     {
@@ -26,6 +27,18 @@ public class OperationProgress implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     public String getAgendaProgressId()

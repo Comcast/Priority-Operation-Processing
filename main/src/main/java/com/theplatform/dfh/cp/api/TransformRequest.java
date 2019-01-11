@@ -30,10 +30,9 @@ public class TransformRequest implements IdentifiedObject
         return customerId;
     }
 
-    public TransformRequest setCustomerId(String customerId)
+    public void setCustomerId(String customerId)
     {
         this.customerId = customerId;
-        return this;
     }
 
     /**

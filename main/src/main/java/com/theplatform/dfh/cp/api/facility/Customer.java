@@ -48,4 +48,16 @@ public class Customer implements IdentifiedObject
     {
         this.resourcePoolId = resourcePoolId;
     }
+
+    @Override
+    public String getCustomerId()
+    {
+        return id;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.id = customerId;
+    }
 }
