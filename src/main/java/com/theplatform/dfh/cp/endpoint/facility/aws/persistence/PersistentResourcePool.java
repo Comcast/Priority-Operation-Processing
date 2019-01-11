@@ -26,9 +26,9 @@ public class PersistentResourcePool extends ResourcePool
     }
 
     @Override
-    public String getOwnerId()
+    public String getCustomerId()
     {
-        return super.getOwnerId();
+        return super.getCustomerId();
     }
 
     @Override

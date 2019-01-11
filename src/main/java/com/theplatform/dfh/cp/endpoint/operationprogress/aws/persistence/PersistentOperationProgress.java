@@ -80,4 +80,16 @@ public class PersistentOperationProgress extends OperationProgress
     {
         return super.getResultPayload();
     }
+
+    @Override
+    public String getCustomerId()
+    {
+        return super.getCustomerId();
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        super.setCustomerId(customerId);
+    }
 }

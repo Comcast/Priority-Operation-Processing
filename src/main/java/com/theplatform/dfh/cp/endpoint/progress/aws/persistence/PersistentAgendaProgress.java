@@ -86,5 +86,17 @@ public class PersistentAgendaProgress extends AgendaProgress
     {
         return super.getPercentComplete();
     }
+
+    @Override
+    public String getCustomerId()
+    {
+        return super.getCustomerId();
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        super.setCustomerId(customerId);
+    }
 }
 
