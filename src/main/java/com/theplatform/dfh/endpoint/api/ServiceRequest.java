@@ -19,4 +19,7 @@ public interface ServiceRequest<T>
 
     T getPayload();
 
+    AuthorizationResponse getAuthorizationResponse();
+
+    void setAuthorizationResponse(AuthorizationResponse authorizationResponse);
 }

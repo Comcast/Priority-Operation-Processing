@@ -11,6 +11,18 @@ public class DefaultServiceRequest<T> implements ServiceRequest<T>
     private String cid;
     private T payload;
     private Map<String, String> headers = new HashMap<>();
+    private AuthorizationResponse authorizationResponse;
+
+    @Override
+    public AuthorizationResponse getAuthorizationResponse()
+    {
+        return authorizationResponse;
+    }
+
+    public void setAuthorizationResponse(AuthorizationResponse authorizationResponse)
+    {
+        this.authorizationResponse = authorizationResponse;
+    }
 
     public void setHttpMethod(String httpMethod)
     {
