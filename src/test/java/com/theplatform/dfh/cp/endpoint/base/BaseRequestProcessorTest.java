@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
@@ -18,7 +19,7 @@ public class BaseRequestProcessorTest
 {
     ObjectPersister<SimpleObject> objectPersister = Mockito.mock(ObjectPersister.class);
 
-    @Test(expectedExceptions = BadRequestException.class)
+    @Test(expectedExceptions = ObjectNotFoundException.class)
     public void testGetByQueryBad() throws BadRequestException, PersistenceException
     {
         TestBaseProcessor processor = new TestBaseProcessor(objectPersister);
@@ -46,6 +47,18 @@ public class BaseRequestProcessorTest
 
         @Override
         public void setId(String s)
+        {
+
+        }
+
+        @Override
+        public String getCustomerId()
+        {
+            return null;
+        }
+
+        @Override
+        public void setCustomerId(String customerId)
         {
 
         }
