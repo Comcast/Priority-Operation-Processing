@@ -9,6 +9,7 @@ public class TestTrackedObject implements IdentifiedObject
     private String id;
     private String valueString;
     private Map<String, String> stringAttributes;
+    private String customerId;
 
     public TestTrackedObject()
     {
@@ -25,6 +26,18 @@ public class TestTrackedObject implements IdentifiedObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     public TestTrackedObject(String id, String valueString)
