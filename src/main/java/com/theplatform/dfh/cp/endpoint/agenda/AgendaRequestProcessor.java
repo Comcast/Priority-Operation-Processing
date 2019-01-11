@@ -21,6 +21,7 @@ import com.theplatform.dfh.cp.scheduling.agenda.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -74,7 +75,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         ObjectClient<OperationProgress> operationProgressClient,
         InsightSelector insightSelector)
     {
-        super(agendaRequestObjectPersister);
+        super(agendaRequestObjectPersister, new AgendaValidator());
         this.readyAgendaObjectPersister = readyAgendaObjectPersister;
         this.agendaProgressClient = agendaProgressClient;
         this.operationProgressClient = operationProgressClient;
@@ -88,20 +89,14 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
 
         // verify we have a valid insight for this agenda
         Insight insight = insightSelector.select(objectToPersist);
-        //@todo validation should be a NotFoundException??
         if(insight == null)
-            throw new ValidationException(String.format("No available insights for processing agenda %s", objectToPersist.getId()));
-
-        ParamsMap paramsMap = objectToPersist.getParams();
-        paramsMap = paramsMap == null ? new ParamsMap() : paramsMap;
+            throw new ObjectNotFoundException(String.format("No available insights for processing agenda %s", objectToPersist.getId()));
 
         String agendaProgressId = objectToPersist.getProgressId();
         if (agendaProgressId == null)
         {
             agendaProgressId = persistAgendaProgress(objectToPersist);
-            logger.info("Generated new progress: {}", agendaProgressId);
             objectToPersist.setProgressId(agendaProgressId);
-            objectToPersist.setParams(paramsMap);
         }
         else
         {
@@ -111,59 +106,17 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         if (objectToPersist.getOperations() != null)
             persistOperationProgresses(objectToPersist, agendaProgressId);
 
-        String agendaId = null;
-        try
-        {
-            Agenda persistedAgenda = objectPersister.persist(objectToPersist);
-            agendaId = persistedAgenda.getId();
-        }
-        catch(PersistenceException e)
-        {
-            throw new BadRequestException("Unable to create object", e);
-        }
+        DataObjectResponse<Agenda> response = super.handlePOST(request);
+        Agenda agendaResp = response.getFirst();
+        persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId());
 
-        if(insight != null)
-        {
-            try
-            {
-                ReadyAgenda readyAgenda = new ReadyAgenda();
-                readyAgenda.setInsightId(insight.getId());
-                readyAgenda.setAdded(new Date());
-                readyAgenda.setAgendaId(agendaId);
-                readyAgenda.setCustomerId(objectToPersist.getCustomerId());
-                readyAgendaObjectPersister.persist(readyAgenda);
-            }
-            catch (PersistenceException e)
-            {
-                throw new BadRequestException("Unable to create ReadyAgenda", e);
-            }
-        }
-        else
-        {
-            logger.warn("No insight was found for new agenda: {}", agendaId);
-        }
-
-        Agenda response = new Agenda();
-        response.setId(agendaId);
-        if(response.getParams() == null) response.setParams(new ParamsMap());
-        response.getParams().put(GeneralParamKey.progressId, agendaProgressId);
-        DataObjectResponse<Agenda> dataObjectResponse = new DefaultDataObjectResponse<>();
-        dataObjectResponse.add(response);
-        return dataObjectResponse;
+        return response;
     }
 
     @Override
     public DataObjectResponse<Agenda> handleDELETE(DataObjectRequest<Agenda> request)
     {
-        try
-        {
-            objectPersister.delete(request.getId());
-        }
-        catch(PersistenceException e)
-        {
-            throw new BadRequestException(String.format("Unable to delete object by id: %1$s", request.getId()), e);
-        }
-
+        DataObjectResponse<Agenda> agendaResp = super.handleDELETE(request);
         ByAgendaId byAgendaId = new ByAgendaId(request.getId());
         try
         {
@@ -177,7 +130,24 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         {
             logger.error("Unable to delete ReadyAgenda.", e);
         }
-        return new DefaultDataObjectResponse<>();
+        return agendaResp;
+    }
+
+    void persistReadyAgenda(String insightId, String agendaId, String customerId)
+    {
+        try
+        {
+            ReadyAgenda readyAgenda = new ReadyAgenda();
+            readyAgenda.setInsightId(insightId);
+            readyAgenda.setAdded(new Date());
+            readyAgenda.setAgendaId(agendaId);
+            readyAgenda.setCustomerId(customerId);
+            readyAgendaObjectPersister.persist(readyAgenda);
+        }
+        catch (PersistenceException e)
+        {
+            throw new BadRequestException("Unable to create ReadyAgenda", e);
+        }
     }
 
     String persistAgendaProgress(Agenda agenda)
@@ -190,27 +160,23 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         agendaProgress.setLinkId(agenda.getLinkId());
         agendaProgress.setProcessingState(ProcessingState.WAITING);
         agendaProgress.setAddedTime(new Date());
-        if(agenda.getParams() != null)
-        {
-            ParamsMap paramsMap = agenda.getParams();
-            String externalId = paramsMap.getString(GeneralParamKey.externalId);
-            if(!StringUtils.isBlank(externalId)) agendaProgress.setExternalId(externalId);
-        }
+
+        ParamsMap paramsMap = agenda.getParams() == null ? new ParamsMap() : agenda.getParams();
+        if(paramsMap == null)
+            agenda.setParams(new ParamsMap());
+
+        String externalId = paramsMap.getString(GeneralParamKey.externalId);
+        if(!StringUtils.isBlank(externalId)) agendaProgress.setExternalId(externalId);
+
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
-        try
-        {
-            DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.persistObject(agendaProgress);
-            if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
-            agendaProgressResponse = dataObjectResponse.getFirst();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Failed to create the Progress generated from the Agenda.", e);
-        }
+        DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.persistObject(agendaProgress);
+        if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
+        agendaProgressResponse = dataObjectResponse.getFirst();
 
         if(agendaProgressResponse == null)
             throw new RuntimeException("AgendaProgress persistence failed.");
 
+        logger.info("Generated new progress: {}", agendaProgressResponse.getId());
         return agendaProgressResponse.getId();
     }
 

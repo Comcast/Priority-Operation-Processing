@@ -13,6 +13,8 @@ import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.Assert;
@@ -48,7 +50,7 @@ public class TransformRequestProcessorTest
     }
 
     @Test
-    public void testHandlePost() throws BadRequestException
+    public void testHandlePost() throws PersistenceException
     {
         TransformRequest transformRequest = createTransformRequest();
         // NOTE: If the order of the creates changes this will break
@@ -83,7 +85,7 @@ public class TransformRequestProcessorTest
                 return dataObjectResponse;
             }
         }).when(mockAgendaClient).persistObject(any());
-
+        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
 
         DataObjectRequest request = new DefaultDataObjectRequest();
         ((DefaultDataObjectRequest) request).setDataObject(transformRequest);

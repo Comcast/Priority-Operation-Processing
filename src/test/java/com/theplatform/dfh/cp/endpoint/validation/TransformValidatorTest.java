@@ -66,7 +66,8 @@ public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
 
     private TransformRequest createTransform(String customerId)
     {
-        TransformRequest transformRequest = new TransformRequest().setCustomerId(customerId);
+        TransformRequest transformRequest = new TransformRequest();
+        transformRequest.setCustomerId(customerId);
         return transformRequest;
     }
 }

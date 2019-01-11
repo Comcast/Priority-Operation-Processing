@@ -151,7 +151,8 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
 
     private Agenda createAgenda(String customerId)
     {
-        Agenda agenda = new Agenda().setCustomerId(customerId);
+        Agenda agenda = new Agenda();
+        agenda.setCustomerId(customerId);
         return agenda;
     }
 
