@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
+import com.theplatform.dfh.endpoint.api.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceResponse;
@@ -42,7 +43,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
         Req request = getRequest(inputStreamNode);
-
+        request.setAuthorizationResponse(buildAuthorizationResponse(context));
         RequestProcessor<Res, Req> requestProcessor = getRequestProcessor(request);
         Object responseBodyObject = null;
         int httpStatusCode = 200;
@@ -53,21 +54,17 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
             switch (httpMethod)
             {
                 case "GET":
-                    requestProcessor.getRequestValidator().validateGET(request);
                     responseBodyObject = requestProcessor.handleGET(request);
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
                 case "POST":
-                    requestProcessor.getRequestValidator().validatePOST(request);
                     responseBodyObject = requestProcessor.handlePOST(request);
                     break;
                 case "PUT":
-                    requestProcessor.getRequestValidator().validatePUT(request);
                     responseBodyObject = requestProcessor.handlePUT(request);
                     break;
                 case "DELETE":
-                    requestProcessor.getRequestValidator().validateDELETE(request);
                     responseBodyObject = requestProcessor.handleDELETE(request);
                     break;
                 default:
@@ -164,5 +161,10 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         // TODO: the request extractor should probably just be static...
         String cid = new LambdaRequest(rootRequestNode).getHeader("X-thePlatform-cid");
         MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
+    }
+
+    private AuthorizationResponse buildAuthorizationResponse(Context context)
+    {
+        return new AuthorizationResponse(null, null, null, false);
     }
 }
