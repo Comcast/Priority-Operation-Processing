@@ -6,10 +6,23 @@ public class PersistenceTestObject implements IdentifiedObject
 {
     private String id;
     private String val;
+    private String customerId;
 
     public PersistenceTestObject()
     {
 
+    }
+
+    @Override
+    public String getCustomerId()
+    {
+        return customerId;
+    }
+
+    @Override
+    public void setCustomerId(String customerId)
+    {
+        this.customerId = customerId;
     }
 
     @Override
