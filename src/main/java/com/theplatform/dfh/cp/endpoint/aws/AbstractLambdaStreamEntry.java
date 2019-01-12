@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.endpoint.api.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceResponse;
 import org.slf4j.Logger;
@@ -74,6 +75,12 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
             }
             responseBodyObject = createResponseBodyObject(responseBodyObject, request);
         }
+        catch (RuntimeServiceException e)
+        {
+            httpStatusCode = e.getResponseCode();
+            responseBodyObject = e.getMessage();
+            logException(e);
+        }
         catch (IllegalArgumentException e)
         {
             httpStatusCode = 400;
@@ -84,18 +91,23 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         {
             httpStatusCode = 500;
             responseBodyObject = e.getMessage();
-            try
-            {
-                // Don't bother to log the exception as a param, it's broken across newlines and won't have the CID
-                logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)));
-            }
-            catch(Exception ex)
-            {
-                logger.error("Failed to process request.", e);
-            }
+            logException(e);
         }
 
         responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
+    }
+
+    private void logException(Exception e)
+    {
+        try
+        {
+            // Don't bother to log the exception as a param, it's broken across newlines and won't have the CID
+            logger.error(String.format("Failed to process request. Exception: %1$s", objectMapper.writeValueAsString(e)));
+        }
+        catch(Exception ex)
+        {
+            logger.error("Failed to process request.", e);
+        }
     }
 
     /**
