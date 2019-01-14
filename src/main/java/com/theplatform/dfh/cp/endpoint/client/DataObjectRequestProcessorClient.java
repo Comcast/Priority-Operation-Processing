@@ -33,7 +33,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setQueries(queries);
-        return requestProcessor.handleGET(request);
+        return requestProcessor.processGET(request);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
-        return requestProcessor.handleGET(request);
+        return requestProcessor.processGET(request);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
-        return requestProcessor.handlePOST(request);
+        return requestProcessor.processPOST(request);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
         request.setId(id);
-        return requestProcessor.handlePUT(request);
+        return requestProcessor.processPUT(request);
     }
 
     @Override
@@ -66,6 +66,6 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
-        return requestProcessor.handleDELETE(request);
+        return requestProcessor.processDELETE(request);
     }
 }
