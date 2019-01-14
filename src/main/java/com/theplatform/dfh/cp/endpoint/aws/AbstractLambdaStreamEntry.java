@@ -55,18 +55,18 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
             switch (httpMethod)
             {
                 case "GET":
-                    responseBodyObject = requestProcessor.handleGET(request);
+                    responseBodyObject = requestProcessor.processGET(request);
                     if (responseBodyObject == null)
                         httpStatusCode = 404;
                     break;
                 case "POST":
-                    responseBodyObject = requestProcessor.handlePOST(request);
+                    responseBodyObject = requestProcessor.processPOST(request);
                     break;
                 case "PUT":
-                    responseBodyObject = requestProcessor.handlePUT(request);
+                    responseBodyObject = requestProcessor.processPUT(request);
                     break;
                 case "DELETE":
-                    responseBodyObject = requestProcessor.handleDELETE(request);
+                    responseBodyObject = requestProcessor.processDELETE(request);
                     break;
                 default:
                     // todo: some bad response code
