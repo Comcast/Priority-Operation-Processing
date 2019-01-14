@@ -48,6 +48,8 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setNamePrefix("dfh-package")
                 .setReapCompletedPods(false) // for debugging
         );
+
+        podConfigMap.get("package").getEnvVars().put("TEST_ENV_VAR","Default test env var");
     }
 
     @Override
