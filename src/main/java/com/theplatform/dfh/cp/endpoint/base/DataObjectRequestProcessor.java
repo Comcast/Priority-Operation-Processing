@@ -19,7 +19,7 @@ import java.util.List;
  * Basic implementation for request processing.
  * @param <T> The type of object to persist
  */
-public class DataObjectRequestProcessor<T extends IdentifiedObject> implements RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>>
+public class DataObjectRequestProcessor<T extends IdentifiedObject> extends RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>>
 {
     protected ObjectPersister<T> objectPersister;
     protected RequestValidator<DataObjectRequest<T>> validator = new DataObjectValidator<>();
@@ -37,12 +37,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     }
     /**
      * Handles the GET of an object
-     * @return The object, or null if not found
+     * @return Response with the object, or an empty response if not found
      */
     @Override
-    public DataObjectResponse<T> handleGET(DataObjectRequest<T> request)
+    protected DataObjectResponse<T> handleGET(DataObjectRequest<T> request)
     {
-        validator.validateGET(request);
         try
         {
             DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
@@ -71,12 +70,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     /**
      * Handles the POST of an object
      * @param request data object request
-     * @return Resulting id of the persisted object
+     * @return Response with the object
      */
     @Override
-    public DataObjectResponse<T> handlePOST(DataObjectRequest<T> request)
+    protected DataObjectResponse<T> handlePOST(DataObjectRequest<T> request)
     {
-        validator.validatePOST(request);
         T dataObject = request.getDataObject();
         if(!visibilityFilter.isVisible(request, dataObject))
            throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()));
@@ -97,11 +95,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     /**
      * Handles a PUT of an object
      * @param request holding the object to persist
+     * @return Response with the object
      */
     @Override
-    public DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
+    protected DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
     {
-        validator.validatePUT(request);
         T dataObject = request.getDataObject();
         if(!visibilityFilter.isVisible(request, dataObject))
             throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()));
@@ -124,11 +122,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     /**
      * Handles the DELETE of an object
      * @param request The request holding the id of the object to delete
+     * @return An empty response on success
      */
     @Override
-    public DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
+    protected DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
     {
-        validator.validateDELETE(request);
         T dataObject = request.getDataObject();
         if(!visibilityFilter.isVisible(request, dataObject))
             throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()));
