@@ -79,6 +79,8 @@ public class PodConfig
     private AliveCheckDetails aliveCheckDetails;
     private NfsDetails nfsDetails;
 
+    private String logback;
+
     public String getNamePrefix()
     {
         return namePrefix;
@@ -374,5 +376,15 @@ public class PodConfig
     public PodConfig setDockerPrivileged(boolean dockerPrivileged) {
         this.dockerPrivileged = dockerPrivileged;
         return this;
+    }
+
+    public String getLogback()
+    {
+        return logback;
+    }
+
+    public void setLogback(String logback)
+    {
+        this.logback = logback;
     }
 }
