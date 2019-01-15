@@ -383,8 +383,9 @@ public class PodConfig
         return logback;
     }
 
-    public void setLogback(String logback)
+    public PodConfig setLogback(String logback)
     {
         this.logback = logback;
+        return this;
     }
 }
