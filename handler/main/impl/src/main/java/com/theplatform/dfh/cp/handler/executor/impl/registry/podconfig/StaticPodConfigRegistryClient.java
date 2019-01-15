@@ -47,9 +47,10 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.0")
                 .setNamePrefix("dfh-package")
                 .setReapCompletedPods(false) // for debugging
+                .setLogback(LogbackData.getPackagerSyslogData())
         );
 
-        podConfigMap.get("package").getEnvVars().put("LOG_CONFIG","/app/monitors/logback-syslog.xml");
+//        podConfigMap.get("package").getEnvVars().put("LOG_CONFIG","/app/monitors/logback-syslog.xml");
 
     }
 
