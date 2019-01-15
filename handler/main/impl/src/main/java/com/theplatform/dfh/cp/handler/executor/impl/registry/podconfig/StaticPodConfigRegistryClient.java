@@ -49,7 +49,8 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setReapCompletedPods(false) // for debugging
         );
 
-        podConfigMap.get("package").getEnvVars().put("TEST_ENV_VAR","Default test env var");
+        podConfigMap.get("package").getEnvVars().put("LOG_CONFIG","/app/monitors/logback-syslog.xml");
+
     }
 
     @Override
