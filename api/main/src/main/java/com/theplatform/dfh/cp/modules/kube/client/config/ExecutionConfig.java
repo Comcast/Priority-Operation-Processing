@@ -28,6 +28,8 @@ public class ExecutionConfig
 
     private LogLineAccumulator logLineAccumulator;
 
+    private String logback;
+
     public ExecutionConfig()
     {
         this("");
@@ -124,6 +126,17 @@ public class ExecutionConfig
     public ExecutionConfig setLogLineAccumulator(LogLineAccumulator logLineAccumulator)
     {
         this.logLineAccumulator = logLineAccumulator;
+        return this;
+    }
+
+    public String getLogback()
+    {
+        return logback;
+    }
+
+    public ExecutionConfig setLogback(String logback)
+    {
+        this.logback = logback;
         return this;
     }
 
