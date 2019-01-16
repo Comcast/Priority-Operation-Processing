@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.FissionClient;
+import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 /**
@@ -11,26 +11,26 @@ import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
  */
 public class AwsAgendaProviderClient implements AgendaClient
 {
-    private FissionClient webClient;
+    private AgendaServiceClient agendaServiceClient;
 
     public AwsAgendaProviderClient(String agendaProviderUrl, HttpURLConnectionFactory httpURLConnectionFactory)
     {
-        webClient = new FissionClient(httpURLConnectionFactory).setAgendaProviderUrl(agendaProviderUrl);
+        agendaServiceClient = new AgendaServiceClient(httpURLConnectionFactory).setAgendaProviderUrl(agendaProviderUrl);
     }
 
-    public AwsAgendaProviderClient(FissionClient webClient)
+    public AwsAgendaProviderClient(AgendaServiceClient agendaServiceClient)
     {
-        this.webClient = webClient;
+        this.agendaServiceClient = agendaServiceClient;
     }
 
     public Agenda getAgenda()
     {
-        return webClient.getAgenda();
+        return agendaServiceClient.getAgenda();
     }
 
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         
-        return webClient.getAgenda(getAgendaRequest);
+        return agendaServiceClient.getAgenda(getAgendaRequest);
     }
 }
