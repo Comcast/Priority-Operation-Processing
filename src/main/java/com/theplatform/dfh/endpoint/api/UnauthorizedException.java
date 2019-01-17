@@ -2,7 +2,7 @@ package com.theplatform.dfh.endpoint.api;
 
 public class UnauthorizedException extends RuntimeServiceException
 {
-    private static final int statusCode = 402;
+    private static final int statusCode = 403;
 
     public UnauthorizedException()
     {
