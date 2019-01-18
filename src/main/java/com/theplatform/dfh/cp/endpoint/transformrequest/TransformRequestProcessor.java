@@ -76,8 +76,8 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         ////
         // persist the prep/exec progress
         ////
-        AgendaProgress prepAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId());
-        AgendaProgress execAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId());
+        AgendaProgress prepAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId());
+        AgendaProgress execAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId());
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
         //This information is used for prep agenda generation, maybe these don't belong on the transform request itself
@@ -115,10 +115,11 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         return prepAgendaResponse.getFirst().getId();
     }
 
-    private AgendaProgress createAgendaProgress(String transformRequestId, String externalId)
+    private AgendaProgress createAgendaProgress(String transformRequestId, String externalId, String customerId)
     {
         AgendaProgress agendaProgress = new AgendaProgress();
         // NOTE: link id is the transformRequest id
+        agendaProgress.setCustomerId(customerId);
         agendaProgress.setLinkId(transformRequestId);
         agendaProgress.setExternalId(externalId);
         agendaProgress.setProcessingState(ProcessingState.WAITING);
