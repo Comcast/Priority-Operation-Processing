@@ -155,6 +155,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         ////
         AgendaProgress agendaProgressResponse;
         AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setCustomerId(agenda.getCustomerId());
         agendaProgress.setLinkId(agenda.getLinkId());
         agendaProgress.setProcessingState(ProcessingState.WAITING);
         agendaProgress.setAddedTime(new Date());
@@ -186,6 +187,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         for (Operation operation : agenda.getOperations())
         {
             OperationProgress operationProgress = new OperationProgress();
+            operationProgress.setCustomerId(agenda.getCustomerId());
             operationProgress.setAgendaProgressId(agendaProgressId);
             operationProgress.setProcessingState(ProcessingState.WAITING);
             operationProgress.setOperation(operation.getName());

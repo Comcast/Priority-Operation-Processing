@@ -65,7 +65,7 @@ public class PrepOpsGenerator
         addOp(ops, "agendaPost.1", "agendaPost", httpRequestHandlerInput);
 
         Agenda agenda = new Agenda();
-
+        agenda.setCustomerId(transformRequest.getCustomerId());
         // set the progress id on the agenda
         agenda.setParams(new ParamsMap());
         addParamsFromTransformRequest(agenda, transformRequest);
