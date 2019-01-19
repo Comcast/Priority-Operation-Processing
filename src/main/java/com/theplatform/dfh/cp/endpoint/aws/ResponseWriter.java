@@ -38,7 +38,7 @@ public class ResponseWriter
         headers.put("Access-Control-Allow-Credentials", "true");
         headers.put("Access-Control-Allow-Methods", "GET,OPTIONS");
         String response = objectMapper.writeValueAsString(responseObject);
-        logger.info(response);
+        logger.trace(response);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
         writer.write(response);
         writer.close();
