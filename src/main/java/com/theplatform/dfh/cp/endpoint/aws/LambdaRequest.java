@@ -249,10 +249,10 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
         {
             return builder.build();
         }
-        builder.withUsername(asText(requestValueNode.at("mpxUserName")));
-        builder.withAccounts(asText(requestValueNode.at("mpxAccounts")));
-        builder.withUserId(asText(requestValueNode.at("mpxUserId")));
-        builder.withSuperUser(asText(requestValueNode.at("isSuperUser")));
+        builder.withUsername(asText(requestValueNode.at("/mpxUserName")));
+        builder.withAccounts(asText(requestValueNode.at("/mpxAccounts")));
+        builder.withUserId(asText(requestValueNode.at("/mpxUserId")));
+        builder.withSuperUser(asText(requestValueNode.at("/isSuperUser")));
         return builder.build();
 
     }
