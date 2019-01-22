@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.6</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -17,10 +17,10 @@
     <properties>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <aws-lambda.version>1.1.0</aws-lambda.version>
-        <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
-        <queue-sqs-api.version>1.0.0-SNAPSHOT</queue-sqs-api.version>
+        <queue-api.version>1.0.0</queue-api.version>
+        <queue-sqs-api.version>1.0.0</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <dfh-object-api.version>1.0.0-SNAPSHOT</dfh-object-api.version>
+        <dfh-object-api.version>1.0.0</dfh-object-api.version>
     </properties>
     
     <dependencies>
