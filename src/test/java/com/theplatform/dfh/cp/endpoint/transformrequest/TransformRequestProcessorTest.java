@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
+import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -89,6 +90,7 @@ public class TransformRequestProcessorTest
 
         DataObjectRequest request = new DefaultDataObjectRequest();
         ((DefaultDataObjectRequest) request).setDataObject(transformRequest);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
         TransformRequest responseObject = objectPersistResponse.getFirst();
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);

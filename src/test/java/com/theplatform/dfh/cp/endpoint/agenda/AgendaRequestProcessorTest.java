@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
+import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -76,6 +77,7 @@ public class AgendaRequestProcessorTest
 
         DataObjectRequest request = new DefaultDataObjectRequest();
         ((DefaultDataObjectRequest) request).setDataObject(agenda);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         agendaRequestProcessor.handlePOST(request);
 
         verify(mockOperationProgressClient, times(2)).persistObject(any());
