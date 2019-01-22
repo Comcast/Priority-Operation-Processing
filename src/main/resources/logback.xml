@@ -20,6 +20,7 @@
     <logger name="httpclient.wire" level="ERROR" />
     <logger name="com.amazonaws.http.conn.ssl" level="ERROR"/>
     <logger name="com.amazonaws.internal" level="INFO"/>
+    <logger name="com.amazonaws.monitoring" level="WARN"/>
 
     <root level="${LogLevel:-DEBUG}">
         <appender-ref ref="STDOUT" />
