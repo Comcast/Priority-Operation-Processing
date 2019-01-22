@@ -30,7 +30,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     protected static final String STAGE_FIELD_PATH = "/requestContext/stage";
     protected static final String REQUEST_PATH = "/requestContext/resourcePath";
     protected static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
-    protected static final String AUTHORIZATION_RESPONSE = "/requestContext/authorization";
+    protected static final String AUTHORIZATION_RESPONSE = "/requestContext/authorizer";
     protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
