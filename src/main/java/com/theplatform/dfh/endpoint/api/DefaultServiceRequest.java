@@ -1,5 +1,7 @@
 package com.theplatform.dfh.endpoint.api;
 
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+
 import java.util.HashMap;
 import java.util.Map;
 

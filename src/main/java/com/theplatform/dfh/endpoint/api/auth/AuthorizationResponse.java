@@ -1,4 +1,4 @@
-package com.theplatform.dfh.endpoint.api;
+package com.theplatform.dfh.endpoint.api.auth;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,16 +15,17 @@ public class AuthorizationResponse
     private Set<String> allowedCustomerIds = new HashSet<>();
 
     // whether access is unlimited
-    private boolean isSuperUser;
+    private DataVisibility visibility;
 
-    public AuthorizationResponse(String userID, String userName, Set<String> allowedCustomerIds, boolean isSuperUser)
+
+    public AuthorizationResponse(String userID, String userName, Set<String> allowedCustomerIds, DataVisibility visibility)
     {
         this.userID = userID;
         this.userName = userName;
-        this.allowedCustomerIds = allowedCustomerIds;
-        this.isSuperUser = isSuperUser;
+        if(allowedCustomerIds != null)
+            this.allowedCustomerIds = allowedCustomerIds;
+        this.visibility = visibility;
     }
-
     public String getUserID()
     {
         return userID;
@@ -40,8 +41,9 @@ public class AuthorizationResponse
         return allowedCustomerIds;
     }
 
-    public boolean isSuperUser()
+    public DataVisibility getVisibility()
     {
-        return isSuperUser;
+        return visibility;
     }
+
 }
