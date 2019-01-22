@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.client;
 
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -16,7 +18,7 @@ import java.util.List;
 public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implements ObjectClient<T>
 {
     private final DataObjectRequestProcessor<T> requestProcessor;
-
+    private static final AuthorizationResponse globalAuthorization = new MPXAuthorizationResponseBuilder().withSuperUser(true).build();
     public DataObjectRequestProcessorClient(DataObjectRequestProcessor<T> requestProcessor)
     {
         this.requestProcessor = requestProcessor;
@@ -33,6 +35,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setQueries(queries);
+        request.setAuthorizationResponse(globalAuthorization);
         return requestProcessor.processGET(request);
     }
 
@@ -41,6 +44,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
+        request.setAuthorizationResponse(globalAuthorization);
         return requestProcessor.processGET(request);
     }
 
@@ -49,6 +53,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
+        request.setAuthorizationResponse(globalAuthorization);
         return requestProcessor.processPOST(request);
     }
 
@@ -58,6 +63,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
         request.setId(id);
+        request.setAuthorizationResponse(globalAuthorization);
         return requestProcessor.processPUT(request);
     }
 
@@ -66,6 +72,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
     {
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
+        request.setAuthorizationResponse(globalAuthorization);
         return requestProcessor.processDELETE(request);
     }
 }
