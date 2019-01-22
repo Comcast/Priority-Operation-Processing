@@ -4,6 +4,8 @@ import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.object.api.IdentifiedObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends ServiceRequest> implements VisibilityFilter<T, Req>
 {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public boolean isVisible(Req req, T object)
     {
@@ -21,12 +25,18 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
         if(authorizationResponse == null) return false;
 
         //If the visibility is global, we are ok to see all data.
-        if(authorizationResponse.getVisibility() == DataVisibility.global) return true;
+        if(authorizationResponse.getVisibility() == DataVisibility.global)
+        {
+            if(logger.isDebugEnabled()) logger.debug("visibility = " +DataVisibility.global);
+            return true;
+        }
 
         Set<String> authorizedCustomers = authorizationResponse.getAllowedCustomerIds();
         if(authorizedCustomers == null) return false;
 
-        return authorizedCustomers.contains(object.getCustomerId());
+        final boolean inAllowedAccounts = authorizedCustomers.contains(object.getCustomerId());
+        if(inAllowedAccounts && logger.isDebugEnabled()) logger.debug("visibility = " +DataVisibility.authorized_account);
+        return inAllowedAccounts;
     }
 
     @Override
