@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     protected static final String STAGE_FIELD_PATH = "/requestContext/stage";
     protected static final String REQUEST_PATH = "/requestContext/resourcePath";
     protected static final String DOMAIN_NAME_FIELD_PATH = "/requestContext/domainName";
+    protected static final String AUTHORIZATION_RESPONSE = "/requestContext/authorization";
     protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
@@ -42,6 +45,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
 
     private JsonNode rootNode;
     private HashMap<String, Object> requestParamMap;
+    private AuthorizationResponse authorizationResponse;
 
     public LambdaRequest(JsonNode rootNode, Class<T> requestObjectClass)
     {
@@ -61,6 +65,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
         setHttpMethod(parseHTTPMethod("GET"));
         setAuthorizationHeader(parseAuthorizationHeader());
         setEndpoint(parseEndpoint());
+        setAuthorizationResponse(parseAuthorizationResponse());
     }
 
     public JsonNode getJsonNode()
@@ -227,7 +232,36 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
             throw new BadRequestException("Request body is not recognized as '" + requestObjectClass.getName() + "'", e);
         }
     }
-    
+    /**
+     * "authorizer": {
+     *             "mpxUserName": "dfh-puller@comcast.com",
+     *             "mpxAccounts": "http://access.auth.test.corp.theplatform.com/data/Account/3131523765",
+     *             "mpxUserId": "http://identity.auth.test.corp.theplatform.com/idm/data/User/service/10200241",
+     *             "principalId": "user|http://identity.auth.test.corp.theplatform.com/idm/data/User/service/10200241",
+     *             "isSuperUser": "false"
+     *         }
+     **/
+    public AuthorizationResponse parseAuthorizationResponse()
+    {
+        JsonNode requestValueNode = rootNode.at(AUTHORIZATION_RESPONSE);
+        MPXAuthorizationResponseBuilder builder = new MPXAuthorizationResponseBuilder();
+        if(requestValueNode.isMissingNode())
+        {
+            return builder.build();
+        }
+        builder.withUsername(asText(requestValueNode.at("mpxUserName")));
+        builder.withAccounts(asText(requestValueNode.at("mpxAccounts")));
+        builder.withUserId(asText(requestValueNode.at("mpxUserId")));
+        builder.withSuperUser(asText(requestValueNode.at("isSuperUser")));
+        return builder.build();
+
+    }
+    private String asText(JsonNode jsonNode)
+    {
+        if(jsonNode == null || jsonNode.isMissingNode()) return null;
+        return jsonNode.asText();
+    }
+
     protected void setObjectMapper(ObjectMapper objectMapper)
     {
         this.objectMapper = objectMapper;
