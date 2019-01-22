@@ -10,7 +10,7 @@ public class MPXAuthorizationResponseBuilder
     private String userId;
     private String username;
     private DataVisibility dataVisibility = DataVisibility.authorized_account;
-    private Set<String> accountList;
+    private Set<String> accountList = new HashSet<>();
 
     public MPXAuthorizationResponseBuilder withUserId(String userId)
     {
@@ -45,7 +45,7 @@ public class MPXAuthorizationResponseBuilder
     {
         if(accounts == null) return;
         String[] values = accounts.split(DELIMITER);
-        this.accountList = new HashSet<>(Arrays.asList(values));
+        this.accountList.addAll(Arrays.asList(values));
     }
 
     public AuthorizationResponse build()
