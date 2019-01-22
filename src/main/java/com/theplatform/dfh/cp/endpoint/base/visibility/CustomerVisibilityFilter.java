@@ -19,7 +19,11 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
     @Override
     public boolean isVisible(Req req, T object)
     {
-        if(req == null || object == null) return false;
+        if(req == null || object == null)
+        {
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No request or data object available.");
+            return true; //false;
+        }
 
         AuthorizationResponse authorizationResponse = req.getAuthorizationResponse();
         if(authorizationResponse == null)
