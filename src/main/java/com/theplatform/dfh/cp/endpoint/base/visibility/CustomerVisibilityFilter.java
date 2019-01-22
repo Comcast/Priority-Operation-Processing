@@ -22,7 +22,11 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
         if(req == null || object == null) return false;
 
         AuthorizationResponse authorizationResponse = req.getAuthorizationResponse();
-        if(authorizationResponse == null) return false;
+        if(authorizationResponse == null)
+        {
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized response available.");
+            return false;
+        }
 
         //If the visibility is global, we are ok to see all data.
         if(authorizationResponse.getVisibility() == DataVisibility.global)
@@ -32,7 +36,11 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
         }
 
         Set<String> authorizedCustomers = authorizationResponse.getAllowedCustomerIds();
-        if(authorizedCustomers == null) return false;
+        if(authorizedCustomers == null)
+        {
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized accounts available.");
+            return false;
+        }
 
         final boolean inAllowedAccounts = authorizedCustomers.contains(object.getCustomerId());
         if(inAllowedAccounts && logger.isDebugEnabled()) logger.debug("visibility = " +DataVisibility.authorized_account);
