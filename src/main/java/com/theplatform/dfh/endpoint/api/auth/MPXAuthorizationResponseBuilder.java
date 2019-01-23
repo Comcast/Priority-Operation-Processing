@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class MPXAuthorizationResponseBuilder
 {
-    private static final String DELIMITER = "|";
+    private static final String DELIMITER = "\\|";
     private String userId;
     private String username;
     private DataVisibility dataVisibility = DataVisibility.authorized_account;
