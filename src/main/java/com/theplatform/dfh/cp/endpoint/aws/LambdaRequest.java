@@ -258,7 +258,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
             builder.withSuperUser(asText(requestValueNode.at("/isSuperUser")));
             authorizationResponse = builder.build();
         }
-        if(logger.isDebugEnabled()) logger.debug("AuthorizedResponse {}" +authorizationResponse.toString());
+        if(logger.isDebugEnabled()) logger.debug("AuthorizedResponse {}",authorizationResponse.toString());
         return authorizationResponse;
     }
     private String asText(JsonNode jsonNode)
