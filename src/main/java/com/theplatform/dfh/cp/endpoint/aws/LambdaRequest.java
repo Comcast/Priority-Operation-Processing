@@ -245,16 +245,21 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     {
         JsonNode requestValueNode = rootNode.at(AUTHORIZATION_RESPONSE);
         MPXAuthorizationResponseBuilder builder = new MPXAuthorizationResponseBuilder();
+        AuthorizationResponse authorizationResponse;
         if(requestValueNode.isMissingNode())
         {
-            return builder.build();
+            authorizationResponse = builder.build();
         }
-        builder.withUsername(asText(requestValueNode.at("/mpxUserName")));
-        builder.withAccounts(asText(requestValueNode.at("/mpxAccounts")));
-        builder.withUserId(asText(requestValueNode.at("/mpxUserId")));
-        builder.withSuperUser(asText(requestValueNode.at("/isSuperUser")));
-        return builder.build();
-
+        else
+        {
+            builder.withUsername(asText(requestValueNode.at("/mpxUserName")));
+            builder.withAccounts(asText(requestValueNode.at("/mpxAccounts")));
+            builder.withUserId(asText(requestValueNode.at("/mpxUserId")));
+            builder.withSuperUser(asText(requestValueNode.at("/isSuperUser")));
+            authorizationResponse = builder.build();
+        }
+        if(logger.isDebugEnabled()) logger.debug("AuthorizedResponse {}" +authorizationResponse.toString());
+        return authorizationResponse;
     }
     private String asText(JsonNode jsonNode)
     {
