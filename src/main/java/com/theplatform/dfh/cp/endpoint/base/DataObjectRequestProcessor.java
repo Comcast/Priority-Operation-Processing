@@ -127,12 +127,20 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     protected DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
     {
-        T dataObject = request.getDataObject();
-        if(!visibilityFilter.isVisible(request, dataObject))
-            throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()));
         try
         {
-            objectPersister.delete(request.getId());
+            if(request.getId() != null)
+            {
+                T object = objectPersister.retrieve(request.getId());
+                if(object != null)
+                {
+                    if(!visibilityFilter.isVisible(request, object))
+                        throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, object.getCustomerId()));
+                    else
+                        objectPersister.delete(request.getId());
+
+                }
+            }
             return new DefaultDataObjectResponse<>();
         }
         catch(PersistenceException e)
