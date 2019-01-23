@@ -21,7 +21,7 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
     {
         if(req == null || object == null)
         {
-            if(logger.isDebugEnabled()) logger.debug("visibility = false. No request or data object available.");
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No request or data object");
             return false;
         }
 
@@ -42,7 +42,7 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
         Set<String> authorizedCustomers = authorizationResponse.getAllowedCustomerIds();
         if(authorizedCustomers == null)
         {
-            if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized accounts available.");
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized accounts.");
             return false;
         }
 
