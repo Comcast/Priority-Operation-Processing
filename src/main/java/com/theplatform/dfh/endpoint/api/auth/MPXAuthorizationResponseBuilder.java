@@ -32,7 +32,7 @@ public class MPXAuthorizationResponseBuilder
     public MPXAuthorizationResponseBuilder withSuperUser(String isSuperUser)
     {
         if(isSuperUser == null) return this;
-        boolean isSuperUserBool = Boolean.getBoolean(isSuperUser);
+        boolean isSuperUserBool = Boolean.parseBoolean(isSuperUser);
         return withSuperUser(isSuperUserBool);
     }
     public MPXAuthorizationResponseBuilder withSuperUser(boolean isSuperUser)
