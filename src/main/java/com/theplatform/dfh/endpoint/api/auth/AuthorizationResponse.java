@@ -2,6 +2,7 @@ package com.theplatform.dfh.endpoint.api.auth;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AuthorizationResponse
 {
@@ -46,4 +47,22 @@ public class AuthorizationResponse
         return visibility;
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder("{");
+        builder.append("\"userId\":\"").append(userID).append("\",");
+        builder.append("\"userName\":\"").append(userName).append("\",");
+        builder.append("\"visibility\":\"").append(visibility).append("\",");
+        builder.append("\"accounts\":\"").append(delimitAccounts()).append("\"}");
+        return builder.toString();
+    }
+    private String delimitAccounts()
+    {
+        if(allowedCustomerIds != null)
+        {
+            return allowedCustomerIds.stream().collect(Collectors.joining("|"));
+        }
+        return null;
+    }
 }
