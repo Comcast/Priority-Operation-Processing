@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.modules.persistence</groupId>
     <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Persistence AWS DynamoDB</name>
 
