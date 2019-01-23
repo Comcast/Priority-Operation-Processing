@@ -14,8 +14,8 @@
     <name>Endpoint API</name>
 
     <properties>
-        <cp-persistence-api.version>1.0.0-SNAPSHOT</cp-persistence-api.version>
-        <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
+        <cp-persistence-api.version>1.0.0</cp-persistence-api.version>
+        <cp-api.version>1.0.0</cp-api.version>
     </properties>
 
     <dependencies>
