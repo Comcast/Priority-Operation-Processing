@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.modules.compression</groupId>
     <artifactId>pl-dfh-compression</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Compression</name>
 </project>
