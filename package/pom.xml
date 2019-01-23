@@ -17,7 +17,7 @@
     <name>Packaging for Sample Handler</name>
 
     <properties>
-        <application.version>1.0.0</application.version>
+        <application.version>1.0.1-SNAPSHOT</application.version>
     </properties>
 
     <dependencies>
