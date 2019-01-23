@@ -16,9 +16,8 @@
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
-        <reporter-api.version>1.0.0-SNAPSHOT</reporter-api.version>
-        <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
-        <handler-reporter-progress.version>1.0.0-SNAPSHOT</handler-reporter-progress.version>
+        <reporter-api.version>1.0.0</reporter-api.version>
+        <field-retriever.version>1.0.0</field-retriever.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>1.0.5</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
