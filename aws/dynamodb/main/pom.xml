@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.6</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,9 +14,10 @@
     <name>Persistence AWS DynamoDB</name>
 
     <properties>
-        <persistence-api.version>1.0.0-SNAPSHOT</persistence-api.version>
+        <persistence-api.version>1.0.0</persistence-api.version>
+        <persistence-impl.version>1.0.0</persistence-impl.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
-        <dfh-compression.version>1.0.0-SNAPSHOT</dfh-compression.version>
+        <dfh-compression.version>1.0.0</dfh-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
 
@@ -42,7 +43,7 @@
         <dependency>
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-impl</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${persistence-impl.version}</version>
         </dependency>
 
         <dependency>
