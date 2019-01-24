@@ -33,24 +33,13 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private ObjectClient<OperationProgress> operationProgressClient;
 
-    public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaRequestPersister,
+    public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister)
     {
-        super(agendaRequestPersister, new DataObjectValidator());
+        super(agendaProgressPersister, new DataObjectValidator());
 
         operationProgressClient = new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister));
     }
-
-//    @Override
-//    public ObjectPersistResponse handlePOST(AgendaProgress objectToPersist) throws BadRequestException
-//    {
-//        if (objectToPersist.getId() != null || objectToPersist.getId().length() != 0)
-//        {
-//            throw new BadRequestException("Id specification not supported.");
-//        }
-//
-//    }
-
 
     @Override
     public DataObjectResponse<AgendaProgress> handlePUT(DataObjectRequest<AgendaProgress> request) throws BadRequestException
@@ -66,17 +55,12 @@ public class AgendaProgressRequestProcessor extends DataObjectRequestProcessor<A
         {
             for (OperationProgress op : objectToUpdate.getOperationProgress())
             {
-                try
-                {
-                    op.setAgendaProgressId(objectToUpdate.getId());
-                    if (op.getId() == null)
-                        op.setId(OperationProgress.generateId(objectToUpdate.getId(), op.getOperation()));
-                    operationProgressClient.updateObject(op, op.getId());
-                }
-                catch (Exception e)
-                {
-                    logger.error("Unable to update OperationProgress with id {}", op.getId(), e);
-                }
+                op.setAgendaProgressId(objectToUpdate.getId());
+                if (op.getId() == null)
+                    op.setId(OperationProgress.generateId(objectToUpdate.getId(), op.getOperation()));
+                DataObjectResponse<OperationProgress> opProgressResponse = operationProgressClient.updateObject(op, op.getId());
+                if (opProgressResponse.isError())
+                    logger.error("Unable to update OperationProgress with id {}", op.getId(), opProgressResponse.getErrorResponse());
             }
         }
         return response;

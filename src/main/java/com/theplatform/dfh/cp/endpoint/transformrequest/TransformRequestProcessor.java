@@ -19,6 +19,7 @@ import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
@@ -65,7 +66,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     }
 
     @Override
-    public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request) throws BadRequestException
+    public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request)
     {
         //We create the transform req first, so we have the ID for progress operations.
         //If progress fails, we need to rollback the transformReq.
@@ -76,21 +77,35 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         ////
         // persist the prep/exec progress
         ////
-        AgendaProgress prepAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId());
-        AgendaProgress execAgendaProgressResponse = createAgendaProgress(transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId());
+        DataObjectResponse<AgendaProgress> prepAgendaProgressResponse = createAgendaProgress(
+            transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+        if (prepAgendaProgressResponse.isError())
+        {
+            return new DefaultDataObjectResponse<>(prepAgendaProgressResponse.getErrorResponse());
+        }
+        DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
+            transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+        if (execAgendaProgressResponse.isError())
+        {
+            return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
+        }
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
         //This information is used for prep agenda generation, maybe these don't belong on the transform request itself
-        transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getId());
-        transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getId());
+        transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getFirst().getId());
+        transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getFirst().getId());
 
-        String agendaId = createAgenda(transformRequest, prepAgendaProgressResponse);
-        transformRequest.getParams().put(GeneralParamKey.agendaId, agendaId);
+        DataObjectResponse<Agenda> agendaResponse = createAgenda(transformRequest, prepAgendaProgressResponse.getFirst(), request.getCID());
+        if (agendaResponse.isError())
+        {
+            return new DefaultDataObjectResponse<>(agendaResponse.getErrorResponse());
+        }
 
+        transformRequest.getParams().put(GeneralParamKey.agendaId, agendaResponse.getFirst().getId());
         return response;
     }
 
-    private String createAgenda(TransformRequest request, AgendaProgress prepAgendaProgressResponse)
+    private DataObjectResponse<Agenda> createAgenda(TransformRequest request, AgendaProgress prepAgendaProgressResponse, String cid)
     {
         ////
         // persist the prepAgenda (this is intentionally last as the Agenda may begin processing immediately)
@@ -98,24 +113,25 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         Agenda prepAgenda = prepOpsGenerator.generateAgenda(request, prepAgendaProgressResponse.getId());
 
         //logger.debug("Generated Agenda: {}", jsonHelper.getJSONString(agenda));
-        DataObjectResponse<Agenda> prepAgendaResponse;
+        DataObjectResponse<Agenda> prepAgendaResponse = new DefaultDataObjectResponse<>();
         try
         {
             prepAgendaResponse = agendaClient.persistObject(prepAgenda);
         }
         catch(Exception e)
         {
-            throw new RuntimeException("Failed to create connection to persist the Agenda generated from the TransformRequest.", e);
+            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create connection to persist the Agenda generated " +
+                "from the TransformRequest.", e), 400, cid));
         }
 
-        if(prepAgendaResponse.isError() || prepAgendaResponse.getFirst() == null)
+        if(prepAgendaResponse == null || prepAgendaResponse.getFirst() == null)
         {
-            throw new RuntimeException("Failed to create prep Agenda.", prepAgendaResponse.getException());
+            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create prep Agenda."), 400, cid));
         }
-        return prepAgendaResponse.getFirst().getId();
+        return prepAgendaResponse;
     }
 
-    private AgendaProgress createAgendaProgress(String transformRequestId, String externalId, String customerId)
+    private DataObjectResponse<AgendaProgress> createAgendaProgress(String transformRequestId, String externalId, String customerId, String cid)
     {
         AgendaProgress agendaProgress = new AgendaProgress();
         // NOTE: link id is the transformRequest id
@@ -126,13 +142,13 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            DataObjectResponse<AgendaProgress> response = agendaProgressClient.persistObject(agendaProgress);
-            if(response.isError()) throw response.getException();
-            return response.getFirst();
+            return agendaProgressClient.persistObject(agendaProgress);
         }
         catch(Exception e)
         {
-            throw new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequestId), e);
+            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(
+                new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequestId), e),
+                400, cid));
         }
     }
 

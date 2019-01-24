@@ -21,9 +21,12 @@ import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByAgendaId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
@@ -32,6 +35,7 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.Collections;
 import java.util.Date;
@@ -88,12 +92,21 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         // verify we have a valid insight for this agenda
         Insight insight = insightSelector.select(objectToPersist);
         if(insight == null)
-            throw new ObjectNotFoundException(String.format("No available insights for processing agenda %s", objectToPersist.getId()));
+        {
+            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.objectNotFound(
+                String.format("No available insights for processing agenda %s", objectToPersist.getId()),
+                request.getCID()));
+        }
 
         String agendaProgressId = objectToPersist.getProgressId();
         if (agendaProgressId == null)
         {
-            agendaProgressId = persistAgendaProgress(objectToPersist);
+            DataObjectResponse<AgendaProgress> persistResponse = persistAgendaProgress(objectToPersist, request.getCID());
+            if (persistResponse.isError())
+            {
+                return new DefaultDataObjectResponse<>(persistResponse.getErrorResponse());
+            }
+            agendaProgressId = persistResponse.getFirst().getId();
             objectToPersist.setProgressId(agendaProgressId);
         }
         else
@@ -102,11 +115,21 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         }
 
         if (objectToPersist.getOperations() != null)
-            persistOperationProgresses(objectToPersist, agendaProgressId);
+        {
+            DataObjectResponse<OperationProgress> persistResponse = persistOperationProgresses(objectToPersist, agendaProgressId, request.getCID());
+            if (persistResponse.isError())
+            {
+                return new DefaultDataObjectResponse<>(persistResponse.getErrorResponse());
+            }
+        }
 
         DataObjectResponse<Agenda> response = super.handlePOST(request);
         Agenda agendaResp = response.getFirst();
-        persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId());
+        DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId(), request.getCID());
+        if (readyAgendaResponse.isError())
+        {
+            return new DefaultDataObjectResponse<>(readyAgendaResponse.getErrorResponse());
+        }
 
         return response;
     }
@@ -131,7 +154,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         return agendaResp;
     }
 
-    void persistReadyAgenda(String insightId, String agendaId, String customerId)
+    DataObjectResponse<ReadyAgenda> persistReadyAgenda(String insightId, String agendaId, String customerId, String cid)
     {
         try
         {
@@ -141,14 +164,15 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
             readyAgenda.setAgendaId(agendaId);
             readyAgenda.setCustomerId(customerId);
             readyAgendaObjectPersister.persist(readyAgenda);
+            return new DefaultDataObjectResponse<>();
         }
         catch (PersistenceException e)
         {
-            throw new BadRequestException("Unable to create ReadyAgenda", e);
+            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.badRequest(new BadRequestException("Unable to create ReadyAgenda", e), cid));
         }
     }
 
-    String persistAgendaProgress(Agenda agenda)
+    DataObjectResponse<AgendaProgress> persistAgendaProgress(Agenda agenda, String cid)
     {
         ////
         // persist the progress
@@ -169,21 +193,25 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
 
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.persistObject(agendaProgress);
-        if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
+        if(dataObjectResponse.isError()) return dataObjectResponse;
         agendaProgressResponse = dataObjectResponse.getFirst();
 
         if(agendaProgressResponse == null)
-            throw new RuntimeException("AgendaProgress persistence failed.");
+        {
+            dataObjectResponse.setErrorResponse(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("AgendaProgress persistence failed."), 400, cid));
+            return dataObjectResponse;
+        }
 
         logger.info("Generated new progress: {}", agendaProgressResponse.getId());
-        return agendaProgressResponse.getId();
+        return dataObjectResponse;
     }
 
-    void persistOperationProgresses(Agenda agenda, String agendaProgressId)
+    DataObjectResponse<OperationProgress> persistOperationProgresses(Agenda agenda, String agendaProgressId, String cid)
     {
         ////
         // persist operation progress
         ////
+        DataObjectResponse<OperationProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
         for (Operation operation : agenda.getOperations())
         {
             OperationProgress operationProgress = new OperationProgress();
@@ -193,13 +221,16 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
             operationProgress.setOperation(operation.getName());
             operationProgress.setId(OperationProgress.generateId(agendaProgressId, operation.getName()));
             try {
-                operationProgressClient.persistObject(operationProgress);
+                dataObjectResponse.add(operationProgressClient.persistObject(operationProgress).getFirst());
             }
             catch (Exception e)
             {
-                throw new RuntimeException("Failed to create the OperationProgress generated from the TransformRequest.", e);
+                dataObjectResponse.setErrorResponse(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create the OperationProgress generated from the " +
+                    "TransformRequest.", e), 400, cid));
+                return dataObjectResponse;
             }
         }
+        return dataObjectResponse;
     }
 
     @Override

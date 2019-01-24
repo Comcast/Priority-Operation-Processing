@@ -38,10 +38,19 @@ public class AgendaProgressUpdater
         try
         {
             DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.getObject(progressId);
-            if(dataObjectResponse.isError()) throw dataObjectResponse.getException();
+            if(dataObjectResponse.isError())
+            {
+                logger.error("Failed to retrieve AgendaProgress id. " + dataObjectResponse.getErrorResponse().toString());
+                return;
+            }
 
             AgendaProgress agendaProgress = dataObjectResponse.getFirst();
-            if(agendaProgress == null) throw new RuntimeException(String.format("No AgendaProgress was found by id: %1$s", progressId));
+            if(agendaProgress == null)
+            {
+                logger.error(String.format("No AgendaProgress was found by id: %1$s", progressId));
+                return;
+            }
+
             // TODO: bit of a truth stretch...
 //            if(jobProgress.getJobStatus() == null || jobProgress.getJobStatus() == JobStatus.INITIALIZE_QUEUED)
 //            {
