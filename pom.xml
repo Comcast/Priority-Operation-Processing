@@ -14,10 +14,10 @@
     <name>DFH Endpoint Client implementation</name>
 
     <properties>
-        <json-helper.version>1.0.0-SNAPSHOT</json-helper.version>
+        <json-helper.version>1.0.0</json-helper.version>
         <endpoint-api.version>1.0.0-SNAPSHOT</endpoint-api.version>
-        <http-utils.version>1.0.0-SNAPSHOT</http-utils.version>
-        <http-api.version>1.0.0-SNAPSHOT</http-api.version>
+        <http-utils.version>1.0.0</http-utils.version>
+        <http-api.version>1.0.0</http-api.version>
     </properties>
 
     <dependencies>
