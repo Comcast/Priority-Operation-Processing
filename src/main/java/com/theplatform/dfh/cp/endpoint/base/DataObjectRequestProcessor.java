@@ -100,21 +100,34 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     protected DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
     {
-        T dataObject = request.getDataObject();
-        if(!visibilityFilter.isVisible(request, dataObject))
-            throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()));
-        // NOTE: the default update implementation is just a persist call
+        T dataObjectToUpdate = request.getDataObject();
+        String updatingCustomerId = dataObjectToUpdate.getCustomerId();
         try
         {
-            objectPersister.update(dataObject);
+            if(dataObjectToUpdate != null)
+            {
+                //Get persisted object to verify visibility.
+                T persistedDataObject = objectPersister.retrieve(dataObjectToUpdate.getId());
+                if (persistedDataObject == null)
+                    throw new ObjectNotFoundException(
+                            String.format("Unable to get object by id %1$s", request.getId()));
+                if (!visibilityFilter.isVisible(request, persistedDataObject))
+                    throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, persistedDataObject.getCustomerId()));
+
+                //check the incoming customerID for visibility
+                if (updatingCustomerId != null && !updatingCustomerId.equals(persistedDataObject.getCustomerId()) && !visibilityFilter.isVisible(request, dataObjectToUpdate))
+                    throw new UnauthorizedException(String.format(AUTHORIZATION_EXCEPTION, dataObjectToUpdate.getCustomerId()));
+                // NOTE: the default update implementation is just a persist call
+                objectPersister.update(dataObjectToUpdate);
+            }
             DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
-            response.add(dataObject);
+            response.add(dataObjectToUpdate);
             return response;
 
         }
         catch(PersistenceException e)
         {
-            final String id = dataObject == null ? "UNKNOWN" : dataObject.getId();
+            final String id = dataObjectToUpdate == null ? "UNKNOWN" : dataObjectToUpdate.getId();
             throw new BadRequestException(String.format("Unable to update object by id %1$s", id), e);
         }
     }
