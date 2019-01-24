@@ -3,6 +3,7 @@ package com.theplatform.dfh.endpoint.client;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
@@ -11,6 +12,7 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,9 +46,10 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
 
     public DataObjectResponse<T> getObjects(String queryParams)
     {
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + queryParams);
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + queryParams);
             urlConnection.setRequestMethod("GET");
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
@@ -60,7 +63,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
         catch(IOException e)
         {
-            throw new ObjectClientException(String.format("Failed to perform retrieve for query %1$s: %2$s", objectClass.getSimpleName(), queryParams), e);
+            return buildExceptionResponse(e, String.format("Failed to perform retrieve for query %1$s: %2$s", objectClass.getSimpleName(), queryParams), urlConnection);
         }
     }
 
@@ -71,9 +74,10 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
 
     public DataObjectResponse<T> getObject(String id)
     {
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
             urlConnection.setRequestMethod("GET");
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
@@ -84,20 +88,20 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
                 return null;
             }
             return parseDataObjectResponse(result);
-
         }
         catch(IOException e)
         {
-            throw new ObjectClientException(String.format("Failed to perform retrieve for %1$s: %2$s", objectClass.getSimpleName(), id), e);
+            return buildExceptionResponse(e, String.format("Failed to perform retrieve for %1$s: %2$s", objectClass.getSimpleName(), id), urlConnection);
         }
     }
 
     public DataObjectResponse<T> persistObject(T object)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL, "application/json", postData);
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL, "application/json", postData);
             urlConnection.setRequestMethod("POST");
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
@@ -106,16 +110,17 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
         catch(IOException e)
         {
-            throw new ObjectClientException(String.format("Failed to perform persist for %1$s", objectClass.getSimpleName()), e);
+            return buildExceptionResponse(e, String.format("Failed to perform persist for %1$s", objectClass.getSimpleName()), urlConnection);
         }
     }
 
     public DataObjectResponse<T> updateObject(T object, String id)
     {
         byte[] postData = jsonHelper.getJSONString(object).getBytes();
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id), "application/json", postData);
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id), "application/json", postData);
             urlConnection.setRequestMethod("PUT");
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
@@ -125,22 +130,23 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
         catch(IOException e)
         {
-            throw new ObjectClientException(String.format("Failed to perform update for %1$s", objectClass.getSimpleName()), e);
+            return buildExceptionResponse(e, String.format("Failed to perform update for %1$s", objectClass.getSimpleName()), urlConnection);
         }
     }
 
     public DataObjectResponse<T> deleteObject(String id)
     {
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(endpointURL + "/" + getURLEncodedId(id));
             urlConnection.setRequestMethod("DELETE");
             String result = urlRequestPerformer.performURLRequest(urlConnection, null);
             return parseDataObjectResponse(result);
         }
         catch (IOException e)
         {
-            throw new ObjectClientException(String.format("Failed to perform delete for %1$s:%2$s", objectClass.getSimpleName(), id), e);
+            return buildExceptionResponse(e, String.format("Failed to perform delete for %1$s:%2$s", objectClass.getSimpleName(), id), urlConnection);
         }
     }
 
@@ -183,5 +189,23 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         ObjectMapper objectMapper = jsonHelper.getObjectMapper();
         JavaType type = jsonHelper.getObjectMapper().getTypeFactory().constructParametricType(DefaultDataObjectResponse.class, objectClass);
         return objectMapper.readValue(response, type);
+    }
+
+    private DataObjectResponse<T> buildExceptionResponse(IOException e, String message, HttpURLConnection urlConnection)
+    {
+        int responseCode = 400;
+        try
+        {
+            responseCode = urlConnection.getResponseCode();
+        }
+        catch (IOException e2)
+        {
+            logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
+        }
+
+        return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(
+            new ObjectClientException(message, e),
+            responseCode,
+            MDC.get("CID")));
     }
 }
