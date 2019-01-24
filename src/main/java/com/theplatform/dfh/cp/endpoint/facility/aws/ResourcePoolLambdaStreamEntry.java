@@ -21,12 +21,12 @@ public class ResourcePoolLambdaStreamEntry extends DataObjectLambdaStreamEntry<R
     {
         super(
             ResourcePool.class,
-            new DynamoDBConvertedPersisterFactory("id", ResourcePool.class,
+            new DynamoDBConvertedPersisterFactory<>("id", ResourcePool.class,
                 new PersistentResourcePoolConverter(), tableIndexes));
     }
 
     @Override
-    protected RequestProcessor getRequestProcessor(LambdaDataObjectRequest<ResourcePool> lambdaDataObjectRequest, ObjectPersister<ResourcePool> objectPersister)
+    protected ResourcePoolRequestProcessor getRequestProcessor(LambdaDataObjectRequest<ResourcePool> lambdaDataObjectRequest, ObjectPersister<ResourcePool> objectPersister)
     {
         return new ResourcePoolRequestProcessor(objectPersister);
     }

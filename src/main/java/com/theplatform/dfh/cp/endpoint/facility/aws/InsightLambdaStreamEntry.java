@@ -20,7 +20,7 @@ public class InsightLambdaStreamEntry extends DataObjectLambdaStreamEntry<Insigh
     }
 
     @Override
-    protected RequestProcessor getRequestProcessor(LambdaDataObjectRequest<Insight> lambdaDataObjectRequest, ObjectPersister<Insight> objectPersister)
+    protected InsightRequestProcessor getRequestProcessor(LambdaDataObjectRequest<Insight> lambdaDataObjectRequest, ObjectPersister<Insight> objectPersister)
     {
         return new InsightRequestProcessor(objectPersister);
     }
