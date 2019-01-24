@@ -2,6 +2,7 @@ package com.theplatform.dfh.endpoint.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.theplatform.dfh.endpoint.api.DefaultServiceResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.ArrayList;
@@ -9,6 +10,14 @@ import java.util.List;
 
 public class DefaultDataObjectResponse<D extends IdentifiedObject> extends DefaultServiceResponse implements DataObjectResponse<D>
 {
+    public DefaultDataObjectResponse()
+    {}
+
+    public DefaultDataObjectResponse(ErrorResponse errorResponse)
+    {
+        setErrorResponse(errorResponse);
+    }
+
     private List<D> dataObjects = new ArrayList<>();
 
     public void add(D dataObject)
@@ -47,9 +56,9 @@ public class DefaultDataObjectResponse<D extends IdentifiedObject> extends Defau
                 ? !dataObjects.equals(that.dataObjects)
                 : that.dataObjects != null)
             return false;
-        return getException() != null
-                ? getException().equals(that.getException())
-                : that.getException() == null;
+        return getErrorResponse() != null
+                ? getErrorResponse().equals(that.getErrorResponse())
+                : that.getErrorResponse() == null;
     }
 
     @Override
@@ -58,8 +67,8 @@ public class DefaultDataObjectResponse<D extends IdentifiedObject> extends Defau
         int result = dataObjects != null
                 ? dataObjects.hashCode()
                 : 0;
-        result = 31 * result + (getException() != null
-                ? getException().hashCode()
+        result = 31 * result + (getErrorResponse() != null
+                ? getErrorResponse().hashCode()
                 : 0);
         return result;
     }

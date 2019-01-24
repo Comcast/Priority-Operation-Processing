@@ -2,25 +2,25 @@ package com.theplatform.dfh.endpoint.api;
 
 import java.io.Serializable;
 
-public class DefaultServiceResponse implements ServiceResponse, Serializable
+public class DefaultServiceResponse implements ServiceResponse<ErrorResponse>, Serializable
 {
     public static final long serialVersionUID = 2007846549345987828L;
 
-    private RuntimeServiceException exception;
+    private ErrorResponse errorResponse;
 
-    public RuntimeServiceException getException()
+    public ErrorResponse getErrorResponse()
     {
-        return exception;
+        return errorResponse;
     }
 
-    public void setException(RuntimeServiceException exception)
+    public void setErrorResponse(ErrorResponse errorResponse)
     {
-        this.exception = exception;
+        this.errorResponse = errorResponse;
     }
 
     public boolean isError()
     {
-        return exception != null;
+        return errorResponse != null;
     }
 
 }

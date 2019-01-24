@@ -1,10 +1,10 @@
 package com.theplatform.dfh.endpoint.api;
 
-public interface ServiceResponse
+public interface ServiceResponse<T>
 {
-    RuntimeServiceException getException();
+    T getErrorResponse();
 
-    void setException(RuntimeServiceException exception);
+    void setErrorResponse(T errorResponse);
 
     boolean isError();
 }
