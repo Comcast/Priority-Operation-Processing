@@ -13,6 +13,12 @@ public class ErrorResponse
     private String correlationId;
     private String serverStackTrace;
 
+    public ErrorResponse()
+    {
+
+    }
+
+
     public ErrorResponse(Throwable e, Integer responseCode, String correlationId)
     {
         if (e != null)
@@ -96,6 +102,8 @@ public class ErrorResponse
         builder.append(getTitle());
         builder.append(" Message: ");
         builder.append(getDescription());
+        builder.append(" Stack Trace: ");
+        builder.append(getServerStackTrace());
 
         return builder.toString();
     }
