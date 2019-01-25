@@ -30,6 +30,12 @@ public class PersistentCustomer extends Customer
     }
 
     @Override
+    public String getCustomerId()
+    {
+        return super.getId();
+    }
+
+    @Override
     public String getResourcePoolId()
     {
         return super.getResourcePoolId();
