@@ -42,6 +42,12 @@ public class PersistentInsight extends Insight
     }
 
     @Override
+    public String getCustomerId()
+    {
+        return super.getCustomerId();
+    }
+
+    @Override
     public Map<String, Set<String>> getMappers()
     {
         return super.getMappers();
