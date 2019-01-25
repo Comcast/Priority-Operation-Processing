@@ -1,10 +1,16 @@
-package com.theplatform.dfh.cp.endpoint.progress.aws.persistence;
+package com.theplatform.dfh.cp.endpoint.persistence;
 
+import com.theplatform.dfh.cp.api.TransformRequest;
+import com.theplatform.dfh.cp.api.facility.Customer;
+import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentCustomer;
+import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentInsight;
 import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentResourcePool;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.PersistentOperationProgress;
+import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.PersistentAgendaProgress;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -27,7 +33,9 @@ public class PersistentObjectAPITest
         return new Object[][] {
             { AgendaProgress.class, PersistentAgendaProgress.class },
             { OperationProgress.class, PersistentOperationProgress.class },
-            { ResourcePool.class, PersistentResourcePool.class }
+            { ResourcePool.class, PersistentResourcePool.class },
+            { Customer.class, PersistentCustomer.class },
+            { Insight.class, PersistentInsight.class }
         };
     }
 
