@@ -32,7 +32,7 @@ public class PersistentCustomer extends Customer
     @Override
     public String getCustomerId()
     {
-        return super.getId();
+        return super.getCustomerId();
     }
 
     @Override
