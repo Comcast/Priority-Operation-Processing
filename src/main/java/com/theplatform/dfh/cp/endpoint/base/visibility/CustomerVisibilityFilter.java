@@ -42,12 +42,7 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
         Set<String> authorizedCustomers = authorizationResponse.getAllowedCustomerIds();
         if(authorizedCustomers == null)
         {
-            if(logger.isDebugEnabled())
-            {
-                logger.debug("visibility = false. No authorized accounts.");
-                // TODO: this is temp
-                logger.debug("AuthorizedResponse in CustomerVisibilityFilter {}",authorizationResponse.toString());
-            }
+            if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized accounts.");
             return false;
         }
 
