@@ -6,7 +6,8 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByLinkId;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
@@ -39,25 +40,25 @@ public class ProgressSummaryRequestProcessor
         ));
     }
 
-    public ProgressSummaryResponse getProgressSummary(ProgressSummaryRequest progressSummaryRequest) throws Exception
+    public ProgressSummaryResponse getProgressSummary(ServiceRequest<ProgressSummaryRequest> progressSummaryRequest) throws Exception
     {
         if(progressSummaryRequest == null)
         {
-            throw new BadRequestException("The request may not be null.");
+            return new ProgressSummaryResponse(ErrorResponseFactory.badRequest("The request may not be null.", null));
         }
-        if(StringUtils.isBlank(progressSummaryRequest.getLinkId()))
+        if(StringUtils.isBlank(progressSummaryRequest.getPayload().getLinkId()))
         {
-            throw new BadRequestException("The linkId must be specified in the request");
+            return new ProgressSummaryResponse(ErrorResponseFactory.badRequest("The linkId must be specified in the request", progressSummaryRequest.getCID()));
         }
 
-        DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(progressSummaryRequest.getLinkId())));
+        DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(progressSummaryRequest.getPayload().getLinkId())));
 
         List<AgendaProgress> progressList = feed.getAll();
         long waiting = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.WAITING).count();
         long executing = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.EXECUTING).count();
 
         logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
-            feed.getAll().size(), progressSummaryRequest.getLinkId(), waiting, executing);
+            feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId(), waiting, executing);
         ProgressSummaryResponse result = new ProgressSummaryResponse();
         result.setProgressList(feed.getAll());
         result.setProcessingState(evaluateOverallState(progressList, waiting, executing));

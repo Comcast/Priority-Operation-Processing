@@ -19,11 +19,8 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaValidator;
 import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
@@ -35,7 +32,6 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.util.Collections;
 import java.util.Date;
@@ -90,10 +86,17 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         Agenda objectToPersist = request.getDataObject();
 
         // verify we have a valid insight for this agenda
-        Insight insight = insightSelector.select(objectToPersist);
+        Insight insight = null;
+        try
+        {
+            insight = insightSelector.select(objectToPersist);
+        } catch (ValidationException e)
+        {
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), request.getCID()));
+        }
         if(insight == null)
         {
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.objectNotFound(
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.objectNotFound(
                 String.format("No available insights for processing agenda %s", objectToPersist.getId()),
                 request.getCID()));
         }
@@ -149,7 +152,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         }
         catch (PersistenceException e)
         {
-            logger.error("Unable to delete ReadyAgenda.", e);
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(e, 400, request.getCID()));
         }
         return agendaResp;
     }
@@ -168,7 +171,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         }
         catch (PersistenceException e)
         {
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.badRequest(new BadRequestException("Unable to create ReadyAgenda", e), cid));
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.badRequest(new BadRequestException("Unable to create ReadyAgenda", e), cid));
         }
     }
 
@@ -198,7 +201,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
 
         if(agendaProgressResponse == null)
         {
-            dataObjectResponse.setErrorResponse(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("AgendaProgress persistence failed."), 400, cid));
+            dataObjectResponse.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new RuntimeException("AgendaProgress persistence failed."), 400, cid));
             return dataObjectResponse;
         }
 
@@ -225,7 +228,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
             }
             catch (Exception e)
             {
-                dataObjectResponse.setErrorResponse(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create the OperationProgress generated from the " +
+                dataObjectResponse.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new RuntimeException("Failed to create the OperationProgress generated from the " +
                     "TransformRequest.", e), 400, cid));
                 return dataObjectResponse;
             }

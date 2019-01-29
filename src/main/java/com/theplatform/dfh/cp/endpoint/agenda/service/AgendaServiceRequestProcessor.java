@@ -4,6 +4,8 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
@@ -37,13 +39,14 @@ public class AgendaServiceRequestProcessor
         this.agendaPersister = agendaPersister;
     }
 
-    public GetAgendaResponse processRequest(GetAgendaRequest getAgendaRequest)
+    public GetAgendaResponse processRequest(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
         // TODO: input validation
+
+        GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
         {
-            logger.warn("No insight id provided.  Cannot process getAgenda request.");
-            return null;
+            return new GetAgendaResponse(ErrorResponseFactory.badRequest("No insight id provided.  Cannot process getAgenda request.", serviceRequest.getCID()));
         }
 
         Insight insight;
@@ -53,15 +56,13 @@ public class AgendaServiceRequestProcessor
         }
         catch(PersistenceException e)
         {
-            // TODO: standardize our result objects (do they use an exception field, error field, etc.)
-            logger.warn("Could not receive Insight.", e);
-            return null;
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
 
         if(insight == null)
         {
-            logger.warn("No insight found with id {}. Cannot process getAgenda request.", getAgendaRequest.getInsightId());
-            return null;
+            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(String.format("No insight found with id %s. Cannot process getAgenda request.",
+                getAgendaRequest.getInsightId()), serviceRequest.getCID()));
         }
 
         try
@@ -90,19 +91,17 @@ public class AgendaServiceRequestProcessor
             }
             else
             {
-                logger.error("Failed to poll queue for AgendaInfo.");
-                return null;
+                return new GetAgendaResponse(ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
             }
         }
         catch(PersistenceException e)
         {
-            logger.error("Failure getting Agenda(s).", e);
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
         catch(BadRequestException e)
         {
-            logger.error("Failure getting Agenda(s).", e);
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
-        return null;
     }
 
     private GetAgendaResponse createAgendaServiceResult(Collection<Agenda> agendas)
@@ -125,6 +124,7 @@ public class AgendaServiceRequestProcessor
     {
         if(maxResults < 1)
         {
+            // todo do we want to add ErrorResponse to QueueResult?
             throw new BadRequestException(String.format("The maximum results specified is not supported: %1$s", maxResults));
         }
         // TODO: might be an insight id and we have an insight client

@@ -7,10 +7,9 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
@@ -108,7 +107,7 @@ public class AgendaRequestProcessorTest
     {
         String cid = UUID.randomUUID().toString();
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
-        agendaProgressResponse.setErrorResponse(DataObjectErrorResponses.unauthorized("Unauthorized request.", cid));
+        agendaProgressResponse.setErrorResponse(ErrorResponseFactory.unauthorized("Unauthorized request.", cid));
         doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();

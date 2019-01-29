@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -58,14 +60,19 @@ public class ProgressSummaryRequestProcessorTest
     public void testGetProgressSummary(ProcessingState expectedState, ProcessingState[] states) throws Exception
     {
         setupAgendaProgress(states);
-        ProgressSummaryResponse progressSummaryResponse = progressSummaryRequestProcessor.getProgressSummary(new ProgressSummaryRequest().setLinkId("theLinkId"));
+        ServiceRequest<ProgressSummaryRequest> request = new DefaultServiceRequest<>(new ProgressSummaryRequest().setLinkId("theLinkId"));
+        ProgressSummaryResponse progressSummaryResponse = progressSummaryRequestProcessor.getProgressSummary(request);
         Assert.assertEquals(progressSummaryResponse.getProcessingState(), expectedState);
     }
 
-    @Test(expectedExceptions = BadRequestException.class)
+    @Test
     public void testMissingLinkId() throws Exception
     {
-        progressSummaryRequestProcessor.getProgressSummary(new ProgressSummaryRequest());
+        ProgressSummaryResponse response = progressSummaryRequestProcessor.getProgressSummary(new DefaultServiceRequest<>(new ProgressSummaryRequest()));
+        Assert.assertNull(response.getProcessingState());
+        Assert.assertNull(response.getProgressList());
+        Assert.assertNotNull(response.getErrorResponse());
+        Assert.assertEquals(response.getErrorResponse().getTitle(), BadRequestException.class.getSimpleName());
     }
 
     private void setupAgendaProgress(ProcessingState[] states) throws Exception

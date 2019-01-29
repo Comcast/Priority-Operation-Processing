@@ -17,19 +17,15 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
 
 /**
  * TransformRequest specific RequestProcessor
@@ -120,13 +116,13 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         }
         catch(Exception e)
         {
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create connection to persist the Agenda generated " +
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(new RuntimeException("Failed to create connection to persist the Agenda generated " +
                 "from the TransformRequest.", e), 400, cid));
         }
 
         if(prepAgendaResponse == null || prepAgendaResponse.getFirst() == null)
         {
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(new RuntimeException("Failed to create prep Agenda."), 400, cid));
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(new RuntimeException("Failed to create prep Agenda."), 400, cid));
         }
         return prepAgendaResponse;
     }
@@ -146,7 +142,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         }
         catch(Exception e)
         {
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(
                 new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequestId), e),
                 400, cid));
         }
