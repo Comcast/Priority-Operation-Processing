@@ -50,7 +50,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
                 T object = objectPersister.retrieve(request.getId());
                 if(object == null)
                 {
-                    response.setErrorResponse(DataObjectErrorResponses.objectNotFound(String.format("Unable to get object by id %1$s", request.getId()), request.getCID()));
+                    response.setErrorResponse(ErrorResponseFactory.objectNotFound(String.format("Unable to get object by id %1$s", request.getId()), request.getCID()));
                     return response;
                 }
                 if(visibilityFilter.isVisible(request, object))
@@ -66,7 +66,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         catch(PersistenceException e)
         {
             ObjectNotFoundException objectNotFoundException = new ObjectNotFoundException(String.format("Unable to get object by id %1$s", request.getId()), e);
-            response.setErrorResponse(DataObjectErrorResponses.objectNotFound(objectNotFoundException, request.getCID()));
+            response.setErrorResponse(ErrorResponseFactory.objectNotFound(objectNotFoundException, request.getCID()));
         }
         return response;
     }
@@ -84,7 +84,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
 
         if(!visibilityFilter.isVisible(request, dataObject))
         {
-            response.setErrorResponse(DataObjectErrorResponses.unauthorized(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()), request.getCID()));
+            response.setErrorResponse(ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, dataObject.getCustomerId()), request.getCID()));
             return response;
         }
 
@@ -93,7 +93,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
             T persistedObject = objectPersister.persist(dataObject);
             if(persistedObject == null) {
                 Throwable throwable = new RuntimeException("Unable to create object " +dataObject.getId());
-                response.setErrorResponse(DataObjectErrorResponses.buildErrorResponse(throwable, 400, request.getCID()));
+                response.setErrorResponse(ErrorResponseFactory.buildErrorResponse(throwable, 400, request.getCID()));
                 return response;
             }
             response.add(persistedObject);
@@ -101,7 +101,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         catch(PersistenceException e)
         {
             BadRequestException badRequestException = new BadRequestException("Unable to create object", e);
-            response.setErrorResponse(DataObjectErrorResponses.badRequest(badRequestException, request.getCID()));
+            response.setErrorResponse(ErrorResponseFactory.badRequest(badRequestException, request.getCID()));
         }
         return response;
     }
@@ -128,14 +128,14 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
                             String.format("Unable to get object by id %1$s", request.getId()));
                 if (!visibilityFilter.isVisible(request, persistedDataObject))
                 {
-                    return new DefaultDataObjectResponse<>(DataObjectErrorResponses.unauthorized(String.format(AUTHORIZATION_EXCEPTION, persistedDataObject.getCustomerId()),
+                    return new DefaultDataObjectResponse<>(ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, persistedDataObject.getCustomerId()),
                         request.getCID()));
                 }
 
                 //check the incoming customerID for visibility
                 if (updatingCustomerId != null && !updatingCustomerId.equals(persistedDataObject.getCustomerId()) && !visibilityFilter.isVisible(request, dataObjectToUpdate))
                 {
-                    return new DefaultDataObjectResponse<>(DataObjectErrorResponses.unauthorized(String.format(AUTHORIZATION_EXCEPTION, dataObjectToUpdate.getCustomerId()),
+                    return new DefaultDataObjectResponse<>(ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, dataObjectToUpdate.getCustomerId()),
                         request.getCID()));
                 }
 
@@ -149,7 +149,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         {
             final String id = dataObjectToUpdate == null ? "UNKNOWN" : dataObjectToUpdate.getId();
             BadRequestException badRequestException = new BadRequestException(String.format("Unable to update object by id %1$s", id), e);
-            response.setErrorResponse(DataObjectErrorResponses.badRequest(badRequestException, request.getCID()));
+            response.setErrorResponse(ErrorResponseFactory.badRequest(badRequestException, request.getCID()));
         }
         return response;
     }
@@ -181,7 +181,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         catch(PersistenceException e)
         {
             BadRequestException badRequestException = new BadRequestException(String.format("Unable to delete object by id %1$s", request.getId()), e);
-            return new DefaultDataObjectResponse<>(DataObjectErrorResponses.badRequest(badRequestException, request.getCID()));
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.badRequest(badRequestException, request.getCID()));
         }
     }
 
