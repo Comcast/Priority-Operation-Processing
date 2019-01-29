@@ -13,6 +13,8 @@ import com.theplatform.dfh.cp.endpoint.progress.service.ProgressSummaryRequestPr
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +67,8 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
             {
                 case "POST":
                     String bodyJson = StringEscapeUtils.unescapeJson(inputStreamNode.at("/body").asText());
-                    ProgressSummaryRequest progressSummaryRequest = jsonHelper.getObjectFromString(bodyJson, ProgressSummaryRequest.class);
+                    ServiceRequest<ProgressSummaryRequest> progressSummaryRequest = new DefaultServiceRequest<>(jsonHelper.getObjectFromString(bodyJson,
+                        ProgressSummaryRequest.class));
                     responseObject = createProgressSummaryRequestProcessor(lambdaRequest)
                         .getProgressSummary(progressSummaryRequest);
                     break;

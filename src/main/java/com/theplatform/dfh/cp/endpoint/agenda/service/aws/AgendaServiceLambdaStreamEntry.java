@@ -26,6 +26,8 @@ import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
@@ -121,8 +123,8 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         // if no insights were provided, do the old mode (just send back any Agenda)
         // otherwise, do the new way with Insights
         String responseBody;
-        GetAgendaRequest requestObject = (GetAgendaRequest) lambdaRequest.getPayload();
-        if (requestObject != null)
+        ServiceRequest<GetAgendaRequest> requestObject = new DefaultServiceRequest<>((GetAgendaRequest) lambdaRequest.getPayload());
+        if (requestObject.getPayload() != null)
         {
             // create persisters for Insight and Agenda
             String insightTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT);
