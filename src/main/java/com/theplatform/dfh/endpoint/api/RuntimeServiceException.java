@@ -1,6 +1,6 @@
 package com.theplatform.dfh.endpoint.api;
 
-public abstract class RuntimeServiceException
+public class RuntimeServiceException
         extends RuntimeException
 {
     // the response code

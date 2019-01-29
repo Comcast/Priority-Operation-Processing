@@ -2,16 +2,23 @@ package com.theplatform.dfh.cp.endpoint.progress.service.api;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.endpoint.api.DefaultServiceResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 
 import java.util.List;
 
-public class ProgressSummaryResponse
+public class ProgressSummaryResponse extends DefaultServiceResponse
 {
     private List<AgendaProgress> progressList;
     private ProcessingState processingState;
 
     public ProgressSummaryResponse()
     {
+    }
+
+    public ProgressSummaryResponse(ErrorResponse errorResponse)
+    {
+        setErrorResponse(errorResponse);
     }
 
     public List<AgendaProgress> getProgressList()
