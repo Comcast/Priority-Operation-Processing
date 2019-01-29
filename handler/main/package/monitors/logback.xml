@@ -16,7 +16,7 @@
 
         <throwableExcluded>true</throwableExcluded>
         <!-- WARNING: THE HARD CODED CLUSTER MUST BE RESOLVED ?? -->
-        <suffixPattern>fph {"index": "service", "ccds_cluster_title": "lab-main-t-aor-fph-fun1", "type": "fph-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%m){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
+        <suffixPattern>fhexec {"index": "service", "ccds_cluster_title": "lab-main-t-aor-fhexec-t01", "type": "fhexec-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%m){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
     </appender>
 
     <appender name="asyncLogAppender" class="com.theplatform.module.logging.extension.logback.appender.AsyncAppender">
