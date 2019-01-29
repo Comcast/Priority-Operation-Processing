@@ -3,7 +3,7 @@ package com.theplatform.dfh.endpoint.client;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.DataObjectErrorResponses;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
@@ -203,7 +203,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
             logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
         }
 
-        return new DefaultDataObjectResponse<>(DataObjectErrorResponses.buildErrorResponse(
+        return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(
             new ObjectClientException(message, e),
             responseCode,
             MDC.get("CID")));
