@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.endpoint</groupId>
     <artifactId>pl-dfh-cp-endpoint-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>DFH Endpoint Client implementation</name>
 
