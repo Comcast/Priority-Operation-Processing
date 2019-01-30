@@ -5,7 +5,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <!--<Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n</Pattern>-->
-            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"password\":\".*?\"","\"$1\":\"****\""}%n</Pattern>
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"password\" : \".*?\"","\"$1\" : \"****\""}%n</Pattern>
             <!--<Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace( %replace(%m){"\\\"password\\\":\\\".*?\\\"","\\\"$1\\\":\\\"****\\\""}){"\"password\":\".*?\"","\"$1\":\"****\""}%n</Pattern>-->
         </layout>
     </appender>
