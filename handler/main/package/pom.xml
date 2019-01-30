@@ -12,11 +12,12 @@
 
     <groupId>com.theplatform.dfh.cp.handler</groupId>
     <artifactId>pl-dfh-cp-handler-puller-package</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${application.version}</version>
     <packaging>pom</packaging>
     <name>Puller Handler Package</name>
 
     <properties>
+        <application.version>1.0.1</application.version>
         <!-- You can override these in an environment variable! -->
         <env.DOCKER_PROD>docker-lab.repo.theplatform.com</env.DOCKER_PROD>
         <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
@@ -26,7 +27,7 @@
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-puller-impl</artifactId>
-            <version>1.0.0</version>
+            <version>${application.version}</version>
         </dependency>
     </dependencies>
 
