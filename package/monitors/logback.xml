@@ -4,7 +4,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n</Pattern>
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%n</Pattern>
         </layout>
     </appender>
 
@@ -16,7 +16,7 @@
 
         <throwableExcluded>true</throwableExcluded>
         <!-- WARNING: THE HARD CODED CLUSTER MUST BE RESOLVED ?? -->
-        <suffixPattern>fhsamp {"index": "service", "ccds_cluster_title": "lab-main-t-aor-fhsamp-t01", "type": "fhsamp-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%m){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
+        <suffixPattern>fhsamp {"index": "service", "ccds_cluster_title": "lab-main-t-aor-fhsamp-t01", "type": "fhsamp-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
     </appender>
 
     <appender name="asyncLogAppender" class="com.theplatform.module.logging.extension.logback.appender.AsyncAppender">
