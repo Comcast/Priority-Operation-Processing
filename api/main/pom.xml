@@ -14,7 +14,7 @@
     <name>Executor Handler API</name>
 
     <properties>
-        <cp-api.version>1.0.0</cp-api.version>
+        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
     </properties>
     
     <dependencies>

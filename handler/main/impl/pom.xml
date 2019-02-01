@@ -16,70 +16,21 @@
 
     <properties>
         <logging-extension.version>1.2.0</logging-extension.version>
-        <logger-reporter.version>1.0.0-SNAPSHOT</logger-reporter.version>
-        <field-retriever.version>1.0.0-SNAPSHOT</field-retriever.version>
-        <reporter-progress-agenda.version>1.0.0-SNAPSHOT</reporter-progress-agenda.version>
-        <dfh-fabric8-kube-client.version>1.0.0-SNAPSHOT</dfh-fabric8-kube-client.version>
-        <kubernetes-reporter.version>1.0.0-SNAPSHOT</kubernetes-reporter.version>
-        <executor-handler-api.version>1.0.0-SNAPSHOT</executor-handler-api.version>
+        <logger-reporter.version>1.0.0</logger-reporter.version>
+        <reporter-progress-agenda.version>1.0.0</reporter-progress-agenda.version>
+        <dfh-fabric8-kube-client.version>1.0.0</dfh-fabric8-kube-client.version>
+        <kubernetes-reporter.version>1.0.0</kubernetes-reporter.version>
+        <executor-handler-api.version>1.0.1-SNAPSHOT</executor-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
-        <podconfig-registry-client-api.version>1.0.0-SNAPSHOT</podconfig-registry-client-api.version>
-        <media-assembler-api.version>1.0.4</media-assembler-api.version>
-        <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
-        <http-request-util-handler.version>1.0.0-SNAPSHOT</http-request-util-handler.version>
-        <ldap-filter.version>1.0.1-SNAPSHOT</ldap-filter.version>
-        <accelerate-filter-handler.version>1.0.0-SNAPSHOT</accelerate-filter-handler.version>
+        <podconfig-registry-client-api.version>1.0.0</podconfig-registry-client-api.version>
+        <handler-kubernetes-support.version>1.0.0</handler-kubernetes-support.version>
+        <http-request-util-handler.version>1.0.0</http-request-util-handler.version>
+        <ldap-filter.version>1.0.0-SNAPSHOT</ldap-filter.version>
+        <accelerate-filter-handler.version>1.0.1-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
     
     <dependencies>
-        <dependency>
-            <groupId>com.theplatform.modules</groupId>
-            <artifactId>pl-dfh-docker</artifactId>
-            <version>${dfh-docker.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-executor-api</artifactId>
-            <version>${executor-handler-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
-            <version>${kubernetes-reporter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-field-retriever</artifactId>
-            <version>${field-retriever.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-progress-agenda</artifactId>
-            <version>${reporter-progress-agenda.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-logger</artifactId>
-            <version>${logger-reporter.version}</version>
-        </dependency>
-         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-            <version>${dfh-fabric8-kube-client.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
-            <version>${handler-kubernetes-support.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
-            <version>${podconfig-registry-client-api.version}</version>
-        </dependency>
         <!-- Resident Handlers -->
-
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-util-http-impl</artifactId>
@@ -94,6 +45,53 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-filter-accelerate-impl</artifactId>
             <version>${accelerate-filter-handler.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-executor-api</artifactId>
+            <version>${executor-handler-api.version}</version>
+        </dependency>
+
+        <!-- Reporting modules -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
+            <version>${kubernetes-reporter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-reporter-progress-agenda</artifactId>
+            <version>${reporter-progress-agenda.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-reporter-logger</artifactId>
+            <version>${logger-reporter.version}</version>
+        </dependency>
+
+        <!-- Launcher modules -->
+         <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
+            <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.modules</groupId>
+            <artifactId>pl-dfh-docker</artifactId>
+            <version>${dfh-docker.version}</version>
+        </dependency>
+
+        <!-- handler modules -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <version>${handler-kubernetes-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-registry-podconfig-client-api</artifactId>
+            <version>${podconfig-registry-client-api.version}</version>
         </dependency>
 
         <!-- Logging -->
