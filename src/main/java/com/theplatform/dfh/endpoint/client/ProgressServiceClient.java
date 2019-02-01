@@ -13,6 +13,12 @@ public class ProgressServiceClient extends FissionServiceClient
         super(httpUrlConnectionFactory);
     }
 
+    public ProgressServiceClient(HttpURLConnectionFactory httpUrlConnectionFactory, String progressSummaryUrl)
+    {
+        super(httpUrlConnectionFactory);
+        this.progressSummaryUrl = progressSummaryUrl;
+    }
+
     public ProgressSummaryResponse getProgressSummary(ProgressSummaryRequest progressSummaryRequest)
     {
         return new GenericFissionClient<>(progressSummaryUrl, getHttpUrlConnectionFactory(), ProgressSummaryResponse.class)

@@ -198,7 +198,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         {
             responseCode = urlConnection.getResponseCode();
         }
-        catch (IOException e2)
+        catch (IOException | NullPointerException e2)
         {
             logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
         }
