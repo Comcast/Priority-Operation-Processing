@@ -1,6 +1,11 @@
 package com.theplatform.dfh.endpoint.client;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.*;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import org.slf4j.Logger;
@@ -9,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class GenericFissionClient<T, R>
+public class GenericFissionClient<T extends ServiceResponse, R extends ServiceRequest>
 {
     private static final Logger logger = LoggerFactory.getLogger(GenericFissionClient.class);
 
@@ -43,10 +48,6 @@ public class GenericFissionClient<T, R>
             String result = urlRequestPerformer.performURLRequest(
                 urlConnection,
                 data);
-            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
-            {
-                return null;
-            }
             if (result == null || result.length() == 0)
             {
                 return null;
@@ -55,7 +56,21 @@ public class GenericFissionClient<T, R>
         }
         catch(IOException e)
         {
-            throw new FissionClientException(String.format("Failed to get %1$s", objectClass.getSimpleName()), e);
+            return handleExceptions(e, requestObject.getCID());
+        }
+    }
+
+    private T handleExceptions(IOException ioException, String cid)
+    {
+        try {
+            T response = objectClass.newInstance();
+            response.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new FissionClientException(String.format("Failed to get %1$s", objectClass.getSimpleName()), ioException),
+                400, cid));
+            return response;
+        }
+        catch (IllegalAccessException | InstantiationException e)
+        {
+            throw new RuntimeServiceException("foobar", e, 400);
         }
     }
 }
