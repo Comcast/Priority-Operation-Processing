@@ -92,4 +92,10 @@ public class PersistentOperationProgress extends OperationProgress
     {
         super.setCustomerId(customerId);
     }
+
+    @Override
+    public String getCid()
+    {
+        return super.getCid();
+    }
 }

@@ -16,9 +16,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +51,8 @@ public class PersistentObjectAPITest
         List<String> persistentObjectMethodNames = getMethodNames(persistentObjectMethods);
 
         Assert.assertEquals(objectMethodNames.size(), persistentObjectMethodNames.size());
+        Collections.sort(objectMethodNames);
+        Collections.sort(persistentObjectMethodNames);
         Assert.assertEquals(objectMethodNames, persistentObjectMethodNames);
     }
 

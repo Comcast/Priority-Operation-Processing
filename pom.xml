@@ -23,6 +23,8 @@
         <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
         <dfh-scheduling-insight.version>1.0.0-SNAPSHOT</dfh-scheduling-insight.version>
         <endpoint-impl.version>1.0.0-SNAPSHOT</endpoint-impl.version>
+        <endpoint-api.version>1.0.1-SNAPSHOT</endpoint-api.version>
+        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
         <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
     </properties>
 
@@ -32,6 +34,16 @@
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
             <artifactId>pl-dfh-cp-endpoint-impl</artifactId>
             <version>${endpoint-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+            <version>${endpoint-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->

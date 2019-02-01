@@ -94,9 +94,11 @@ public class PersistentAgendaProgress extends AgendaProgress
     }
 
     @Override
-    public void setCustomerId(String customerId)
+    public String getCid()
     {
-        super.setCustomerId(customerId);
+        return super.getCid();
     }
+
+
 }
 
