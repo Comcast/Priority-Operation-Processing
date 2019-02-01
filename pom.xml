@@ -16,7 +16,7 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
+        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
         <endpoint-agenda.version>1.0.0-SNAPSHOT</endpoint-agenda.version>
         <dfh-persistence-aws-dynamodb.version>1.0.0-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
@@ -63,11 +63,6 @@
 
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
             <artifactId>pl-dfh-cp-endpoint-base</artifactId>
             <version>${cp-endpoint-base}</version>
@@ -77,6 +72,13 @@
             <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
             <version>${dfh-persistence-aws-dynamodb.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.theplatform.dfh.modules.version</groupId>
             <artifactId>pl-dfh-module-version-info</artifactId>
