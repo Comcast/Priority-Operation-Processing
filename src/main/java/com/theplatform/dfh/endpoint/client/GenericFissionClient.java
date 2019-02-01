@@ -38,9 +38,10 @@ public class GenericFissionClient<T extends ServiceResponse, R extends ServiceRe
      */
     public T getObjectFromPOST(R requestObject)
     {
+        HttpURLConnection urlConnection = null;
         try
         {
-            HttpURLConnection urlConnection = httpUrlConnectionFactory.getHttpURLConnection(requestUrl);
+            urlConnection = httpUrlConnectionFactory.getHttpURLConnection(requestUrl);
             byte[] data = requestObject == null
                           ? null
                           : jsonHelper.getJSONString(requestObject).getBytes();
@@ -56,16 +57,25 @@ public class GenericFissionClient<T extends ServiceResponse, R extends ServiceRe
         }
         catch(IOException e)
         {
-            return handleExceptions(e, requestObject.getCID());
+            return handleExceptions(e, requestObject.getCID(), urlConnection);
         }
     }
 
-    private T handleExceptions(IOException ioException, String cid)
+    private T handleExceptions(IOException ioException, String cid, HttpURLConnection urlConnection)
     {
         try {
+            int responseCode = 400;
+            try
+            {
+                responseCode = urlConnection.getResponseCode();
+            }
+            catch (IOException | NullPointerException e2)
+            {
+                logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
+            }
             T response = objectClass.newInstance();
             response.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new FissionClientException(String.format("Failed to get %1$s", objectClass.getSimpleName()), ioException),
-                400, cid));
+                responseCode, cid));
             return response;
         }
         catch (IllegalAccessException | InstantiationException e)
