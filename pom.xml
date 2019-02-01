@@ -40,11 +40,6 @@
             <artifactId>pl-dfh-cp-endpoint-api</artifactId>
             <version>${endpoint-api.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
-        </dependency>
 
         <!-- AWS Dependencies -->
         <dependency>
@@ -93,6 +88,12 @@
             <groupId>com.theplatform.dfh.modules.version</groupId>
             <artifactId>pl-dfh-module-version-info</artifactId>
             <version>${dfh-module-version-info.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
         </dependency>
     </dependencies>
 
