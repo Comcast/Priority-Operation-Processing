@@ -32,11 +32,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
             <artifactId>pl-dfh-cp-endpoint-base</artifactId>
             <version>${endpoint-base.version}</version>
@@ -96,6 +91,12 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-filter-ldap-api</artifactId>
             <version>${ldap-filter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
         </dependency>
 
         <dependency>
