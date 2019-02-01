@@ -6,35 +6,11 @@ import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.List;
 
-public class TransformRequest implements IdentifiedObject
+public class TransformRequest extends EndpointDataObject
 {
-    private String id;
-    private String customerId;
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    public String getCustomerId()
-    {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId)
-    {
-        this.customerId = customerId;
-    }
-
     /**
      * Inputs: This includes URLs, creds,
      * and key metadata for the media files that DFH will process (VIDEO, AUDIO, TEXT tracks, etc.)

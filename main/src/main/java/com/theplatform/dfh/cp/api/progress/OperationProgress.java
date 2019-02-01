@@ -1,12 +1,11 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.theplatform.dfh.cp.api.EndpointDataObject;
 
 import java.util.Date;
 
-public class OperationProgress implements IdentifiedObject
+public class OperationProgress extends EndpointDataObject
 {
-    private String id;
     private String agendaProgressId;
     private ProcessingState processingState;
     private String processingStateMessage;
@@ -17,29 +16,6 @@ public class OperationProgress implements IdentifiedObject
     private Date startedTime;
     private Date completedTime;
     private String resultPayload;
-    private String customerId;
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    @Override
-    public String getCustomerId()
-    {
-        return customerId;
-    }
-
-    @Override
-    public void setCustomerId(String customerId)
-    {
-        this.customerId = customerId;
-    }
 
     public String getAgendaProgressId()
     {

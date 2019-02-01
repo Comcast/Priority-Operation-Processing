@@ -2,19 +2,16 @@ package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.List;
 
-public class Agenda implements IdentifiedObject
+public class Agenda extends EndpointDataObject
 {
     private List<Operation> operations;
     private ParamsMap params;
-    private String id;
     private String jobId; // todo remove
     private String linkId;
     private String progressId;
-    private String customerId;
 
     public List<Operation> getOperations()
     {
@@ -34,16 +31,6 @@ public class Agenda implements IdentifiedObject
     public void setParams(ParamsMap params)
     {
         this.params = params;
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
     }
 
     public String getJobId()
@@ -76,13 +63,4 @@ public class Agenda implements IdentifiedObject
         this.progressId = progressId;
     }
 
-    public String getCustomerId()
-    {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId)
-    {
-        this.customerId = customerId;
-    }
 }

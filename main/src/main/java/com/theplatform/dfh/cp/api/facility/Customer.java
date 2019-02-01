@@ -1,23 +1,12 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.theplatform.dfh.cp.api.EndpointDataObject;
 
-public class Customer implements IdentifiedObject
+public class Customer extends EndpointDataObject
 {
-    private String id;
     private String billingCode;
     private String title;
     private String resourcePoolId;
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
 
     public String getBillingCode()
     {
@@ -47,17 +36,5 @@ public class Customer implements IdentifiedObject
     public void setResourcePoolId(String resourcePoolId)
     {
         this.resourcePoolId = resourcePoolId;
-    }
-
-    @Override
-    public String getCustomerId()
-    {
-        return id;
-    }
-
-    @Override
-    public void setCustomerId(String customerId)
-    {
-        this.id = customerId;
     }
 }

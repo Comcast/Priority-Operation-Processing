@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.theplatform.dfh.cp.api.EndpointDataObject;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -8,10 +8,9 @@ import java.util.Objects;
 
 /**
  */
-public class AgendaProgress implements IdentifiedObject
+public class AgendaProgress extends EndpointDataObject
 {
-    private String id;
-    private String linkId;
+   private String linkId;
     private String externalId;
     private String title;
     private ProcessingState processingState;
@@ -22,7 +21,6 @@ public class AgendaProgress implements IdentifiedObject
     private Date startedTime;
     private Date completedTime;
     private Double percentComplete;
-    private String customerId;
 
     public AgendaProgress()
     {
@@ -35,29 +33,7 @@ public class AgendaProgress implements IdentifiedObject
         this.addedTime = new Date();
     }
 
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    @Override
-    public String getCustomerId()
-    {
-        return customerId;
-    }
-
-    @Override
-    public void setCustomerId(String customerId)
-    {
-        this.customerId = customerId;
-    }
-
-    public String getLinkId()
+  public String getLinkId()
     {
         return linkId;
     }
