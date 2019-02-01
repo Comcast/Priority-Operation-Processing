@@ -1,8 +1,10 @@
 package com.theplatform.dfh.endpoint.api.agenda.service;
 
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+
 /**
  */
-public class GetAgendaRequest
+public class GetAgendaRequest extends DefaultServiceRequest
 {
 
     private String insightId;

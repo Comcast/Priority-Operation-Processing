@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.progress.service.api;
 
-public class ProgressSummaryRequest
+import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+
+public class ProgressSummaryRequest extends DefaultServiceRequest
 {
     private String linkId;
 
