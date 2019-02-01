@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <configuration>
-
+    
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n</Pattern>
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%n</Pattern>
         </layout>
     </appender>
 
-    <appender name="sampleHandlerServiceLog" class="ch.qos.logback.classic.net.SyslogAppender">
+    <appender name="syslogServiceAppender" class="ch.qos.logback.classic.net.SyslogAppender">
         <filter class="com.theplatform.module.logging.extension.logback.filter.LevelMatchFilter" />
-        <syslogHost>syslog.splunk</syslogHost>
+        <syslogHost>syslog.logging</syslogHost>
         <facility>local0</facility>
         <port>514</port>
+
         <throwableExcluded>true</throwableExcluded>
         <!-- WARNING: THE HARD CODED CLUSTER MUST BE RESOLVED ?? -->
-        <suffixPattern>dfhsamp - service [idxFields@24131 index="service" cluster="lab-main-t-aor-fph-fun1"] %d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}:
-            %replace(%m){"\"(password|privateKey)\":\[\".*?\"\]","\"$1\":\[\"****\"\]"}%n%xException</suffixPattern>
+        <suffixPattern>cppull {"index": "service", "ccds_cluster_title": "lab-main-t-aor-cppull-t01", "type": "cppull-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
+    </appender>
+
+    <appender name="asyncLogAppender" class="com.theplatform.module.logging.extension.logback.appender.AsyncAppender">
+        <appender-ref ref="syslogServiceAppender" />
     </appender>
 
     <logger name="org.springframework" level="ERROR" />
@@ -25,12 +29,9 @@
     <logger name="com.theplatform.web.marshalling" level="ERROR" />
     <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
 
-    <root level="${LogLevel:-INFO}">
+    <root level="${LogLevel:-DEBUG}">
         <appender-ref ref="STDOUT" />
-        <!--<appender-ref ref="sampleHandlerServiceLog" />-->
+        <appender-ref ref="asyncLogAppender" />
     </root>
-
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
-    <logger name="org.hibernate.validator" level="info" /> <!-- Validator prints a lot of debug messages during integration tests -->
 
 </configuration>
