@@ -27,7 +27,7 @@
         <media-assembler-api.version>1.0.4</media-assembler-api.version>
         <handler-kubernetes-support.version>1.0.0-SNAPSHOT</handler-kubernetes-support.version>
         <http-request-util-handler.version>1.0.0-SNAPSHOT</http-request-util-handler.version>
-        <ldap-filter.version>1.0.0-SNAPSHOT</ldap-filter.version>
+        <ldap-filter.version>1.0.1-SNAPSHOT</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.0-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
     
