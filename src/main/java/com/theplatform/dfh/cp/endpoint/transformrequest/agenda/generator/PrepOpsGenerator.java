@@ -43,7 +43,8 @@ public class PrepOpsGenerator
         MediaInfoHandlerInput mediaInfoHandlerInput = new MediaInfoHandlerInput();
         JsonNode mediaInfoPayload = objectMapper.valueToTree(mediaInfoHandlerInput);
 
-        jsonHelper.setNodeValue(mediaInfoPayload, "/transformRequest", jsonReferenceReplacer.generateReference(LDAP_NAME + OperationReference.OUTPUT.getSuffix(), "/transformRequest"));
+        jsonHelper.setNodeValue(mediaInfoPayload, "/inputs", jsonReferenceReplacer.generateReference(LDAP_NAME + OperationReference.OUTPUT.getSuffix(),
+            "/transformRequest/inputs"));
 
         addOp(ops, ANALYSIS_NAME, "analysis", mediaInfoPayload);
 
@@ -52,7 +53,8 @@ public class PrepOpsGenerator
         accelerateHandlerInput.setOriginalRequest(transformRequest);
         JsonNode acceleratePayload = objectMapper.valueToTree(accelerateHandlerInput);
 
-        jsonHelper.setNodeValue(acceleratePayload, "/originalRequest", jsonReferenceReplacer.generateReference(ANALYSIS_NAME + OperationReference.OUTPUT.getSuffix(), "/transformRequest"));
+        jsonHelper.setNodeValue(acceleratePayload, "/inputStreams", jsonReferenceReplacer.generateReference(ANALYSIS_NAME + OperationReference.OUTPUT.getSuffix(), "/inputStreams"));
+        jsonHelper.setNodeValue(acceleratePayload, "/originalRequest", jsonReferenceReplacer.generateReference(LDAP_NAME + OperationReference.OUTPUT.getSuffix(), "/transformRequest"));
 
         addOp(ops, ACCELERATE_NAME, "accelerate", acceleratePayload);
 
