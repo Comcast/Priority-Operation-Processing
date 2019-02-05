@@ -21,8 +21,8 @@ public class DynamoDBTransformPersister extends DynamoDBCompressedObjectPersiste
     protected Map<String, AttributeValue> getStringAttributeValueMap(String identifier, TransformRequest object)
     {
         Map<String, AttributeValue> attributeMap = super.getStringAttributeValueMap(identifier, object);
-        attributeMap.put(CUSTOMER_ID_FIELD, new AttributeValue().withS(object.getCustomerId()));
-        attributeMap.put(CID_FIELD, new AttributeValue().withS(object.getCid()));
+        addNonNullStringAttribute(attributeMap, CUSTOMER_ID_FIELD, object.getCustomerId());
+        addNonNullStringAttribute(attributeMap, CID_FIELD, object.getCid());
         return attributeMap;
     }
 }

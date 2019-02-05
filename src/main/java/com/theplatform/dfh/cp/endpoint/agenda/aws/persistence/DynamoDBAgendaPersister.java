@@ -22,9 +22,9 @@ public class DynamoDBAgendaPersister extends DynamoDBCompressedObjectPersister<A
     protected Map<String, AttributeValue> getStringAttributeValueMap(String identifier, Agenda object)
     {
         Map<String, AttributeValue> attributeMap = super.getStringAttributeValueMap(identifier, object);
-        attributeMap.put(JOB_ID_FIELD, new AttributeValue().withS(object.getJobId()));
-        attributeMap.put(CUSTOMER_ID_FIELD, new AttributeValue().withS(object.getCustomerId()));
-        attributeMap.put(CID_FIELD, new AttributeValue().withS(object.getCid()));
+        addNonNullStringAttribute(attributeMap, JOB_ID_FIELD, object.getJobId());
+        addNonNullStringAttribute(attributeMap, CUSTOMER_ID_FIELD, object.getCustomerId());
+        addNonNullStringAttribute(attributeMap, CID_FIELD, object.getCid());
         return attributeMap;
     }
 }
