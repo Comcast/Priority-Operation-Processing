@@ -10,14 +10,12 @@
       "name": "analysis.1",
       "type": "analysis",
       "payload": {
-        "transformRequest": {
-          "inputs": [
-            {
-              "type": "mezzanine",
-              "url": "/testFiles/dfh_kube_test_input.mp4"
-            }
-          ]
-        }
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/00090041-My_Stop_Motion_Movie_1.mp4"
+          }
+        ]
       }
     }
   ]
