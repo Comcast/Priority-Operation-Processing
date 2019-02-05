@@ -7,6 +7,8 @@ import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConf
 import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.util.PropertyCopier;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
+    private static Logger logger = LoggerFactory.getLogger(JsonPodConfigRegistryClient.class);
 
     public static final String DFH_SERVICE_ACCOUNT_NAME = "ffmpeg-service";
     public static final String DEFAULT_CONFIG_MAP_JSON = "defaultConfigMap.json";
@@ -37,17 +40,34 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
 
     private String path;
     private Map<String, PodConfig> podConfigMap = new HashMap<>();
+    private boolean loaded = false;
 
-    public JsonPodConfigRegistryClient() throws PodConfigRegistryClientException{
-        loadJsonMap();
+    public JsonPodConfigRegistryClient() {
+        logger.debug("Loading JSON map from built-in map.");
     }
 
-    public JsonPodConfigRegistryClient(String path) throws PodConfigRegistryClientException {
+    public JsonPodConfigRegistryClient(String path) {
         this.path = path;
-        loadJsonMap();
+        logger.debug("Loading JSON map from: " + this.path);
+    }
+
+    @Override
+    public PodConfig getPodConfig(String configMapName) throws PodConfigRegistryClientException {
+        logger.debug("getPodConfig called for `" + configMapName + "`");
+        // did we load the json registry yet?
+        if (!loaded) {
+            loadJsonMap();
+        }
+
+        if (!podConfigMap.containsKey(configMapName)) {
+            throw new PodConfigRegistryClientException("Could not find PodConfig with name: " + configMapName);
+        }
+
+        return podConfigMap.get(configMapName);
     }
 
     private void loadJsonMap() throws PodConfigRegistryClientException {
+        logger.debug("loadJsonMap called");
         InputStream stream;
 
         // get stream
@@ -61,7 +81,10 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
             }
             catch(FileNotFoundException ex)
             {
-                throw new PodConfigRegistryClientException("Could not find JSON ConfigMap: " + this.path, ex);
+                // file was not found then we default to the internal map
+                logger.warn("Could not load external registry map @ " + this.path);
+                logger.warn("Loading built-in registry..");
+                stream = getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIG_MAP_JSON);
             }
         }
 
@@ -105,6 +128,8 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
                 // add to map for lookup
                 podConfigMap.put(handlerType, basePodConfig);
             }
+
+            loaded = true;
         }
         catch(IOException ex) {
             throw new PodConfigRegistryClientException("There was a problem trying to read from registry JSON file: " + this.path, ex);
@@ -124,15 +149,6 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
         PropertyCopier.copyProperties(result, baseJsonPodConfig);
 
         return result;
-    }
-
-    @Override
-    public PodConfig getPodConfig(String configMapName) throws PodConfigRegistryClientException {
-        if (!podConfigMap.containsKey(configMapName)) {
-            throw new PodConfigRegistryClientException("Could not find PodConfig with name: " + configMapName);
-        }
-
-        return podConfigMap.get(configMapName);
     }
 
     public static String readFromInputStream(InputStream inputStream) throws IOException {

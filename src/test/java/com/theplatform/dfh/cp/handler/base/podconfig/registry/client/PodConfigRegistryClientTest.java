@@ -44,6 +44,14 @@ public class PodConfigRegistryClientTest {
         Assert.assertEquals(pConfig.getNamePrefix(), "dfh-samp");
     }
 
+    @Test
+    void testBuiltInFailover() throws PodConfigRegistryClientException {
+        JsonPodConfigRegistryClient client = new JsonPodConfigRegistryClient("/non/existent/registry.json");
+        PodConfig pConfig = client.getPodConfig("encode");
+
+        Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fheff:1.0.0");
+    }
+
     private PodConfig getBaseJsonPodConfig(String path) throws IOException {
         String json = JsonPodConfigRegistryClient.readFromInputStream(new FileInputStream(path));
 
