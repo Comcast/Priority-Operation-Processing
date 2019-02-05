@@ -1,8 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.JsonPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.registry.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
@@ -11,7 +12,6 @@ import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,11 @@ public class KubernetesLauncherFactory implements LauncherFactory
     private PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
 
-    private static final String EXEC_OPERATION_TYPE = "exec"; // todo different name?  should this be here?
+    private static final String EXEC_OPERATION_TYPE = "executor";
 
     public KubernetesLauncherFactory()
     {
-        this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
+        this.podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
     }
 
     @Override
@@ -39,14 +39,32 @@ public class KubernetesLauncherFactory implements LauncherFactory
     {
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
-        PodConfig podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
+        PodConfig podConfig = null;
+        try {
+            podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
+        } catch (PodConfigRegistryClientException e) {
+            logger.error("There was a problem trying to retrieve the PodConfig from PodConfigRegistryClient.");
+        }
 
+        if (podConfig != null)
+        {
+            return buildLauncher(podConfig, pullerContext, kubeConfig);
+        }
+        else
+        {
+            logger.error("Could not retrieve PodConfig from Registry..");
+            return null;
+        }
+    }
+
+    private BaseLauncher buildLauncher(PodConfig podConfig, PullerContext pullerContext, KubeConfig kubeConfig)
+    {
         String execConfigMapName = pullerContext.getLaunchDataWrapper().getPullerConfig().getExecConfigMapName();
         if(execConfigMapName != null)
             podConfig.getConfigMapDetails().setConfigMapName(execConfigMapName);
 
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
-            .addEnvVar("LOG_LEVEL", "DEBUG");
+                .addEnvVar("LOG_LEVEL", "DEBUG");
 
         executionConfig.setCpuRequestModulator(new CpuRequestModulator()
         {
@@ -63,9 +81,9 @@ public class KubernetesLauncherFactory implements LauncherFactory
             }
         });
 
-
         return new KubernetesLauncher(kubeConfig, podConfig, executionConfig);
     }
+
 
     public PodConfigRegistryClient getPodConfigRegistryClient()
     {
