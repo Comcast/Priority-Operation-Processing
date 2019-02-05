@@ -30,7 +30,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
     {
         PodPushClient podPushClient = new PodPushClientFactoryImpl().getClient(kubeConfig);
 
-        PodConfig podConfig = new PodConfig();
+        PodConfig podConfig = new PodConfig().setDefaults();
         podConfig.setImageName("ubuntu:14.04");
         podConfig.setArguments(new String[] { "printenv" });
         podConfig.setNamePrefix("test-envvar");
@@ -87,7 +87,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
     {
         PodPushClient client = new PodPushClientFactoryImpl().getClient(kubeConfig);
 
-        PodConfig podConfig = new PodConfig();
+        PodConfig podConfig = new PodConfig().setDefaults();
         podConfig.setImageName(IMAGE_NAME);
         podConfig.setArguments(new String[] { "cat", "/config/external.properties" });
         podConfig.setNamePrefix("testprop");

@@ -33,7 +33,7 @@ public class PodNameTest extends KubeClientTestBase
     public void testPodName_ExternalId_CanBeSeen() throws Exception
     {
 
-        PodConfig podConfig = new PodConfig();
+        PodConfig podConfig = new PodConfig().setDefaults();
         podConfig.setImageName("ubuntu:14.04");
         podConfig.setArguments(new String[] { "printenv" });
         podConfig.setNamePrefix("testpodname");

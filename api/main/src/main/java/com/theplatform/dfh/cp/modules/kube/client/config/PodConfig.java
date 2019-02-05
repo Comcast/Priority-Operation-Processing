@@ -32,20 +32,20 @@ public class PodConfig
     private String endOfLogIdentifier;
 
     // If enabled the launcher will setup the endOfLogIdentifier with the logLineExpectation value
-    private boolean enableOutputScraping = false;
+    private Boolean enableOutputScraping; // = false;
 
     // arguments to pass into the docker container
     private String[] arguments;
 
     private Map<String, String> envVars = new HashMap<>();
 
-    private boolean useTaintedNodes = false;
+    private Boolean useTaintedNodes; // = false;
 
     // ServiceAccount value to execute the pod with
     private String serviceAccountName;
 
     // if true, a new volume (named log) is specified with an empty directory (fabric8)
-    private boolean defaultEmptyDirLogging = false;
+    private Boolean defaultEmptyDirLogging; // = false;
 
     // the maximum cpu request value
     private String cpuMaxRequestCount;
@@ -56,21 +56,21 @@ public class PodConfig
     private String memoryRequestCount; // todo can this be an int of long?
 
     // if enabled the pod follower will delete the pod at conclusion
-    private boolean reapCompletedPods = false;
+    private Boolean reapCompletedPods; // = false;
 
     // Indicates whether to pull the docker image(s) each execution (specifically setting the pull policy to Always)
-    private boolean pullAlways = false;
+    private Boolean pullAlways; // = false;
 
     // The timeout for starting a pod
-    private long podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
+    private Long podScheduledTimeoutMs;// = DEFAULT_SCHEDULED_TIMEOUT;
 
-    private long podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
+    private Long podStdoutTimeout; // = DEFAULT_STDOUT_TIMEOUT;
 
-    private int podRetryCount = 0;
-    private int retryDelayMilliSecs = RETRY_DELAY;
+    private Integer podRetryCount; // = 0;
+    private Integer retryDelayMilliSecs; // = RETRY_DELAY;
 
     // Docker securityContext
-    private boolean dockerPrivileged;
+    private Boolean dockerPrivileged; // = false;
 
     private List<Class<? extends Throwable>> nonRetryableExceptions;
     private List<Class<? extends Throwable>> retryableExceptions;
@@ -125,17 +125,17 @@ public class PodConfig
         return this;
     }
 
-    public boolean isEndOfLogIdentifierEmpty()
+    public Boolean isEndOfLogIdentifierEmpty()
     {
         return StringUtils.isBlank(endOfLogIdentifier);
     }
 
-    public boolean isEnableOutputScraping()
+    public Boolean isEnableOutputScraping()
     {
         return enableOutputScraping;
     }
 
-    public PodConfig setEnableOutputScraping(boolean enableOutputScraping)
+    public PodConfig setEnableOutputScraping(Boolean enableOutputScraping)
     {
         this.enableOutputScraping = enableOutputScraping;
         return this;
@@ -157,7 +157,7 @@ public class PodConfig
         return envVars;
     }
 
-    public boolean hasEnvVars()
+    public Boolean hasEnvVars()
     {
         return envVars != null && !envVars.isEmpty();
     }
@@ -174,12 +174,12 @@ public class PodConfig
         return this;
     }
 
-    public boolean useTaintedNodes()
+    public Boolean useTaintedNodes()
     {
         return useTaintedNodes;
     }
 
-    public PodConfig setUseTaintedNodes(boolean useTaintedNodes)
+    public PodConfig setUseTaintedNodes(Boolean useTaintedNodes)
     {
         this.useTaintedNodes = useTaintedNodes;
         return this;
@@ -196,17 +196,17 @@ public class PodConfig
         return this;
     }
 
-    public boolean hasServiceAccountName()
+    public Boolean hasServiceAccountName()
     {
         return serviceAccountName != null && serviceAccountName.length() > 0;
     }
 
-    public boolean isDefaultEmptyDirLogging()
+    public Boolean isDefaultEmptyDirLogging()
     {
         return defaultEmptyDirLogging;
     }
 
-    public PodConfig setDefaultEmptyDirLogging(boolean defaultEmptyDirLogging)
+    public PodConfig setDefaultEmptyDirLogging(Boolean defaultEmptyDirLogging)
     {
         this.defaultEmptyDirLogging = defaultEmptyDirLogging;
         return this;
@@ -278,12 +278,12 @@ public class PodConfig
         return this;
     }
 
-    public long getPodStdoutTimeout()
+    public Long getPodStdoutTimeout()
     {
         return podStdoutTimeout;
     }
 
-    public PodConfig setPodStdoutTimeout(long podStdoutTimeout)
+    public PodConfig setPodStdoutTimeout(Long podStdoutTimeout)
     {
         this.podStdoutTimeout = podStdoutTimeout;
         return this;
@@ -300,12 +300,12 @@ public class PodConfig
         return this;
     }
 
-    public int getRetryDelayMilliSecs()
+    public Integer getRetryDelayMilliSecs()
     {
         return retryDelayMilliSecs;
     }
 
-    public PodConfig setRetryDelayMilliSecs(int retryDelayMilliSecs)
+    public PodConfig setRetryDelayMilliSecs(Integer retryDelayMilliSecs)
     {
         this.retryDelayMilliSecs = retryDelayMilliSecs;
         return this;
@@ -333,7 +333,7 @@ public class PodConfig
         return this;
     }
 
-    public boolean hasConfigMap()
+    public Boolean hasConfigMap()
     {
         return configMapDetails != null;
     }
@@ -371,9 +371,9 @@ public class PodConfig
         return this;
     }
 
-    public boolean isDockerPrivileged() { return dockerPrivileged; }
+    public Boolean isDockerPrivileged() { return dockerPrivileged; }
 
-    public PodConfig setDockerPrivileged(boolean dockerPrivileged) {
+    public PodConfig setDockerPrivileged(Boolean dockerPrivileged) {
         this.dockerPrivileged = dockerPrivileged;
         return this;
     }
@@ -386,6 +386,22 @@ public class PodConfig
     public PodConfig setLogback(String logback)
     {
         this.logback = logback;
+        return this;
+    }
+
+    public PodConfig setDefaults()
+    {
+        this.enableOutputScraping = false;
+        this.useTaintedNodes = false;
+        this.defaultEmptyDirLogging = false;
+        this.reapCompletedPods = false;
+        this.pullAlways = false;
+        this.podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
+        this.podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
+        this.podRetryCount = 0;
+        this.retryDelayMilliSecs = RETRY_DELAY;
+        this.dockerPrivileged = false;
+
         return this;
     }
 }

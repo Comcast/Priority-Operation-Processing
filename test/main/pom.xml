@@ -10,12 +10,12 @@
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-kube-client-fabric8-tests</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Kube Client Test</name>
 
     <properties>
-        <kubeclient-version>1.0.0-SNAPSHOT</kubeclient-version>
+        <kubeclient-version>1.0.1-SNAPSHOT</kubeclient-version>
         <skipITTests>true</skipITTests>
         <test-suite>testng.xml</test-suite>
         <surefireReportDir>surefire-reports</surefireReportDir>

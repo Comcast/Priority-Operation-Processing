@@ -26,13 +26,13 @@ public class DefaultConfigFactory
         aliveCheckDetails.setAlivePath("/management/alive");
         aliveCheckDetails.setAliveCheckLinking(false);
 
-        PodConfig podConfig = new PodConfig();
+        PodConfig podConfig = new PodConfig().setDefaults();
         podConfig.setNfsDetails(nfsDetails);
         podConfig.setAliveCheckDetails(aliveCheckDetails);
         podConfig.setMemoryRequestCount("16000m");
         podConfig.setReapCompletedPods(true);
         podConfig.setPodScheduledTimeoutMs(100000L);
-        podConfig.setPodStdoutTimeout(60 * 1000 * 2);
+        podConfig.setPodStdoutTimeout((long)60 * 1000 * 2);
         podConfig.setCpuMinRequestCount("8000m");
         podConfig.setCpuMaxRequestCount("16000m");
         // PULL ALWAYS FOR THE TESTS
