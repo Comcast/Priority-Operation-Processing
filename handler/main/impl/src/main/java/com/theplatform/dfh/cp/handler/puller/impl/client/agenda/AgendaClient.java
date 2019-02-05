@@ -6,7 +6,5 @@ import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 
 public interface AgendaClient
 {
-    Agenda getAgenda();
-
     GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest);
 }

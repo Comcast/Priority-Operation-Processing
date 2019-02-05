@@ -2,6 +2,8 @@ package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
@@ -32,22 +34,6 @@ public class AwsAgendaProviderClientTest
     }
 
     @Test
-    public void testGetAgenda()
-    {
-        Agenda agenda = new Agenda();
-        agenda.setId(UUID.randomUUID().toString());
-        when(agendaServiceClient.getAgenda()).thenReturn(agenda);
-
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
-
-        Agenda agendaResponse = awsClient.getAgenda();
-        String expectedAgenda =jsonHelper.getJSONString(agenda);
-        String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
-        Assert.assertEquals(agendaResponseJson, expectedAgenda);
-        verify(agendaServiceClient, times(1)).getAgenda();
-    }
-
-    @Test
     public void testGetAgendaWithInsight()
     {
         Agenda agenda = new Agenda();
@@ -69,12 +55,28 @@ public class AwsAgendaProviderClientTest
     @Test
     public void testGetAgendaReturnsNull()
     {
-        when(agendaServiceClient.getAgenda()).thenReturn(null);
+        when(agendaServiceClient.getAgenda((any()))).thenReturn(null);
 
         AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
 
-        Agenda agendaResponse = awsClient.getAgenda();
+        GetAgendaResponse agendaResponse = awsClient.getAgenda(new GetAgendaRequest());
         Assert.assertNull(agendaResponse);
-        verify(agendaServiceClient, times(1)).getAgenda();
+        verify(agendaServiceClient, times(1)).getAgenda(any());
+    }
+
+    @Test
+    public void testGetAgendaResturnsError()
+    {
+        GetAgendaResponse response = new GetAgendaResponse(ErrorResponseFactory.objectNotFound("Could not find Insight.", "cid"));
+        when(agendaServiceClient.getAgenda(any())).thenReturn(response);
+
+        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
+
+        GetAgendaRequest getAgendaRequest = new GetAgendaRequest("foo", 1);
+        GetAgendaResponse agendaResponse = awsClient.getAgenda(getAgendaRequest);
+        String expectedAgenda =jsonHelper.getJSONString(response);
+        String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
+        Assert.assertEquals(agendaResponseJson, expectedAgenda);
+        verify(agendaServiceClient, times(1)).getAgenda(getAgendaRequest);
     }
 }

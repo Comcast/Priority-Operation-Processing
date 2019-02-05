@@ -23,11 +23,6 @@ public class AwsAgendaProviderClient implements AgendaClient
         this.agendaServiceClient = agendaServiceClient;
     }
 
-    public Agenda getAgenda()
-    {
-        return agendaServiceClient.getAgenda();
-    }
-
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         

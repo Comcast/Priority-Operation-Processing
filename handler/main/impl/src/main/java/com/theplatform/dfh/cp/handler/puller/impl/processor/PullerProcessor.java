@@ -10,8 +10,12 @@ import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncher;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
@@ -25,15 +29,23 @@ public class PullerProcessor implements HandlerProcessor
 
     private AgendaClient agendaClient;
 
+    private String insightId;
+    private int agendaRequestCount = 1;
+
     public PullerProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
         this.launchDataWrapper = pullerContext.getLaunchDataWrapper();
         this.agendaClient = agendaClientFactory.getClient();
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
+
+        insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
+        agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
     }
 
-    protected PullerProcessor()
+    protected PullerProcessor(String insightId)
     {
+        super();
+        this.insightId = insightId;
     }
 
     /**
@@ -41,18 +53,41 @@ public class PullerProcessor implements HandlerProcessor
      */
     public void execute()
     {
-        Agenda agenda = agendaClient.getAgenda();
-
-        if (agenda != null)
+        GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
+        GetAgendaResponse getAgendaResponse;
+        try
         {
+            getAgendaResponse = getAgendaClient().getAgenda(getAgendaRequest);
+        } catch (Exception e)
+        {
+            logger.error("Failed to getAgenda: {}", e);
+            return;
+        }
+
+        if (getAgendaResponse == null || getAgendaResponse.getAgendas() == null)
+        {
+            logger.error("Failed to getAgenda"); // todo what should we do here?
+            return;
+        }
+        else if (getAgendaResponse.isError())
+        {
+            logger.error("getAgenda returned an error: " + getAgendaResponse.toString());
+            return;
+        }
+
+        Collection<Agenda> agendas = getAgendaResponse.getAgendas();
+
+        if (agendas != null && agendas.size() > 0)
+        {
+            Agenda agenda = (Agenda) agendas.toArray()[0];
             logger.info("Retrieved Agenda: {}", agenda);
             // launch an executor and pass it the agenda payload
-            launcher.execute(agenda);
+            getLauncher().execute(agenda);
         }
         else
         {
-            int pullWait = launchDataWrapper.getPullerConfig().getPullWait();
-            logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", launchDataWrapper.getPullerConfig().getPullWait());
+            int pullWait = getLaunchDataWrapper().getPullerConfig().getPullWait();
+            logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", getLaunchDataWrapper().getPullerConfig().getPullWait());
             try
             {
                 Thread.sleep(pullWait * 1000);
