@@ -20,9 +20,16 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>1.0.5</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
+        <dfh-kube-client-api.version>1.0.1-SNAPSHOT</dfh-kube-client-api.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-api</artifactId>
+            <version>${dfh-kube-client-api.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-field-retriever</artifactId>
@@ -52,6 +59,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
         </dependency>
 
         <!-- Logging -->
