@@ -173,6 +173,20 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
         }
     }
 
+    /**
+     * Adds the specified field/value to the Attribute map if the value is non-null
+     * @param attributeMap The map to add to
+     * @param field The field to add
+     * @param value The value to add
+     */
+    protected void addNonNullStringAttribute(Map<String, AttributeValue> attributeMap, final String field, final String value)
+    {
+        if(value != null)
+        {
+            attributeMap.put(field, new AttributeValue().withS(value));
+        }
+    }
+
     protected Map<String, AttributeValue> getKey(String identifier)
     {
         Map<String, AttributeValue> key = new HashMap<>();
