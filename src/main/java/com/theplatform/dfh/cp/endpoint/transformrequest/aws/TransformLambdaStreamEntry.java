@@ -15,6 +15,7 @@ import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightP
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.transformrequest.TransformRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.transformrequest.aws.persistence.DynamoDBTransformPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
@@ -37,7 +38,7 @@ public class TransformLambdaStreamEntry extends DataObjectLambdaStreamEntry<Tran
     {
         super(
             TransformRequest.class,
-            new DynamoDBCompressedObjectPersisterFactory<>("id", TransformRequest.class)
+            new DynamoDBTransformPersisterFactory()
         );
         agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
