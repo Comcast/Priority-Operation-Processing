@@ -25,7 +25,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     public static final PodConfig BASE_POD_CONFIG;
 
     static {
-        BASE_POD_CONFIG = new PodConfig();
+        BASE_POD_CONFIG = new PodConfig().setDefaults();
 
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
                 .setMapKey("external-properties")
