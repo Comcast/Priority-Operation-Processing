@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRe
 import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
+import com.theplatform.dfh.cp.handler.puller.impl.exception.PullerException;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 
@@ -53,7 +54,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
         else
         {
             logger.error("Could not retrieve PodConfig from Registry..");
-            return null;
+            throw new PullerException(String.format("Could not retrieve `" + EXEC_OPERATION_TYPE + "` handler from PodConfig registry.."));
         }
     }
 
