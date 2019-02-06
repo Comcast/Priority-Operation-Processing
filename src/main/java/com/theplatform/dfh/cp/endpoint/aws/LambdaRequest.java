@@ -34,7 +34,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     protected static final String STAGE_VARIABLES_PATH = "/stageVariables/";
     protected static final String QUERY_STRING_PARAMETERS_PATH = "/queryStringParameters";
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
-    protected static final String HEADERS_AUTHORIZATION_PATH = "/headers/Authorization";
+    protected static final String HEADER_AUTHORIZATION = "Authorization";
     protected static final String HEADERS = "/headers";
     protected static final String HEADER_CID = "X-thePlatform-cid";
 
@@ -168,8 +168,13 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
         return getRequestValue(STAGE_FIELD_PATH);
     }
 
-    private String parseAuthorizationHeader() { return getRequestValue(HEADERS_AUTHORIZATION_PATH); }
+    private String parseAuthorizationHeader() { return getHeader(HEADER_AUTHORIZATION); }
 
+    /**
+     * Gets the header value (attemping with case specified and lower case -- a reality for some reason)
+     * @param header The header to retrieve
+     * @return The value of the header or null
+     */
     @Override
     public String getHeader(String header)
     {
