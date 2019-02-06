@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.handler</groupId>
     <artifactId>pl-dfh-cp-handler-sample-impl</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Sample</name>
 
