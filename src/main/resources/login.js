@@ -11,20 +11,22 @@ function authorizeWithLambda(e) {
     }
     var username = $("#mpx_username").val();
     var password = $("#mpx_password").val();
+    var accountId = $("#mpx_account").val();
     var id_value = $("#id_value").val();
     var endpointURL = $("#endpointURL").val();
     var CID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var authUserPasswordHeader = "Basic " +  btoa(username + ":" + password);
 
     $.ajax({
         type: "POST",
-        url: "https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1",
+        url: $("#mpx_idm_url").val(),
         crossDomain: "true",
         cache:false,
         dataType:"json",
         jsonp: false,
 
         headers: {
-            "Authorization": "Basic " + btoa(username + ":" + password),
+            "Authorization": authUserPasswordHeader,
             "Accept": "*/*",
             "Content-Type": "application/json"
         },
@@ -35,6 +37,7 @@ function authorizeWithLambda(e) {
 
         success: function (idmResponse) {
             var url = id_value == "" ? endpointURL : endpointURL +"/" +id_value
+            //$('#json-renderer').jsonViewer(authHeader);
             $.ajax({
                 type: "GET",
                 url: url,
@@ -42,7 +45,7 @@ function authorizeWithLambda(e) {
                 jsonp: true,
                 contentType: "application/json",
                 headers: {
-                    'Authorization': "Basic " +  btoa(idmResponse.signInResponse.token),
+                    'Authorization': "Basic " +btoa(":" +idmResponse.signInResponse.token),
                     'Content-Type': "application/json",
                     'X-thePlatform-cid': CID
                 },
@@ -50,7 +53,7 @@ function authorizeWithLambda(e) {
                     document.getElementById("response").value = JSON.stringify(response, null, 2);
                     $('#json-renderer').jsonViewer(response);
                 },
-                error: function () {
+                error: function (response) {
                     // show an error message
                     alert("UnSuccessfull CID '" +CID +"'");
                 }
