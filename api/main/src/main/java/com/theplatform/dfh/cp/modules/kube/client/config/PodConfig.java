@@ -130,7 +130,7 @@ public class PodConfig
         return StringUtils.isBlank(endOfLogIdentifier);
     }
 
-    public Boolean isEnableOutputScraping()
+    public Boolean getEnableOutputScraping()
     {
         return enableOutputScraping;
     }
@@ -174,7 +174,7 @@ public class PodConfig
         return this;
     }
 
-    public Boolean useTaintedNodes()
+    public Boolean getUseTaintedNodes()
     {
         return useTaintedNodes;
     }
@@ -201,7 +201,7 @@ public class PodConfig
         return serviceAccountName != null && serviceAccountName.length() > 0;
     }
 
-    public Boolean isDefaultEmptyDirLogging()
+    public Boolean getDefaultEmptyDirLogging()
     {
         return defaultEmptyDirLogging;
     }
@@ -371,7 +371,10 @@ public class PodConfig
         return this;
     }
 
-    public Boolean isDockerPrivileged() { return dockerPrivileged; }
+    public Boolean getDockerPrivileged()
+    {
+        return dockerPrivileged;
+    }
 
     public PodConfig setDockerPrivileged(Boolean dockerPrivileged) {
         this.dockerPrivileged = dockerPrivileged;

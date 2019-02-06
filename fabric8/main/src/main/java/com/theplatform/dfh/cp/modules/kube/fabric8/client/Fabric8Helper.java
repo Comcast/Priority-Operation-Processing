@@ -105,7 +105,7 @@ public class Fabric8Helper
 
         // IMPORTANT: this must be within `addNewContainer()`
         // if isDockerPrivileged we need to set a SecurityContext at the Image level
-        if (podConfig.isDockerPrivileged())
+        if (podConfig.getDockerPrivileged())
         {
             SecurityContext secContext = new SecurityContext();
             secContext.setPrivileged(true);
@@ -126,7 +126,7 @@ public class Fabric8Helper
 
         containerSpec.addNewEnv().withName(MY_POD_NAME).withNewValueFrom().withNewFieldRef().withFieldPath("metadata.name").endFieldRef().endValueFrom().endEnv();
 
-        if (podConfig.isDefaultEmptyDirLogging())
+        if (podConfig.getDefaultEmptyDirLogging())
         {
             containerSpec.addNewVolumeMount().withName(EMPTY_DIR_LOG_NAME).withMountPath(APP_DUMPS).endVolumeMount();
         }
@@ -233,12 +233,12 @@ public class Fabric8Helper
                 .endVolume();
         }
 
-        if (podConfig.isDefaultEmptyDirLogging())
+        if (podConfig.getDefaultEmptyDirLogging())
         {
             podSpec.addNewVolume().withName(EMPTY_DIR_LOG_NAME).withEmptyDir(new EmptyDirVolumeSource()).endVolume();
         }
 
-        if (podConfig.useTaintedNodes())
+        if (podConfig.getUseTaintedNodes())
         {
             NodeSelectorRequirement nodeSelectorRequirement = new NodeSelectorRequirement("dedicated", "In",
                 Collections.singletonList(NODE_SELECTOR_VALUE));
