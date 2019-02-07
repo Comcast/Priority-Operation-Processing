@@ -6,15 +6,14 @@ import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.util.PropertyCopier;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
+import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     private static Logger logger = LoggerFactory.getLogger(JsonPodConfigRegistryClient.class);
@@ -28,10 +27,13 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
         BASE_POD_CONFIG = new PodConfig().setDefaults();
 
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
-                .setMapKey("external-properties")
-                .setMapPath("external.properties")
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/config");
+
+        List<KeyPathPair> keyPaths = new LinkedList<>();
+        keyPaths.add(new KeyPathPair("external-properties", "external.properties"));
+
+        configMapDetails.setMapKeyPaths(keyPaths);
 
         BASE_POD_CONFIG.setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
