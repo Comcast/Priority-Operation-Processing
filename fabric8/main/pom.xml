@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Kubernetes Client Fabric8 Implementation</name>
 
