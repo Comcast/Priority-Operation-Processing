@@ -20,7 +20,7 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>1.0.5</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
-        <dfh-kube-client-api.version>1.0.1-SNAPSHOT</dfh-kube-client-api.version>
+        <dfh-kube-client-api.version>1.0.1</dfh-kube-client-api.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
     </properties>
     
