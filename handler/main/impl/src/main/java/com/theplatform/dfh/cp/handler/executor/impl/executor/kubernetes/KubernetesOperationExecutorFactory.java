@@ -9,8 +9,10 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
+import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
@@ -29,12 +31,23 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
 
     public KubernetesOperationExecutorFactory()
     {
-        this.podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
+
     }
 
     @Override
     public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
     {
+        boolean useStaticRegistryClient = Boolean.parseBoolean(((KubeConfigFactoryImpl)kubeConfigFactory).getLaunchDataWrapper().getPropertyRetriever().getField("useStaticRegistryClient", "false"));
+
+        if (useStaticRegistryClient)
+        {
+            this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
+        }
+        else
+        {
+            this.podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
+        }
+
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = null;

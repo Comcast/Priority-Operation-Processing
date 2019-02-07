@@ -13,13 +13,13 @@
         "inputs": [
           {
             "type": "mezzanine",
-            "url": "/testFiles/Users/tstair200/coolestdog.flv"
+            "url": "/testFiles/coolestdog.mp4"
           }
         ],
         "outputs": [
           {
             "type": "mezzanine",
-            "url": "/testFiles/Users/tstair200/coolestdog_{now}.flv"
+            "url": "/testFiles/coolestdog_{now}.mp4"
           }
         ],
         "params": {
