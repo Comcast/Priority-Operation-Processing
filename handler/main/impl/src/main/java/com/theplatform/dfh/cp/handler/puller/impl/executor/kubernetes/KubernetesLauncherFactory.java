@@ -11,6 +11,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class KubernetesLauncherFactory implements LauncherFactory
         PodConfig podConfig = null;
         try {
             podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
+
+            // add registry-json path mapping
+            podConfig.getConfigMapDetails().getMapKeyPaths().add(new KeyPathPair("registry-json", "registry.json"));
         } catch (PodConfigRegistryClientException e) {
             logger.error("There was a problem trying to retrieve the PodConfig from PodConfigRegistryClient.");
         }
