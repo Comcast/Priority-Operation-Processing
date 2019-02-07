@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
+import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.podconfig.registry.client.api.PodConfigRegistryClient;
 
 import java.util.HashMap;
 import java.util.Map;
