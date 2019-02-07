@@ -220,17 +220,32 @@ public class Fabric8Helper
         {
             ConfigMapDetails configMapDetails = podConfig.getConfigMapDetails();
             ConfigMapVolumeSource source = new ConfigMapVolumeSource();
-
             List<KeyToPath> items = new LinkedList<>();
-            KeyToPath keyToPath = new KeyToPath();
-            keyToPath.setKey(configMapDetails.getMapKey());
-            keyToPath.setPath(configMapDetails.getMapPath());
-            items.add(keyToPath);
+
+            // if multiple keyPaths are defined via mapKeyPaths list
+            if (configMapDetails.getMapKeyPaths() != null && configMapDetails.getMapKeyPaths().size() > 0)
+            {
+                for (KeyPathPair pair : configMapDetails.getMapKeyPaths())
+                {
+                    KeyToPath keyToPath = new KeyToPath();
+                    keyToPath.setKey(pair.getKey());
+                    keyToPath.setPath(pair.getPath());
+                    items.add(keyToPath);
+                }
+            }
+            else
+            {
+                // the old way of setting a singular volume-configMap-keyPath
+                KeyToPath keyToPath = new KeyToPath();
+                keyToPath.setKey(configMapDetails.getMapKey());
+                keyToPath.setPath(configMapDetails.getMapPath());
+                items.add(keyToPath);
+            }
 
             source.setItems(items);
             source.setName(configMapDetails.getConfigMapName());
             podSpec.addNewVolume().withName(configMapDetails.getVolumeName()).withConfigMap(source)
-                .endVolume();
+                    .endVolume();
         }
 
         if (podConfig.getDefaultEmptyDirLogging())

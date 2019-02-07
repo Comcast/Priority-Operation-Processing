@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.client.config;
 
+import java.util.List;
+
 /**
  *
  */
@@ -14,6 +16,18 @@ public class ConfigMapDetails {
     private String volumeName;
     // The mount path to attach the volume created with the above settings
     private String volumeMountPath;
+
+    private List<KeyPathPair> mapKeyPaths;
+
+    public List<KeyPathPair> getMapKeyPaths()
+    {
+        return mapKeyPaths;
+    }
+
+    public void setMapKeyPaths(List<KeyPathPair> mapKeyPaths)
+    {
+        this.mapKeyPaths = mapKeyPaths;
+    }
 
     public String getMapKey()
     {
