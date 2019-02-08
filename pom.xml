@@ -23,6 +23,7 @@
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
             <artifactId>pl-dfh-cp-endpoint-api</artifactId>
             <version>${endpoint-api.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
