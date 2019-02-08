@@ -22,6 +22,7 @@
             <groupId>com.theplatform.dfh.object</groupId>
             <artifactId>pl-dfh-object-api</artifactId>
             <version>${dfh-object-api.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- logging -->
         <dependency>
