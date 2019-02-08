@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.api</groupId>
     <artifactId>pl-dfh-cp-api</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Content Processing API</name>
 
