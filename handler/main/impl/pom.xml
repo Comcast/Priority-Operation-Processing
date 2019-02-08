@@ -15,15 +15,17 @@
     <name>Executor Handler Impl</name>
 
     <properties>
+        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <logger-reporter.version>1.0.0</logger-reporter.version>
         <reporter-progress-agenda.version>1.0.0</reporter-progress-agenda.version>
-        <dfh-fabric8-kube-client.version>1.0.1-SNAPSHOT</dfh-fabric8-kube-client.version>
+        <dfh-fabric8-kube-client.version>1.0.1</dfh-fabric8-kube-client.version>
         <kubernetes-reporter.version>1.0.0</kubernetes-reporter.version>
         <executor-handler-api.version>1.0.1-SNAPSHOT</executor-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
-        <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
-        <http-request-util-handler.version>1.0.1-SNAPSHOT</http-request-util-handler.version>
+        <handler-base.version>1.0.1</handler-base.version>
+        <handler-kubernetes-support.version>1.0.0</handler-kubernetes-support.version>
+        <http-request-util-handler.version>1.0.0</http-request-util-handler.version>
         <ldap-filter.version>1.0.0</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.1-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
@@ -70,11 +72,6 @@
         </dependency>
 
         <!-- Launcher modules -->
-         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-            <version>${dfh-fabric8-kube-client.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-dfh-docker</artifactId>
@@ -86,6 +83,26 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
             <version>${handler-kubernetes-support.version}</version>
+        </dependency>
+
+        <!-- todo: make these a provided dependency in intermediates -->
+
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <version>${handler-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
+            <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
         </dependency>
 
         <!-- Logging -->
