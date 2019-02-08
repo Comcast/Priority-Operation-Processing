@@ -12,8 +12,7 @@ function authorizeWithLambda(e) {
     var username = $("#mpx_username").val();
     var password = $("#mpx_password").val();
     var accountId = $("#mpx_account").val();
-    var id_value = $("#id_value").val();
-    var endpointURL = $("#endpointURL").val();
+
     var CID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     var authUserPasswordHeader = "Basic " +  btoa(username + ":" + password);
 
@@ -36,16 +35,15 @@ function authorizeWithLambda(e) {
 //    {"signInResponse":{"token":"XYZ","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/ZZZ","userName":"me@me.com","duration":86400000,"idleTimeout":14400000}}
 
         success: function (idmResponse) {
-            var url = id_value == "" ? endpointURL : endpointURL +"/" +id_value
-            //$('#json-renderer').jsonViewer(authHeader);
+              //$('#json-renderer').jsonViewer(getEndpointURL());
             $.ajax({
                 type: "GET",
-                url: url,
+                url: getEndpointURL(),
                 crossDomain: true,
                 jsonp: true,
                 contentType: "application/json",
                 headers: {
-                    'Authorization': "Basic " +btoa(":" +idmResponse.signInResponse.token),
+                    'Authorization': "Basic " +btoa(accountId +":" +idmResponse.signInResponse.token),
                     'Content-Type': "application/json",
                     'X-thePlatform-cid': CID
                 },
@@ -64,4 +62,19 @@ function authorizeWithLambda(e) {
             alert("UnSuccessfull");
         }
     });
+
+
+    function getEndpointURL()
+    {
+        var endpointURL = $("#endpointURL").val();
+        var query = "";
+        var queryElement = document.getElementById("query");
+        var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
+        var queryValue = document.getElementById("query_value").value;
+        if(querySelectedType == "byId")
+        {
+            return queryValue == "" ? endpointURL : endpointURL +"/" +queryValue;
+        }
+        return queryValue == "" ? endpointURL : endpointURL +"?" +querySelectedType +"=" +queryValue;
+    }
 }

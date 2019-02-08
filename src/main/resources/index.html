@@ -11,16 +11,18 @@
 <br><br>
 <form id="loginForm">
     <div class="container">
-        <label for="mpx_username"><b>Username</b></label>
+        <label for="mpx_username"><b>Username *</b></label>
         <input id="mpx_username" placeholder="Enter Username" name="mpx_username" required>
 
-        <label for="mpx_password"><b>Password</b></label>
+        <label for="mpx_password"><b>Password *</b></label>
         <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" required>
         <label for="mpx_account"><b>Account ID</b></label>
         <input id="mpx_account" placeholder="Account ID" name="mpx_account" required>
-
-        <label for="id_value"><b>ID</b></label>
-        <input id="id_value" placeholder="Enter ID" name="id_value" required>
+        <select name="query" id="query">
+            <option value="byId">byId</option>
+            <option value="byCid">byCid</option>
+        </select>
+        <input id="query_value"name="query_value" required>
         <input id="mpx_idm_url" type="hidden" value="https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1"/>
 
         <select id="endpointURL">
