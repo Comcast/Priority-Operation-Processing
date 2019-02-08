@@ -35,7 +35,12 @@ function authorizeWithLambda(e) {
 //    {"signInResponse":{"token":"XYZ","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/ZZZ","userName":"me@me.com","duration":86400000,"idleTimeout":14400000}}
 
         success: function (idmResponse) {
-              //$('#json-renderer').jsonViewer(getEndpointURL());
+            console.log(idmResponse);
+            if(idmResponse.isException == true)
+            {
+                alert(idmResponse.description);
+                return;
+            }
             $.ajax({
                 type: "GET",
                 url: getEndpointURL(),
