@@ -13,14 +13,14 @@ import java.util.Map;
  */
 public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 {
-    private static final String DFH_SERVICE_ACCOUNT_NAME = "ffmpeg-service";
+    private static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
 
     static
     {
         podConfigMap.put("sample",
                 makeDfhBasePod("lab-main-t-aor-fhsamp-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.0")
+                        .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
                         .setNamePrefix("dfh-samp")
         );
 
@@ -32,19 +32,19 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 
         podConfigMap.put("encode",
                 makeDfhBasePod("lab-main-t-aor-fheff-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fheff:1.0.0")
+                        .setImageName("docker-lab.repo.theplatform.com/fheff:1.0.1")
                         .setNamePrefix("dfh-encode")
         );
 
         podConfigMap.put("thumbnail",
                 makeDfhBasePod("lab-main-t-aor-fhtff-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.0")
+                        .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.1")
                         .setNamePrefix("dfh-thumbnail")
         );
 
         podConfigMap.put("package",
                 makeDfhBasePod("lab-main-t-aor-fhpkm-t01")
-                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.0")
+                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.1")
                 .setNamePrefix("dfh-package")
                 .setReapCompletedPods(false) // for debugging
         );
@@ -65,6 +65,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/config");
         return new PodConfig()
+                .setDefaults()
                 .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
