@@ -90,6 +90,7 @@
             <version>${dfh-module-version-info.version}</version>
         </dependency>
 
+        <!-- Provided dependencies from intermediate modules -->
         <dependency>
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
