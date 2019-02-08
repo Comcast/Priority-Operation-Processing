@@ -92,17 +92,11 @@
             <artifactId>pl-dfh-cp-handler-filter-ldap-api</artifactId>
             <version>${ldap-filter.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
             <version>${cp-api.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${commons-http-client.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 3rd party -->
