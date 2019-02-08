@@ -15,26 +15,28 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     {
         podConfigMap.put("sample",
             new PodConfig()
-                .setServiceAccountName("ffmpeg-service")
+                .setDefaults()
+                .setServiceAccountName("dfh-service")
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
-                .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.0")
+                .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
                 .setNamePrefix("dfh-samp")
         );
         podConfigMap.put("exec",
             new PodConfig()
-                .setServiceAccountName("ffmpeg-service")
+                .setDefaults()
+                .setServiceAccountName("dfh-service")
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
-                .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.0")
+                .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.1")
                 .setNamePrefix("dfh-exec")
                 .setConfigMapDetails(new ConfigMapDetails()
                     .setConfigMapName("lab-main-t-aor-fhexec-t01")
