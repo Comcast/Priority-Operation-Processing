@@ -58,6 +58,7 @@ function authorizeWithLambda(e) {
                 },
                 error: function (response) {
                     // show an error message
+                    $('#json-renderer').jsonViewer(response);
                     alert("UnSuccessfull CID '" +CID +"'");
                 }
             });
@@ -72,7 +73,6 @@ function authorizeWithLambda(e) {
     function getEndpointURL()
     {
         var endpointURL = $("#endpointURL").val();
-        var query = "";
         var queryElement = document.getElementById("query");
         var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
         var queryValue = document.getElementById("query_value").value;
@@ -80,6 +80,11 @@ function authorizeWithLambda(e) {
         {
             return queryValue == "" ? endpointURL : endpointURL +"/" +queryValue;
         }
+        else if(querySelectedType == "other")
+        {
+            return queryValue == "" ? endpointURL : endpointURL +"?" +queryValue;
+        }
+
         return queryValue == "" ? endpointURL : endpointURL +"?" +querySelectedType +"=" +queryValue;
     }
 }
