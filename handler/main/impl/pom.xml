@@ -25,7 +25,7 @@
         <handler-base.version>1.0.1</handler-base.version>
         <handler-kubernetes-support.version>1.0.0</handler-kubernetes-support.version>
         <http-request-util-handler.version>1.0.0</http-request-util-handler.version>
-        <ldap-filter.version>1.0.0</ldap-filter.version>
+        <ldap-filter.version>1.0.1</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.1</accelerate-filter-handler.version>
     </properties>
     
