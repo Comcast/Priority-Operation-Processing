@@ -27,7 +27,7 @@
         <dfh-http-idm.version>1.0.0</dfh-http-idm.version>
         <auth-client.version>1.2.6</auth-client.version>
         <commons-http-client.version>3.1</commons-http-client.version>
-        <endpoint-client.version>1.0.1-SNAPSHOT</endpoint-client.version>
+        <endpoint-client.version>1.0.1</endpoint-client.version>
     </properties>
 
     <dependencies>
