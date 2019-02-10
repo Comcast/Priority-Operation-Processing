@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.handler</groupId>
     <artifactId>pl-dfh-cp-handler-executor-impl</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Executor Handler Impl</name>
 
