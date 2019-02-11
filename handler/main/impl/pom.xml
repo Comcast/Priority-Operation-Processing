@@ -24,9 +24,11 @@
         <dfh-docker.version>1.0.1</dfh-docker.version>
         <handler-base.version>1.0.1</handler-base.version>
         <handler-kubernetes-support.version>1.0.0</handler-kubernetes-support.version>
+
+        <!-- Resident Handlers-->
         <http-request-util-handler.version>1.0.1</http-request-util-handler.version>
         <ldap-filter.version>1.0.1</ldap-filter.version>
-        <accelerate-filter-handler.version>1.0.1</accelerate-filter-handler.version>
+        <accelerate-filter-handler.version>1.0.2-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
     
     <dependencies>
