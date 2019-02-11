@@ -37,7 +37,7 @@ public class PullerContextFactory extends KubernetesOperationContextFactory<Pull
                 throw new PullerException("Docker is not supported for agenda execution.");
             case kubernetes:
             default:
-                launcherFactory = new KubernetesLauncherFactory()
+                launcherFactory = new KubernetesLauncherFactory(pullerLaunchDataWrapper)
                     .setKubeConfigFactory(getKubeConfigFactory());
                 break;
         }

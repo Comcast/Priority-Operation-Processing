@@ -26,7 +26,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
                 .setNamePrefix("dfh-samp")
         );
-        podConfigMap.put("exec",
+        podConfigMap.put("executor",
             new PodConfig()
                 .setDefaults()
                 .setServiceAccountName("dfh-service")
