@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.operation.OperationReference;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.handler.analysis.mediainfo.api.MediaInfoHandlerInput;
+import com.theplatform.dfh.cp.handler.analysis.mediainfo.api.FileAnalysisHandlerInput;
 import com.theplatform.dfh.cp.handler.util.http.api.HttpRequestHandlerInput;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
@@ -40,8 +40,8 @@ public class PrepOpsGenerator
         addOp(ops, LDAP_NAME, "ldap", ldapHandlerInput);
 
         // setup the media info op
-        MediaInfoHandlerInput mediaInfoHandlerInput = new MediaInfoHandlerInput();
-        JsonNode mediaInfoPayload = objectMapper.valueToTree(mediaInfoHandlerInput);
+        FileAnalysisHandlerInput fileAnalysisHandlerInput = new FileAnalysisHandlerInput();
+        JsonNode mediaInfoPayload = objectMapper.valueToTree(fileAnalysisHandlerInput);
 
         jsonHelper.setNodeValue(mediaInfoPayload, "/inputs", jsonReferenceReplacer.generateReference(LDAP_NAME + OperationReference.OUTPUT.getSuffix(),
             "/transformRequest/inputs"));
