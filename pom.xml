@@ -15,7 +15,7 @@
 
     <properties>
         <dfh-fabric8-kube-client.version>1.0.1-SNAPSHOT</dfh-fabric8-kube-client.version>
-        <handler-base.version>1.0.1-SNAPSHOT</handler-base.version>
+        <handler-base.version>1.0.2-SNAPSHOT</handler-base.version>
         <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.0</logger-reporter.version>
     </properties>
@@ -25,21 +25,25 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-base</artifactId>
             <version>${handler-base.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
             <version>${kubernetes-reporter.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-logger</artifactId>
             <version>${logger-reporter.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
