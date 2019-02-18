@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
@@ -72,7 +72,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
-                .setPullAlways(true)
+                //.setPullAlways(true)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
                 .setConfigMapDetails(configMapDetails);
     }

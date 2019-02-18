@@ -1,9 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.JsonPodConfigRegistryClient;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
@@ -13,6 +10,9 @@ import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticPod
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
