@@ -22,11 +22,14 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,7 +58,8 @@ public class AgendaRequestProcessorTest
     @Test
     void testHandlePost() throws PersistenceException
     {
-        Agenda agenda = getAgenda();
+        int numOps = 2;
+        Agenda agenda = getAgenda(numOps);
 
         AgendaProgress agendaProgressResponse = new AgendaProgress();
         agendaProgressResponse.setId(UUID.randomUUID().toString());
@@ -75,7 +79,7 @@ public class AgendaRequestProcessorTest
         DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
         Assert.assertFalse(response.isError());
 
-        verify(mockOperationProgressClient, times(2)).persistObject(any());
+        verify(mockOperationProgressClient, times(numOps)).persistObject(any());
     }
 
     @Test
@@ -84,8 +88,9 @@ public class AgendaRequestProcessorTest
         doReturn(null).when(mockInsightSelector).select(any());
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
-        request.setDataObject(getAgenda());
+        request.setDataObject(getAgenda(2));
         request.setCid(UUID.randomUUID().toString());
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -103,7 +108,7 @@ public class AgendaRequestProcessorTest
     }
 
     @Test
-    void testAgendaProgressError() throws PersistenceException
+    void testAgendaProgressPersistError() throws PersistenceException
     {
         String cid = UUID.randomUUID().toString();
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
@@ -111,8 +116,9 @@ public class AgendaRequestProcessorTest
         doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
-        request.setDataObject(getAgenda());
+        request.setDataObject(getAgenda(1));
         request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -126,21 +132,140 @@ public class AgendaRequestProcessorTest
         verify(mockReadyAgendaPersister, times(0)).persist(any());
     }
 
-    Agenda getAgenda()
+    @Test
+    void testOperationProgressPersistError() throws PersistenceException
     {
-        Operation operation1 = new Operation();
-        operation1.setName(RandomStringUtils.randomAlphabetic(10));
-        operation1.setPayload(RandomStringUtils.randomAlphanumeric(10));
+        String cid = UUID.randomUUID().toString();
 
-        Operation operation2 = new Operation();
-        operation2.setName(RandomStringUtils.randomAlphabetic(10));
-        operation2.setPayload(RandomStringUtils.randomAlphanumeric(10));
+        Agenda agenda = getAgenda(1);
+        DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(agenda);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setId(UUID.randomUUID().toString());
+        DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
+        agendaProgressResponse.add(agendaProgress);
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
+        opProgressResponse.setErrorResponse(ErrorResponseFactory.badRequest("Bad request", cid));
+        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+
+        DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
+        Assert.assertTrue(response.isError());
+        ErrorResponse errorResponse = response.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getResponseCode(), opProgressResponse.getErrorResponse().getResponseCode());
+        Assert.assertEquals(errorResponse.getTitle(), opProgressResponse.getErrorResponse().getTitle());
+
+        // verify agendaProgress was cleaned up
+        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
+
+        // verify objects weren't created
+        verify(mockAgendaPersister, times(0)).persist(any());
+        verify(mockReadyAgendaPersister, times(0)).persist(any());
+    }
+
+    @Test
+    void testReadyAgendaPersistError() throws PersistenceException
+    {
+        String cid = UUID.randomUUID().toString();
+
+        Agenda agenda = getAgenda(1);
+
+        DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(agenda);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setId(UUID.randomUUID().toString());
+        DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
+        agendaProgressResponse.add(agendaProgress);
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setId(UUID.randomUUID().toString());
+        DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
+        opProgressResponse.add(operationProgress);
+        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+
+        doReturn(new Agenda()).when(mockAgendaPersister).persist(any());
+
+        PersistenceException exception = new PersistenceException("Error persisting ReadyAgenda");
+        doThrow(exception).when(mockReadyAgendaPersister).persist(any());
+
+        DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
+        Assert.assertTrue(response.isError());
+        ErrorResponse errorResponse = response.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getTitle(), "RuntimeException");
+
+        // verify objects were cleaned up
+        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
+        verify(mockOperationProgressClient, times(1)).deleteObject(any());
+        verify(mockAgendaPersister, times(1)).delete(any());
+    }
+
+    @Test
+    void testAgendaPersistError() throws PersistenceException
+    {
+        String cid = UUID.randomUUID().toString();
+
+        Agenda agenda = getAgenda(1);
+
+        DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(agenda);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setId(UUID.randomUUID().toString());
+        DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
+        agendaProgressResponse.add(agendaProgress);
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setId(UUID.randomUUID().toString());
+        DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
+        opProgressResponse.add(operationProgress);
+        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+
+        PersistenceException exception = new PersistenceException("Error persisting Agenda");
+        doThrow(exception).when(mockAgendaPersister).persist(any());
+
+        DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
+        Assert.assertTrue(response.isError());
+        ErrorResponse errorResponse = response.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getTitle(), "BadRequestException");
+
+        // verify objects were cleaned up
+        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
+        verify(mockOperationProgressClient, times(1)).deleteObject(any());
+
+        // verify ReadyAgenda wasn't created
+        verify(mockReadyAgendaPersister, times(0)).persist(any());
+    }
+
+    private Agenda getAgenda(int numOps)
+    {
+        List<Operation> ops = new ArrayList<>();
+        for (int i = 1; i <= numOps; i++)
+        {
+            Operation operation = new Operation();
+            operation.setName(RandomStringUtils.randomAlphabetic(10));
+            operation.setPayload(RandomStringUtils.randomAlphanumeric(10));
+            ops.add(operation);
+        }
 
         Agenda agenda = new Agenda();
         agenda.setCustomerId(UUID.randomUUID().toString());
         agenda.setLinkId(UUID.randomUUID().toString());
         agenda.setJobId(UUID.randomUUID().toString());
-        agenda.setOperations(Arrays.asList(operation1, operation2));
+        agenda.setOperations(ops);
         return agenda;
     }
 }

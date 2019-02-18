@@ -10,6 +10,8 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
+import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
@@ -24,6 +26,7 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,9 +70,14 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         //We create the transform req first, so we have the ID for progress operations.
         //If progress fails, we need to rollback the transformReq.
         DataObjectResponse<TransformRequest> response = super.handlePOST(request);
+        if (response.isError())
+            return response;
         TransformRequest transformRequest = response.getFirst();
 
-        // TODO: this needs to clean up the objects on fail
+        EndpointObjectTrackerManager trackerManager = new EndpointObjectTrackerManager();
+        EndpointObjectTracker<AgendaProgress> agendaProgressTracker = new EndpointObjectTracker<>(agendaProgressClient);
+        trackerManager.register(agendaProgressTracker);
+
         ////
         // persist the prep/exec progress
         ////
@@ -77,23 +85,33 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
             transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
         if (prepAgendaProgressResponse.isError())
         {
+            deleteTransformRequest(transformRequest.getId());
             return new DefaultDataObjectResponse<>(prepAgendaProgressResponse.getErrorResponse());
         }
+        AgendaProgress prepAgendaProgress = prepAgendaProgressResponse.getFirst();
+        agendaProgressTracker.registerObject(prepAgendaProgress.getId());
+
         DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
             transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
         if (execAgendaProgressResponse.isError())
         {
+            deleteTransformRequest(transformRequest.getId());
+            trackerManager.cleanUp();
             return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
         }
+        AgendaProgress execAgendaProgress = execAgendaProgressResponse.getFirst();
+        agendaProgressTracker.registerObject(execAgendaProgress.getId());
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
         //This information is used for prep agenda generation, maybe these don't belong on the transform request itself
-        transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgressResponse.getFirst().getId());
-        transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgressResponse.getFirst().getId());
+        transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgress.getId());
+        transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgress.getId());
 
         DataObjectResponse<Agenda> agendaResponse = createAgenda(transformRequest, prepAgendaProgressResponse.getFirst(), request.getCID());
         if (agendaResponse.isError())
         {
+            deleteTransformRequest(transformRequest.getId());
+            trackerManager.cleanUp();
             return new DefaultDataObjectResponse<>(agendaResponse.getErrorResponse());
         }
 
@@ -172,5 +190,16 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     public void setAgendaClient(ObjectClient<Agenda> agendaClient)
     {
         this.agendaClient = agendaClient;
+    }
+
+    private void deleteTransformRequest(String id)
+    {
+        try
+        {
+            objectPersister.delete(id);
+        } catch (PersistenceException e)
+        {
+            logger.error("Failed to delete TransformRequest with id {}", id, e);
+        }
     }
 }

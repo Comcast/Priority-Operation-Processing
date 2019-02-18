@@ -6,6 +6,8 @@ import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
@@ -22,9 +24,15 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.UUID;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class TransformRequestProcessorTest
 {
@@ -54,6 +62,108 @@ public class TransformRequestProcessorTest
     public void testHandlePost() throws PersistenceException
     {
         TransformRequest transformRequest = createTransformRequest();
+        
+        setUpProgressMock();
+        setUpAgendaMock();
+
+        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
+
+        DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(transformRequest);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        TransformRequest responseObject = objectPersistResponse.getFirst();
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.execProgressId), EXEC_PROGRESS_ID);
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
+    }
+
+    @Test
+    void testAgendaProgressPersistError() throws PersistenceException
+    {
+        TransformRequest transformRequest = createTransformRequest();
+        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
+
+        String cid = UUID.randomUUID().toString();
+        DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
+        agendaProgressResponse.setErrorResponse(ErrorResponseFactory.unauthorized("Unauthorized request.", cid));
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(transformRequest);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        Assert.assertTrue(objectPersistResponse.isError());
+        ErrorResponse errorResponse = objectPersistResponse.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getResponseCode(), agendaProgressResponse.getErrorResponse().getResponseCode());
+        Assert.assertEquals(errorResponse.getTitle(), agendaProgressResponse.getErrorResponse().getTitle());
+
+        verify(mockTransformRequestPersister, times(1)).delete(any());
+    }
+
+    @Test
+    void testAgendaPersistError() throws PersistenceException
+    {
+        String cid = UUID.randomUUID().toString();
+
+        TransformRequest transformRequest = createTransformRequest();
+        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
+
+        setUpProgressMock();
+
+        DataObjectResponse<Agenda> agendaResponse = new DefaultDataObjectResponse<>();
+        agendaResponse.setErrorResponse(ErrorResponseFactory.badRequest("Bad request.", cid));
+        doReturn(agendaResponse).when(mockAgendaClient).persistObject(any());
+
+        DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(transformRequest);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        Assert.assertTrue(objectPersistResponse.isError());
+        ErrorResponse errorResponse = objectPersistResponse.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getResponseCode(), agendaResponse.getErrorResponse().getResponseCode());
+        Assert.assertEquals(errorResponse.getTitle(), "RuntimeException");
+
+        verify(mockTransformRequestPersister, times(1)).delete(any());
+        verify(mockAgendaProgressClient, times(2)).deleteObject(any());
+    }
+
+    @Test
+    void testTransformRequestPersistError() throws PersistenceException
+    {
+        String cid = UUID.randomUUID().toString();
+        TransformRequest transformRequest = createTransformRequest();
+
+        PersistenceException persistenceException = new PersistenceException("Failed to persist TransformRequest.");
+        doThrow(persistenceException).when(mockTransformRequestPersister).persist(any());
+
+        DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(transformRequest);
+        request.setCid(cid);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        Assert.assertTrue(objectPersistResponse.isError());
+        ErrorResponse errorResponse = objectPersistResponse.getErrorResponse();
+        Assert.assertEquals(errorResponse.getCorrelationId(), cid);
+        Assert.assertEquals(errorResponse.getTitle(), "BadRequestException");
+    }
+
+    protected TransformRequest createTransformRequest()
+    {
+        TransformRequest transformRequest = new TransformRequest();
+        transformRequest.setCustomerId(CUSTOMER_ID);
+        return transformRequest;
+    }
+
+    private void setUpProgressMock()
+    {
         // NOTE: If the order of the creates changes this will break
         doAnswer(new Answer()
         {
@@ -70,6 +180,10 @@ public class TransformRequestProcessorTest
                 return dataObjectResponse;
             }
         }).when(mockAgendaProgressClient).persistObject(any());
+    }
+
+    private void setUpAgendaMock()
+    {
         doAnswer(new Answer()
         {
             @Override
@@ -86,22 +200,5 @@ public class TransformRequestProcessorTest
                 return dataObjectResponse;
             }
         }).when(mockAgendaClient).persistObject(any());
-        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
-
-        DataObjectRequest request = new DefaultDataObjectRequest();
-        ((DefaultDataObjectRequest) request).setDataObject(transformRequest);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
-        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
-        TransformRequest responseObject = objectPersistResponse.getFirst();
-        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
-        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.execProgressId), EXEC_PROGRESS_ID);
-        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
-    }
-
-    protected TransformRequest createTransformRequest()
-    {
-        TransformRequest transformRequest = new TransformRequest();
-        transformRequest.setCustomerId(CUSTOMER_ID);
-        return transformRequest;
     }
 }
