@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.registry;
 
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 

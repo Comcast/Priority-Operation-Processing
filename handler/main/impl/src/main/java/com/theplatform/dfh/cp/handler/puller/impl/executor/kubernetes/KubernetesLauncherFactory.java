@@ -1,10 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.JsonPodConfigRegistryClient;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.PodConfigRegistryClient;
-import com.theplatform.dfh.cp.handler.base.podconfig.registry.client.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
-import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
 import com.theplatform.dfh.cp.handler.puller.impl.client.registry.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;

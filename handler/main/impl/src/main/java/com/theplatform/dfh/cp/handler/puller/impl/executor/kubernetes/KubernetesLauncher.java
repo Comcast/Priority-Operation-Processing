@@ -6,27 +6,19 @@ import com.theplatform.dfh.cp.api.params.ParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class KubernetesLauncher implements BaseLauncher
