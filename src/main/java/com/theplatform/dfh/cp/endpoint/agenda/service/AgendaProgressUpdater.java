@@ -22,12 +22,6 @@ public class AgendaProgressUpdater
 
     public void updateProgress(Agenda agenda)
     {
-        ParamsMap agendaParams = agenda.getParams();
-        if(agendaParams == null)
-        {
-            logger.warn("No params were found on the Agenda. Unable to update progress.");
-            return;
-        }
         String progressId = agenda.getProgressId();
         if(progressId == null)
         {
