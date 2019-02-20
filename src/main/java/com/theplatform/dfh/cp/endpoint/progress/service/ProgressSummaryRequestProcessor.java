@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.progress.service;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
@@ -54,15 +55,31 @@ public class ProgressSummaryRequestProcessor
         DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(progressSummaryRequest.getPayload().getLinkId())));
 
         List<AgendaProgress> progressList = feed.getAll();
-        long waiting = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.WAITING).count();
-        long executing = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.EXECUTING).count();
-
-        logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
-            feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId(), waiting, executing);
         ProgressSummaryResponse result = new ProgressSummaryResponse();
         result.setProgressList(feed.getAll());
-        result.setProcessingState(evaluateOverallState(progressList, waiting, executing));
+
+        if(didAnyOperationFail(progressList))
+        {
+            logger.info("Retrieved {} results from query: {} Failed operation detected.",
+                feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId());
+            result.setProcessingState(ProcessingState.COMPLETE);
+        }
+        else
+        {
+            long waiting = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.WAITING).count();
+            long executing = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.EXECUTING).count();
+
+            logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
+                feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId(), waiting, executing);
+            result.setProcessingState(evaluateOverallState(progressList, waiting, executing));
+        }
         return result;
+    }
+
+    private boolean didAnyOperationFail(List<AgendaProgress> progressList)
+    {
+        return progressList.stream()
+            .anyMatch(ap -> StringUtils.equalsIgnoreCase(ap.getProcessingStateMessage(), CompleteStateMessage.FAILED.name()));
     }
 
     private ProcessingState evaluateOverallState(List<AgendaProgress> progressList, long waiting, long executing)
