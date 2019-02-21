@@ -95,6 +95,7 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    @DynamoDBAttribute(attributeName = "params")
     public ParamsMap getParams()
     {
         return super.getParams();
