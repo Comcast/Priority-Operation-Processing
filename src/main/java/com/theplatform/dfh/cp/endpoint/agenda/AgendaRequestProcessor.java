@@ -247,6 +247,14 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
             operationProgress.setProcessingState(ProcessingState.WAITING);
             operationProgress.setOperation(operation.getName());
             operationProgress.setId(OperationProgress.generateId(agendaProgressId, operation.getName()));
+
+            if (operation.getParams() != null)
+            {
+                ParamsMap params = new ParamsMap();
+                params.putAll(operation.getParams());
+                operationProgress.setParams(params);
+            }
+            
             try {
                 DataObjectResponse<OperationProgress> opProgressResponse = operationProgressClient.persistObject(operationProgress);
                 if (opProgressResponse == null || opProgressResponse.isError())

@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
@@ -258,6 +259,10 @@ public class AgendaRequestProcessorTest
             Operation operation = new Operation();
             operation.setName(RandomStringUtils.randomAlphabetic(10));
             operation.setPayload(RandomStringUtils.randomAlphanumeric(10));
+
+            ParamsMap params = new ParamsMap();
+            params.put("foo", "bar");
+            operation.setParams(params);
             ops.add(operation);
         }
 
