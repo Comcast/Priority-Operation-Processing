@@ -71,7 +71,7 @@ public class PullerProcessor implements HandlerProcessor
         }
         else if (getAgendaResponse.isError())
         {
-            logger.error("getAgenda returned an error: " + getAgendaResponse.toString());
+            logger.error("Failed to getAgenda: {}", getAgendaResponse.getErrorResponse().toString());
             return;
         }
 
