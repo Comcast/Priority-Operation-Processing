@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.OperationDiagnostics;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 
@@ -95,6 +97,7 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = ParamsMapConverter.class)
     @DynamoDBAttribute(attributeName = "params")
     public ParamsMap getParams()
     {
@@ -111,5 +114,23 @@ public class PersistentOperationProgress extends OperationProgress
     public String getCid()
     {
         return super.getCid();
+    }
+
+    static public class ParamsMapConverter implements DynamoDBTypeConverter<String, ParamsMap>
+    {
+        static JsonHelper jsonHelper = new JsonHelper();
+        @Override
+        public String convert(ParamsMap paramsMap)
+        {
+            if(paramsMap == null) return null;
+            return jsonHelper.getJSONString(paramsMap);
+        }
+
+        @Override
+        public ParamsMap unconvert(String s)
+        {
+            if(StringUtils.isBlank(s)) return null;
+            return jsonHelper.getObjectFromString(s, ParamsMap.class);
+        }
     }
 }
