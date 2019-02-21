@@ -24,7 +24,7 @@
         <dfh-scheduling-insight.version>1.0.0-SNAPSHOT</dfh-scheduling-insight.version>
         <endpoint-impl.version>1.0.0-SNAPSHOT</endpoint-impl.version>
         <endpoint-api.version>1.0.1-SNAPSHOT</endpoint-api.version>
-        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
     </properties>
 

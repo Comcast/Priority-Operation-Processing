@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.OperationDiagnostics;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
@@ -91,6 +92,18 @@ public class PersistentOperationProgress extends OperationProgress
     public void setCustomerId(String customerId)
     {
         super.setCustomerId(customerId);
+    }
+
+    @Override
+    public ParamsMap getParams()
+    {
+        return super.getParams();
+    }
+
+    @Override
+    public void setParams(ParamsMap params)
+    {
+        super.setParams(params);
     }
 
     @Override
