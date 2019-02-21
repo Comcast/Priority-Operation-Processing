@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.api.progress;
 
 import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class OperationProgress extends EndpointDataObject
     private Date startedTime;
     private Date completedTime;
     private String resultPayload;
+    private ParamsMap params;
 
     public String getAgendaProgressId()
     {
@@ -115,6 +117,16 @@ public class OperationProgress extends EndpointDataObject
     public void setDiagnostics(OperationDiagnostics[] diagnostics)
     {
         this.diagnostics = diagnostics;
+    }
+
+    public ParamsMap getParams()
+    {
+        return params;
+    }
+
+    public void setParams(ParamsMap params)
+    {
+        this.params = params;
     }
 
     public static String generateId(String agendaProgressId, String operationName)
