@@ -30,6 +30,8 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 /**
  * TransformRequest specific RequestProcessor
  */
@@ -67,6 +69,8 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
     @Override
     public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request)
     {
+        preProcessTransformRequest(request.getDataObject());
+
         //We create the transform req first, so we have the ID for progress operations.
         //If progress fails, we need to rollback the transformReq.
         DataObjectResponse<TransformRequest> response = super.handlePOST(request);
@@ -82,7 +86,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         // persist the prep/exec progress
         ////
         DataObjectResponse<AgendaProgress> prepAgendaProgressResponse = createAgendaProgress(
-            transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
         if (prepAgendaProgressResponse.isError())
         {
             deleteTransformRequest(transformRequest.getId());
@@ -92,7 +96,7 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
         agendaProgressTracker.registerObject(prepAgendaProgress.getId());
 
         DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
-            transformRequest.getId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
         if (execAgendaProgressResponse.isError())
         {
             deleteTransformRequest(transformRequest.getId());
@@ -117,6 +121,22 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
 
         transformRequest.getParams().put(GeneralParamKey.agendaId, agendaResponse.getFirst().getId());
         return response;
+    }
+
+    private void preProcessTransformRequest(TransformRequest request)
+    {
+        if(request.getLinkId() == null)
+        {
+            // TODO: eventually eliminate the externalId usage in the TransformRequest (not necessarily everywhere else)
+            if(request.getExternalId() != null)
+            {
+                request.setLinkId(request.getExternalId());
+            }
+            else
+            {
+                request.setLinkId(UUID.randomUUID().toString());
+            }
+        }
     }
 
     private DataObjectResponse<Agenda> createAgenda(TransformRequest request, AgendaProgress prepAgendaProgressResponse, String cid)

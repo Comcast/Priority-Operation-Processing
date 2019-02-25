@@ -73,7 +73,7 @@ public class PrepOpsGenerator
         addParamsFromTransformRequest(agenda, transformRequest);
         agenda.setOperations(ops);
         agenda.setJobId(transformRequest.getId());
-        agenda.setLinkId(transformRequest.getId());
+        agenda.setLinkId(transformRequest.getLinkId());
         agenda.setCustomerId(transformRequest.getCustomerId());
         if(!StringUtils.isBlank(progressId)) agenda.setProgressId(progressId);
 
