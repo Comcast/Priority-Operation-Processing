@@ -20,6 +20,12 @@ public class TransformRequest extends EndpointDataObject
     private InputStreams inputStreams;
     private OutputStreams outputStreams;
     private List<OutputFileResource> outputs;
+
+    /**
+     * field to link Transforms, Agendas, and AgendaProgress
+     */
+    private String linkId;
+
     /**
      * Name value pairs for things like 'externalId'
      */
@@ -74,6 +80,16 @@ public class TransformRequest extends EndpointDataObject
     public void setOutputs(List<OutputFileResource> outputs)
     {
         this.outputs = outputs;
+    }
+
+    public String getLinkId()
+    {
+        return linkId;
+    }
+
+    public void setLinkId(String linkId)
+    {
+        this.linkId = linkId;
     }
 
     public ParamsMap getParams()
