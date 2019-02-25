@@ -16,23 +16,26 @@
 
         <label for="mpx_password"><b>Password *</b></label>
         <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" required>
+
         <label for="mpx_account"><b>Account ID</b></label>
         <input id="mpx_account" placeholder="Account ID" name="mpx_account" required>
+
         <select name="query" id="query">
             <option value="byId">byId</option>
             <option value="byCid">byCid</option>
+            <option value="other">other</option>
         </select>
         <input id="query_value"name="query_value" required>
         <input id="mpx_idm_url" type="hidden" value="https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1"/>
 
         <select id="endpointURL">
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/agenda">Agenda</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/progress/agenda">Agenda Progress</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/customer">Customer</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/insight">Insight</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/progress/operation">Operation Progress</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/resourcepool">Resource Pool</option>
-            <option value="https://fission.aort.theplatform.com/dev/dfh/idm/transform">Transform</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/agenda">Agenda</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/progress/agenda">Agenda Progress</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/customer">Customer</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/idm/insight">Insight</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/idm/progress/operation">Operation Progress</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/resourcepool">Resource Pool</option>
+            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/transform">Transform</option>
         </select>
 
         <input type="submit" value="Log In" onclick="authorizeWithLambda(event)"/>
