@@ -7,6 +7,7 @@ import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -72,7 +73,7 @@ public class ProgressSummaryRequestProcessorTest
         Assert.assertNull(response.getProcessingState());
         Assert.assertNull(response.getProgressList());
         Assert.assertNotNull(response.getErrorResponse());
-        Assert.assertEquals(response.getErrorResponse().getTitle(), BadRequestException.class.getSimpleName());
+        Assert.assertEquals(response.getErrorResponse().getTitle(), ValidationException.class.getSimpleName());
     }
 
     private void setupAgendaProgress(ProcessingState[] states) throws Exception
