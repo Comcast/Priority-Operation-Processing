@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="css/jquery.json-viewer.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="jquery.json-viewer.js"></script>
+    <script type="text/javascript" src="servers.js"></script>
     <script type="text/javascript" src="login.js"></script>
 </head>
 <body>
@@ -11,6 +12,19 @@
 <br><br>
 <form id="loginForm">
     <div class="container">
+
+        <label for="target_server"><b>Stack</b></label>
+        <select name="target_server" id="target_server">
+            <script>
+                servers.forEach(addServerSelectOption);
+                function addServerSelectOption(item, index) {
+                    document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                }
+            </script>
+        </select>
+
+        <hr>
+
         <label for="mpx_username"><b>Username *</b></label>
         <input id="mpx_username" placeholder="Enter Username" name="mpx_username" required>
 
@@ -20,25 +34,29 @@
         <label for="mpx_account"><b>Account ID</b></label>
         <input id="mpx_account" placeholder="Account ID" name="mpx_account" required>
 
+        <hr>
+        <label for="target_endpoint"><b>Endpoint</b></label>
+        <select name="target_endpoint"  id="target_endpoint">
+            <script>
+                endpoints.forEach(addEndpointSelectOption);
+                function addEndpointSelectOption(item, index) {
+                    document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                }
+            </script>
+        </select>
         <select name="query" id="query">
             <option value="byId">byId</option>
             <option value="byCid">byCid</option>
             <option value="other">other</option>
         </select>
-        <input id="query_value"name="query_value" required>
-        <input id="mpx_idm_url" type="hidden" value="https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1"/>
-
-        <select id="endpointURL">
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/agenda">Agenda</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/progress/agenda">Agenda Progress</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/customer">Customer</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/idm/insight">Insight</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/idm/progress/operation">Operation Progress</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/resourcepool">Resource Pool</option>
-            <option value="https://g9solclg15.execute-api.us-west-2.amazonaws.com/dev/dfh/idm/transform">Transform</option>
-        </select>
-
-        <input type="submit" value="Log In" onclick="authorizeWithLambda(event)"/>
+        <input id="query_value" name="query_value" required>
+        <input type="submit" value="Submit Request" name="query_button" onclick="authorizeWithLambda(event)"/>
+        <!--
+        <hr>
+        <label for="link_id"><b>LinkId Query</b></label>
+        <input id="link_id" placeholder="http://some.link/id" name="link_id">
+        <input type="submit" value="Submit Request" name="linkId_query_button" onclick="authorizeWithLambdaForLinkId(event)"/>
+        -->
     </div>
     <div>
         <label for="response">Response</label>
