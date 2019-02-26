@@ -24,7 +24,7 @@
         <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
         <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.0</logger-reporter.version>
-        <reporter-progress-agenda.version>1.0.1</reporter-progress-agenda.version>
+        <reporter-progress-agenda.version>1.0.2-SNAPSHOT</reporter-progress-agenda.version>
 
         <!-- Resident Handlers-->
         <http-request-util-handler.version>1.0.2-SNAPSHOT</http-request-util-handler.version>
