@@ -4,7 +4,7 @@ import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 
 /**
  */
-public class GetAgendaRequest extends DefaultServiceRequest
+public class GetAgendaRequest
 {
 
     private String insightId;
