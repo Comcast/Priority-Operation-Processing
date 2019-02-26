@@ -74,6 +74,7 @@ public class PrepOpsGenerator
         agenda.setOperations(ops);
         agenda.setJobId(transformRequest.getId());
         agenda.setLinkId(transformRequest.getLinkId());
+        agenda.setCid(transformRequest.getCid());
         agenda.setCustomerId(transformRequest.getCustomerId());
         if(!StringUtils.isBlank(progressId)) agenda.setProgressId(progressId);
 
