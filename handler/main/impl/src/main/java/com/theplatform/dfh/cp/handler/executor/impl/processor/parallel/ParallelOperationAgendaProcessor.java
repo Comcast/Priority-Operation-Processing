@@ -38,8 +38,6 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
         {
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            if(handlerInput.getLinkId() != null)
-                agendaProgressReporter.getAgendaProgressFactory().setLinkId(handlerInput.getLinkId());
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Agenda Loaded");
         }
         catch (Exception e)
