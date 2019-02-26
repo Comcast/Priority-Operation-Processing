@@ -11,7 +11,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 public class DynamoDBAgendaPersisterFactory extends DynamoDBConvertedPersisterFactory<Agenda>
 {
-    private static final TableIndexes tableIndexes = null; // coming soon
+    private static final TableIndexes tableIndexes = new TableIndexes().withIndex("linkid_index", "linkId");
 
     public DynamoDBAgendaPersisterFactory()
     {
