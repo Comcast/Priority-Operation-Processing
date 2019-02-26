@@ -145,6 +145,39 @@ public class AgendaServiceRequestProcessorTest
         verify(mockAgendaInfoItemQueueFactory, times(1)).createItemQueue(anyString());
     }
 
+    @Test
+    public void testNullInsightId()
+    {
+        GetAgendaRequest request = new GetAgendaRequest(null, 1);
+
+        GetAgendaResponse getAgendaResponse = processor.processRequest(new DefaultServiceRequest<>(request));
+        Assert.assertTrue(getAgendaResponse.isError());
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), "ValidationException");
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getDescription(), "InsightId is required to getAgenda.");
+    }
+
+    @Test
+    public void testNullCount()
+    {
+        GetAgendaRequest request = new GetAgendaRequest("foo", null);
+
+        GetAgendaResponse getAgendaResponse = processor.processRequest(new DefaultServiceRequest<>(request));
+        Assert.assertTrue(getAgendaResponse.isError());
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), "ValidationException");
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getDescription(), "Count is required to getAgenda.");
+    }
+
+    @Test
+    public void testInvalidCount()
+    {
+        GetAgendaRequest request = new GetAgendaRequest("foo", -1);
+
+        GetAgendaResponse getAgendaResponse = processor.processRequest(new DefaultServiceRequest<>(request));
+        Assert.assertTrue(getAgendaResponse.isError());
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), "ValidationException");
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getDescription(), "Count must be greater than 0 for getAgenda.");
+    }
+
     private QueueResult<ReadyAgenda> createQueueResult(boolean successful, Collection<ReadyAgenda> data ,String message)
     {
         return new QueueResult<>(successful, data, message);

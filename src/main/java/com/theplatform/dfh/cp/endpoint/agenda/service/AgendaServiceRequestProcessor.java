@@ -2,10 +2,13 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
@@ -41,7 +44,16 @@ public class AgendaServiceRequestProcessor
 
     public GetAgendaResponse processRequest(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
-        // TODO: input validation
+        try
+        {
+            getRequestValidator().validateGET(serviceRequest);
+        } catch (ValidationException e)
+        {
+            String cid = null;
+            if (serviceRequest != null)
+                cid = serviceRequest.getCID();
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), cid));
+        }
 
         GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
@@ -130,6 +142,11 @@ public class AgendaServiceRequestProcessor
         // TODO: might be an insight id and we have an insight client
         ItemQueue<AgendaInfo> itemQueue = agendaInfoItemQueueFactory.createItemQueue(insight.getQueueName());
         return itemQueue.poll(maxResults);
+    }
+
+    public RequestValidator<ServiceRequest<GetAgendaRequest>> getRequestValidator()
+    {
+        return new AgendaServiceValidator();
     }
 
     public void setInsightPersister(ObjectPersister<Insight> insightPersister)
