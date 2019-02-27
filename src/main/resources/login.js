@@ -50,6 +50,7 @@ function authorizeWithLambda(e) {
     //    {"signInResponse":{"token":"XYZ","userId":"http://identity.auth.test.corp.theplatform.com/idm/data/User/mpx/ZZZ","userName":"me@me.com","duration":86400000,"idleTimeout":14400000}}
 
     document.getElementById("response").value = "";
+    document.getElementById("progressTable").innerHTML = "";
 
     $.ajax({
         type: "POST",
@@ -85,6 +86,9 @@ function authorizeWithLambda(e) {
                     'X-thePlatform-cid': CID
                 },
                 success: function (response) {
+                    if(endpoint.name === 'Agenda Progress' && $("#showProgressTable").is(":checked")) {
+                        writeAgendaProgressTable(response);
+                    }
                     document.getElementById("response").value = JSON.stringify(response, null, 2);
                     $('#json-renderer').jsonViewer(response);
                 },
@@ -100,4 +104,23 @@ function authorizeWithLambda(e) {
             alert("UnSuccessfull");
         }
     });
+}
+
+function writeAgendaProgressTable(response)
+{
+    var tableText = "";
+    if(response.errorResponse != null) return;
+    tableText += "<table>";
+    tableText += "<tr>";
+    response["all"].forEach(function (item, index) {
+        tableText += "<td valign=\"top\"><table border='1' style='border-collapse:collapse'>";
+        tableText += "<tr><td>Operation</td><td>ProcessingState</td><td>ProcessingStateMessage</td></tr>";
+        item.operationProgress.forEach(function(opProgress, progressIndex){
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
+        });
+        tableText += "</table></td>";
+    });
+    tableText += "</tr>";
+    tableText += "</table>";
+    document.getElementById("progressTable").innerHTML = tableText;
 }

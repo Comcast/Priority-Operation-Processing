@@ -51,10 +51,12 @@
             <option value="other">other</option>
         </select>
         <input id="query_value" name="query_value" required>
+        <input type="checkbox" id="showProgressTable" checked>Show Progress Table (Agenda Progress only)
         <input type="submit" value="Submit Request" name="query_button" onclick="authorizeWithLambda(event)"/>
     </div>
     <div>
         <label for="response">Response</label>
+        <div id="progressTable"></div>
         <textarea id="response" name="response" cols="200" rows="20"></textarea>
     </div>
 </form>
