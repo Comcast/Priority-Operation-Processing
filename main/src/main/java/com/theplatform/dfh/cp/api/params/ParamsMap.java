@@ -74,4 +74,22 @@ public class ParamsMap extends HashMap<String, Object>
     }
 
     public Boolean containsKey(ParamKey fieldEnum) { return containsKey(fieldEnum.getKey()); }
+
+    public void putIfNonNull(Enum key, Object value)
+    {
+        putIfNonNull(key.name(), value);
+    }
+    public void putIfNonNull(String key, Object value)
+    {
+        if(value != null) put(key, value);
+    }
+
+    public void copyKeyIfPresent(ParamsMap destinationMap, ParamKey fieldEnum)
+    {
+        copyKeyIfPresent(destinationMap, fieldEnum.getKey());
+    }
+    public void copyKeyIfPresent(ParamsMap destinationMap, String key)
+    {
+        if(containsKey(key)) destinationMap.put(key, get(key));
+    }
 }
