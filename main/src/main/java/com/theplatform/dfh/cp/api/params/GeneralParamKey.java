@@ -8,6 +8,7 @@ public enum GeneralParamKey implements ParamKey
     dependsOn,
     cid,
     externalId,
+    mpxTaskSourceFiles,
     mpxTaskResultFile;
 
     public String getKey()
