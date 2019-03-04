@@ -14,6 +14,8 @@ import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 /**
  * Resident handler executor. This always uses a JsonReporter (just an in-memory reporter)
  */
@@ -24,6 +26,8 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     private JsonReporter reporter;
     private JsonHelper jsonHelper;
     private String outputPayload;
+    private Date startTime;
+    private Date completedTime;
 
     public ResidentOperationExecutor(Operation operation, ResidentHandler residentHandler, LaunchDataWrapper launchDataWrapper)
     {
@@ -40,6 +44,8 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
         {
             String progressJson = reporter.getLastProgress();
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
+            operationProgress.setStartedTime(startTime);
+            operationProgress.setCompletedTime(completedTime);
             operationProgress.setOperation(operation.getName());
             operationProgress.setResultPayload(outputPayload);
             return operationProgress;
@@ -58,8 +64,10 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     @Override
     public String execute(String payload)
     {
+        startTime = new Date();
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
         outputPayload = residentHandler.execute(payload, launchDataWrapper, reporter);
+        completedTime = new Date();
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
     }
