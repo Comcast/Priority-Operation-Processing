@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.api.progress;
 
 import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -10,7 +11,8 @@ import java.util.Objects;
  */
 public class AgendaProgress extends EndpointDataObject
 {
-   private String linkId;
+    private String agendaId;
+    private String linkId;
     private String externalId;
     private String title;
     private ProcessingState processingState;
@@ -21,6 +23,7 @@ public class AgendaProgress extends EndpointDataObject
     private Date startedTime;
     private Date completedTime;
     private Double percentComplete;
+    private ParamsMap params;
 
     public AgendaProgress()
     {
@@ -33,7 +36,17 @@ public class AgendaProgress extends EndpointDataObject
         this.addedTime = new Date();
     }
 
-  public String getLinkId()
+    public String getAgendaId()
+    {
+        return agendaId;
+    }
+
+    public void setAgendaId(String agendaId)
+    {
+        this.agendaId = agendaId;
+    }
+
+    public String getLinkId()
     {
         return linkId;
     }
@@ -141,6 +154,16 @@ public class AgendaProgress extends EndpointDataObject
     public void setPercentComplete(Double percentComplete)
     {
         this.percentComplete = percentComplete;
+    }
+
+    public ParamsMap getParams()
+    {
+        return params;
+    }
+
+    public void setParams(ParamsMap params)
+    {
+        this.params = params;
     }
 
     public void runComplete()
