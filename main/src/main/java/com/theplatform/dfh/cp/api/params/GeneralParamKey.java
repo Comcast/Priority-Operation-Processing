@@ -7,6 +7,7 @@ public enum GeneralParamKey implements ParamKey
     agendaId,
     dependsOn,
     cid,
+    customerId,
     externalId,
     mpxTaskSourceFiles,
     mpxTaskResultFile;
