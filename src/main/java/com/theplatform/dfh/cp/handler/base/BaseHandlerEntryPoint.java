@@ -2,6 +2,9 @@ package com.theplatform.dfh.cp.handler.base;
 
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
+import com.theplatform.dfh.cp.handler.base.log.HandlerMetadataRetriever;
+import com.theplatform.dfh.cp.handler.base.log.HandlerReporter;
+import com.theplatform.dfh.cp.handler.base.log.HandlerReporterImpl;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
@@ -15,6 +18,7 @@ import java.util.UUID;
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
+    private static final String DURATION_TEMPLATE = "%s duration: %d";
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
@@ -29,7 +33,18 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         launchDataWrapper = createLaunchDataWrapper(args);
         // Set the CID on the thread local ASAP
         setupLoggingCid();
+        logMetadata();
         operationContextFactory = createOperationContextFactory(launchDataWrapper);
+
+        // todo log number of cores (handler + utility containers)
+
+    }
+
+    private void logMetadata()
+    {
+        HandlerMetadataRetriever handlerMetadataRetriever = new HandlerMetadataRetriever(launchDataWrapper);
+        HandlerReporter handlerReporter = new HandlerReporterImpl();
+        handlerReporter.reportMetadata(handlerMetadataRetriever.getMetadata());
     }
 
     public void execute()
@@ -39,13 +54,23 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         try
         {
             operationContext.init();
-            createHandlerProcessor(operationContext).execute();
+
+            logExecutionDuration(createHandlerProcessor(operationContext));
         }
         finally
         {
             logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
         }
+    }
+
+    private void logExecutionDuration(P handlerProcessor)
+    {
+        long start = System.currentTimeMillis();
+        handlerProcessor.execute();
+        long durationMilli = System.currentTimeMillis() - start;
+        String operationName = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
+        logger.info(DURATION_TEMPLATE, operationName, durationMilli);
     }
 
     public W getLaunchDataWrapper()
