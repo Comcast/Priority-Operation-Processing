@@ -11,20 +11,19 @@ import java.util.Map;
 
 public class HandlerMetadataRetriever  implements MetaData<String>
 {
-    private final LaunchDataWrapper launchDataWrapper;
     private final FieldRetriever fieldRetriever;
+    private final Map<String, String> metadata;
 
-    public HandlerMetadataRetriever(LaunchDataWrapper launchDataWrapper)
+    public HandlerMetadataRetriever(FieldRetriever fieldRetriever)
     {
-        this.launchDataWrapper = launchDataWrapper;
-        fieldRetriever = launchDataWrapper.getEnvironmentRetriever();
+        this.fieldRetriever = fieldRetriever;
+        metadata = new HashMap<>();
     }
 
     @Override
     public Map<String, String> getMetadata()
     {
-        Map<String, String> metadata = new HashMap<>();
-        if(fieldRetriever == null)
+        if(fieldRetriever == null || !metadata.isEmpty())
         {
             return metadata;
         }

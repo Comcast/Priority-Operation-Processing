@@ -18,10 +18,14 @@ import java.util.UUID;
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
-    private static final String DURATION_TEMPLATE = "%s duration: %d";
+    private static final String DURATION_TEMPLATE = "%s - completion status: %s; duration (millisec): %d";
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
+    private HandlerMetadataRetriever handlerMetadataRetriever;
+    private long start;
+    private static final String OPERATION_SUCCEEDED = "succeeded";
+    private static final String OPERATION_FAILED = "failed";
 
     protected abstract W createLaunchDataWrapper(String[] args);
     protected abstract BaseOperationContextFactory<C> createOperationContextFactory(W launchDataWrapper);
@@ -36,13 +40,18 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         logMetadata();
         operationContextFactory = createOperationContextFactory(launchDataWrapper);
 
-        // todo log number of cores (handler + utility containers)
+        // todo log number of cores (handler + utility containers - though not here)
 
     }
 
     private void logMetadata()
     {
-        HandlerMetadataRetriever handlerMetadataRetriever = new HandlerMetadataRetriever(launchDataWrapper);
+        if(launchDataWrapper.getEnvironmentRetriever() == null)
+        {
+            logger.warn("Null environment retriever; no operation metadata logged.");
+            return;
+        }
+        handlerMetadataRetriever = new HandlerMetadataRetriever(launchDataWrapper.getEnvironmentRetriever());
         HandlerReporter handlerReporter = new HandlerReporterImpl();
         handlerReporter.reportMetadata(handlerMetadataRetriever.getMetadata());
     }
@@ -55,7 +64,14 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         {
             operationContext.init();
 
-            logExecutionDuration(createHandlerProcessor(operationContext));
+            start = System.currentTimeMillis();
+            createHandlerProcessor(operationContext).execute();
+            logFinalStateAndDuration(OPERATION_SUCCEEDED);
+        }
+        catch (Exception e)
+        {
+            logFinalStateAndDuration(OPERATION_FAILED);
+            logger.error(getOperationName(), e);
         }
         finally
         {
@@ -64,13 +80,16 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         }
     }
 
-    private void logExecutionDuration(P handlerProcessor)
+    private String getOperationName()
     {
-        long start = System.currentTimeMillis();
-        handlerProcessor.execute();
+        return handlerMetadataRetriever.getMetadata().get(HandlerField.OPERATION_NAME.name());
+    }
+
+    private void logFinalStateAndDuration(String status)
+    {
         long durationMilli = System.currentTimeMillis() - start;
         String operationName = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
-        logger.info(DURATION_TEMPLATE, operationName, durationMilli);
+        logger.info(DURATION_TEMPLATE, operationName, status, durationMilli);
     }
 
     public W getLaunchDataWrapper()
