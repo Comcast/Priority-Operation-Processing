@@ -14,7 +14,7 @@
     <name>Puller Handler Impl</name>
 
     <properties>
-        <cp-api.version>1.0.1</cp-api.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <logback.version>1.2.3</logback.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
