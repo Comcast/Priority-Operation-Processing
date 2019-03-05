@@ -11,7 +11,8 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
-import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTrackerManager;
+import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTracker;
+import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
@@ -78,9 +79,8 @@ public class TransformRequestProcessor extends DataObjectRequestProcessor<Transf
             return response;
         TransformRequest transformRequest = response.getFirst();
 
-        EndpointObjectTrackerManager trackerManager = new EndpointObjectTrackerManager();
-        EndpointObjectTracker<AgendaProgress> agendaProgressTracker = new EndpointObjectTracker<>(agendaProgressClient);
-        trackerManager.register(agendaProgressTracker);
+        ObjectTrackerManager trackerManager = new ObjectTrackerManager();
+        ObjectTracker<AgendaProgress> agendaProgressTracker = trackerManager.register(new EndpointObjectTracker<>(agendaProgressClient, AgendaProgress.class));
 
         ////
         // persist the prep/exec progress

@@ -6,34 +6,22 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- */
-public class EndpointObjectTracker<T extends IdentifiedObject>
+public class EndpointObjectTracker<T extends IdentifiedObject> extends ObjectTracker<T>
 {
     private static final Logger logger = LoggerFactory.getLogger(EndpointObjectTracker.class);
 
     private ObjectClient<T> objectClient;
-    private Class clazz;
-    private List<String> objectIds;
 
-    public EndpointObjectTracker(ObjectClient<T> objectClient)
+    public EndpointObjectTracker(ObjectClient<T> objectClient, Class<T> clazz)
     {
+        super(clazz);
         this.objectClient = objectClient;
-        this.clazz = objectClient.getClass();
-        objectIds = new ArrayList<>();
     }
 
-    public void registerObject(String id)
-    {
-        objectIds.add(id);
-    }
-
+    @Override
     public void cleanUp()
     {
-        for (String id : objectIds)
+        for (String id : getObjectIds())
         {
             try
             {
@@ -41,7 +29,7 @@ public class EndpointObjectTracker<T extends IdentifiedObject>
             }
             catch (ObjectClientException e)
             {
-                logger.error("Failed to delete {} with id {}", clazz.getSimpleName(), id, e);
+                logger.error("Failed to delete {} with id {}", getObjectClass().getSimpleName(), id, e);
             }
         }
     }
