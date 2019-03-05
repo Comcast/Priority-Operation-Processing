@@ -26,7 +26,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     private VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = new CustomerVisibilityFilter<>();
     private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
 
-    public DataObjectRequestProcessor(ObjectPersister<T> objectPersister, DataObjectValidator validator)
+    public DataObjectRequestProcessor(ObjectPersister<T> objectPersister, DataObjectValidator<T, DataObjectRequest<T>> validator)
     {
         this.validator = validator;
         this.objectPersister = objectPersister;
@@ -194,5 +194,10 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     public RequestValidator<DataObjectRequest<T>> getRequestValidator()
     {
         return new DataObjectValidator<>();
+    }
+
+    public ObjectPersister<T> getObjectPersister()
+    {
+        return objectPersister;
     }
 }
