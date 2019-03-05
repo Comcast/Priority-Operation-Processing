@@ -150,7 +150,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         }
     }
 
-    public Class getObjectClass()
+    public Class<T> getObjectClass()
     {
         return objectClass;
     }
