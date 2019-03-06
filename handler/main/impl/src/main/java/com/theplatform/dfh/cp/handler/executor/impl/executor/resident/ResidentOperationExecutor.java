@@ -1,14 +1,13 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.resident;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
-import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.JsonReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     private String outputPayload;
     private Date startTime;
     private Date completedTime;
+    private Exception residentHandlerException;
 
     public ResidentOperationExecutor(Operation operation, ResidentHandler residentHandler, LaunchDataWrapper launchDataWrapper)
     {
@@ -40,25 +40,33 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     @Override
     public OperationProgress retrieveOperationProgress()
     {
+        OperationProgress operationProgress = null;
+        // try to extract the operation progress
         try
         {
             String progressJson = reporter.getLastProgress();
-            OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
-            operationProgress.setStartedTime(startTime);
-            operationProgress.setCompletedTime(completedTime);
-            operationProgress.setOperation(operation.getName());
-            operationProgress.setResultPayload(outputPayload);
-            return operationProgress;
+            if(progressJson != null)
+            {
+                operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
+            }
         }
         catch(JsonHelperException je)
         {
-            logger.error("Unable to convert progress string to OperationProgress", je);
+            logger.error("Unable to convert progress string to OperationProgress. Generating default.", je);
         }
-        catch(Exception e)
+
+        operationProgress = operationProgress == null ? new OperationProgress() : operationProgress;
+        operationProgress.setStartedTime(startTime);
+        operationProgress.setCompletedTime(completedTime);
+        operationProgress.setOperation(operation.getName());
+        operationProgress.setResultPayload(outputPayload);
+        if(residentHandlerException != null)
         {
-            logger.error("Unable to pull last progress form resident handler.",  e);
+            // TODO: diagnositcs with the exception
+            operationProgress.setProcessingState(ProcessingState.COMPLETE);
+            operationProgress.setProcessingStateMessage(CompleteStateMessage.FAILED.toString());
         }
-        return null;
+        return operationProgress;
     }
 
     @Override
@@ -66,7 +74,15 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     {
         startTime = new Date();
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
-        outputPayload = residentHandler.execute(payload, launchDataWrapper, reporter);
+        try
+        {
+            outputPayload = residentHandler.execute(payload, launchDataWrapper, reporter);
+        }
+        catch(Exception e)
+        {
+            residentHandlerException = e;
+            throw e;
+        }
         completedTime = new Date();
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
