@@ -46,7 +46,6 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 makeDfhBasePod("lab-main-t-aor-fhpkm-t01")
                 .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.1")
                 .setNamePrefix("dfh-package")
-                .setReapCompletedPods(false) // for debugging
         );
     }
 

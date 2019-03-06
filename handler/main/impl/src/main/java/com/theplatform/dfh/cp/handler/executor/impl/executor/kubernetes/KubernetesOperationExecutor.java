@@ -96,10 +96,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
-        executionConfig.getEnvVars().put(HandlerField.PAYLOAD.name(), payload);
-        
-        String cid = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CID.name(), null);
-        if(cid != null) executionConfig.getEnvVars().put(HandlerField.CID.name(), cid);
+        configureMetadata(payload);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
@@ -146,5 +143,20 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
 
         Map<String,String> podAnnotations = follower.getPodAnnotations();
         return podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);
+    }
+
+    private void configureMetadata(String payload)
+    {
+        Map<String,String> envVars = executionConfig.getEnvVars();
+        envVars.put(HandlerField.PAYLOAD.name(), payload);
+
+        String cid = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CID.name(), null);
+        if(cid != null) envVars.put(HandlerField.CID.name(), cid);
+
+        String customer_id = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CUSTOMER_ID.name(), null);
+        if(customer_id != null) envVars.put(HandlerField.CUSTOMER_ID.name(), customer_id);
+
+        if(operation.getName() != null) envVars.put(HandlerField.OPERATION_NAME.name(), operation.getName());
+        if(operation.getId() != null) envVars.put(HandlerField.OPERATION_ID.name(), operation.getId());
     }
 }
