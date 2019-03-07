@@ -7,8 +7,8 @@ import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 public abstract class AbstractBaseHandlerProcessor<C extends BaseOperationContext> implements HandlerProcessor, MetaData<Object>
 {
 
-    protected final LaunchDataWrapper launchDataWrapper;
-    protected final C operationContext;
+    protected  LaunchDataWrapper launchDataWrapper;
+    protected C operationContext;
 
     public AbstractBaseHandlerProcessor(C operationContext)
     {
