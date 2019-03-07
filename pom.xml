@@ -16,6 +16,7 @@
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
         <reporter-api.version>1.0.0</reporter-api.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <field-retriever.version>1.0.1-SNAPSHOT</field-retriever.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>1.0.5</failsafe.version>
@@ -48,6 +49,11 @@
             <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-reporter-api</artifactId>
             <version>${reporter-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

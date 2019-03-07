@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.*;
+
 import java.util.UUID;
 
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
@@ -24,8 +26,6 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     private BaseOperationContextFactory<C> operationContextFactory;
     private HandlerMetadataRetriever handlerMetadataRetriever;
     private long start;
-    private static final String OPERATION_SUCCEEDED = "succeeded";
-    private static final String OPERATION_FAILED = "failed";
 
     protected abstract W createLaunchDataWrapper(String[] args);
     protected abstract BaseOperationContextFactory<C> createOperationContextFactory(W launchDataWrapper);
@@ -66,11 +66,11 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 
             start = System.currentTimeMillis();
             createHandlerProcessor(operationContext).execute();
-            logFinalStateAndDuration(OPERATION_SUCCEEDED);
+            logFinalStateAndDuration(SUCCEEDED.toString());
         }
         catch (Exception e)
         {
-            logFinalStateAndDuration(OPERATION_FAILED);
+            logFinalStateAndDuration(FAILED.toString());
             logger.error(getOperationName(), e);
         }
         finally
