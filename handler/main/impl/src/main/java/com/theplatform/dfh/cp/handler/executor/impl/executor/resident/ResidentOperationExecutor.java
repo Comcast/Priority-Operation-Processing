@@ -55,6 +55,11 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
             logger.error("Unable to convert progress string to OperationProgress. Generating default.", je);
         }
 
+        if(operationProgress == null)
+        {
+            logger.warn("Resident operation {} is not reporting progress.", operation.getName());
+        }
+
         operationProgress = operationProgress == null ? new OperationProgress() : operationProgress;
         operationProgress.setStartedTime(startTime);
         operationProgress.setCompletedTime(completedTime);
