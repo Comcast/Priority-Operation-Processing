@@ -5,22 +5,29 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.base.log.HandlerMetadataRetriever;
 import com.theplatform.dfh.cp.handler.base.log.HandlerReporter;
 import com.theplatform.dfh.cp.handler.base.log.HandlerReporterImpl;
+import com.theplatform.dfh.cp.handler.base.processor.HandlerMetadata;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
     private static final String DURATION_TEMPLATE = "%s - completion status: %s; duration (millisec): %d";
+    private static final String CPU_Template = "Requested CPUs (for handler and utility pods, if any): %d";
+    private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
@@ -65,7 +72,10 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             operationContext.init();
 
             start = System.currentTimeMillis();
-            createHandlerProcessor(operationContext).execute();
+
+            HandlerProcessor handlerProcessor = createHandlerProcessor(operationContext);
+            logProcessorMetadata(handlerProcessor);
+            handlerProcessor.execute();
             logFinalStateAndDuration(SUCCEEDED.toString());
         }
         catch (Exception e)
@@ -78,6 +88,47 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
         }
+    }
+
+    private void logProcessorMetadata(HandlerProcessor handlerProcessor)
+    {
+        if(!(handlerProcessor instanceof MetaData))
+        {
+            return; // todo this check is to make conversion of subclasses - in different modules - cleaner.  Remove when conversion  is complete.
+        }
+
+        MetaData<Object> metaData = (MetaData<Object>) handlerProcessor;
+
+        Map<String, Object> handlerMetada = metaData.getMetadata();
+
+        // todo If/when needed, make this logic more generic/smarter (e.g. set of metadata fields to check)
+
+        double utilityPodCPURequest = 0;
+        if(handlerMetada.keySet().contains(HandlerMetadata.ExecutionConfig.name()))
+        {
+            ExecutionConfig executionConfig = (ExecutionConfig) handlerMetada.get(HandlerMetadata.ExecutionConfig.name());
+            String utilityCPURequest = executionConfig.getCpuRequestModulator().getCpuRequest();
+
+            if(!StringUtils.isEmpty(utilityCPURequest) && IsParsable(utilityCPURequest))
+            {
+                utilityPodCPURequest += Double.parseDouble(utilityCPURequest);
+            }
+        }
+        logger.info(String.format(CPU_Template, DEFAULT_HANDLER_CPU_REQUEST + utilityPodCPURequest));
+    }
+
+    private boolean IsParsable(String tentativeDoubleString)
+    {
+        try
+        {
+            Double.parseDouble(tentativeDoubleString);
+            return true;
+        }
+        catch (Exception e)
+        {
+            // noop
+        }
+        return false;
     }
 
     private String getOperationName()
