@@ -89,7 +89,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     {
         long durationMilli = System.currentTimeMillis() - start;
         String operationName = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
-        logger.info(DURATION_TEMPLATE, operationName, status, durationMilli);
+        logger.info(String.format(DURATION_TEMPLATE, operationName, status, durationMilli));
     }
 
     public W getLaunchDataWrapper()
