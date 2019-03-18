@@ -164,7 +164,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         {
             isScheduled = podScheduled.await(LATCH_TIMEOUT, TimeUnit.MILLISECONDS);
             logger.debug("Waiting for pod {} to schedule and run.", podName);
-            resetableScheduleTimeout.timeout();
+            resetableScheduleTimeout.timeout(podName);
         }
         while (!isScheduled);
         logger.debug("Pod {} passed scheduling watch.", podName);
@@ -203,7 +203,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         }
 
         logThisPodsLogs(linesProduced, podName);
-        resetableProductivityTimeout.timeout();
+        resetableProductivityTimeout.timeout(podName);
         int inactivityCounter = resetableProductivityTimeout.getInactivityCounter();
         logger.info("Current pod {} log inactivity counter {}, max {}", podName, inactivityCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
         if(inactivityCounter > MAX_INACTIVITY_BEFORE_LOG_RESET)

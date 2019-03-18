@@ -25,7 +25,7 @@ public class ResetableTimeout
         this.maxWait = 60 * 1000 * 5;
     }
 
-    public void timeout() throws TimeoutException
+    public void timeout(String podName) throws TimeoutException
     {
         inactivityCounter++;
         long currentWaitTime;
@@ -33,12 +33,14 @@ public class ResetableTimeout
         long ttl = maxWait - currentWaitTime;
         if(currentWaitTime > 1000)
         {
-            logger.debug("Waited this long for pod: {}ms, will wait this much longer {}ms", currentWaitTime,
+            logger.debug("Waited this long for pod [{}]: {}ms, will wait this much longer {}ms",
+                podName,
+                currentWaitTime,
                 ttl);
         }
         if (ttl <= 0)
         {
-            throw new TimeoutException("Waited to long!");
+            throw new TimeoutException("Waited too long!");
         }
     }
 
