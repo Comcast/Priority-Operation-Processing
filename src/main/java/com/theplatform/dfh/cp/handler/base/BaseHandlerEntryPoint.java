@@ -26,8 +26,8 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
     private static final String DURATION_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX +"operation: %s; completion status: %s; duration (millisec): %d";
-    private static final String CPU_Template = OPERATION_METADATA_TEMPLATE_PREFIX +"Requested CPUs (for handler and any utility pods): %d";
-    private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional; confirm that this value is good as a defaultS.
+    private static final String CPU_Template = OPERATION_METADATA_TEMPLATE_PREFIX +"Requested CPUs (for handler and any utility pods): %1f";
+    private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional; confirm that this value is good as a default.
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
@@ -88,7 +88,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         }
         finally
         {
-            //logRequestedCPUs(execMetaData);
+            logRequestedCPUs(execMetaData);
             logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
         }
