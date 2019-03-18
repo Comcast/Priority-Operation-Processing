@@ -11,23 +11,23 @@ import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.*;
+import static com.theplatform.dfh.cp.handler.base.log.HandlerReporterImpl.OPERATION_METADATA_TEMPLATE_PREFIX;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
-    private static final String DURATION_TEMPLATE = "%s - completion status: %s; duration (millisec): %d";
-    private static final String CPU_Template = "Requested CPUs (for handler and utility pods, if any): %d";
-    private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional
+    private static final String DURATION_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX +"operation: %s; completion status: %s; duration (millisec): %d";
+    private static final String CPU_Template = OPERATION_METADATA_TEMPLATE_PREFIX +"Requested CPUs (for handler and any utility pods): %d";
+    private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional; confirm that this value is good as a defaultS.
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
     private W launchDataWrapper;
     private BaseOperationContextFactory<C> operationContextFactory;
@@ -47,8 +47,6 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         logMetadata();
         operationContextFactory = createOperationContextFactory(launchDataWrapper);
 
-        // todo log number of cores (handler + utility containers - though not here)
-
     }
 
     private void logMetadata()
@@ -67,6 +65,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     {
         // get the operation specific context for running the overall process
         C operationContext = operationContextFactory.createOperationContext();
+        Map<String, Object>  execMetaData = new HashMap<>();
         try
         {
             operationContext.init();
@@ -74,7 +73,11 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             start = System.currentTimeMillis();
 
             HandlerProcessor handlerProcessor = createHandlerProcessor(operationContext);
-            logProcessorMetadata(handlerProcessor);
+            if(handlerProcessor instanceof MetaData)
+            {
+                execMetaData = ((MetaData)handlerProcessor).getMetadata();
+            }
+
             handlerProcessor.execute();
             logFinalStateAndDuration(SUCCEEDED.toString());
         }
@@ -85,33 +88,24 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         }
         finally
         {
+            logRequestedCPUs(execMetaData);
             logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
         }
     }
 
-    private void logProcessorMetadata(HandlerProcessor handlerProcessor)
+    private void logRequestedCPUs(Map<String, Object> handlerMetada)
     {
-        if(!(handlerProcessor instanceof MetaData))
-        {
-            return; // todo this check is to make conversion of subclasses - in different modules - cleaner.  Remove when conversion  is complete.
-        }
-
-        MetaData<Object> metaData = (MetaData<Object>) handlerProcessor;
-
-        Map<String, Object> handlerMetada = metaData.getMetadata();
-
         // todo If/when needed, make this logic more generic/smarter (e.g. set of metadata fields to check)
 
         double utilityPodCPURequest = 0;
-        if(handlerMetada.keySet().contains(HandlerMetadata.ExecutionConfig.name()))
+        if(handlerMetada.keySet().contains(HandlerMetadata.RequestedCPUs.name()))
         {
-            ExecutionConfig executionConfig = (ExecutionConfig) handlerMetada.get(HandlerMetadata.ExecutionConfig.name());
-            String utilityCPURequest = executionConfig.getCpuRequestModulator().getCpuRequest();
+            Double utilityCPURequest = (Double) handlerMetada.get(HandlerMetadata.RequestedCPUs.name());
 
-            if(!StringUtils.isEmpty(utilityCPURequest) && IsParsable(utilityCPURequest))
+            if(utilityCPURequest != null)
             {
-                utilityPodCPURequest += Double.parseDouble(utilityCPURequest);
+                utilityPodCPURequest += utilityCPURequest;
             }
         }
         logger.info(String.format(CPU_Template, DEFAULT_HANDLER_CPU_REQUEST + utilityPodCPURequest));

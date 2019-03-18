@@ -8,7 +8,8 @@ import java.util.Map;
 public class HandlerReporterImpl implements HandlerReporter
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerReporterImpl.class);
-    private static final String KEY_VALUE_TEMPLATE = "Operation metadata - %s : %s";
+    public static final String OPERATION_METADATA_TEMPLATE_PREFIX = "Operation metadata - ";
+    private static final String KEY_VALUE_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX + "%s : %s";
     @Override
     public void reportMetadata(Map<String, String> metadata)
     {
