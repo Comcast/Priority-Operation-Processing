@@ -60,18 +60,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
             logger.warn("Resident operation {} is not reporting progress.", operation.getName());
         }
 
-        operationProgress = operationProgress == null ? new OperationProgress() : operationProgress;
-        operationProgress.setStartedTime(startTime);
-        operationProgress.setCompletedTime(completedTime);
-        operationProgress.setOperation(operation.getName());
-        operationProgress.setResultPayload(outputPayload);
-        if(residentHandlerException != null)
-        {
-            // TODO: diagnositcs with the exception
-            operationProgress.setProcessingState(ProcessingState.COMPLETE);
-            operationProgress.setProcessingStateMessage(CompleteStateMessage.FAILED.toString());
-        }
-        return operationProgress;
+        return generateOperationProgress(operationProgress);
     }
 
     @Override
@@ -91,5 +80,23 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
         completedTime = new Date();
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
+    }
+
+    private OperationProgress generateOperationProgress(OperationProgress existingProgress)
+    {
+        OperationProgress operationProgress = existingProgress == null ? new OperationProgress() : existingProgress;
+        if(operationProgress.getProcessingState() == null)
+            operationProgress.setProcessingState(ProcessingState.WAITING);
+        operationProgress.setStartedTime(startTime);
+        operationProgress.setCompletedTime(completedTime);
+        operationProgress.setOperation(operation.getName());
+        operationProgress.setResultPayload(outputPayload);
+        if(residentHandlerException != null)
+        {
+            // TODO: diagnositcs with the exception
+            operationProgress.setProcessingState(ProcessingState.COMPLETE);
+            operationProgress.setProcessingStateMessage(CompleteStateMessage.FAILED.toString());
+        }
+        return operationProgress;
     }
 }
