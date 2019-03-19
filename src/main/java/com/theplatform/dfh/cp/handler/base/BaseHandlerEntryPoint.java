@@ -11,6 +11,7 @@ import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -99,11 +100,11 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         // todo If/when needed, make this logic more generic/smarter (e.g. set of metadata fields to check)
 
         double utilityPodCPURequest = 0;
-        if(handlerMetada.keySet().contains(HandlerMetadata.RequestedCPUs.name()))
+        if(handlerMetada.keySet().contains(HandlerMetadata.RequestedCPUs.name()) && handlerMetada.get(HandlerMetadata.RequestedCPUs.name()) instanceof String)
         {
-            Double utilityCPURequest = (Double) handlerMetada.get(HandlerMetadata.RequestedCPUs.name());
+            Double utilityCPURequest = NumberUtils.toDouble((String) handlerMetada.get(HandlerMetadata.RequestedCPUs.name()), -1);
 
-            if(utilityCPURequest != null)
+            if(utilityCPURequest >= 0)
             {
                 utilityPodCPURequest += utilityCPURequest;
             }
