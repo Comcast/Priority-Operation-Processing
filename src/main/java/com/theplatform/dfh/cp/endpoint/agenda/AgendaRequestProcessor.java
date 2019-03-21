@@ -114,6 +114,8 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         // The Agenda id is generated up front for use on other object updates/creates
         agendaToPersist.setId(UUID.randomUUID().toString());
 
+        agendaToPersist.setParams(agendaToPersist.getParams() == null ? new ParamsMap() : agendaToPersist.getParams());
+
         String agendaProgressId = agendaToPersist.getProgressId();
         if (agendaProgressId == null)
         {
@@ -132,6 +134,7 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
             logger.info("Using existing progress: {} Updated associated agendaId: {}", agendaProgressId, agendaToPersist.getId());
             AgendaProgress agendaProgress = new AgendaProgress();
             agendaProgress.setId(agendaProgressId);
+            agendaProgress.setParams(agendaToPersist.getParams());
             agendaProgress.setAgendaId(agendaToPersist.getId());
             // NOTE: on failure the AgendaProgress with have an invalid agendaId -- this is harmless
             DataObjectResponse<AgendaProgress> agendaProgressUpdateResponse = agendaProgressClient.updateObject(agendaProgress, agendaProgressId);
@@ -226,15 +229,9 @@ public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
         agendaProgress.setCustomerId(agenda.getCustomerId());
         agendaProgress.setLinkId(agenda.getLinkId());
         agendaProgress.setAgendaId(agenda.getId());
+        agendaProgress.setParams(agenda.getParams());
         agendaProgress.setProcessingState(ProcessingState.WAITING);
         agendaProgress.setAddedTime(new Date());
-
-        ParamsMap paramsMap = agenda.getParams() == null ? new ParamsMap() : agenda.getParams();
-        if(paramsMap == null)
-            agenda.setParams(new ParamsMap());
-
-        String externalId = paramsMap.getString(GeneralParamKey.externalId);
-        if(!StringUtils.isBlank(externalId)) agendaProgress.setExternalId(externalId);
 
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.persistObject(agendaProgress);
