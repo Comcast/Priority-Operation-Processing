@@ -7,9 +7,9 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFact
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncher;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.handler.puller.impl.reporter.AgendaReporter;
+import com.theplatform.dfh.cp.handler.puller.impl.reporter.AgendaReports;
+import com.theplatform.dfh.cp.handler.puller.impl.reporter.AgendaResponseReporter;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import java.util.Collection;
 public class PullerProcessor implements HandlerProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
+    private static final String PULLER_AGENDA_PREFIX = "Puller agenda metadata - ";
 
     private PullerLaunchDataWrapper launchDataWrapper;
     private BaseLauncher launcher;
@@ -76,11 +77,15 @@ public class PullerProcessor implements HandlerProcessor
         }
 
         Collection<Agenda> agendas = getAgendaResponse.getAgendas();
+        AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(PULLER_AGENDA_PREFIX, AgendaReports.AGENDA_ID));
+        agendaResponseReporter.reportAgendaResponse();
+        agendaResponseReporter.reportAgendas();
 
         if (agendas != null && agendas.size() > 0)
         {
             Agenda agenda = (Agenda) agendas.toArray()[0];
-            logger.info("Retrieved Agenda: {}", agenda);
+            logger.info("Retrieved Agenda: {}", agenda); // logs agenda hashcode?
+
             // launch an executor and pass it the agenda payload
             getLauncher().execute(agenda);
         }
