@@ -83,6 +83,8 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 
             handlerProcessor.execute();
             logger.info("Handler metadata post-exec key count: " + Integer.toString(execMetaData.keySet().size())); // temporary logging
+            execMetaData.keySet().forEach(key -> logger.info("Exec metadata key: "+key.toString())); // temporary logging
+            execMetaData.values().forEach(value -> logger.info("Exec metadata value: "+value.toString())); // temporary logging
             logFinalStateAndDuration(SUCCEEDED.toString());
         }
         catch (Exception e)
