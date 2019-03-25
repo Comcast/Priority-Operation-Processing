@@ -30,7 +30,7 @@ public class AgendaResponseReporter
             return;
         }
         AgendaReporter reporter = new AgendaReporter(AGENDA_RESPONSE_PREFIX, AgendaReports.CID, AgendaReports.CUSTOMER_ID);
-        logger.info(AGENDA_RESPONSE_PREFIX, "agendaType: basic"); // todo implement agenda types when spec'ed
+        logger.info(AGENDA_RESPONSE_PREFIX + "agendaType: basic"); // todo implement agenda types when spec'ed
         reporter.report(getAgendaResponse.getAgendas().toArray(new Agenda[0])[0]); // use first agenda to report CID and customer id, if they are provided.
     }
 
