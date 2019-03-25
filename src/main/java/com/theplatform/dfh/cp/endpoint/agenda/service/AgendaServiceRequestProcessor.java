@@ -48,7 +48,6 @@ public class AgendaServiceRequestProcessor
 
     public GetAgendaResponse processRequest(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
-        logger.info("Agenda processRequest is called."); //  temporary diagnostic logging
         try
         {
             getRequestValidator().validateGET(serviceRequest);
@@ -132,7 +131,6 @@ public class AgendaServiceRequestProcessor
 
     public Agenda retrieveAgenda(String agendaId) throws PersistenceException
     {
-        logger.info("Agenda retrieveAgenda is called."); //  temporary diagnostic logging
         return agendaPersister.retrieve(agendaId);
     }
 

@@ -16,7 +16,7 @@ public enum AgendaReports implements AgendaReport
                     {
                         cid = agendaCid;
                     }
-                    return cid;
+                    return name() + ": " + cid;
                 }
             },
 
@@ -31,7 +31,7 @@ public enum AgendaReports implements AgendaReport
                     {
                         customerId = agendaCustomerId;
                     }
-                    return customerId;
+                    return name() + ": " + customerId;
                 }
             },
     AGENDA_ID
@@ -39,7 +39,7 @@ public enum AgendaReports implements AgendaReport
                 @Override
                 public String report(Agenda agenda)
                 {
-                    return agenda.getId();
+                    return name() + ": " + agenda.getId();
                 }
             };
 
