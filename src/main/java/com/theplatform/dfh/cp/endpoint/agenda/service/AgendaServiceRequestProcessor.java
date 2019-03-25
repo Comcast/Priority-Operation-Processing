@@ -2,6 +2,9 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReports;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
@@ -29,6 +32,7 @@ import java.util.List;
 public class AgendaServiceRequestProcessor
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
+    private static final String AGENDA_PREFIX = "Agenda metadata - ";
 
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
@@ -118,7 +122,11 @@ public class AgendaServiceRequestProcessor
 
     private GetAgendaResponse createAgendaServiceResult(Collection<Agenda> agendas)
     {
-        return new GetAgendaResponse(agendas);
+        GetAgendaResponse getAgendaResponse = new GetAgendaResponse(agendas);
+        AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(AGENDA_PREFIX, AgendaReports.CID));
+        agendaResponseReporter.reportAgendaResponse();
+        agendaResponseReporter.reportAgendas();
+        return getAgendaResponse;
     }
 
     public Agenda retrieveAgenda(String agendaId) throws PersistenceException
