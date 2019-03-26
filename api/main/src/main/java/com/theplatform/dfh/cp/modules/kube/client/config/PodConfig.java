@@ -19,6 +19,8 @@ public class PodConfig
                                                    //  Sec  MILLI  Min
     private static final long DEFAULT_STDOUT_TIMEOUT = 60 * 1000 * 2;
 
+    private static final String DEFAULT_MIN_CPU_REQUEST = "1.0";
+    private static final String DEFAULT_MAX_CPU_REQUEST = "1.0";
 
     // The prefix for the launched kubernetes pod
     private String namePrefix;
@@ -392,19 +394,26 @@ public class PodConfig
         return this;
     }
 
+    /**
+     * Set default values on specified fields that are null
+     * @return
+     */
     public PodConfig setDefaults()
     {
-        this.enableOutputScraping = false;
-        this.useTaintedNodes = false;
-        this.defaultEmptyDirLogging = false;
-        this.reapCompletedPods = false;
-        this.pullAlways = false;
-        this.podScheduledTimeoutMs = DEFAULT_SCHEDULED_TIMEOUT;
-        this.podStdoutTimeout = DEFAULT_STDOUT_TIMEOUT;
-        this.podRetryCount = 0;
-        this.retryDelayMilliSecs = RETRY_DELAY;
-        this.dockerPrivileged = false;
+        enableOutputScraping = enableOutputScraping == null? false: enableOutputScraping;
+        useTaintedNodes = useTaintedNodes == null? false: useTaintedNodes;
+        defaultEmptyDirLogging = defaultEmptyDirLogging == null? false: defaultEmptyDirLogging;
+        reapCompletedPods = reapCompletedPods == null? false: reapCompletedPods;
+        pullAlways = pullAlways == null? false: pullAlways;
+        podScheduledTimeoutMs = podScheduledTimeoutMs == null? DEFAULT_SCHEDULED_TIMEOUT: podScheduledTimeoutMs;
+        podStdoutTimeout = podStdoutTimeout == null? DEFAULT_STDOUT_TIMEOUT: podStdoutTimeout;
+        podRetryCount = podRetryCount == null? 0: podRetryCount;
+        retryDelayMilliSecs = retryDelayMilliSecs == null? RETRY_DELAY: retryDelayMilliSecs;
+        dockerPrivileged = dockerPrivileged == null? false: dockerPrivileged;
+        cpuMinRequestCount = cpuMinRequestCount == null? DEFAULT_MIN_CPU_REQUEST: cpuMinRequestCount;
+        cpuMaxRequestCount = cpuMaxRequestCount == null? DEFAULT_MAX_CPU_REQUEST: cpuMaxRequestCount;
 
         return this;
     }
+
 }
