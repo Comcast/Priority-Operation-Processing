@@ -10,6 +10,8 @@ public enum FileResourceType
     TEXT_TRACK_SIDECAR("text track sidecar"),
     AUDIO_TRACK("audio track"),
     VIDEO_TRACK("video_track"),
+    AUDIO("audio"),
+    VIDEO("video"),
     IMAGE("image"),
     MP4("mp4"),
     HLS("hls"),
