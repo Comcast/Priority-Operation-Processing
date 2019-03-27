@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
-import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
+import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
@@ -19,19 +19,16 @@ import java.util.List;
 /**
  * Basic processor for running the sample action and requesting the output is parsed
  */
-public class SampleActionProcessor implements HandlerProcessor
+public class SampleActionProcessor  extends AbstractBaseHandlerProcessor<LaunchDataWrapper, OperationContext>
 {
     private static Logger logger = LoggerFactory.getLogger(SampleActionProcessor.class);
 
-    private LaunchDataWrapper launchDataWrapper;
-    private OperationContext operationContext;
     private JsonHelper jsonHelper;
     private ActionMap actionMap;
 
     public SampleActionProcessor(OperationContext operationContext)
     {
-        this.launchDataWrapper = operationContext.getLaunchDataWrapper();
-        this.operationContext = operationContext;
+        super(operationContext);
         this.jsonHelper = new JsonHelper();
         this.actionMap = new ActionMap();
     }
