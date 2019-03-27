@@ -42,11 +42,16 @@ public abstract class AbstractBaseHandlerProcessor<L extends LaunchDataWrapper, 
 
 
     /**
-     * Not all subclasses need to pass along metadata, so is only called when needed.
-     * @param metaData
+     * Not all executors of a subclass will need to pass along metadata, so they are checked.
+     * @param executor
      */
-    protected void assignHandlerMetadata(MetaData metaData)
+    protected void assignHandlerMetadata(Object executor)
     {
+        if(!(executor instanceof MetaData))
+        {
+            return;
+        }
+        MetaData<Object> metaData = (MetaData) executor;
         if(!metaData.getMetadata().isEmpty())
         {
             handlerMetadata.putAll(metaData.getMetadata());
