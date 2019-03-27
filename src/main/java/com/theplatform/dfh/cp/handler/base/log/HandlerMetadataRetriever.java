@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.handler.base.log;
 
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 
 import java.util.HashMap;
