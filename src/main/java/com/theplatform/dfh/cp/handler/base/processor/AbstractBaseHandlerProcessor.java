@@ -11,7 +11,7 @@ public abstract class AbstractBaseHandlerProcessor<L extends LaunchDataWrapper, 
 {
     protected  L launchDataWrapper;
     protected  C operationContext;
-    private Map<String,Object> handlerMetadata = new HashMap<>();
+    protected Map<String,Object> handlerMetadata = new HashMap<>();
 
 
     public AbstractBaseHandlerProcessor(C operationContext)
