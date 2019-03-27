@@ -21,7 +21,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
     public ParallelOperationAgendaProcessor(ExecutorContext executorContext)
     {
-        super(executorContext.getLaunchDataWrapper(), executorContext);
+        super(executorContext);
         this.operationAdviserFactory = new OperationConductorFactory();
     }
 
@@ -33,7 +33,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
     {
         ExecutorHandlerInput handlerInput;
 
-        AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
+        AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
         try
         {
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
@@ -59,7 +59,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
         try
         {
-            OperationConductor operationConductor = operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), executorContext);
+            OperationConductor operationConductor = operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
             operationConductor.run();
             if(operationConductor.haveAnyOperationsFailed())
                 agendaProgressReporter.addFailed(null);

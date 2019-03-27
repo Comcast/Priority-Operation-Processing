@@ -1,20 +1,23 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
+import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
+import com.theplatform.dfh.cp.handler.base.processor.HandlerMetadata;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
-public abstract class BaseAgendaProcessor implements HandlerProcessor
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class BaseAgendaProcessor extends AbstractBaseHandlerProcessor<LaunchDataWrapper, ExecutorContext>
 {
-    protected LaunchDataWrapper launchDataWrapper;
-    protected ExecutorContext executorContext;
     protected JsonHelper jsonHelper;
 
-    public BaseAgendaProcessor(LaunchDataWrapper launchDataWrapper, ExecutorContext executorContext)
+    public BaseAgendaProcessor(ExecutorContext executorContext)
     {
-        this.launchDataWrapper = launchDataWrapper;
-        this.executorContext = executorContext;
+        super(executorContext);
         this.jsonHelper = new JsonHelper();
     }
 
@@ -25,7 +28,7 @@ public abstract class BaseAgendaProcessor implements HandlerProcessor
 
     public void setExecutorContext(ExecutorContext executorContext)
     {
-        this.executorContext = executorContext;
+        this.operationContext = executorContext;
     }
 
     public void setJsonHelper(JsonHelper jsonHelper)

@@ -29,7 +29,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
 
     public SequentialAgendaProcessor(ExecutorContext executorContext)
     {
-        super(executorContext.getLaunchDataWrapper(), executorContext);
+        super(executorContext);
         operationRunnerFactory = new OperationRunnerFactory();
         jsonContextUpdater = new JsonContextUpdater(executorContext);
         completedOperations = new HashSet<>();
@@ -40,7 +40,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      */
     public void execute()
     {
-        AgendaProgressReporter agendaProgressReporter = executorContext.getAgendaProgressReporter();
+        AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 
         agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
         ExecutorHandlerInput handlerInput = null;
@@ -87,12 +87,12 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
      */
     protected void executeOperation(Operation operation, AgendaProgressReporter agendaProgressReporter)
     {
-        OperationWrapper operationWrapper = new OperationWrapper(operation).init(executorContext, jsonContextUpdater);
+        OperationWrapper operationWrapper = new OperationWrapper(operation).init(operationContext, jsonContextUpdater);
         Set<String> completedOperationNames = completedOperations.stream().map(x -> x.getOperation().getName()).collect(Collectors.toSet());
-        if(operationWrapper.isReady(executorContext, completedOperationNames))
+        if(operationWrapper.isReady(operationContext, completedOperationNames))
         {
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, String.format("Sequential Op: Running %1$s", operation.getName()));
-            operationRunnerFactory.createOperationRunner(operationWrapper, executorContext, new OnOperationCompleteListener()
+            operationRunnerFactory.createOperationRunner(operationWrapper, operationContext, new OnOperationCompleteListener()
             {
                 @Override
                 public void onComplete(OperationWrapper operationWrapper)
