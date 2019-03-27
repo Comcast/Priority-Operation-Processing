@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 public enum FileResourceType
 {
+    // NOTE: all labels should be lowercase (see constructor)
+
     MEZZANINE("mezzanine"),
     TEXT_TRACK_SIDECAR("text track sidecar"),
     AUDIO_TRACK("audio track"),
@@ -23,7 +25,7 @@ public enum FileResourceType
     private String label;
     FileResourceType(String label)
     {
-        this.label = label;
+        this.label = label.toLowerCase();
     }
 
     public String getLabel()
@@ -39,5 +41,27 @@ public enum FileResourceType
             .filter(type -> type.getLabel().equals(label))
             .collect(Collectors.toList());
         return fileResourceTypeList != null ? fileResourceTypeList.get(0) : FileResourceType.UNKNOWN;
+    }
+
+    /**
+     * Checks if the label of the enum is equal to the input string (case insensitive)
+     * @param typeString The string to check
+     * @return True if matching, false otherwise
+     */
+    public boolean labelEquals(String typeString)
+    {
+        if(typeString == null) return false;
+        return label.equals(typeString.toLowerCase());
+    }
+
+    /**
+     * Checks if the label of the enum is present in the input string (case insensitive)
+     * @param typeString The string to check
+     * @return True if contained, false otherwise
+     */
+    public boolean containedIn(String typeString)
+    {
+        if(typeString == null) return false;
+        return typeString.toLowerCase().contains(label);
     }
 }
