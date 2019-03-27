@@ -76,15 +76,10 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             HandlerProcessor handlerProcessor = createHandlerProcessor(operationContext);
             if(handlerProcessor instanceof MetaData)
             {
-                logger.info("Handler is of type MetaData"); // temporary logging
                 execMetaData = ((MetaData)handlerProcessor).getMetadata();
-                logger.info("Handler metadata pre-exec key count: " + Integer.toString(execMetaData.keySet().size())); // temporary logging
             }
 
             handlerProcessor.execute();
-            logger.info("Handler metadata post-exec key count: " + Integer.toString(execMetaData.keySet().size())); // temporary logging
-            execMetaData.keySet().forEach(key -> logger.info("Exec metadata key: "+key.toString())); // temporary logging
-            execMetaData.values().forEach(value -> logger.info("Exec metadata value: "+value.toString())); // temporary logging
             logFinalStateAndDuration(SUCCEEDED.toString());
         }
         catch (Exception e)
@@ -107,7 +102,6 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         double utilityPodCPURequest = 0;
         if(handlerMetada.keySet().contains(HandlerMetadata.RequestedCPUs.name()) && handlerMetada.get(HandlerMetadata.RequestedCPUs.name()) instanceof String)
         {
-            logger.info("Handler metadata has key for requested CPUs"); // temporary logging
             Double utilityCPURequest = NumberUtils.toDouble((String) handlerMetada.get(HandlerMetadata.RequestedCPUs.name()), -1);
 
             if(utilityCPURequest >= 0)
@@ -116,20 +110,6 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
             }
         }
         logger.info(String.format(CPU_Template, DEFAULT_HANDLER_CPU_REQUEST + utilityPodCPURequest));
-    }
-
-    private boolean IsParsable(String tentativeDoubleString)
-    {
-        try
-        {
-            Double.parseDouble(tentativeDoubleString);
-            return true;
-        }
-        catch (Exception e)
-        {
-            // noop
-        }
-        return false;
     }
 
     private String getOperationName()
