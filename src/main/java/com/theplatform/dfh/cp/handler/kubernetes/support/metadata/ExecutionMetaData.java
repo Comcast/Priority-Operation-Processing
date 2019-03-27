@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ExecutionMetaData implements MetaData<Object>
 {
-    private static Logger logger = LoggerFactory.getLogger(com.theplatform.dfh.cp.handler.base.perform.ExecutionMetaData.class);
+    private static Logger logger = LoggerFactory.getLogger(ExecutionMetaData.class);
     private Map<String, Object> metaData = new HashMap<>();
     private final String handlerName;
 
@@ -26,7 +26,6 @@ public class ExecutionMetaData implements MetaData<Object>
         try
         {
             requestedCPUs =  executionConfig.getCpuRequestModulator().getCpuRequest();
-            logger.info( handlerName + " requested CPUs: " + Double.parseDouble(requestedCPUs));
         }
         catch (Exception e)
         {
