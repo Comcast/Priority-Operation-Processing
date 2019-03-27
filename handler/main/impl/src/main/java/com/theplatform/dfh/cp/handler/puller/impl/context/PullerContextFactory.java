@@ -1,14 +1,11 @@
 package com.theplatform.dfh.cp.handler.puller.impl.context;
 
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.exception.PullerException;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes.KubernetesLauncherFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.local.LocalOperationLauncherFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of puller to use.

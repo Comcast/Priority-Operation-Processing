@@ -2,8 +2,6 @@ package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
-import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
