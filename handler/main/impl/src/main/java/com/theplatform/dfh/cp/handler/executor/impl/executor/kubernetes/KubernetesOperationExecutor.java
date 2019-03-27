@@ -6,7 +6,6 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecut
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;

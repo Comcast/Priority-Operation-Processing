@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.BaseAgendaProcessor;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.SequentialAgendaProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.parallel.ParallelOperationAgendaProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import org.slf4j.Logger;

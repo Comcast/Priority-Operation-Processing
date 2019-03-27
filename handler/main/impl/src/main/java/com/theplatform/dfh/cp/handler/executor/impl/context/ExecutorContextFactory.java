@@ -1,7 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.KubernetesOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
@@ -13,7 +12,6 @@ import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.HttpReporter;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
