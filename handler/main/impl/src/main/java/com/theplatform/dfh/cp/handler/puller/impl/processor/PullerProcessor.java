@@ -1,7 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
+import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
@@ -17,11 +19,10 @@ import java.util.Collection;
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
  */
-public class PullerProcessor implements HandlerProcessor
+public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchDataWrapper, PullerContext>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
 
-    private PullerLaunchDataWrapper launchDataWrapper;
     private BaseLauncher launcher;
 
     private AgendaClient agendaClient;
@@ -31,7 +32,7 @@ public class PullerProcessor implements HandlerProcessor
 
     public PullerProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
-        this.launchDataWrapper = pullerContext.getLaunchDataWrapper();
+        this(pullerContext);
         this.agendaClient = agendaClientFactory.getClient();
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
 
@@ -39,9 +40,19 @@ public class PullerProcessor implements HandlerProcessor
         agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
     }
 
+    public PullerProcessor(PullerContext pullerContext)
+    {
+        super(pullerContext);
+    }
+
+
+    /**
+     * For testing
+     * @param insightId
+     */
     protected PullerProcessor(String insightId)
     {
-        super();
+        super(new PullerContext(null, null));
         this.insightId = insightId;
     }
 
@@ -102,11 +113,11 @@ public class PullerProcessor implements HandlerProcessor
         return launchDataWrapper;
     }
 
-    public PullerProcessor setLaunchDataWrapper(PullerLaunchDataWrapper launchDataWrapper)
-    {
-        this.launchDataWrapper = launchDataWrapper;
-        return this;
-    }
+//    public PullerProcessor setLaunchDataWrapper(PullerLaunchDataWrapper launchDataWrapper)
+//    {
+//        this.launchDataWrapper = launchDataWrapper;
+//        return this;
+//    }
 
     public BaseLauncher getLauncher()
     {
