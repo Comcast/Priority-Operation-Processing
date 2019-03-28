@@ -66,7 +66,20 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
             throw new PodConfigRegistryClientException("Could not find PodConfig with name: " + configMapName);
         }
 
-        return podConfigMap.get(configMapName);
+        PodConfig originalConfig = podConfigMap.get(configMapName);
+        if(originalConfig != null)
+        {
+            PodConfig podConfig = new PodConfig();
+            try
+            {
+                PropertyCopier.copyProperties(podConfig, originalConfig);
+            }
+            catch (IllegalAccessException | InvocationTargetException ex) {
+                throw new PodConfigRegistryClientException("Unable to map properties when duplicating PodConfig from registry: " + configMapName, ex);
+            }
+            return podConfig;
+        }
+        return null;
     }
 
     private void loadJsonMap() throws PodConfigRegistryClientException {
