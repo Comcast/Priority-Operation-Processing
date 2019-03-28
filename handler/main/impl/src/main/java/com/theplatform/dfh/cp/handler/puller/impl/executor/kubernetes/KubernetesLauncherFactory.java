@@ -26,26 +26,34 @@ import java.util.ArrayList;
  */
 public class KubernetesLauncherFactory implements LauncherFactory
 {
+    private static final Object registryLock = new Object();
     private static Logger logger = LoggerFactory.getLogger(KubernetesLauncherFactory.class);
 
     private int podRetryDelay = 2000;
 
-    private PodConfigRegistryClient podConfigRegistryClient;
+    private static PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
 
     private static final String EXEC_OPERATION_TYPE = "executor";
 
     public KubernetesLauncherFactory(PullerLaunchDataWrapper pullerLaunchDataWrapper)
     {
-        boolean useStaticRegistryClient = Boolean.parseBoolean(pullerLaunchDataWrapper.getPropertyRetriever().getField("useStaticRegistryClient", "false"));
+        synchronized (registryLock)
+        {
+            // no point in reloading the client over and over
+            if (podConfigRegistryClient == null)
+            {
+                boolean useStaticRegistryClient = Boolean.parseBoolean(pullerLaunchDataWrapper.getPropertyRetriever().getField("useStaticRegistryClient", "false"));
 
-        if (useStaticRegistryClient)
-        {
-            this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
-        }
-        else
-        {
-            this.podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
+                if (useStaticRegistryClient)
+                {
+                    podConfigRegistryClient = new StaticPodConfigRegistryClient();
+                }
+                else
+                {
+                    podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
+                }
+            }
         }
     }
 
