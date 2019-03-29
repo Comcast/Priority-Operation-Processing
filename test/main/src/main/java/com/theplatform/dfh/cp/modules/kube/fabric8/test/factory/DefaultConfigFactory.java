@@ -26,7 +26,7 @@ public class DefaultConfigFactory
         aliveCheckDetails.setAlivePath("/management/alive");
         aliveCheckDetails.setAliveCheckLinking(false);
 
-        PodConfig podConfig = new PodConfig().setDefaults();
+        PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setNfsDetails(nfsDetails);
         podConfig.setAliveCheckDetails(aliveCheckDetails);
         podConfig.setMemoryRequestCount("16000m");

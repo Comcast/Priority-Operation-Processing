@@ -395,10 +395,10 @@ public class PodConfig
     }
 
     /**
-     * Set default values on specified fields that are null
+     * Applies default values on specified fields that are null
      * @return
      */
-    public PodConfig setDefaults()
+    public PodConfig applyDefaults()
     {
         enableOutputScraping = enableOutputScraping == null? false: enableOutputScraping;
         useTaintedNodes = useTaintedNodes == null? false: useTaintedNodes;
