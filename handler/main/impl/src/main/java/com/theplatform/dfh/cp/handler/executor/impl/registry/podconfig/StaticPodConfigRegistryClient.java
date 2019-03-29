@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
@@ -14,6 +16,7 @@ import java.util.Map;
 public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 {
     private static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
+    private static PodConfigFactory podConfigFactory = new PodConfigFactoryImpl();
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
 
     static
@@ -63,8 +66,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setMapPath("external.properties")
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/config");
-        return new PodConfig()
-                .setDefaults()
+        return podConfigFactory.createPodConfig()
                 .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
