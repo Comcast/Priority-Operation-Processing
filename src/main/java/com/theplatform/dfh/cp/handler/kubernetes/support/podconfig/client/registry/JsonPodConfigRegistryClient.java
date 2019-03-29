@@ -24,7 +24,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     public static final PodConfig BASE_POD_CONFIG;
 
     static {
-        BASE_POD_CONFIG = new PodConfig().setDefaults();
+        BASE_POD_CONFIG = new PodConfig().applyDefaults();
 
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
                 .setVolumeName("config-volume")
