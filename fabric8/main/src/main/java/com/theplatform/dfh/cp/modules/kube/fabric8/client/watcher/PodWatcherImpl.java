@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.K8LogReader;
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import io.fabric8.kubernetes.api.model.Pod;

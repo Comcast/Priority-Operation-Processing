@@ -4,6 +4,8 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryableKubernetesClient;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 
@@ -23,9 +25,10 @@ public class PodPushClientFactoryImpl extends PodPushClientFactory<CpuRequestMod
 
         Config config = Fabric8Helper.getFabric8Config(kubeConfig);
         DefaultKubernetesClient innerClient = new DefaultKubernetesClient(config);
+        KubernetesClientFacade kubernetesClientFacade = new RetryableKubernetesClient(innerClient);
         PodPushClientImpl client = new PodPushClientImpl();
         client.setKubeConfig(kubeConfig);
-        client.setFabric8Client(innerClient);
+        client.setKubernetesClient(kubernetesClientFacade);
 
         return client;
     }

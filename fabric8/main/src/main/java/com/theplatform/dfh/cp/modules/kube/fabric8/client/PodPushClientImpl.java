@@ -1,14 +1,15 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodResourceFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.RetryablePodResource;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryablePodResource;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
@@ -33,7 +34,7 @@ public class PodPushClientImpl implements PodPushClient
     private static Logger logger = LoggerFactory.getLogger(PodPushClientImpl.class);
 
     private KubeConfig kubeConfig;
-    private DefaultKubernetesClient fabric8Client;
+    private KubernetesClientFacade kubernetesClient;
 
     @Override
     public KubeConfig getKubeConfig()
@@ -49,21 +50,21 @@ public class PodPushClientImpl implements PodPushClient
 
 
     @Override
-    public void setFabric8Client(DefaultKubernetesClient fabric8Client)
+    public void setKubernetesClient(KubernetesClientFacade kubernetesClient)
     {
-        this.fabric8Client = fabric8Client;
+        this.kubernetesClient = kubernetesClient;
     }
 
     @Override
-    public DefaultKubernetesClient getFabric8Client()
+    public KubernetesClientFacade getKubernetesClient()
     {
-        return fabric8Client;
+        return kubernetesClient;
     }
 
 
     public void close()
     {
-        fabric8Client.close();
+        kubernetesClient.close();
     }
 
     /**
@@ -140,7 +141,7 @@ public class PodPushClientImpl implements PodPushClient
 
     private Pod startPod(Pod podToCreate)
     {
-        return fabric8Client.pods().create(podToCreate);
+        return kubernetesClient.startPod(podToCreate);
     }
 
     private void logPodSpecs(Pod pod, String logTemplate)
@@ -154,8 +155,7 @@ public class PodPushClientImpl implements PodPushClient
 
     public void editPodAnnotations(String podName, Map<String, String> annotations)
     {
-        DoneablePod pod = fabric8Client.pods().withName(podName).edit();
-        pod.editMetadata().addToAnnotations(annotations).and().done();
+        kubernetesClient.updatePodAnnotations(podName, annotations);
     }
 
     private Watch initializePodWatcher(PodResourceFacade podResource, PodWatcherImpl podWatcherImpl)
@@ -165,7 +165,7 @@ public class PodPushClientImpl implements PodPushClient
 
     public PodResource<Pod, DoneablePod> getPodResource(String fullName)
     {
-        return fabric8Client.pods().inNamespace(kubeConfig.getNameSpace()).withName(fullName);
+        return kubernetesClient.getPodResource(kubeConfig.getNameSpace(), fullName);
     }
 
     public boolean deletePod(String podName)

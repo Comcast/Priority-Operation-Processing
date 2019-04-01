@@ -5,12 +5,10 @@ import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodNotScheduledException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserverImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
@@ -24,8 +22,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper.getFabric8Config;
 
 /**
  * Convenient tool for starting off a pod and following it until it has completed.
@@ -50,7 +46,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
         podPushClient = podPushClientFactory.getClient(kubeConfig);
-        podAnnotationClient = new PodAnnotationClient(podPushClient.getFabric8Client(), executionConfig.getName());
+        podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesClient(), executionConfig.getName());
     }
 
     /**

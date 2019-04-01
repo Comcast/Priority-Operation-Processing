@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorTest;
 import io.fabric8.kubernetes.api.model.*;

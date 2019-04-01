@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation;
 
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import java.util.Map;
@@ -12,11 +13,11 @@ public class PodAnnotationClient
 {
 
     private String podName;
-    private DefaultKubernetesClient fabric8Client;
+    private KubernetesClientFacade kubernetesClient;
 
-    public PodAnnotationClient(DefaultKubernetesClient fabric8Client, String podName)
+    public PodAnnotationClient(KubernetesClientFacade kubernetesClient, String podName)
     {
-        this.fabric8Client = fabric8Client;
+        this.kubernetesClient = kubernetesClient;
         this.podName = podName;
     }
 
@@ -27,8 +28,7 @@ public class PodAnnotationClient
      */
     public void editPodAnnotations(Map<String, String> annotations)
     {
-        DoneablePod pod = fabric8Client.pods().withName(podName).edit();
-        pod.editMetadata().addToAnnotations(annotations).and().done();
+        kubernetesClient.updatePodAnnotations(podName, annotations);
     }
 
     /**
@@ -36,8 +36,7 @@ public class PodAnnotationClient
      */
     public Map<String, String> getPodAnnotations()
     {
-        DoneablePod pod = fabric8Client.pods().withName(podName).edit();
-        return pod.buildMetadata().getAnnotations();
+        return kubernetesClient.getPodAnnotations(podName);
     }
 
     public String getPodName()
@@ -48,15 +47,5 @@ public class PodAnnotationClient
     public void setPodName(String podName)
     {
         this.podName = podName;
-    }
-
-    public DefaultKubernetesClient getFabric8Client()
-    {
-        return fabric8Client;
-    }
-
-    public void setFabric8Client(DefaultKubernetesClient fabric8Client)
-    {
-        this.fabric8Client = fabric8Client;
     }
 }
