@@ -78,26 +78,26 @@ public class RetryableExecutor<T> implements Executor<T>
     public T execute()
     {
         logger.debug("Initializing retry");
-        RetryPolicy policy = new RetryPolicy();
+        RetryPolicy<Object> policy = new RetryPolicy<>();
 
         if (retryableExceptions != null && retryableExceptions.size() > 0)
         {
-            policy = policy.retryOn(retryableExceptions);
+            policy.handle(retryableExceptions);
         }
 
         if (nonRetryableExceptions != null && nonRetryableExceptions.size() > 0)
         {
-            policy = policy.abortOn(nonRetryableExceptions);
+            policy.abortOn(nonRetryableExceptions);
         }
 
         policy = policy.withMaxRetries(maxRetries);
 
         return Failsafe
             .with(policy)
-            .onRetry(exception ->
+            .onFailure(executionCompletedEvent ->
             {
                 currentRetry++;
-                logger.error("Retrying Operation {} :", currentRetry, exception);
+                logger.error("Retrying Operation {} :", currentRetry, executionCompletedEvent.getFailure());
             })
             .get((() ->
             {

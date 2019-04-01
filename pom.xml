@@ -19,7 +19,7 @@
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <field-retriever.version>1.0.1-SNAPSHOT</field-retriever.version>
         <commons-lang3.version>3.7</commons-lang3.version>
-        <failsafe.version>1.0.5</failsafe.version>
+        <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
     </properties>
