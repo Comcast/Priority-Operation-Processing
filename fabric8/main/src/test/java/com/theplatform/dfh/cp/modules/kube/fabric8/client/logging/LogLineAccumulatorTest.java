@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.modules.kube.fabric8.test;
+package com.theplatform.dfh.cp.modules.kube.fabric8.client.logging;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;

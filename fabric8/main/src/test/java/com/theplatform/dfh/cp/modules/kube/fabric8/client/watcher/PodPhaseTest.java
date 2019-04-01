@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.modules.kube.fabric8.test;
+package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.PodStatus;

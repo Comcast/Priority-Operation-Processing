@@ -3,14 +3,12 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.K8LogReader;
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
-import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodStatus;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.Watcher;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +28,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private CountDownLatch finishedLatch;
     private CountDownLatch scheduledLatch;
     private String podName;
-    private PodResource<Pod, DoneablePod> podClient;
+    private PodResourceFacade podResource;
     private K8LogReader k8LogReader;
     private LogLineAccumulator logLineAccumulator;
     private FinalPodPhaseInfo finalPodPhaseInfo;
@@ -162,19 +160,19 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
 
     private void setupLogObserveration()
     {
-        Pod pod = podClient.get();
+        Pod pod = podResource.get();
         if (pod == null)
         {
             throw new PodException("The pod " + podName + " can't be followed for logging.");
         }
         logger.debug("Pod {} has phase {}", podName, pod.getStatus().getPhase());
-        LogWatch logWatch = podClient.watchLog();
+        LogWatch logWatch = podResource.watchLog();
         k8LogReader.observeRuntimeLog(logWatch);
     }
 
     private void extractLogsForFastFail()
     {
-        String log = podClient.getLog();
+        String log = podResource.getLog();
         if (log != null)
         {
             Arrays.stream(log.split("\n")).forEach(logLineAccumulator::appendLine);
@@ -219,9 +217,9 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         }
     }
 
-    public void setPodClient(PodResource<Pod, DoneablePod> podClient)
+    public void setPodResource(PodResourceFacade podResource)
     {
-        this.podClient = podClient;
+        this.podResource = podResource;
     }
 
     public void setWatch(Watch watch)

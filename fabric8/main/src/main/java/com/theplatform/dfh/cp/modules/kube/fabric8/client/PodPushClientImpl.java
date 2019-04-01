@@ -2,11 +2,13 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodResourceFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.RetryablePodResource;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
@@ -95,7 +97,7 @@ public class PodPushClientImpl implements PodPushClient
 
         String podName = podToCreate.getMetadata().getName();
 
-        PodResource<Pod, DoneablePod> podResource = getPodResource(podName);
+        RetryablePodResource podResource = new RetryablePodResource(getPodResource(podName));
 
         PodWatcherImpl podWatcherImpl = getPodWatcher(
             podScheduled,
@@ -125,13 +127,13 @@ public class PodPushClientImpl implements PodPushClient
     }
 
     private PodWatcherImpl getPodWatcher(CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
-        String fullName, PodResource<Pod, DoneablePod> podResource, LogLineAccumulator logLineAccumulator)
+        String fullName, PodResourceFacade podResource, LogLineAccumulator logLineAccumulator)
     {
         PodWatcherImpl podWatcherImpl = new PodWatcherImpl();
         podWatcherImpl.setPodName(fullName);
         podWatcherImpl.setScheduledLatch(podScheduled);
         podWatcherImpl.setFinishedLatch(podFinishedSuccessOrFailure);
-        podWatcherImpl.setPodClient(podResource);
+        podWatcherImpl.setPodResource(podResource);
         podWatcherImpl.setLogLineAccumulator(logLineAccumulator);
         return podWatcherImpl;
     }
@@ -156,7 +158,7 @@ public class PodPushClientImpl implements PodPushClient
         pod.editMetadata().addToAnnotations(annotations).and().done();
     }
 
-    private Watch initializePodWatcher(PodResource<Pod, DoneablePod> podResource, PodWatcherImpl podWatcherImpl)
+    private Watch initializePodWatcher(PodResourceFacade podResource, PodWatcherImpl podWatcherImpl)
     {
         return podResource.watch(podWatcherImpl);
     }

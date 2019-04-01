@@ -1,14 +1,12 @@
-package com.theplatform.dfh.cp.modules.kube.fabric8.test;
+package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorTest;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.Watcher;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.junit.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -58,8 +56,8 @@ public class PodWatcherImplTest
         impl.setScheduledLatch(sched);
         impl.setFinishedLatch(fin);
         impl.setLogLineAccumulator(accumulator);
-        PodResource<Pod, DoneablePod> podClient = (PodResource<Pod, DoneablePod>) mock(PodResource.class);
-        impl.setPodClient(podClient);
+        PodResourceFacade podClient = mock(PodResourceFacade.class);
+        impl.setPodResource(podClient);
         impl.setWatch(mock(Watch.class));
 
         LogWatch logWatch = mock(LogWatch.class);

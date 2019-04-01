@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.modules.kube.fabric8.test;
+package com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator;
 
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator.HiLowCpuRequestModulation;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator.HiLowCpuRequestModulator;
