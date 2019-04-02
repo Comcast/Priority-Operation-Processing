@@ -13,7 +13,7 @@ public abstract class BaseAgendaProcessor extends AbstractBaseHandlerProcessor<L
     private static Logger logger = LoggerFactory.getLogger(BaseAgendaProcessor.class);
     protected final long startTimeMillis;
     protected JsonHelper jsonHelper;
-    private static final String DURATION_TEMPLATE = "Agenda (Exec) %s execution duration (milliseconds): %d.";
+    private static final String DURATION_TEMPLATE = "Agenda %s (Ops) execution duration (milliseconds): %d.";
 
     public BaseAgendaProcessor(ExecutorContext executorContext)
     {
