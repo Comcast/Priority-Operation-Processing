@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.executor.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
+import com.theplatform.dfh.cp.handler.base.thread.ThreadUtils;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.BaseAgendaProcessor;
@@ -37,6 +38,7 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
         //logger.debug(System.getProperty("user.dir"));
         logger.info(String.join("\n", args));
         new HandlerEntryPoint(args).execute();
+        ThreadUtils.logAliveThreads(6000L);
         logger.info("ExecutorComplete");
     }
 
