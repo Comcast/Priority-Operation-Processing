@@ -90,8 +90,8 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         finally
         {
             logRequestedCPUs(execMetaData);
-            logger.info(DFH_POD_TERMINATION_STRING);
             operationContext.shutdown();
+            logger.info(DFH_POD_TERMINATION_STRING);
         }
     }
 
