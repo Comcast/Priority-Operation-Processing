@@ -37,7 +37,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     /**
      * Executes the ops in the Agenda in order
      */
-    public void execute()
+    protected void doExecute()
     {
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 

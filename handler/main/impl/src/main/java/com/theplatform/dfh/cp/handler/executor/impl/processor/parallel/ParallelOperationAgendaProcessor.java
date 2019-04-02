@@ -24,11 +24,9 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
         this.operationAdviserFactory = new OperationConductorFactory();
     }
 
-    /**
-     * Executes the Agenda processing
-     */
-    @Override
-    public void execute()
+
+
+    protected void doExecute()
     {
         ExecutorHandlerInput handlerInput;
 
