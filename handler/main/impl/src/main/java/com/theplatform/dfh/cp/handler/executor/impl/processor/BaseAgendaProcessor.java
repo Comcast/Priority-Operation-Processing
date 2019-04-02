@@ -13,7 +13,7 @@ public abstract class BaseAgendaProcessor extends AbstractBaseHandlerProcessor<L
     private static Logger logger = LoggerFactory.getLogger(BaseAgendaProcessor.class);
     protected final long startTimeMillis;
     protected JsonHelper jsonHelper;
-    private static final String DURATION_TEMPLATE = "Agenda %s execution duration (milliseconds): %d.";
+    private static final String DURATION_TEMPLATE = "Agenda (Exec) %s execution duration (milliseconds): %d.";
 
     public BaseAgendaProcessor(ExecutorContext executorContext)
     {
@@ -73,6 +73,6 @@ public abstract class BaseAgendaProcessor extends AbstractBaseHandlerProcessor<L
     {
         String key = HandlerField.AGENDA_ID.name();
         String agendaId = getMetadata().keySet().contains(key)? (String) getMetadata().get(key) : "no_agenda_id";
-        logger.info(String.format(DURATION_TEMPLATE, agendaId));
+        logger.info(String.format(DURATION_TEMPLATE, agendaId, System.currentTimeMillis() - startTimeMillis));
     }
 }

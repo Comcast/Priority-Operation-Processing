@@ -25,7 +25,9 @@ public class SampleAgendaExecutorTest extends ExecutorHandlerTestBase
     public void basicSampleExecutorTest() throws Exception
     {
         // TODO: environment variable passing with the $$ is messed up (have to use $$$, pick a new char/flag/indicator OR base64 encode?)
-        String payload = getStringFromResourceFile("/payload/sampleActions.json");
+//        String payload = getStringFromResourceFile("/payload/sampleActions.json");
+//        String payload = getStringFromResourceFile("/payload/filterAgenda.json");
+        String payload = getStringFromResourceFile("/payload/immortalsPublishAgenda.json");
 
         // if this is not set the pod annotations cannot be written to
         podConfig.setServiceAccountName("ffmpeg-service");
