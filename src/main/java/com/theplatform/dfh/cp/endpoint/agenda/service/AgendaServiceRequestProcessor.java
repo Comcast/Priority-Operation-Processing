@@ -2,6 +2,8 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReport;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReports;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter;
@@ -33,6 +35,8 @@ public class AgendaServiceRequestProcessor
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
     private static final String AGENDA_PREFIX = "Agenda metadata - ";
+    private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - InsightId: %s; count: %d.";
+    private static final AgendaReports[] AGENDA_REPORTS = {AgendaReports.CID, AgendaReports.LINK_ID, AgendaReports.AGENDA_ID, AgendaReports.AGENDA_TYPE, AgendaReports.OPERATION_PAYLOAD};
 
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
@@ -64,6 +68,8 @@ public class AgendaServiceRequestProcessor
         {
             return new GetAgendaResponse(ErrorResponseFactory.badRequest("No insight id provided.  Cannot process getAgenda request.", serviceRequest.getCID()));
         }
+
+        logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
 
         Insight insight;
         try
@@ -99,6 +105,18 @@ public class AgendaServiceRequestProcessor
                             logger.warn("Could not find Agenda with id {}", agendaInfo.getAgendaId());
                         }  else
                         {
+                            if(agenda.getParams() == null)
+                            {
+                                agenda.setParams(new ParamsMap());
+                            }
+                            if(agendaInfo.getAdded() == null)
+                            {
+                                logger.warn("No 'added' field on AgendaInfo for agenda: " + agendaInfo.getAgendaId() );
+                            }
+                            else
+                            {
+                                agenda.getParams().put(AgendaReport.ADDED_KEY, agendaInfo.getAdded());
+                            }
                             agendaList.add(agenda);
                         }
                     }
@@ -123,7 +141,7 @@ public class AgendaServiceRequestProcessor
     private GetAgendaResponse createAgendaServiceResult(Collection<Agenda> agendas)
     {
         GetAgendaResponse getAgendaResponse = new GetAgendaResponse(agendas);
-        AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(AGENDA_PREFIX, AgendaReports.CID));
+        AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(AGENDA_PREFIX, AGENDA_REPORTS));
         agendaResponseReporter.reportAgendaResponse();
         agendaResponseReporter.reportAgendas();
         return getAgendaResponse;

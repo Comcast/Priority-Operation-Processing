@@ -17,7 +17,6 @@ public class AgendaReporter
         this.agendaReports = agendaReports;
     }
 
-
     public void report(Agenda agenda)
     {
         for(AgendaReport report: agendaReports)
@@ -26,4 +25,20 @@ public class AgendaReporter
         }
     }
 
+    public void reportInLine(Agenda agenda)
+    {
+        StringBuilder b = new StringBuilder();
+        b.append(prefix).append("[");
+        for(int i = 0; i < agendaReports.length;i++)
+        {
+            AgendaReport report = agendaReports[i];
+            b.append(report.report(agenda));
+            if(i < agendaReports.length - 1)
+            {
+                b.append("; ");
+            }
+        }
+        b.append("]");
+        logger.info(b.toString());
+    }
 }

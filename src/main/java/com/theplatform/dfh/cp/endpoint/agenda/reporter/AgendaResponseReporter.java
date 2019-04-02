@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 public class AgendaResponseReporter
 {
     private static Logger logger = LoggerFactory.getLogger(AgendaResponseReporter.class);
+    private static final AgendaReports[] AGENDA_REPORTS = { AgendaReports.CID, AgendaReports.CUSTOMER_ID, AgendaReports.LINK_ID, AgendaReports.MILLISECONDS_IN_QUEUE};
 
     private final GetAgendaResponse getAgendaResponse;
     private static final String AGENDA_RESPONSE_PREFIX = "Agenda-response metadata - ";
@@ -22,24 +23,40 @@ public class AgendaResponseReporter
         this.agendaReporter = agendaReporter;
     }
 
-
     public  void reportAgendaResponse()
     {
         if(agendas.length == 0)
         {
             return;
         }
-        AgendaReporter reporter = new AgendaReporter(AGENDA_RESPONSE_PREFIX, AgendaReports.CID, AgendaReports.CUSTOMER_ID);
-        logger.info(AGENDA_RESPONSE_PREFIX + "agendaType: basic"); // todo implement agenda types when spec'ed
-        reporter.report(getAgendaResponse.getAgendas().toArray(new Agenda[0])[0]); // use first agenda to report CID and customer id, if they are provided.
+        Agenda[] agendas = getAgendaResponse.getAgendas().toArray(new Agenda[0]);
+        AgendaReporter reporter = new AgendaReporter(makeAgendaIdsPrefix(AGENDA_RESPONSE_PREFIX,agendas), AGENDA_REPORTS);
+
+        reporter.reportInLine(agendas[0]);
+    }
+
+    private String makeAgendaIdsPrefix(String agendaResponsePrefix, Agenda... agendas)
+    {
+        StringBuilder b = new StringBuilder();
+        b.append(agendaResponsePrefix);
+        b.append(" Agenda IDs: [");
+        for(int i = 0; i < agendas.length; i++)
+        {
+            b.append(AgendaReports.AGENDA_ID.report(agendas[i]));
+            if(i < agendas.length - 1)
+            {
+                b.append("; ");
+            }
+        }
+        b.append("] ");
+        return b.toString();
     }
 
     public void reportAgendas()
     {
         for(Agenda agenda: agendas)
         {
-            agendaReporter.report(agenda);
+            agendaReporter.reportInLine(agenda);
         }
     }
-
 }
