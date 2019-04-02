@@ -8,6 +8,8 @@ import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import net.jodah.failsafe.Failsafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +19,9 @@ import java.util.List;
  */
 public class RetryablePodResource extends RetryableBase implements PodResourceFacade
 {
-    private static final int DEFAULT_ATTEMPTS = 3;
-    private static final int DEFAULT_DELAY_SECONDS = 1;
+    private static final int DEFAULT_ATTEMPTS = 4;
+    private static final int DEFAULT_DELAY_SECONDS = 2;
+    private static final boolean USE_BACKOFF = true;
     private static final List<Class<? extends Throwable>> retryableExceptions = Arrays.asList(
         KubernetesClientException.class
     );
@@ -27,13 +30,13 @@ public class RetryablePodResource extends RetryableBase implements PodResourceFa
 
     public RetryablePodResource(PodResource<Pod, DoneablePod> podResource)
     {
-        super(DEFAULT_ATTEMPTS, DEFAULT_DELAY_SECONDS, retryableExceptions);
+        super(DEFAULT_ATTEMPTS, DEFAULT_DELAY_SECONDS, USE_BACKOFF, retryableExceptions);
         this.podResource = podResource;
     }
 
     public Pod get()
     {
-        return Failsafe.with(getRetryPolicy()).get(() -> podResource.get());
+        return Failsafe.with(getRetryPolicy("Pod get attempt failed.")).get(() -> podResource.get());
     }
 
     public String getLog()

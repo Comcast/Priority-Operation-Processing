@@ -6,6 +6,8 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import net.jodah.failsafe.Failsafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.Map;
 public class RetryableKubernetesClient extends RetryableBase implements KubernetesClientFacade
 {
     private static final int DEFAULT_ATTEMPTS = 3;
-    private static final int DEFAULT_DELAY_SECONDS = 1;
+    private static final int DEFAULT_DELAY_SECONDS = 2;
     private static final List<Class<? extends Throwable>> retryableExceptions = Arrays.asList(
         KubernetesClientException.class
     );
@@ -37,7 +39,7 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     @Override
     public Pod startPod(Pod podToCreate)
     {
-        return Failsafe.with(getRetryPolicy()).get(
+        return Failsafe.with(getRetryPolicy("Pod start attempt failed.")).get(
             () -> kubernetesClient
                 .pods()
                 .create(podToCreate)
