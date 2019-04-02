@@ -86,38 +86,53 @@ public class KubernetesLauncher implements BaseLauncher
         this.executionConfig = executionConfig;
     }
 
+    /**
+     *  Use this code to run in the mode that we will use in production.
+     *  Don't follow the pod run, just kick it asynchronously.
+     * @param agenda
+     */
     @Override
     public void execute(Agenda agenda)
+    {
+        extractEnvVars(agenda);
+        podConfig.setReapCompletedPods(true);
+        podPushClient.startWithoutWatcher(podConfig, executionConfig);
+        followPod();
+    }
+
+    private void extractEnvVars(Agenda agenda)
     {
         String payload = jsonHelper.getJSONString(agenda);
         logger.info("Launching Executor with Payload: {}", payload);
 
-        executionConfig.getEnvVars().put(HandlerField.PAYLOAD.name(), payload);
+        extractEnvVar(HandlerField.PAYLOAD.name(), payload);
+        extractEnvVar(HandlerField.CID.name(), getParam(agenda.getParams(), GeneralParamKey.cid));
+        extractEnvVar(HandlerField.AGENDA_ID.name(), agenda.getId());
+        extractEnvVar(HandlerField.CUSTOMER_ID.name(), getParam(agenda.getParams(), GeneralParamKey.customerId));
+        extractEnvVar(HandlerField.PROGRESS_ID.name(), agenda.getProgressId());
+    }
 
-        String cid = getParam(agenda.getParams(), GeneralParamKey.cid);
-        if(cid != null) executionConfig.getEnvVars().put(HandlerField.CID.name(), cid);
-
-        String customer_id = getParam(agenda.getParams(), GeneralParamKey.customerId);
-        if(customer_id != null) executionConfig.getEnvVars().put(HandlerField.CUSTOMER_ID.name(), customer_id);
-
-        String progressId = agenda.getProgressId();
-
-        if(!StringUtils.isBlank(progressId))
+    private void extractEnvVar(String key, String value)
+    {
+        if(!StringUtils.isBlank(value))
         {
-            executionConfig.getEnvVars().put(
-                HandlerField.PROGRESS_ID.name(), progressId);
+            executionConfig.getEnvVars().put(key, value);
         }
         else
         {
-            logger.warn("No progressId was set on the Agenda.");
+            logger.warn("No " + key + " was set on the Agenda.");
         }
+    }
 
-        // Use this code to run in the mode that we will use in production.
-        // don't follow the pod run, just kick it off and let it be.
-        podConfig.setReapCompletedPods(true);
-        podPushClient.startWithoutWatcher(podConfig, executionConfig);
+    private String getParam(ParamsMap paramsMap, ParamKey key)
+    {
+        return paramsMap == null ? null : paramsMap.getString(key);
+    }
 
-
+    // TODO consider if there is diagnostic value in conditionally enabling this logic or if it could be deleted.
+    @Deprecated
+    private void followPod()
+    {
 //        // Use this code to actually follow the pod
 //        LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 //
@@ -160,10 +175,5 @@ public class KubernetesLauncher implements BaseLauncher
 //            throw new RuntimeException(allStringMetadata, e);
 //        }
 //        logger.info("Done with execution of pod: {}", executionConfig.getName());
-    }
-
-    private String getParam(ParamsMap paramsMap, ParamKey key)
-    {
-        return paramsMap == null ? null : paramsMap.getString(key);
     }
 }
