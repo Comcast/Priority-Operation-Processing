@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReport;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReports;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter;
@@ -115,7 +115,7 @@ public class AgendaServiceRequestProcessor
                             }
                             else
                             {
-                                agenda.getParams().put(AgendaReport.ADDED_KEY, agendaInfo.getAdded());
+                                agenda.getParams().put(Report.ADDED_KEY, agendaInfo.getAdded());
                             }
                             agendaList.add(agenda);
                         }

@@ -1,15 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
 
-public enum AgendaReports implements AgendaReport
+public enum AgendaReports implements Report<Agenda, String>
 {
     CID
             {
@@ -94,16 +93,9 @@ public enum AgendaReports implements AgendaReport
                     {
                         return name() + ": No operations";
                     }
-                    ObjectMapper mapper = new ObjectMapper();
-                    String agendaBlob = "";
-                    try
-                    {
-                        agendaBlob = name() + ": " + mapper.writeValueAsString(agenda.getOperations());
-                    } catch (JsonProcessingException e)
-                    {
-                        agendaBlob = name() + ": marshalling failed - " + e.getMessage();
-                    }
-                    return agendaBlob;
+                    JsonHelper jsonHelper = new JsonHelper();
+                    jsonHelper.getJSONString(agenda.getOperations());
+                        return name() + ": " + jsonHelper.getJSONString(agenda.getOperations());
                 }
             };
 

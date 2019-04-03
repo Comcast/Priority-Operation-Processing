@@ -7,19 +7,23 @@ import org.slf4j.LoggerFactory;
 public class AgendaReporter
 {
     private static Logger logger = LoggerFactory.getLogger(AgendaReporter.class);
+    private static final AgendaReports[] DEFAULT_REPORT = {AgendaReports.AGENDA_ID, AgendaReports.CID};
 
     private String prefix;
-    private AgendaReports[] agendaReports;
+    private AgendaReports[] agendaReports = DEFAULT_REPORT;
 
     public AgendaReporter(String prefix, AgendaReports... agendaReports)
     {
         this.prefix = prefix;
-        this.agendaReports = agendaReports;
+        if(agendaReports != null && agendaReports.length > 0)
+        {
+            this.agendaReports = agendaReports;
+        }
     }
 
     public void report(Agenda agenda)
     {
-        for(AgendaReport report: agendaReports)
+        for(Report<Agenda, String> report: agendaReports)
         {
             logger.info(prefix + report.report(agenda));
         }
@@ -31,7 +35,7 @@ public class AgendaReporter
         b.append(prefix).append("[");
         for(int i = 0; i < agendaReports.length;i++)
         {
-            AgendaReport report = agendaReports[i];
+            Report<Agenda,String> report = agendaReports[i];
             b.append(report.report(agenda));
             if(i < agendaReports.length - 1)
             {
