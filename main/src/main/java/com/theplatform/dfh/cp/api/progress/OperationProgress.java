@@ -11,7 +11,7 @@ public class OperationProgress extends EndpointDataObject
     private ProcessingState processingState;
     private String processingStateMessage;
     private String operation;
-    private OperationDiagnostics[] diagnostics;
+    private DiagnosticEvent[] diagnosticEvents;
     private int attemptCount;
     private Date attemptTime;
     private Date startedTime;
@@ -109,14 +109,14 @@ public class OperationProgress extends EndpointDataObject
         this.resultPayload = resultPayload;
     }
 
-    public OperationDiagnostics[] getDiagnostics()
+    public DiagnosticEvent[] getDiagnosticEvents()
     {
-        return diagnostics;
+        return diagnosticEvents;
     }
 
-    public void setDiagnostics(OperationDiagnostics[] diagnostics)
+    public void setDiagnosticEvents(DiagnosticEvent[] diagnosticEvents)
     {
-        this.diagnostics = diagnostics;
+        this.diagnosticEvents = diagnosticEvents;
     }
 
     public ParamsMap getParams()

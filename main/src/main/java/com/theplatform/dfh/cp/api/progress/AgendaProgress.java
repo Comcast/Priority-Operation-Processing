@@ -18,6 +18,7 @@ public class AgendaProgress extends EndpointDataObject
     private ProcessingState processingState;
     private String processingStateMessage;
     private OperationProgress[] operationProgress;
+    private DiagnosticEvent[] diagnosticEvents;
     private Date updatedTime;
     private Date addedTime;
     private Date startedTime;
@@ -104,6 +105,16 @@ public class AgendaProgress extends EndpointDataObject
     public void setOperationProgress(OperationProgress[] operationProgress)
     {
         this.operationProgress = operationProgress;
+    }
+
+    public DiagnosticEvent[] getDiagnosticEvents()
+    {
+        return diagnosticEvents;
+    }
+
+    public void setDiagnosticEvents(DiagnosticEvent[] diagnosticEvents)
+    {
+        this.diagnosticEvents = diagnosticEvents;
     }
 
     public Date getUpdatedTime()
