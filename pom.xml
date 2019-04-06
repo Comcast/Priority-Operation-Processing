@@ -15,7 +15,7 @@
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
-        <reporter-api.version>1.0.0</reporter-api.version>
+        <reporter-api.version>1.0.1-SNAPSHOT</reporter-api.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <field-retriever.version>1.0.1-SNAPSHOT</field-retriever.version>
         <commons-lang3.version>3.7</commons-lang3.version>
