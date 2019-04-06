@@ -55,7 +55,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     }
 
     /**
-     * Executes the ops in the Agenda in order
+     * Executes the request to get an Agenda and starts the executor pod as necessary
      */
     public void execute()
     {
@@ -80,6 +80,8 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             logger.error("Failed to getAgenda: {}", getAgendaResponse.getErrorResponse().toString());
             return;
         }
+
+        if(launchDataWrapper.getLastRequestAliveCheck() != null) launchDataWrapper.getLastRequestAliveCheck().updateLastRequestDate();
 
         Collection<Agenda> agendas = getAgendaResponse.getAgendas();
 

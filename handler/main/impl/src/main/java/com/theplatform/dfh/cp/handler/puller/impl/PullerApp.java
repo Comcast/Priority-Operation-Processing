@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
+import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.slf4j.Logger;
@@ -27,7 +28,10 @@ public class PullerApp extends Application<PullerConfig>
         pullerEntryPoint.setPullerConfig(config);
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);
 
-        environment.healthChecks().register("basic-health", new AliveHealthCheck(pullerExecution.getExecutionContext()));
+        environment.healthChecks().register("basic-health",
+            new AliveHealthCheck(pullerExecution.getExecutionContext())
+                .addAliveCheck(pullerEntryPoint.getLaunchDataWrapper().getLastRequestAliveCheck())
+        );
 
         pullerExecution.start();
     }
