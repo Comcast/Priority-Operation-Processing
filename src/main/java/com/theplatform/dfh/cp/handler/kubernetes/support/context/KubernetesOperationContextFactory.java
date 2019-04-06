@@ -5,8 +5,8 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
-import com.theplatform.dfh.cp.handler.reporter.api.ReporterSet;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporterSet;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
@@ -29,7 +29,7 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
      * Returns a reporter based on the launch type
      * @return The reporter to use for the execution of this handler
      */
-    protected Reporter createReporter()
+    protected ProgressReporter createReporter()
     {
         switch(getLaunchType())
         {
@@ -46,10 +46,10 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
      * Creates a Kubernetes specific reporter
      * @return
      */
-    protected ReporterSet createKubernetesReporter()
+    protected ProgressReporterSet createKubernetesReporter()
     {
         // This is duplicated in the sample handler... undupe it!
-        ReporterSet reporterSet = new ReporterSet();
+        ProgressReporterSet reporterSet = new ProgressReporterSet();
         reporterSet.add(new LogReporter());
 
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
