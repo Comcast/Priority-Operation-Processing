@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl.context;
 
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressFactory;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressThread;
@@ -13,7 +13,7 @@ public class OperationContext extends BaseOperationContext<LaunchDataWrapper>
     private OperationProgressReporter operationProgressReporter;
     private OperationProgressThread operationProgressThread;
 
-    public OperationContext(Reporter reporter, LaunchDataWrapper launchDataWrapper)
+    public OperationContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper)
     {
         super(launchDataWrapper);
         operationProgressThread = new OperationProgressThread(
