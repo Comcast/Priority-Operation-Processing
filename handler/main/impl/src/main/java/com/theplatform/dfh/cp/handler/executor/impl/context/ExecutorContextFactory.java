@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOp
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.HttpReporter;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
@@ -64,7 +64,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     }
 
     @Override
-    public Reporter createReporter()
+    public ProgressReporter createReporter()
     {
         switch(getLaunchType())
         {

@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressFactory;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressThread;
@@ -23,11 +23,11 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private OperationExecutorFactory operationExecutorFactory;
     private JsonContext jsonContext;
-    private Reporter reporter;
+    private ProgressReporter reporter;
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
 
-    public ExecutorContext(Reporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
+    public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
     {
         super(launchDataWrapper);
         this.reporter = reporter;
@@ -90,7 +90,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         this.jsonContext = jsonContext;
     }
 
-    public Reporter getReporter()
+    public ProgressReporter getReporter()
     {
         return reporter;
     }

@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.Reporter;
+import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class SampleResidentHandler implements ResidentHandler
     }
 
     @Override
-    public String execute(String payload, LaunchDataWrapper launchDataWrapper, Reporter reporter)
+    public String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter reporter)
     {
         JsonNode outputNode = new ObjectNode(objectMapper.getNodeFactory());
         reporter.reportProgress(createOperationProgress(ProcessingState.EXECUTING, "Init"));
