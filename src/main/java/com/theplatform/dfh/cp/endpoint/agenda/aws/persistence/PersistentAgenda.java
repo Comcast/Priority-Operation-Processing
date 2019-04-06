@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
 import java.util.List;

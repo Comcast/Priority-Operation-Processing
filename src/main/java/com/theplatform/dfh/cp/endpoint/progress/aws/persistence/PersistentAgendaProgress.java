@@ -3,8 +3,10 @@ package com.theplatform.dfh.cp.endpoint.progress.aws.persistence;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
 import java.util.Date;
@@ -33,6 +35,14 @@ public class PersistentAgendaProgress extends AgendaProgress
     public OperationProgress[] getOperationProgress()
     {
         return super.getOperationProgress();
+    }
+
+    @Override
+    @DynamoDBTypeConverted(converter = DiagnosticEventArrayConverter.class)
+    @DynamoDBAttribute(attributeName = "diagnosticEvents")
+    public DiagnosticEvent[] getDiagnosticEvents()
+    {
+        return super.getDiagnosticEvents();
     }
 
     @Override

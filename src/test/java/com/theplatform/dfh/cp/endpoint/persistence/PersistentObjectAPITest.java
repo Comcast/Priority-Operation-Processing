@@ -55,10 +55,17 @@ public class PersistentObjectAPITest
         persistentObjectMethods = getGetters(persistentObjectMethods);
         List<String> persistentObjectMethodNames = getMethodNames(persistentObjectMethods);
 
-        Assert.assertEquals(objectMethodNames.size(), persistentObjectMethodNames.size());
         Collections.sort(objectMethodNames);
         Collections.sort(persistentObjectMethodNames);
-        Assert.assertEquals(objectMethodNames, persistentObjectMethodNames);
+        if(objectMethodNames.size() != persistentObjectMethodNames.size())
+        {
+            // make an easy to debug assert
+            Assert.assertEquals(String.join(",", objectMethodNames), String.join(",", persistentObjectMethodNames));
+        }
+        for(int idx = 0; idx < objectMethodNames.size(); idx++)
+        {
+            Assert.assertEquals(objectMethodNames.get(idx), persistentObjectMethodNames.get(idx));
+        }
     }
 
     public List<Method> getGetters(List<Method> allMethods)

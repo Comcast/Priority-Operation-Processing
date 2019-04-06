@@ -2,12 +2,11 @@ package com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.OperationDiagnostics;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 
@@ -31,10 +30,11 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
-    @DynamoDBIgnore
-    public OperationDiagnostics[] getDiagnostics()
+    @DynamoDBTypeConverted(converter = DiagnosticEventArrayConverter.class)
+    @DynamoDBAttribute(attributeName = "diagnosticEvents")
+    public DiagnosticEvent[] getDiagnosticEvents()
     {
-        return super.getDiagnostics();
+        return super.getDiagnosticEvents();
     }
 
     @Override
