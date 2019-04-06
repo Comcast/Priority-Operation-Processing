@@ -11,6 +11,7 @@ public class LastRequestAliveCheck implements AliveCheck
 {
     private static Logger logger = LoggerFactory.getLogger(PullerApp.class);
     private static final String NOT_ALIVE_MESSAGE = "Too long since last agenda request.";
+    public static String LAST_REQUEST_THRESHOLD_PROPERTY = "monitor.alive.lastRequestMilliseconds";
 
     private Long notAliveThresholdMilliseconds = 30000L;
     private Long lastRequestMilliseconds = null;

@@ -16,6 +16,8 @@ public class PullerLaunchDataWrapper extends DefaultLaunchDataWrapper
     public PullerLaunchDataWrapper(FieldRetriever argumentRetriever)
     {
         super(argumentRetriever);
+        lastRequestAliveCheck.setNotAliveThresholdMilliseconds(
+            getPropertyRetriever().getLong(LastRequestAliveCheck.LAST_REQUEST_THRESHOLD_PROPERTY, 30000L));
     }
 
     public String getPayload()
