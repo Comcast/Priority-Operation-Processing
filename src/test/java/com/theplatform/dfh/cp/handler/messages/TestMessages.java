@@ -5,7 +5,8 @@ import com.theplatform.dfh.cp.handler.base.messages.PropertyMessages;
 
 public enum TestMessages implements MessageLookup
 {
-    sample_message;
+    sample_message,
+    sample_arg_message;
 
     public static final String RESOURCE_PATH = "com/theplatform/dfh/cp/handler/messages/test";
 

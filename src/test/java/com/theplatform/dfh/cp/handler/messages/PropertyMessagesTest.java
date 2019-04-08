@@ -15,7 +15,14 @@ public class PropertyMessagesTest
     @Test
     public void testGetMessageEnum()
     {
-        Assert.assertEquals("hello world!", TestMessages.sample_message.toString());
+        Assert.assertEquals(TestMessages.sample_message.toString(), "hello world!");
+    }
+
+    @Test
+    public void testGetMessageArgEnum()
+    {
+        final String arg = "thePlatform!";
+        Assert.assertEquals(TestMessages.sample_arg_message.getMessage(arg), "hello " + arg);
     }
 
     @Test(expectedExceptions = MissingResourceException.class, expectedExceptionsMessageRegExp = ".*key unknown.*")
