@@ -32,7 +32,7 @@ public class ThreadUtils
             .map(thread -> thread.getName()
                 + "[" + thread.getState().name() + "]"
                 + "::"
-                + Arrays.toString(thread.getStackTrace()))
+                + getStackTraceString(thread))
             .collect(Collectors.joining(" --- "))
         );
         logger.info(stringBuilder.toString());
@@ -53,5 +53,10 @@ public class ThreadUtils
         {
             logger.warn("logAliveThreads interuppted", e);
         }
+    }
+
+    public static String getStackTraceString(Thread t)
+    {
+        return Arrays.toString(t.getStackTrace());
     }
 }
