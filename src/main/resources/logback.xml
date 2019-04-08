@@ -4,7 +4,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d %X{CID} %-5p [%t] %c{15}: %replace(%m){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</Pattern>
+            <Pattern>%d %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%replace(%m){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</Pattern>
         </layout>
     </appender>
 
