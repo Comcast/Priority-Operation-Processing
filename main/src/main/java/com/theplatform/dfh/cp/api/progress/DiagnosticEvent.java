@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.api.progress;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class DiagnosticEvent
@@ -20,9 +21,19 @@ public class DiagnosticEvent
         this(message, new Date(), null, null);
     }
 
+    public DiagnosticEvent(String message, Exception exception)
+    {
+        this(message, exception, null);
+    }
+
+    public DiagnosticEvent(String message, Exception exception, Object payload)
+    {
+        this(message, new Date(), Arrays.toString(exception.getStackTrace()), payload);
+    }
+
     public DiagnosticEvent(String message, String stackTrace)
     {
-        this(message, new Date(), stackTrace, null);
+        this(message, stackTrace, null);
     }
 
     public DiagnosticEvent(String message, String stackTrace, Object payload)
