@@ -1,40 +1,18 @@
 package com.theplatform.dfh.cp.handler.sample.impl.context;
 
-import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressFactory;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressThread;
-import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressThreadConfig;
+import com.theplatform.dfh.cp.handler.reporter.progress.operation.context.ProgressOperationContext;
 
-public class OperationContext extends BaseOperationContext<LaunchDataWrapper>
+public class OperationContext extends ProgressOperationContext<LaunchDataWrapper>
 {
     private OperationProgressReporter operationProgressReporter;
-    private OperationProgressThread operationProgressThread;
 
     public OperationContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper)
     {
-        super(launchDataWrapper);
-        operationProgressThread = new OperationProgressThread(
-            new OperationProgressThreadConfig()
-                .setReporter(reporter)
-        );
-        this.operationProgressReporter = new OperationProgressReporter(operationProgressThread, new OperationProgressFactory());
+        super(reporter, launchDataWrapper);
     }
-
-    @Override
-    public void init()
-    {
-        operationProgressThread.init();
-    }
-    
-    @Override
-    public void shutdown()
-    {
-        operationProgressThread.shutdown(false);
-    }
-
 
     public OperationProgressReporter getOperationProgressReporter()
     {
