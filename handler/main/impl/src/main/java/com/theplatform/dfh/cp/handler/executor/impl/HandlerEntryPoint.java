@@ -38,7 +38,7 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
         //logger.debug(System.getProperty("user.dir"));
         logger.info(String.join("\n", args));
         new HandlerEntryPoint(args).execute();
-        ThreadUtils.logAliveThreads(6000L);
+        //ThreadUtils.logAliveThreads(6000L);
         logger.info("ExecutorComplete");
     }
 
