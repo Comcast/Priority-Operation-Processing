@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import java.util.Arrays;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 
 public class DiagnosticEvent
 {
-    private String id;
     private String message;
     private Date time;
     private String stackTrace;
@@ -28,7 +28,7 @@ public class DiagnosticEvent
 
     public DiagnosticEvent(String message, Exception exception, Object payload)
     {
-        this(message, new Date(), Arrays.toString(exception.getStackTrace()), payload);
+        this(message, new Date(), convertExceptionToStackTrace(exception), payload);
     }
 
     public DiagnosticEvent(String message, String stackTrace)
@@ -47,16 +47,6 @@ public class DiagnosticEvent
         this.time = time;
         this.stackTrace = stackTrace;
         this.payload = payload;
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
     }
 
     public String getMessage()
@@ -97,5 +87,12 @@ public class DiagnosticEvent
     public void setPayload(Object payload)
     {
         this.payload = payload;
+    }
+
+    public static String convertExceptionToStackTrace(Exception e)
+    {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 }
