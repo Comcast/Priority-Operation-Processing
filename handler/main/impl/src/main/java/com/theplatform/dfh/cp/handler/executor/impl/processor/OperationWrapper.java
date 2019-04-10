@@ -2,11 +2,14 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +22,9 @@ public class OperationWrapper
     private Operation operation;
     private boolean ready;
     private String inputPayload;
-    private String outputPayload; // TODO: make a new field for diagnostic or reuse and this is contextual based on success?
+    private String outputPayload;
+    // These diagnostic events are for problems with the launching and tracking of operations, not the operations themselves (handled in the handlers)
+    private List<DiagnosticEvent> diagnosticEvents;
     private boolean success = false;
 
     public OperationWrapper(Operation operation)
@@ -170,5 +175,20 @@ public class OperationWrapper
     public void setSuccess(Boolean success)
     {
         this.success = success;
+    }
+
+    public List<DiagnosticEvent> getDiagnosticEvents()
+    {
+        return diagnosticEvents;
+    }
+
+    /**
+     * Adds a DiagnosticEvent to associate with this operation wrapper.
+     * @param diagnosticEvent
+     */
+    public void addDiagnosticEvent(DiagnosticEvent diagnosticEvent)
+    {
+        if(diagnosticEvents == null) diagnosticEvents = new ArrayList<>();
+        diagnosticEvents.add(diagnosticEvent);
     }
 }

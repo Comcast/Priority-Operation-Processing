@@ -11,7 +11,8 @@ public enum ExecutorMessages implements MessageLookup
     AGENDA_LOAD_INVALID,
     AGENDA_NO_OPERATIONS,
     OPERATIONS_RUNNING,
-    OPERATIONS_ERROR;
+    OPERATIONS_ERROR,
+    OPERATION_EXECUTION_ERROR;
 
     private static PropertyMessages propertyMessages = new PropertyMessages("com/theplatform/handler/executor/executorMessages");
 

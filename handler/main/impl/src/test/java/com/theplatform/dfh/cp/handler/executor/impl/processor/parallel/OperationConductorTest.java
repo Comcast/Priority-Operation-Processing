@@ -77,7 +77,7 @@ public class OperationConductorTest
         verify(mockExecutorService, times(operationsToLaunch.size())).submit(any(Runnable.class));
     }
 
-    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Unable to launch operation.*")
+    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Failed to execute operation.*")
     public void testLaunchReadyPendingOperationsExecutorServiceException()
     {
         addOperations(3, true, operationConductor.getPendingOperations());

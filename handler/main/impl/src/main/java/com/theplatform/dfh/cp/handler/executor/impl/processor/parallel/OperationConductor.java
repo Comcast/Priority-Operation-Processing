@@ -1,9 +1,11 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
+import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.JsonContextUpdater;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Manages the execution of the operations, executing those with no remaining dependencies immediately.
@@ -34,8 +37,11 @@ public class OperationConductor implements OnOperationCompleteListener
     private List<OperationWrapper> runningOperations;
     private List<OperationWrapper> completedOperations;
 
-    // This list is independent of the others (
+    // This list is independent of the others
     private List<OperationWrapper> failedOperations;
+
+    // read only list of all operations
+    private final List<OperationWrapper> allOperations;
 
     private ExecutorContext executorContext;
     private OperationRunnerFactory operationRunnerFactory;
@@ -61,6 +67,7 @@ public class OperationConductor implements OnOperationCompleteListener
         this.operationRunnerFactory = new OperationRunnerFactory();
 
         this.pendingOperations = operations.stream().map(op -> new OperationWrapper(op).init(executorContext, jsonContextUpdater)).collect(Collectors.toList());
+        this.allOperations = Collections.unmodifiableList(new ArrayList<>(pendingOperations));
     }
 
     /**
@@ -73,17 +80,14 @@ public class OperationConductor implements OnOperationCompleteListener
 
         try
         {
-            executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, "Initializing Operation ThreadPool");
-
             if(executorService == null)
             {
                 executorService = Executors.newFixedThreadPool(Integer.parseInt(executorContext.getLaunchDataWrapper().getPropertyRetriever().getField(THREAD_POOL_SIZE_SETTING,
                     Integer.toString(DEFAULT_THREAD_POOL_SIZE))));
             }
 
-            executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, "Launching Operations");
+            executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
 
-            // TODO: need to react to failed operations (probably halt remaining)
             while (!pendingOperations.isEmpty())
             {
                 drainPostProcessOperations();
@@ -98,7 +102,11 @@ public class OperationConductor implements OnOperationCompleteListener
         }
         catch(Throwable t)
         {
-            logger.error("Failed to run operations.", t);
+            List<DiagnosticEvent> diagnosticEvents = retrieveAllDiagnosticEvents();
+            diagnosticEvents = diagnosticEvents == null ? new ArrayList<>() : diagnosticEvents;
+            diagnosticEvents.add(new DiagnosticEvent(ExecutorMessages.OPERATIONS_ERROR.getMessage(), t));
+            executorContext.getAgendaProgressReporter().addFailed(diagnosticEvents);
+            logger.error(ExecutorMessages.OPERATIONS_ERROR.getMessage(), t);
         }
         finally
         {
@@ -141,7 +149,7 @@ public class OperationConductor implements OnOperationCompleteListener
                     catch(Exception e)
                     {
                         throw new RuntimeException(
-                            String.format("Unable to launch operation: %1$s", operationWrapper.getOperation().getName()),
+                            ExecutorMessages.OPERATION_EXECUTION_ERROR.getMessage(operationWrapper.getOperation().getName()),
                             e);
                     }
                 }
@@ -276,6 +284,19 @@ public class OperationConductor implements OnOperationCompleteListener
     protected List<OperationWrapper> getCompletedOperations()
     {
         return completedOperations;
+    }
+
+    /**
+     * Gets all the diagnostic events across all of the operation wrappers
+     * @return List of diagnostic events or null if none present.
+     */
+    public List<DiagnosticEvent> retrieveAllDiagnosticEvents()
+    {
+        List<DiagnosticEvent> diagnosticEvents = allOperations.stream()
+            .filter(po -> po.getDiagnosticEvents() != null && po.getDiagnosticEvents().size() > 0)
+            .flatMap(po -> po.getDiagnosticEvents().stream())
+            .collect(Collectors.toList());
+        return diagnosticEvents.size() == 0 ? null : diagnosticEvents;
     }
 
     /**

@@ -1,9 +1,11 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.runner;
 
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
+import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import org.slf4j.Logger;
@@ -56,10 +58,13 @@ public class OperationRunner implements Runnable
         }
         catch(Throwable t)
         {
-            logger.error(String.format("Failed to execute operation: %1$s", operationWrapper.getOperation() == null ? "unknown!" : operationWrapper.getOperation().getName())
-                , t);
+            String message = ExecutorMessages.OPERATION_EXECUTION_ERROR.getMessage(
+                operationWrapper.getOperation() == null
+                   ? "unknown!"
+                   : operationWrapper.getOperation().getName());
+            logger.error(message, t);
             operationWrapper.setSuccess(false);
-            // TODO: consider a diagnostic at this point
+            operationWrapper.addDiagnosticEvent(new DiagnosticEvent(message, t));
         }
         // always call the onComplete (critical for the operation conductor)
         if(onOperationCompleteListener != null) onOperationCompleteListener.onComplete(operationWrapper);
