@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.MissingResourceException;
-import java.util.stream.Collectors;
 
 public class PropertyMessagesTest
 {
@@ -15,14 +14,14 @@ public class PropertyMessagesTest
     @Test
     public void testGetMessageEnum()
     {
-        Assert.assertEquals(TestMessages.sample_message.toString(), "hello world!");
+        Assert.assertEquals(TestMessages.SAMPLE_MESSAGE.getMessage(), "hello world!");
     }
 
     @Test
     public void testGetMessageArgEnum()
     {
         final String arg = "thePlatform!";
-        Assert.assertEquals(TestMessages.sample_arg_message.getMessage(arg), "hello " + arg);
+        Assert.assertEquals(TestMessages.SAMPLE_ARG_MESSAGE.getMessage(arg), "hello " + arg);
     }
 
     @Test(expectedExceptions = MissingResourceException.class, expectedExceptionsMessageRegExp = ".*key unknown.*")
@@ -34,9 +33,6 @@ public class PropertyMessagesTest
     @Test
     public void testAllMessages()
     {
-        propertyMessages.verifyAllMessagesExist(
-            Arrays.stream(TestMessages.values())
-                .map(TestMessages::name)
-                .collect(Collectors.toList()));
+        Arrays.stream(TestMessages.values()).forEach(TestMessages::getMessage);
     }
 }

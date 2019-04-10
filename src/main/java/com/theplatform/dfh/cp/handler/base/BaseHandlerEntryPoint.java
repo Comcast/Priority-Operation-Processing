@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.base.log.HandlerMetadataRetriever;
 import com.theplatform.dfh.cp.handler.base.log.HandlerReporter;
 import com.theplatform.dfh.cp.handler.base.log.HandlerReporterImpl;
+import com.theplatform.dfh.cp.handler.base.messages.HandlerMessages;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerMetadata;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
@@ -73,7 +74,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 
             start = System.currentTimeMillis();
 
-            HandlerProcessor handlerProcessor = createHandlerProcessor(operationContext);
+            P handlerProcessor = createHandlerProcessor(operationContext);
             if(handlerProcessor instanceof MetaData)
             {
                 execMetaData = ((MetaData)handlerProcessor).getMetadata();
@@ -86,6 +87,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         {
             logFinalStateAndDuration(FAILED.toString());
             logger.error(getOperationName(), e);
+            operationContext.processUnhandledException(HandlerMessages.GENERAL_HANDLER_ERROR.getMessage(getOperationName()), e);
         }
         finally
         {

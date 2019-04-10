@@ -23,4 +23,11 @@ public abstract class BaseOperationContext<T extends LaunchDataWrapper>
     {
         this.launchDataWrapper = launchDataWrapper;
     }
+
+    /**
+     * Processes an exception that was unhandled by the implementation of the handler
+     * @param message A message related to the unhandled exception.
+     * @param e The exception to process
+     */
+    public abstract void processUnhandledException(String message, Exception e);
 }
