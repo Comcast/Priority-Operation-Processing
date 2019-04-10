@@ -1,10 +1,12 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
+import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
 import org.slf4j.Logger;
@@ -41,42 +43,41 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     {
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 
-        agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Loading Agenda");
+        agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.AGENDA_LOADING.getMessage());
         ExecutorHandlerInput handlerInput = null;
         try
         {
             handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Agenda Loaded");
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.AGENDA_LOADED.getMessage());
         }
         catch (Exception e)
         {
-            agendaProgressReporter.addFailed("Invalid input. Failed to load payload.");
+            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_LOAD_FAIL.getMessage()));
             return;
         }
 
         if (handlerInput == null)
         {
-            agendaProgressReporter.addFailed("Invalid input. No payload.");
+            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_LOAD_INVALID.getMessage()));
             return;
         }
 
         if (handlerInput.getOperations() == null)
         {
-            agendaProgressReporter.addFailed("No operations in Agenda. Nothing to do.");
+            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_NO_OPERATIONS.getMessage()));
             return;
         }
 
         try
         {
-            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, "Running Operations");
+            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
             handlerInput.getOperations().forEach(op -> executeOperation(op, agendaProgressReporter));
-            agendaProgressReporter.addSucceeded(null);
+            agendaProgressReporter.addSucceeded();
         }
         catch (AgendaExecutorException e)
         {
-            logger.error("Error running operations.", e);
-            // TODO: some diagnostic back...
-            agendaProgressReporter.addFailed(null);
+            logger.error(ExecutorMessages.OPERATIONS_ERROR.getMessage(), e);
+            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.OPERATIONS_ERROR.getMessage(), e));
         }
     }
 

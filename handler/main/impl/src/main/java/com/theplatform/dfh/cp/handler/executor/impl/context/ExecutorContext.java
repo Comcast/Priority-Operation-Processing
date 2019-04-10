@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
@@ -12,8 +13,6 @@ import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressThr
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
 
 /**
  * The context for this instance of the Executor
@@ -46,6 +45,13 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
             AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
             progressId
         ));
+    }
+
+    @Override
+    public void processUnhandledException(String s, Exception e)
+    {
+        if(agendaProgressReporter != null)
+            agendaProgressReporter.addFailed(new DiagnosticEvent(s, e));
     }
 
     public AgendaProgressReporter getAgendaProgressReporter()
