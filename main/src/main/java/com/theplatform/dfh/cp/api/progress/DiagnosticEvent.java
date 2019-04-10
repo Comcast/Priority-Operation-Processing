@@ -21,14 +21,14 @@ public class DiagnosticEvent
         this(message, new Date(), null, null);
     }
 
-    public DiagnosticEvent(String message, Exception exception)
+    public DiagnosticEvent(String message, Throwable throwable)
     {
-        this(message, exception, null);
+        this(message, throwable, null);
     }
 
-    public DiagnosticEvent(String message, Exception exception, Object payload)
+    public DiagnosticEvent(String message, Throwable throwable, Object payload)
     {
-        this(message, new Date(), convertExceptionToStackTrace(exception), payload);
+        this(message, new Date(), convertThrowableToStackTrace(throwable), payload);
     }
 
     public DiagnosticEvent(String message, String stackTrace)
@@ -89,10 +89,10 @@ public class DiagnosticEvent
         this.payload = payload;
     }
 
-    public static String convertExceptionToStackTrace(Exception e)
+    public static String convertThrowableToStackTrace(Throwable t)
     {
         StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
+        t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
 }
