@@ -1,15 +1,14 @@
 package com.theplatform.dfh.cp.handler.messages;
 
 import com.theplatform.dfh.cp.handler.base.messages.HandlerMessages;
+import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetriever;
 import org.testng.annotations.Test;
-
-import java.util.Arrays;
 
 public class HandlerMessagesTest
 {
     @Test
     public void verifyMessages()
     {
-        Arrays.stream(HandlerMessages.values()).forEach(HandlerMessages::getMessage);
+        new ResourceBundleStringRetriever(HandlerMessages.RESOURCE_PATH).testAllEntries(HandlerMessages.values());
     }
 }

@@ -1,15 +1,15 @@
 package com.theplatform.dfh.cp.handler.messages;
 
-import com.theplatform.dfh.cp.handler.base.messages.PropertyMessages;
+import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetriever;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.MissingResourceException;
 
-public class PropertyMessagesTest
+public class ResourceBundleStringRetrieverTest
 {
-    private PropertyMessages propertyMessages = new PropertyMessages(TestMessages.RESOURCE_PATH);
+    private ResourceBundleStringRetriever propertyMessages = new ResourceBundleStringRetriever(TestMessages.RESOURCE_PATH);
 
     @Test
     public void testGetMessageEnum()

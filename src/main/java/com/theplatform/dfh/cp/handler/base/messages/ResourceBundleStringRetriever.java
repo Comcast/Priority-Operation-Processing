@@ -1,16 +1,19 @@
 package com.theplatform.dfh.cp.handler.base.messages;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
  * Wrapper for loading and using a ResourceBundle for looking up strings.
  */
-public class PropertyMessages
+public class ResourceBundleStringRetriever
 {
     private final ResourceBundle bundle;
 
-    public PropertyMessages(String bundleName)
+    public ResourceBundleStringRetriever(String bundleName)
     {
         bundle = ResourceBundle.getBundle(bundleName);
     }
@@ -33,10 +36,25 @@ public class PropertyMessages
     /**
      * Gets all of the entries based on the name of the supplied enum(s)
      * This is a utility method to help with testing that a property file is valid
-     * @param enumEntries The enums to get
+     * @param messageLookups The enums to get
      */
-    public void getAllEntries(Enum[] enumEntries)
+    public void testAllEntries(MessageLookup[] messageLookups)
     {
-        for(Enum e : enumEntries) getMessage(e.name());
+        List<String> failedEntries = new ArrayList<>();
+        for(MessageLookup messageLookup : messageLookups)
+        {
+            try
+            {
+                getMessage(messageLookup.getKey());
+            }
+            catch(Exception e)
+            {
+                failedEntries.add(messageLookup.getKey());
+            }
+        }
+        if(failedEntries.size() > 0)
+        {
+            throw new RuntimeException("Failed Entries: " + String.join(",", failedEntries));
+        }
     }
 }
