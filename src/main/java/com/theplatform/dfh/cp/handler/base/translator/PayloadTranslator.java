@@ -8,5 +8,5 @@ public interface PayloadTranslator<T>
      * @param clazz The class to convert the payload to
      * @return The translation result
      */
-    PayloadTranslationResult<T> traslatePayload(String payload, Class<T> clazz);
+    PayloadTranslationResult<T> translatePayload(String payload, Class<T> clazz);
 }

@@ -23,7 +23,7 @@ public class JsonPayloadTranslator<T> implements PayloadTranslator<T>
         jsonHelper = new JsonHelper();
     }
 
-    public PayloadTranslationResult<T> traslatePayload(String payload, Class<T> clazz)
+    public PayloadTranslationResult<T> translatePayload(String payload, Class<T> clazz)
     {
         try
         {
