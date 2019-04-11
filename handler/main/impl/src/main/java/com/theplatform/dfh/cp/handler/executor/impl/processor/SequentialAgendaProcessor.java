@@ -46,7 +46,7 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 
         PayloadTranslationResult<ExecutorHandlerInput> translationResult = new JsonPayloadTranslator<ExecutorHandlerInput>(jsonHelper)
-            .traslatePayload(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+            .translatePayload(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
         if(!translationResult.isSuccessful())
         {
             agendaProgressReporter.addFailed(translationResult.getDiagnosticEvent());
