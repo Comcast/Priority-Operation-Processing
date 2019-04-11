@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.messages;
 
 import com.theplatform.dfh.cp.handler.base.messages.MessageLookup;
-import com.theplatform.dfh.cp.handler.base.messages.PropertyMessages;
+import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetriever;
 
 public enum ExecutorMessages implements MessageLookup
 {
@@ -14,11 +14,20 @@ public enum ExecutorMessages implements MessageLookup
     OPERATIONS_ERROR,
     OPERATION_EXECUTION_ERROR;
 
-    private static PropertyMessages propertyMessages = new PropertyMessages("com/theplatform/handler/executor/executorMessages");
+    public static final String RESOURCE_PATH = "com/theplatform/handler/executor/executorMessages";
+    private static final ResourceBundleStringRetriever stringRetriever = new ResourceBundleStringRetriever(RESOURCE_PATH);
+
+    private final String key = name().toLowerCase();
 
     @Override
     public String getMessage(Object... args)
     {
-        return propertyMessages.getMessage(this.name().toLowerCase(), args);
+        return stringRetriever.getMessage(getKey(), args);
+    }
+
+    @Override
+    public String getKey()
+    {
+        return key;
     }
 }
