@@ -5,10 +5,6 @@ import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetrieve
 
 public enum ExecutorMessages implements MessageLookup
 {
-    AGENDA_LOADING,
-    AGENDA_LOADED,
-    AGENDA_LOAD_FAIL,
-    AGENDA_LOAD_INVALID,
     AGENDA_NO_OPERATIONS,
     OPERATIONS_RUNNING,
     OPERATIONS_ERROR,

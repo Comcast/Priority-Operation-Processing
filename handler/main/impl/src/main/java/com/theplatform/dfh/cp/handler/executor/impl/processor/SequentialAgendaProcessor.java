@@ -3,6 +3,8 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.handler.base.translator.JsonPayloadTranslator;
+import com.theplatform.dfh.cp.handler.base.translator.PayloadTranslationResult;
 import com.theplatform.dfh.cp.handler.executor.api.ExecutorHandlerInput;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
@@ -43,26 +45,17 @@ public class SequentialAgendaProcessor extends BaseAgendaProcessor
     {
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 
-        agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.AGENDA_LOADING.getMessage());
-        ExecutorHandlerInput handlerInput = null;
-        try
+        PayloadTranslationResult<ExecutorHandlerInput> translationResult = new JsonPayloadTranslator<ExecutorHandlerInput>(jsonHelper)
+            .traslatePayload(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
+        if(!translationResult.isSuccessful())
         {
-            handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
-            agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.AGENDA_LOADED.getMessage());
-        }
-        catch (Exception e)
-        {
-            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_LOAD_FAIL.getMessage()));
+            agendaProgressReporter.addFailed(translationResult.getDiagnosticEvent());
             return;
         }
 
-        if (handlerInput == null)
-        {
-            agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_LOAD_INVALID.getMessage()));
-            return;
-        }
+        ExecutorHandlerInput handlerInput = translationResult.getObject();
 
-        if (handlerInput.getOperations() == null)
+        if (handlerInput == null || handlerInput.getOperations() == null)
         {
             agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_NO_OPERATIONS.getMessage()));
             return;
