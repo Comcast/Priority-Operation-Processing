@@ -2,7 +2,8 @@ package com.theplatform.dfh.cp.handler.base.messages;
 
 public enum HandlerMessages implements MessageLookup
 {
-    GENERAL_HANDLER_ERROR;
+    GENERAL_HANDLER_ERROR,
+    PAYLOAD_TRANSLATION_FAIL;
 
     public static final String RESOURCE_PATH = "com/theplatform/handler/handlerMessages";
     private static final ResourceBundleStringRetriever stringRetriever = new ResourceBundleStringRetriever(RESOURCE_PATH);
