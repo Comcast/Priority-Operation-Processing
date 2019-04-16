@@ -7,6 +7,7 @@ import java.util.Date;
 public class DiagnosticEvent
 {
     private String message;
+    private String statusCode;
     private Date time;
     private String stackTrace;
     private Object payload;
@@ -49,6 +50,12 @@ public class DiagnosticEvent
         this.payload = payload;
     }
 
+    public DiagnosticEvent withStatusCode(String statusCode)
+    {
+        this.statusCode = statusCode;
+        return this;
+    }
+
     public DiagnosticEvent withMessage(String message)
     {
         this.message = message;
@@ -75,6 +82,16 @@ public class DiagnosticEvent
     public void setMessage(String message)
     {
         this.message = message;
+    }
+
+    public String getStatusCode()
+    {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode)
+    {
+        this.statusCode = statusCode;
     }
 
     public Date getTime()
