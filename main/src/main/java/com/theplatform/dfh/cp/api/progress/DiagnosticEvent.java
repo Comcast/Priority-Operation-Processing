@@ -49,6 +49,24 @@ public class DiagnosticEvent
         this.payload = payload;
     }
 
+    public DiagnosticEvent withMessage(String message)
+    {
+        this.message = message;
+        return this;
+    }
+
+    public DiagnosticEvent withThrowable(Throwable throwable)
+    {
+        this.stackTrace = convertThrowableToStackTrace(throwable);
+        return this;
+    }
+
+    public DiagnosticEvent withPayload(Object payload)
+    {
+        this.payload = payload;
+        return this;
+    }
+
     public String getMessage()
     {
         return message;
