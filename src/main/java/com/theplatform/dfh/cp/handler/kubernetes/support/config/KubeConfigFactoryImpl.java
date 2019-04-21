@@ -2,11 +2,20 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.kubernetes.support.metadata.ExecutionMetaData;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class KubeConfigFactoryImpl implements KubeConfigFactory
 {
+    private static Logger logger = LoggerFactory.getLogger(KubeConfigFactoryImpl.class);
+
     private LaunchDataWrapper launchDataWrapper;
     private boolean loadAuthFromEnvironment;
 
@@ -24,17 +33,74 @@ public class KubeConfigFactoryImpl implements KubeConfigFactory
         kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.masterUrl.getFieldName()));
         kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.namespace.getFieldName()));
 
-        if(loadAuthFromEnvironment)
-        {
-            OAuthCredentialCapture oauthCredentialCapture = new OAuthCredentialCapture().init();
-            if (oauthCredentialCapture.isOAuthAvailable())
-            {
-                kubeConfig.setCaCertData(oauthCredentialCapture.getOauthCert());
-                kubeConfig.setOauthToken(oauthCredentialCapture.getOauthToken());
-            }
-        }
+        //NOTE: auth loading from args/env vars is for local only
+        if(!loadAuthFromArgs(kubeConfig)
+            && loadAuthFromEnvironment)
+            loadAuthFromEnvironment(kubeConfig);
 
         return kubeConfig;
+    }
+
+    private boolean loadAuthFromArgs(KubeConfig kubeConfig)
+    {
+        String oauthCertFilePath = launchDataWrapper.getArgumentRetriever().getField(KubeConfigArgument.OAUTH_CERT_FILE_PATH, null);
+        String oauthTokenFilePath = launchDataWrapper.getArgumentRetriever().getField(KubeConfigArgument.OAUTH_TOKEN_FILE_PATH, null);
+
+        if(oauthCertFilePath == null && oauthTokenFilePath == null)
+        {
+            return false;
+        }
+        else if(oauthCertFilePath == null)
+        {
+            logger.warn(KubeConfigArgument.OAUTH_CERT_FILE_PATH + " must be specified to use OAUTH file arguments.");
+            return false;
+        }
+        else if(oauthTokenFilePath == null)
+        {
+            logger.warn(KubeConfigArgument.OAUTH_TOKEN_FILE_PATH + " must be specified to use OAUTH file arguments.");
+            return false;
+        }
+
+        String oauthCert = readFileIntoString(oauthCertFilePath);
+        if(StringUtils.isBlank(oauthCert))
+        {
+            logger.warn("Invalid cert from file: " + oauthCertFilePath + " (ignoring auth args)");
+            return false;
+        }
+        String oauthToken = readFileIntoString(oauthTokenFilePath);
+        if(StringUtils.isBlank(oauthCert))
+        {
+            logger.warn("Invalid token from file: " + oauthToken + " (ignoring auth args)");
+            return false;
+        }
+        kubeConfig.setCaCertData(oauthCert);
+        kubeConfig.setOauthToken(oauthToken);
+        return true;
+    }
+
+    private String readFileIntoString(String filePath)
+    {
+        try
+        {
+            return new String(Files.readAllBytes(new File(filePath).toPath()));
+        }
+        catch(Exception e)
+        {
+            logger.error("Failed to read file: " + filePath, e);
+        }
+        return null;
+    }
+
+    private boolean loadAuthFromEnvironment(KubeConfig kubeConfig)
+    {
+        OAuthCredentialCapture oauthCredentialCapture = new OAuthCredentialCapture().init();
+        if (oauthCredentialCapture.isOAuthAvailable())
+        {
+            kubeConfig.setCaCertData(oauthCredentialCapture.getOauthCert());
+            kubeConfig.setOauthToken(oauthCredentialCapture.getOauthToken());
+            return true;
+        }
+        return  false;
     }
 
     public LaunchDataWrapper getLaunchDataWrapper()
