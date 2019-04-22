@@ -4,6 +4,8 @@ import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.field.api.LaunchType;
+import com.theplatform.dfh.cp.handler.field.api.args.HandlerArgument;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressFactory;
@@ -11,6 +13,7 @@ import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressRep
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressThread;
 import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressThreadConfig;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +35,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         this.reporter = reporter;
         this.operationExecutorFactory = operationExecutorFactory;
         this.jsonContext = new JsonContext();
-        agendaProgressThread = new AgendaProgressThread(
-            new AgendaProgressThreadConfig()
-                .setReporter(reporter)
-        );
+        agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
         String progressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
         if(progressId == null)
         {
@@ -45,6 +45,21 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
             AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
             progressId
         ));
+    }
+
+    private AgendaProgressThreadConfig createAgendaProgressThreadConfig(ProgressReporter reporter)
+    {
+        return new AgendaProgressThreadConfig()
+            .setReporter(reporter)
+            .setRequireProgressId(isKubernetesLaunched());
+    }
+
+    private boolean isKubernetesLaunched()
+    {
+        return StringUtils.equalsIgnoreCase(
+            LaunchType.kubernetes.name(),
+            getLaunchDataWrapper().getArgumentRetriever().getField(HandlerArgument.LAUNCH_TYPE.getArgumentName(), LaunchType.kubernetes.name())
+        );
     }
 
     @Override

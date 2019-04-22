@@ -137,7 +137,7 @@ public class OperationConductorTest
         operationWrapper.setSuccess(false);
         operationConductor.postProcessCompletedOperation(operationWrapper);
         Assert.assertEquals(operationConductor.getPendingOperations().size(), 0);
-        Assert.assertTrue(operationConductor.haveAnyOperationsFailed());
+        Assert.assertTrue(operationConductor.hasExecutionFailed());
     }
 
     private Collection<String> addOperations(int count, boolean ready, Collection<OperationWrapper> listToAppend)
