@@ -2,16 +2,15 @@ package com.theplatform.dfh.cp.handler.executor.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.base.thread.ThreadUtils;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.BaseAgendaProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.parallel.ParallelOperationAgendaProcessor;
-import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesLaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, BaseAgendaProcessor, DefaultLaunchDataWrapper>
+public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, BaseAgendaProcessor, KubernetesLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerEntryPoint.class);
 
@@ -43,13 +42,13 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
     }
 
     @Override
-    protected DefaultLaunchDataWrapper createLaunchDataWrapper(String[] args)
+    protected KubernetesLaunchDataWrapper createLaunchDataWrapper(String[] args)
     {
-        return new DefaultLaunchDataWrapper(args);
+        return new KubernetesLaunchDataWrapper(args);
     }
 
     @Override
-    protected BaseOperationContextFactory<ExecutorContext> createOperationContextFactory(DefaultLaunchDataWrapper launchDataWrapper)
+    protected BaseOperationContextFactory<ExecutorContext> createOperationContextFactory(KubernetesLaunchDataWrapper launchDataWrapper)
     {
         return new ExecutorContextFactory(launchDataWrapper);
     }

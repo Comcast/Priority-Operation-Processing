@@ -53,14 +53,13 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
             OperationConductor operationConductor = operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
             operationConductor.run();
-            if(operationConductor.haveAnyOperationsFailed())
+            if(operationConductor.hasExecutionFailed())
                 agendaProgressReporter.addFailed(operationConductor.retrieveAllDiagnosticEvents());
             else
                 agendaProgressReporter.addSucceeded();
         }
         catch (AgendaExecutorException e)
         {
-            // TODO: need to create a diganostic for the executor...
             agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.OPERATIONS_ERROR.getMessage(), e));
             logger.error("", e);
         }

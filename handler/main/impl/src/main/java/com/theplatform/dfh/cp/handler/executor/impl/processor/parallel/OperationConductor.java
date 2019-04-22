@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 /**
  * Manages the execution of the operations, executing those with no remaining dependencies immediately.
@@ -43,6 +43,8 @@ public class OperationConductor implements OnOperationCompleteListener
     // read only list of all operations
     private final List<OperationWrapper> allOperations;
 
+    private List<DiagnosticEvent> diagnosticEvents;
+
     private ExecutorContext executorContext;
     private OperationRunnerFactory operationRunnerFactory;
     private ExecutorService executorService;
@@ -65,6 +67,8 @@ public class OperationConductor implements OnOperationCompleteListener
         this.executorContext = executorContext;
         this.jsonContextUpdater = new JsonContextUpdater(executorContext);
         this.operationRunnerFactory = new OperationRunnerFactory();
+
+        diagnosticEvents = new LinkedList<>();
 
         this.pendingOperations = operations.stream().map(op -> new OperationWrapper(op).init(executorContext, jsonContextUpdater)).collect(Collectors.toList());
         this.allOperations = Collections.unmodifiableList(new ArrayList<>(pendingOperations));
@@ -102,10 +106,7 @@ public class OperationConductor implements OnOperationCompleteListener
         }
         catch(Throwable t)
         {
-            List<DiagnosticEvent> diagnosticEvents = retrieveAllDiagnosticEvents();
-            diagnosticEvents = diagnosticEvents == null ? new ArrayList<>() : diagnosticEvents;
             diagnosticEvents.add(new DiagnosticEvent(ExecutorMessages.OPERATIONS_ERROR.getMessage(), t));
-            executorContext.getAgendaProgressReporter().addFailed(diagnosticEvents);
             logger.error(ExecutorMessages.OPERATIONS_ERROR.getMessage(), t);
         }
         finally
@@ -287,24 +288,25 @@ public class OperationConductor implements OnOperationCompleteListener
     }
 
     /**
-     * Gets all the diagnostic events across all of the operation wrappers
+     * Gets all the diagnostic events across all of the operation wrappers and any created by the conductor
      * @return List of diagnostic events or null if none present.
      */
     public List<DiagnosticEvent> retrieveAllDiagnosticEvents()
     {
-        List<DiagnosticEvent> diagnosticEvents = allOperations.stream()
+        List<DiagnosticEvent> operationDiagnosticEvents = allOperations.stream()
             .filter(po -> po.getDiagnosticEvents() != null && po.getDiagnosticEvents().size() > 0)
             .flatMap(po -> po.getDiagnosticEvents().stream())
             .collect(Collectors.toList());
-        return diagnosticEvents.size() == 0 ? null : diagnosticEvents;
+        operationDiagnosticEvents.addAll(diagnosticEvents);
+        return operationDiagnosticEvents.size() == 0 ? null : operationDiagnosticEvents;
     }
 
     /**
      * Indicates if any operations have failed. This method should only be used after the conclusion of execution.
      * @return Indicator of any failed operations.
      */
-    public boolean haveAnyOperationsFailed()
+    public boolean hasExecutionFailed()
     {
-        return failedOperations.size() > 0;
+        return failedOperations.size() > 0 || diagnosticEvents.size() > 0;
     }
 }
