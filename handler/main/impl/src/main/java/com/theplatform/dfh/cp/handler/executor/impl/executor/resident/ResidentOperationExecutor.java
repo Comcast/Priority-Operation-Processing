@@ -80,14 +80,14 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
         catch(Exception e)
         {
             // the exception will result in a failed operation progress as well as a DiagnosticEvent (in OperationRunnger)
-            residentHandlerException = e;
+            setResidentHandlerException(e);
         }
         completedTime = new Date();
         logger.info("Operation {} OUTPUT Payload: {}", operation.getId(), outputPayload);
         return outputPayload;
     }
 
-    private OperationProgress generateOperationProgress(OperationProgress existingProgress)
+    protected OperationProgress generateOperationProgress(OperationProgress existingProgress)
     {
         OperationProgress operationProgress = existingProgress == null ? new OperationProgress() : existingProgress;
         if(operationProgress.getProcessingState() == null)
@@ -124,5 +124,10 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
             Collections.addAll(diagnosticEvents, operationProgress.getDiagnosticEvents());
 
         operationProgress.setDiagnosticEvents(diagnosticEvents.toArray(new DiagnosticEvent[0]));
+    }
+
+    protected void setResidentHandlerException(Exception residentHandlerException)
+    {
+        this.residentHandlerException = residentHandlerException;
     }
 }
