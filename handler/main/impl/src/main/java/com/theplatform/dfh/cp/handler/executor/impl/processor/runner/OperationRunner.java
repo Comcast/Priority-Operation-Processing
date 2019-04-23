@@ -60,7 +60,7 @@ public class OperationRunner implements Runnable
         {
             String message = ExecutorMessages.OPERATION_EXECUTION_ERROR.getMessage(
                 operationWrapper.getOperation() == null
-                   ? "unknown!"
+                   ? "unknown"
                    : operationWrapper.getOperation().getName());
             logger.error(message, t);
             operationWrapper.setSuccess(false);

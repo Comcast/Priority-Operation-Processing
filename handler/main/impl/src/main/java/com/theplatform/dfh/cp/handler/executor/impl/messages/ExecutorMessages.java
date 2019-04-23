@@ -8,7 +8,8 @@ public enum ExecutorMessages implements MessageLookup
     AGENDA_NO_OPERATIONS,
     OPERATIONS_RUNNING,
     OPERATIONS_ERROR,
-    OPERATION_EXECUTION_ERROR;
+    OPERATION_EXECUTION_ERROR,
+    OPERATION_RESIDENT_EXECUTION_FAILED;
 
     public static final String RESOURCE_PATH = "com/theplatform/handler/executor/executorMessages";
     private static final ResourceBundleStringRetriever stringRetriever = new ResourceBundleStringRetriever(RESOURCE_PATH);
