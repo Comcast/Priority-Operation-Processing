@@ -154,7 +154,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.executor.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.theplatform.dfh.cp.handler.reaper.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>
