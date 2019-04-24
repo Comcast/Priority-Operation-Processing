@@ -2,8 +2,8 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
 public enum KubeConfigField
 {
-    masterUrl("cp.kubernetes.masterUrl"),
-    namespace("cp.kubernetes.namespace");
+    MASTER_URL("cp.kubernetes.masterUrl"),
+    NAMESPACE("cp.kubernetes.namespace");
 
     private final String fieldName;
 

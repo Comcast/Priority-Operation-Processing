@@ -2,7 +2,6 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
-import com.theplatform.dfh.cp.handler.kubernetes.support.metadata.ExecutionMetaData;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
 import org.apache.commons.lang3.StringUtils;
@@ -30,8 +29,8 @@ public class KubeConfigFactoryImpl implements KubeConfigFactory
         FieldRetriever propertiesRetriever = launchDataWrapper.getPropertyRetriever();
 
         KubeConfig kubeConfig = new KubeConfig();
-        kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.masterUrl.getFieldName()));
-        kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.namespace.getFieldName()));
+        kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName()));
+        kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.NAMESPACE.getFieldName()));
 
         //NOTE: auth loading from args/env vars is for local only
         if(!loadAuthFromArgs(kubeConfig)
