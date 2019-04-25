@@ -56,10 +56,20 @@ public class ReaperProcessor implements HandlerProcessor
         if(podsToDelete == null || podsToDelete.size() == 0)
         {
             logger.info("No pods found for reaping.");
-            return;
         }
-        // TODO: break this up into smaller sets?
-        podsToDelete.forEach(x -> logger.info("Attempting to delete pod: {}", x.getMetadata().getName()));
-        kubernetesPodFacade.deletePods(podsToDelete);
+        else
+        {
+            // TODO: break this up into smaller sets?
+            podsToDelete.forEach(x -> logger.info("Attempting to delete pod: {}", x.getMetadata().getName()));
+            kubernetesPodFacade.deletePods(podsToDelete);
+        }
+        try
+        {
+            Thread.sleep(10000);
+        }
+        catch(InterruptedException e)
+        {
+            // this is just a test for syslog
+        }
     }
 }
