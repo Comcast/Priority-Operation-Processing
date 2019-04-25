@@ -30,7 +30,7 @@
     <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
 
     <root level="${LogLevel:-DEBUG}">
-        <appender-ref ref="STDOUT" />
+        <!--<appender-ref ref="STDOUT" />-->
         <appender-ref ref="asyncLogAppender" />
     </root>
 

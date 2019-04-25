@@ -3,8 +3,8 @@
 DIR=$(dirname $0)
 [ "$DIR" = "." ] && DIR=$(pwd)
 
-IMAGE=fhpr:1.0.0
-#IMAGE=$'docker-lab.repo.theplatform.com/feh:1.0.1'
+#IMAGE=fhpr:1.0.0
+IMAGE=$'docker-lab.repo.theplatform.com/fhpr:1.0.0'
 ARGS="-launchType local -externalLaunchType local -propFile /local/config/external.properties -payloadFile /local/payload.json"
 
 docker run --env-file env.list -it      \
