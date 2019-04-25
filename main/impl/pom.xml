@@ -16,53 +16,16 @@
     <properties>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
-        <executor-handler-api.version>1.0.1</executor-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
 
         <handler-base.version>1.0.2-SNAPSHOT</handler-base.version>
         <dfh-fabric8-kube-client.version>1.0.2-SNAPSHOT</dfh-fabric8-kube-client.version>
         <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
-        <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.1-SNAPSHOT</logger-reporter.version>
-        <reporter-progress-agenda.version>1.0.2-SNAPSHOT</reporter-progress-agenda.version>
-
-        <!-- Resident Handlers-->
-        <http-request-util-handler.version>1.0.2-SNAPSHOT</http-request-util-handler.version>
-        <ldap-filter.version>1.0.2-SNAPSHOT</ldap-filter.version>
-        <accelerate-filter-handler.version>1.0.2-SNAPSHOT</accelerate-filter-handler.version>
     </properties>
     
     <dependencies>
-        <!-- Resident Handlers -->
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-util-http-impl</artifactId>
-            <version>${http-request-util-handler.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-filter-ldap-impl</artifactId>
-            <version>${ldap-filter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-filter-accelerate-impl</artifactId>
-            <version>${accelerate-filter-handler.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-executor-api</artifactId>
-            <version>${executor-handler-api.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-progress-agenda</artifactId>
-            <version>${reporter-progress-agenda.version}</version>
-        </dependency>
-
-        <!-- Launcher modules -->
+            <!-- Launcher modules -->
         <dependency>
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-dfh-docker</artifactId>
@@ -86,11 +49,6 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
-            <version>${kubernetes-reporter.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>

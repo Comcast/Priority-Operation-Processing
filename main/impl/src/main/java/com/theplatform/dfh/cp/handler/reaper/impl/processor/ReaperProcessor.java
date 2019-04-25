@@ -53,6 +53,11 @@ public class ReaperProcessor implements HandlerProcessor
     public void execute()
     {
         List<Pod> podsToDelete = podLookupFilter.performLookup();
+        if(podsToDelete == null || podsToDelete.size() == 0)
+        {
+            logger.info("No pods found for reaping.");
+            return;
+        }
         // TODO: break this up into smaller sets?
         podsToDelete.forEach(x -> logger.info("Attempting to delete pod: {}", x.getMetadata().getName()));
         kubernetesPodFacade.deletePods(podsToDelete);
