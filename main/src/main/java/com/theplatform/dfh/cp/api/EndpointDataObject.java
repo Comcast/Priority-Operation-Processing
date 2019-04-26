@@ -2,11 +2,15 @@ package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
+import java.util.Date;
+
 public class EndpointDataObject implements IdentifiedObject
 {
     private String id;
     private String cid;
     private String customerId;
+    private Date updatedTime;
+    private Date addedTime;
 
     @Override
     public String getId()
@@ -40,5 +44,25 @@ public class EndpointDataObject implements IdentifiedObject
     public String getCid()
     {
         return cid;
+    }
+
+    public Date getUpdatedTime()
+    {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Date updatedTime)
+    {
+        this.updatedTime = updatedTime;
+    }
+
+    public Date getAddedTime()
+    {
+        return addedTime;
+    }
+
+    public void setAddedTime(Date addedTime)
+    {
+        this.addedTime = addedTime;
     }
 }

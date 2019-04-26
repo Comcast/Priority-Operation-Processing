@@ -19,8 +19,6 @@ public class AgendaProgress extends EndpointDataObject
     private String processingStateMessage;
     private OperationProgress[] operationProgress;
     private DiagnosticEvent[] diagnosticEvents;
-    private Date updatedTime;
-    private Date addedTime;
     private Date startedTime;
     private Date completedTime;
     private Double percentComplete;
@@ -34,7 +32,7 @@ public class AgendaProgress extends EndpointDataObject
     {
         this.linkId = linkId;
         this.processingState = ProcessingState.WAITING;
-        this.addedTime = new Date();
+        this.setAddedTime(new Date());
     }
 
     public String getAgendaId()
@@ -115,26 +113,6 @@ public class AgendaProgress extends EndpointDataObject
     public void setDiagnosticEvents(DiagnosticEvent[] diagnosticEvents)
     {
         this.diagnosticEvents = diagnosticEvents;
-    }
-
-    public Date getUpdatedTime()
-    {
-        return updatedTime;
-    }
-
-    public void setUpdatedTime(Date updatedTime)
-    {
-        this.updatedTime = updatedTime;
-    }
-
-    public Date getAddedTime()
-    {
-        return addedTime;
-    }
-
-    public void setAddedTime(Date addedTime)
-    {
-        this.addedTime = addedTime;
     }
 
     public Date getStartedTime()
