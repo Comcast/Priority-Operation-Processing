@@ -10,6 +10,7 @@ import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +23,18 @@ public class PersistentAgenda extends Agenda
     public String getId()
     {
         return super.getId();
+    }
+
+    @Override
+    public Date getUpdatedTime()
+    {
+        return super.getUpdatedTime();
+    }
+
+    @Override
+    public Date getAddedTime()
+    {
+        return super.getAddedTime();
     }
 
     @Override

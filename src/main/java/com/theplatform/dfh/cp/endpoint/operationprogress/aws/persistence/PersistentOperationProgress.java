@@ -23,6 +23,18 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    public Date getUpdatedTime()
+    {
+        return super.getUpdatedTime();
+    }
+
+    @Override
+    public Date getAddedTime()
+    {
+        return super.getAddedTime();
+    }
+
+    @Override
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     public ProcessingState getProcessingState()
     {

@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +28,17 @@ public class PersistentTransform extends TransformRequest
         return super.getId();
     }
 
+    @Override
+    public Date getUpdatedTime()
+    {
+        return super.getUpdatedTime();
+    }
+
+    @Override
+    public Date getAddedTime()
+    {
+        return super.getAddedTime();
+    }
 
     @Override
     @DynamoDBTypeConverted(converter = ParamsMapConverter.class)
