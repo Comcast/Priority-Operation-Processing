@@ -20,14 +20,8 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ReaperContext, Reap
     }
 
     /**
-     * Debugging/running with a local-only build use these args:
-     * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
-     *
-     * Debugging running local with minikube for pod launches
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties -payloadFile ./handler/main/package/local/payload.json
-     *
-     * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
+     * Debugging/running local with kubernetes for pod launches:
+     * -propFile ./main/package/local/config/external.properties -oauthCertPath (your cert path) -oauthTokenPath (your token path)
      *
      * @param args command line args
      */

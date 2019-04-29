@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The context for this instance of the Executor
+ * The context for the Reaper
  */
 public class ReaperContext extends BaseOperationContext<LaunchDataWrapper>
 {

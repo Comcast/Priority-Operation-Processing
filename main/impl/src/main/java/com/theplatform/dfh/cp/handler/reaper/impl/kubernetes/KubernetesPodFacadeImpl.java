@@ -6,6 +6,9 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Facade wrapper around a KubernetesClient to only expose the necessary functionality
+ */
 public class KubernetesPodFacadeImpl implements KubernetesPodFacade
 {
     private final KubernetesClient kubernetesClient;

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
+ * Factory that creates a context object for this operation.
  */
 public class ReaperContextFactory extends KubernetesOperationContextFactory<ReaperContext>
 {

@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * LookupFilter for pods to reap (a combination of age and status)
+ */
 public class ReapPodLookupFilter implements PodLookupFilter
 {
     public static final int DEFAULT_POD_REAP_AGE_MINUTES = 60 * 24;

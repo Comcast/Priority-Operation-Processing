@@ -5,11 +5,8 @@ import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetrieve
 
 public enum ReaperMessages implements MessageLookup
 {
-    AGENDA_NO_OPERATIONS,
-    OPERATIONS_RUNNING,
-    OPERATIONS_ERROR,
-    OPERATION_EXECUTION_ERROR,
-    OPERATION_RESIDENT_EXECUTION_FAILED;
+    NO_PODS_TO_REAP,
+    POD_DELETE_ATTEMPT;
 
     public static final String RESOURCE_PATH = "com/theplatform/handler/executor/reaperMessages";
     private static final ResourceBundleStringRetriever stringRetriever = new ResourceBundleStringRetriever(RESOURCE_PATH);

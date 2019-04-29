@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.handler.reaper.impl.filter.ReapPodLookupFilter;
 import com.theplatform.dfh.cp.handler.reaper.impl.filter.PodLookupFilter;
 import com.theplatform.dfh.cp.handler.reaper.impl.kubernetes.KubernetesPodFacade;
 import com.theplatform.dfh.cp.handler.reaper.impl.kubernetes.KubernetesPodFacadeImpl;
+import com.theplatform.dfh.cp.handler.reaper.impl.messages.ReaperMessages;
 import com.theplatform.dfh.cp.handler.reaper.impl.property.ReaperProperty;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * AgendaProcessor that will execute the operations in parallel where possible.
+ * Processor for reaping stale pods
  */
 public class ReaperProcessor implements HandlerProcessor
 {
@@ -55,21 +56,13 @@ public class ReaperProcessor implements HandlerProcessor
         List<Pod> podsToDelete = podLookupFilter.performLookup();
         if(podsToDelete == null || podsToDelete.size() == 0)
         {
-            logger.info("No pods found for reaping.");
+            logger.info(ReaperMessages.NO_PODS_TO_REAP.getMessage());
         }
         else
         {
             // TODO: break this up into smaller sets?
-            podsToDelete.forEach(x -> logger.info("Attempting to delete pod: {}", x.getMetadata().getName()));
+            podsToDelete.forEach(x -> logger.info(ReaperMessages.POD_DELETE_ATTEMPT.getMessage(x.getMetadata().getName())));
             kubernetesPodFacade.deletePods(podsToDelete);
-        }
-        try
-        {
-            Thread.sleep(10000);
-        }
-        catch(InterruptedException e)
-        {
-            // this is just a test for syslog
         }
     }
 }
