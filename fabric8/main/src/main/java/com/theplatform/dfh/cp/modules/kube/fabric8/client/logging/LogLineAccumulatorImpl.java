@@ -11,14 +11,22 @@ import java.util.List;
 public class LogLineAccumulatorImpl implements LogLineAccumulator
 {
     private static Logger logger = LoggerFactory.getLogger(LogLineAccumulatorImpl.class);
-    private final List<String> logs = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> logs = Collections.synchronizedList(new LinkedList<>());
     private Runnable onCompletion;
     private String completionIdentifier;
     private boolean loggingComplete = false;
+    private String podName = "unknown";
+
+    public LogLineAccumulatorImpl(){}
+
+    public LogLineAccumulatorImpl(String podName)
+    {
+        this.podName = podName;
+    }
 
     public void appendLine(String s)
     {
-        logger.trace("Log line being added. {}", s);
+        logger.trace("Log line being added to pod {} : {}", podName, s);
         synchronized (logs)
         {
             logs.add(s);
@@ -33,7 +41,7 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
         }
         catch (Throwable t)
         {
-            logger.error("Caught exception ", t);
+            logger.error("Caught exception calling onCompletion ", t);
         }
     }
 
@@ -43,6 +51,7 @@ public class LogLineAccumulatorImpl implements LogLineAccumulator
             && completionIdentifier != null
             && s.contains(completionIdentifier))
         {
+            logger.info("Logging complete identifier seen from pod: {}", podName);
             loggingComplete = true;
         }
     }

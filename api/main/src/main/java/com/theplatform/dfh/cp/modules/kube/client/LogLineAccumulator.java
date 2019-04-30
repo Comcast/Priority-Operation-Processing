@@ -7,9 +7,9 @@ import java.util.List;
  */
 public interface LogLineAccumulator
 {
-    public void appendLine(String s);
+    void appendLine(String s);
 
-    public List<String> takeAll();
+    List<String> takeAll();
 
     boolean isAllLogDataRequired();
 

@@ -99,9 +99,9 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
 
         if (podPhase.equals(PodPhase.RUNNING) && k8LogReader == null)
         {
-            logger.debug("Starting new logwatcher.");
+            logger.debug("Calling intializeAndStartLogObservation for pod: {}", podName);
             scheduledLatch.countDown();
-            intializeAndStartLogObeservation();
+            intializeAndStartLogObservation();
         }
 
         if (podPhase.hasFinished())
@@ -133,7 +133,8 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
                 // we failed or succeeded so quickly we didn't get logs.
                 if (k8LogReader == null)
                 {
-                    intializeAndStartLogObeservation();
+                    logger.debug("Calling intializeAndStartLogObservation for COMPLETED pod: {}", podName);
+                    intializeAndStartLogObservation();
                 }
             }
             else
@@ -153,7 +154,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         finishedLatch.countDown();
     }
 
-    private void intializeAndStartLogObeservation()
+    private void intializeAndStartLogObservation()
     {
         k8LogReader = new K8LogReader(podName, logLineAccumulator);
         setupLogObserveration();

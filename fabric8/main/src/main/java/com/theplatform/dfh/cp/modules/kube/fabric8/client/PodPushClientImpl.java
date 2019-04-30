@@ -88,15 +88,15 @@ public class PodPushClientImpl implements PodPushClient
         
         Pod podToCreate = Fabric8Helper.getPodSpec(kubeConfig, podConfig, executionConfig);
 
+        String podName = podToCreate.getMetadata().getName();
+
         if (executionConfig.getLogLineAccumulator() == null)
-            executionConfig.setLogLineAccumulator(new LogLineAccumulatorImpl());
+            executionConfig.setLogLineAccumulator(new LogLineAccumulatorImpl(podName));
 
         if(!podConfig.isEndOfLogIdentifierEmpty())
         {
             executionConfig.getLogLineAccumulator().setCompletionIdentifier(podConfig.getEndOfLogIdentifier());
         }
-
-        String podName = podToCreate.getMetadata().getName();
 
         RetryablePodResource podResource = new RetryablePodResource(getPodResource(podName));
 
