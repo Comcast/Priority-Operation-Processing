@@ -1,1 +1,15 @@
-{"actions":[{"action":"log","paramsMap":{"sleepMilliseconds":4000,"logMessage":"This is a custom log message","exceptionMessage":"This is a custom exception message."}}],"resultPayload":{"data":"someData"}}
+{
+  "actions": [
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 4000,
+        "logMessage": "This is a custom log message",
+        "exceptionMessage": "This is a custom exception message."
+      }
+    }
+  ],
+  "resultPayload": {
+    "data": "someData"
+  }
+}

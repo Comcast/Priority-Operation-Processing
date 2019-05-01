@@ -7,20 +7,8 @@ import com.theplatform.dfh.cp.handler.reporter.progress.operation.context.Progre
 
 public class OperationContext extends ProgressOperationContext<LaunchDataWrapper>
 {
-    private OperationProgressReporter operationProgressReporter;
-
     public OperationContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper)
     {
         super(reporter, launchDataWrapper);
-    }
-
-    public OperationProgressReporter getOperationProgressReporter()
-    {
-        return operationProgressReporter;
-    }
-
-    public void setOperationProgressReporter(OperationProgressReporter operationProgressReporter)
-    {
-        this.operationProgressReporter = operationProgressReporter;
     }
 }
