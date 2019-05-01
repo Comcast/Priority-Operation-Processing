@@ -23,7 +23,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     {
         podConfigMap.put("sample",
                 makeDfhBasePod("lab-main-t-aor-fhsamp-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
+                        .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.2")
                         .setNamePrefix("dfh-samp")
         );
 
@@ -43,6 +43,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 makeDfhBasePod("lab-main-t-aor-fhtff-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.1")
                         .setNamePrefix("dfh-thumbnail")
+        );
+
+        podConfigMap.put("filmstrip",
+            makeDfhBasePod("lab-main-t-aor-fhfsff-t01")
+                .setImageName("docker-lab.repo.theplatform.com/fhfsff:1.0.1")
+                .setNamePrefix("dfh-filmstrip")
         );
 
         podConfigMap.put("package",
