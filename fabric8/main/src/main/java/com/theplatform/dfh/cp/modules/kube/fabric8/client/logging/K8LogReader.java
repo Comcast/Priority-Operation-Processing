@@ -72,9 +72,9 @@ public class K8LogReader
         {
             try
             {
-//                logger.debug("k8 logWatch is closing.");
-//                logWatch.close();
-                logger.debug("k8 logWatch is close is disabled.");
+                logger.debug("k8 logWatch is closing.");
+                logWatch.close();
+//                logger.debug("k8 logWatch is close is disabled.");
                 logWatch = null;
             }
             catch (Exception e)
