@@ -79,7 +79,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
-                //.setPullAlways(true)
+                .setPullAlways(true)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
                 .setConfigMapDetails(configMapDetails);
     }
