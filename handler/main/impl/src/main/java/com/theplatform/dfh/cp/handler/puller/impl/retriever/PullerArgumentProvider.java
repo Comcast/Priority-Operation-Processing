@@ -1,13 +1,12 @@
 package com.theplatform.dfh.cp.handler.puller.impl.retriever;
 
-import com.theplatform.dfh.cp.handler.field.api.args.HandlerArgument;
-import com.theplatform.dfh.cp.handler.field.retriever.argument.DefaultArgumentProvider;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesArgumentProvider;
 import org.apache.commons.cli.Options;
 
 /**
  * program arguments specific to the Puller
  */
-public class PullerArgumentProvider extends DefaultArgumentProvider
+public class PullerArgumentProvider extends KubernetesArgumentProvider
 {
 
     public final static String CONF_PATH = "confPath";

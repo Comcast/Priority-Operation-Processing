@@ -1,13 +1,12 @@
 package com.theplatform.dfh.cp.handler.puller.impl.config;
 
-import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 
 /**
  */
-public class PullerLaunchDataWrapper extends DefaultLaunchDataWrapper
+public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
 {
     private PullerConfig pullerConfig;
 
