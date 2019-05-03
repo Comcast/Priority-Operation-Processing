@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -13,7 +14,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryablePodRes
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.Watch;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +75,8 @@ public class PodPushClientImpl implements PodPushClient
      * @param podFinishedSuccessOrFailure Always set this count to 1. Countdown is called when pod has completed
      */
     public PodWatcher start(PodConfig podConfig, ExecutionConfig executionConfig,
-        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure)
+        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
+        ConnectionTracker connectionTracker)
     {
         if (podConfig == null || executionConfig == null)
         {
@@ -105,7 +106,8 @@ public class PodPushClientImpl implements PodPushClient
             podFinishedSuccessOrFailure,
             podName,
             podResource,
-            executionConfig.getLogLineAccumulator());
+            executionConfig.getLogLineAccumulator(),
+            connectionTracker);
         Watch watch = initializePodWatcher(podResource, podWatcherImpl);
         podWatcherImpl.setWatch(watch);
         logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
@@ -128,7 +130,7 @@ public class PodPushClientImpl implements PodPushClient
     }
 
     private PodWatcherImpl getPodWatcher(CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
-        String fullName, PodResourceFacade podResource, LogLineAccumulator logLineAccumulator)
+        String fullName, PodResourceFacade podResource, LogLineAccumulator logLineAccumulator, ConnectionTracker connectionTracker)
     {
         PodWatcherImpl podWatcherImpl = new PodWatcherImpl();
         podWatcherImpl.setPodName(fullName);
@@ -136,6 +138,7 @@ public class PodPushClientImpl implements PodPushClient
         podWatcherImpl.setFinishedLatch(podFinishedSuccessOrFailure);
         podWatcherImpl.setPodResource(podResource);
         podWatcherImpl.setLogLineAccumulator(logLineAccumulator);
+        podWatcherImpl.setConnectionTracker(connectionTracker);
         return podWatcherImpl;
     }
 

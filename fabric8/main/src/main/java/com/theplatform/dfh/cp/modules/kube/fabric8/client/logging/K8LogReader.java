@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.logging;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class K8LogReader
 {
     private static Logger logger = LoggerFactory.getLogger(K8LogReader.class);
 
+    // when closing the log reader down the associated sockets need to have their timeout reset
+    private final int SHUTDOWN_SOCKET_TIMEOUT = 5000;
+
     private String podName;
     private Scheduler subscriptionScheduler;
     private Scheduler observerScheduler;
@@ -27,11 +31,13 @@ public class K8LogReader
     private Observable<String> stringObservable;
     private LogLineAccumulator logLineAccumulator;
     private LogWatch logWatch;
+    private ConnectionTracker connectionTracker;
 
-    public K8LogReader(String podName, LogLineAccumulator logLineAccumulator)
+    public K8LogReader(String podName, LogLineAccumulator logLineAccumulator, ConnectionTracker connectionTracker)
     {
         this.podName = podName;
         this.logLineAccumulator = logLineAccumulator;
+        this.connectionTracker = connectionTracker;
     }
 
     public Observable<String> observeRuntimeLog(LogWatch logWatch)
@@ -72,9 +78,13 @@ public class K8LogReader
         {
             try
             {
-                logger.debug("k8 logWatch is closing.");
+                logger.debug("k8 logWatch is closing for pod: {}", podName);
+                // everything is shutting down for this pod execution, reset all the socket timeouts
+                // this is necessary because the socket for logging is opened with no timeout (0) and when shutting down the act of flushing may result in another socket read
+                if(connectionTracker != null)
+                    connectionTracker.setSocketTimeouts(SHUTDOWN_SOCKET_TIMEOUT);
+
                 logWatch.close();
-//                logger.debug("k8 logWatch is close is disabled.");
                 logWatch = null;
             }
             catch (Exception e)
@@ -82,7 +92,7 @@ public class K8LogReader
                 logger.error("Exception: ", e);
             }
         }
-        logger.debug("Log reader is being shutdown {}", podName);
+        logger.debug("Log reader is being shutdown for pod: {}", podName);
         if (subscription != null)
         {
             subscription.unsubscribe();

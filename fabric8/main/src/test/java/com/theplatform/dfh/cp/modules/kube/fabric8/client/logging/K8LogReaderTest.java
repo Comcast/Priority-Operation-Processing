@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.logging;
 
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.K8LogReader;
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import org.testng.annotations.Test;
@@ -21,7 +20,7 @@ public class K8LogReaderTest
     public void testIOClose() throws Exception
     {
 
-        K8LogReader k8LogReader = new K8LogReader("podNameFoo", logLineAccumulator);
+        K8LogReader k8LogReader = new K8LogReader("podNameFoo", logLineAccumulator, null);
         LogWatch logWatch = mock(LogWatch.class);
 
         ByteArrayOutputStream originalByteArrayOutputStream = new ByteArrayOutputStream(1000);

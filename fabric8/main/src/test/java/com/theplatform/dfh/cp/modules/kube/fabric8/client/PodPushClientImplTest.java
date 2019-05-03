@@ -1,7 +1,5 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client;
 
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.testng.annotations.DataProvider;
@@ -30,7 +28,7 @@ public class PodPushClientImplTest
     {
         PodPushClient podPushClient = new PodPushClientImpl();
 
-        podPushClient.start(podConfig, executionConfig, new CountDownLatch(1), new CountDownLatch(1));
+        podPushClient.start(podConfig, executionConfig, new CountDownLatch(1), new CountDownLatch(1), null);
     }
 
 }

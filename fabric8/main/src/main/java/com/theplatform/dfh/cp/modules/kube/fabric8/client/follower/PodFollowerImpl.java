@@ -12,6 +12,7 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientF
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserverImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import org.slf4j.Logger;
@@ -40,12 +41,13 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     
     private PodConfig podConfig;
     private ExecutionConfig executionConfig;
+    private ConnectionTracker connectionTracker = new ConnectionTracker();
 
     public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
-        podPushClient = podPushClientFactory.getClient(kubeConfig);
+        podPushClient = podPushClientFactory.getClient(kubeConfig, connectionTracker.setPodName(executionConfig.getName()));
         podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesClient(), executionConfig.getName());
     }
 
@@ -73,7 +75,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 
             // START POD
             podWatcher = podPushClient
-                .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure);
+                .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure, connectionTracker);
 
             // CHECK POD: SCHEDULED
             // Doesn't need the podWatcher, since we have a latch to wait on.

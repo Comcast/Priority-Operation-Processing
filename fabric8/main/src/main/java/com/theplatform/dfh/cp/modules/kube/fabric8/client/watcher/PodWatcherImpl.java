@@ -35,6 +35,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private FinalPodPhaseInfo finalPodPhaseInfo;
     private Watch watch;
     private int resetCounter = 0;
+    private ConnectionTracker connectionTracker;
 
     public void setFinishedLatch(CountDownLatch finishedLatch)
     {
@@ -65,6 +66,11 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     public void setPodName(String podName)
     {
         this.podName = podName;
+    }
+
+    public void setConnectionTracker(ConnectionTracker connectionTracker)
+    {
+        this.connectionTracker = connectionTracker;
     }
 
     @Override
@@ -156,7 +162,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
 
     private void intializeAndStartLogObservation()
     {
-        k8LogReader = new K8LogReader(podName, logLineAccumulator);
+        k8LogReader = new K8LogReader(podName, logLineAccumulator, connectionTracker);
         setupLogObserveration();
     }
 
