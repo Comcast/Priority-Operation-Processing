@@ -40,6 +40,7 @@ import static okhttp3.ConnectionSpec.CLEARTEXT;
 
 /**
  * This is a near duplicate of the HttpClientUtils in fabric8 3.1.7. - with added support for the ConnectionTracker
+ * See commented sections below for changes KUBE-CHANGES
  */
 public class HttpClientUtilsEx
 {
@@ -70,17 +71,21 @@ public class HttpClientUtilsEx
                 }
 
                 try {
+                    // START KUBE-CHANGES - use the SSLSocketFactoryWrapper
                     SSLContext sslContext = SSLUtils.sslContext(keyManagers, trustManagers, config.isTrustCerts());
                     SSLSocketFactory sslSocketFactory = new SSLSocketFactoryWrapper(sslContext.getSocketFactory(), connectionTracker);
                     httpClientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
+                    // END KUBE-CHANGES - use the SSLSocketFactoryWrapper
                 } catch (GeneralSecurityException e) {
                     throw new AssertionError(); // The system has no TLS. Just give up.
                 }
             } else {
                 SSLContext context = SSLContext.getInstance("TLSv1.2");
                 context.init(keyManagers, trustManagers, null);
+                // START KUBE-CHANGES - use the SSLSocketFactoryWrapper
                 SSLSocketFactory sslSocketFactory = new SSLSocketFactoryWrapper(context.getSocketFactory(), connectionTracker);
                 httpClientBuilder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
+                // END KUBE-CHANGES - use the SSLSocketFactoryWrapper
             }
 
             httpClientBuilder.addInterceptor(new Interceptor() {
