@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.internal.SSLUtils;
 import io.fabric8.kubernetes.client.utils.ImpersonatorInterceptor;
 import okhttp3.Authenticator;
+import okhttp3.ConnectionPool;
 import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.Dispatcher;
@@ -39,14 +40,31 @@ import static io.fabric8.kubernetes.client.utils.Utils.isNotNullOrEmpty;
 import static okhttp3.ConnectionSpec.CLEARTEXT;
 
 /**
- * This is a near duplicate of the HttpClientUtils in fabric8 3.1.7. - with added support for the ConnectionTracker
+ * This is a near duplicate of the HttpClientUtils in fabric8 3.1.7. -
+ * with added support for:
+ * -- ConnectionTracker (to avoid socket timeout issues on log reader shutdown)
+ * -- Shared ConnectionPool usage (see below)
+ * https://github.com/square/okhttp/issues/2846
+ * https://square.github.io/okhttp/3.x/okhttp/okhttp3/OkHttpClient.html
+ *
+ * 
  * See commented sections below for changes KUBE-CHANGES
  */
 public class HttpClientUtilsEx
 {
+// START KUBE-CHANGES
+    private static ConnectionPool connectionPool = new ConnectionPool();
+
     public static OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker) {
+        return createHttpClient(config, connectionTracker, true);
+    }
+
+    public static OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker, boolean useSharedConnectionPool) {
         try {
             OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+            if(useSharedConnectionPool)
+                httpClientBuilder.connectionPool(connectionPool);
+// END KUBE-CHANGES - use the SSLSocketFactoryWrapper
 
             // Follow any redirects
             httpClientBuilder.followRedirects(true);
@@ -71,21 +89,21 @@ public class HttpClientUtilsEx
                 }
 
                 try {
-                    // START KUBE-CHANGES - use the SSLSocketFactoryWrapper
+// START KUBE-CHANGES - use the SSLSocketFactoryWrapper
                     SSLContext sslContext = SSLUtils.sslContext(keyManagers, trustManagers, config.isTrustCerts());
                     SSLSocketFactory sslSocketFactory = new SSLSocketFactoryWrapper(sslContext.getSocketFactory(), connectionTracker);
                     httpClientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
-                    // END KUBE-CHANGES - use the SSLSocketFactoryWrapper
+// END KUBE-CHANGES - use the SSLSocketFactoryWrapper
                 } catch (GeneralSecurityException e) {
                     throw new AssertionError(); // The system has no TLS. Just give up.
                 }
             } else {
                 SSLContext context = SSLContext.getInstance("TLSv1.2");
                 context.init(keyManagers, trustManagers, null);
-                // START KUBE-CHANGES - use the SSLSocketFactoryWrapper
+// START KUBE-CHANGES - use the SSLSocketFactoryWrapper
                 SSLSocketFactory sslSocketFactory = new SSLSocketFactoryWrapper(context.getSocketFactory(), connectionTracker);
                 httpClientBuilder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
-                // END KUBE-CHANGES - use the SSLSocketFactoryWrapper
+// END KUBE-CHANGES - use the SSLSocketFactoryWrapper
             }
 
             httpClientBuilder.addInterceptor(new Interceptor() {
