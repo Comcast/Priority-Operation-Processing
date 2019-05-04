@@ -89,7 +89,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         if (action == Action.DELETED)
         {
             logger.error("Pod {} was deleted", podName);
-            finalPodPhaseInfo = new FinalPodPhaseInfo(podName, PodPhase.UNKNOWN, 0);
+            finalPodPhaseInfo = new FinalPodPhaseInfo(podName, PodPhase.UNKNOWN, 0, "PodDeleted");
             scheduledLatch.countDown();
             try
             {
