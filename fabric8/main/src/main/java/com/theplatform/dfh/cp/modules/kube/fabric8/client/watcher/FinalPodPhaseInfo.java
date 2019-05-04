@@ -45,9 +45,10 @@ public class FinalPodPhaseInfo
     @Override
     public String toString()
     {
-        return "LastPhase{" +
+        return "FinalPodPhaseInfo{" +
             "phase=" + phase +
             ", name='" + name + '\'' +
+            ", reason='" + reason + '\'' +
             ", exitCode=" + exitCode +
             '}';
     }
