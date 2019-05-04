@@ -5,13 +5,18 @@ import io.fabric8.kubernetes.api.model.Pod;
 import java.util.List;
 
 /**
- * Basic interface for looking up pods
+ * Basic interface for looking up pods with pagination
  */
 public interface PodLookupFilter
 {
     /**
      * Performs the specified lookup
-     * @return List of pods that passed the filter
+     * @return List of pods that passed the filter, empty is returned if none remain
      */
-    List<Pod> performLookup();
+    List<Pod> getNextResults();
+
+    /**
+     * Resets the lookup
+     */
+    void reset();
 }

@@ -20,6 +20,8 @@ import java.util.List;
 /**
  * LookupFilter for pods to reap (a combination of age and status)
  *
+ * Due to the limitations of our kube client this does not perform pagination (yet).
+ *
  * All pods for our handlers/components only use a single container. This code ASSUMES a single container per pod.
  */
 public class ReapPodLookupFilter implements PodLookupFilter
@@ -33,6 +35,7 @@ public class ReapPodLookupFilter implements PodLookupFilter
     private String namespace = "default";
     private final KubernetesPodFacade kubernetesPodFacade;
     private int podReapAgeMinutes = 60*24; // default to a day
+    private boolean lookupComplete = false;
 
     public ReapPodLookupFilter(KubernetesPodFacade kubernetesPodFacade)
     {
@@ -58,13 +61,17 @@ public class ReapPodLookupFilter implements PodLookupFilter
     }
 
     @Override
-    public List<Pod> performLookup()
+    public List<Pod> getNextResults()
     {
+        if(lookupComplete)
+            return new LinkedList<>();
+
         List<Pod> resultPods = new LinkedList<>();
         if(podPhases != null && podPhases.size() > 0)
         {
             podPhases.forEach(p -> appendPodsByPhaseStatusAndAge(p, resultPods));
         }
+        lookupComplete = true;
         return resultPods;
     }
 
@@ -114,5 +121,11 @@ public class ReapPodLookupFilter implements PodLookupFilter
         Duration duration = Duration.between(finishedInstant, instantNow);
         long differenceInSeconds = duration.minusMinutes(podReapAgeMinutes).getSeconds();
         return differenceInSeconds >= 0;
+    }
+
+    @Override
+    public void reset()
+    {
+        lookupComplete = false;
     }
 }

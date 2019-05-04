@@ -21,6 +21,7 @@ public class KubernetesPodFacadeImpl implements KubernetesPodFacade
     @Override
     public List<Pod> lookupPods(String namespace, Map<String, String> fields)
     {
+        // TODO: to support pagination we need to upgrade our fabric8 kube client dependency to at least 4.1.1
         return kubernetesClient.pods().inNamespace(namespace).withFields(fields).list().getItems();
     }
 

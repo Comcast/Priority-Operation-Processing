@@ -4,7 +4,8 @@ import com.theplatform.dfh.cp.handler.field.retriever.api.NamedField;
 
 public enum ReaperProperty implements NamedField
 {
-    POD_REAP_AGE_MINUTES("pod.reap.age.minutes");
+    POD_REAP_AGE_MINUTES("pod.reap.age.minutes"),
+    POD_REAP_BATCH_SIZE("pod.reap.batch.size");
 
     private final String fieldName;
 
