@@ -4,10 +4,13 @@ import com.theplatform.dfh.cp.handler.reaper.impl.kubernetes.KubernetesPodFacade
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.Pod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,9 +19,13 @@ import java.util.List;
 
 /**
  * LookupFilter for pods to reap (a combination of age and status)
+ *
+ * All pods for our handlers/components only use a single container. This code ASSUMES a single container per pod.
  */
 public class ReapPodLookupFilter implements PodLookupFilter
 {
+    private static Logger logger = LoggerFactory.getLogger(ReapPodLookupFilter.class);
+
     public static final int DEFAULT_POD_REAP_AGE_MINUTES = 60 * 24;
 
     private final String STATUS_PHASE = "status.phase";
@@ -56,12 +63,12 @@ public class ReapPodLookupFilter implements PodLookupFilter
         List<Pod> resultPods = new LinkedList<>();
         if(podPhases != null && podPhases.size() > 0)
         {
-            podPhases.forEach(p -> appendPodsByPhaseStatus(p, resultPods));
+            podPhases.forEach(p -> appendPodsByPhaseStatusAndAge(p, resultPods));
         }
         return resultPods;
     }
 
-    protected void appendPodsByPhaseStatus(PodPhase podPhase, List<Pod> resultPods)
+    protected void appendPodsByPhaseStatusAndAge(PodPhase podPhase, List<Pod> resultPods)
     {
         List<Pod> pods = kubernetesPodFacade.lookupPods(namespace, Collections.singletonMap(STATUS_PHASE, podPhase.getLabel()));
         pods.stream()
@@ -71,15 +78,41 @@ public class ReapPodLookupFilter implements PodLookupFilter
                 FinalPodPhaseInfo podPhaseInfo = FinalPodPhaseInfo.fromPodStatus(pod.getMetadata().getName(), pod.getStatus());
                 if(podPhaseInfo.phase.hasFinished())
                 {
-                    // example: 2019-04-23T02:43:09Z (ISO_INSTANT)
-                    String finishedAtString = pod.getStatus().getContainerStatuses().get(0).getState().getTerminated().getFinishedAt();
-                    Instant.now();
-                    Instant instant = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(finishedAtString));
-                    if(!Duration.between(instant, Instant.now()).minusMinutes(podReapAgeMinutes).isNegative())
-                    {
+                    if(isPodPastAge(pod, podReapAgeMinutes))
                         resultPods.add(pod);
-                    }
                 }
             });
+    }
+
+    protected static boolean isPodPastAge(Pod pod, int podReapAgeMinutes)
+    {
+        String finishedAtString;
+        if(pod.getStatus().getContainerStatuses() != null && pod.getStatus().getContainerStatuses().size() > 0)
+        {
+            // normal operation completion (pod started and exited)
+            // the end time of the 0 index container within the pod is acceptable for our use
+            finishedAtString = pod.getStatus().getContainerStatuses().get(0).getState().getTerminated().getFinishedAt();
+        }
+        else
+        {
+            // abnormal operation, we only have the start time on a failed pod (might have run out of CPU or was never scheduled)
+            logger.warn("Abnormal pod exit detected. Using start time for reap evaluation. Pod={} ExitReason={}", pod.getMetadata().getName(), pod.getStatus().getReason());
+            finishedAtString = pod.getStatus().getStartTime();
+        }
+
+        Instant finishedInstant;
+        try
+        {
+            finishedInstant = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(finishedAtString));
+        }
+        catch(DateTimeParseException e)
+        {
+            logger.error("Failed to parse the finished time [{}]. Skipping reap for pod={}", finishedAtString, pod.getMetadata().getName());
+            return false;
+        }
+        Instant instantNow = Instant.now();
+        Duration duration = Duration.between(finishedInstant, instantNow);
+        long differenceInSeconds = duration.minusMinutes(podReapAgeMinutes).getSeconds();
+        return differenceInSeconds >= 0;
     }
 }
