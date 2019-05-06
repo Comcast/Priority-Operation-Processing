@@ -79,7 +79,7 @@ public class ReapPodLookupFilter implements PodLookupFilter
     {
         List<Pod> pods = kubernetesPodFacade.lookupPods(namespace, Collections.singletonMap(STATUS_PHASE, podPhase.getLabel()));
         pods.stream()
-            .filter(pod -> pod.getStatus().getContainerStatuses().stream().allMatch(cs -> cs.getState() != null && cs.getState().getTerminated() != null))
+            .filter(ReapPodLookupFilter::allContainerStatusesTerminated)
             .forEach(pod ->
             {
                 FinalPodPhaseInfo podPhaseInfo = FinalPodPhaseInfo.fromPodStatus(pod.getMetadata().getName(), pod.getStatus());
@@ -89,6 +89,11 @@ public class ReapPodLookupFilter implements PodLookupFilter
                         resultPods.add(pod);
                 }
             });
+    }
+
+    protected static boolean allContainerStatusesTerminated(Pod pod)
+    {
+        return pod.getStatus().getContainerStatuses().stream().allMatch(cs -> cs.getState() != null && cs.getState().getTerminated() != null);
     }
 
     protected static boolean isPodPastAge(Pod pod, int podReapAgeMinutes)
