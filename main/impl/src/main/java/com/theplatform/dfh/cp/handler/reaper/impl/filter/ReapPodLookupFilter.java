@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.handler.reaper.impl.filter;
 
 import com.theplatform.dfh.cp.handler.reaper.impl.kubernetes.KubernetesPodFacade;
+import com.theplatform.dfh.cp.handler.reaper.impl.util.InstantUtil;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -117,10 +117,8 @@ public class ReapPodLookupFilter implements PodLookupFilter
             logger.error("Failed to parse the finished time [{}]. Skipping reap for pod={}", finishedAtString, pod.getMetadata().getName());
             return false;
         }
-        Instant instantNow = Instant.now();
-        Duration duration = Duration.between(finishedInstant, instantNow);
-        long differenceInSeconds = duration.minusMinutes(podReapAgeMinutes).getSeconds();
-        return differenceInSeconds >= 0;
+
+        return InstantUtil.haveMinutesPassedSince(finishedInstant, Instant.now(), podReapAgeMinutes);
     }
 
     @Override

@@ -45,6 +45,7 @@ public class ReaperProcessor implements HandlerProcessor
             kubernetesPodFacade
         )
         .setPodReapBatchSize(propertyRetriever.getInt(ReaperProperty.POD_REAP_BATCH_SIZE, BatchedPodReaper.DEFAULT_POD_REAP_BATCH_SIZE))
+        .setReapRunMaxMinutes(propertyRetriever.getInt(ReaperProperty.REAPER_RUN_MAX_MINUTES, BatchedPodReaper.DEFAULT_REAPER_RUN_MAX_MINUTES))
         .execute();
     }
 }
