@@ -37,7 +37,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
-                .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.1")
+                .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.2")
                 .setNamePrefix("dfh-exec")
                 .setConfigMapDetails(new ConfigMapDetails()
                     .setConfigMapName("lab-main-t-aor-fhexec-t01")
