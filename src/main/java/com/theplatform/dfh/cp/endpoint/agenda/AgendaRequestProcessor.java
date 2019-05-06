@@ -4,18 +4,17 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.cleanup.PersisterObjectTracker;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
@@ -33,7 +32,6 @@ import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +42,7 @@ import java.util.UUID;
 /**
  * Agenda specific RequestProcessor
  */
-public class AgendaRequestProcessor extends DataObjectRequestProcessor<Agenda>
+public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<Agenda>
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaRequestProcessor.class);
     private JsonHelper jsonHelper = new JsonHelper();

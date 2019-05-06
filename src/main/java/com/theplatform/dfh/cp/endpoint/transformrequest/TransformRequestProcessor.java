@@ -9,13 +9,13 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOpsGenerator;
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
@@ -36,7 +36,7 @@ import java.util.UUID;
 /**
  * TransformRequest specific RequestProcessor
  */
-public class TransformRequestProcessor extends DataObjectRequestProcessor<TransformRequest>
+public class TransformRequestProcessor extends EndpointDataObjectRequestProcessor<TransformRequest>
 {
     private static final Logger logger = LoggerFactory.getLogger(TransformRequestProcessor.class);
     private JsonHelper jsonHelper = new JsonHelper();
