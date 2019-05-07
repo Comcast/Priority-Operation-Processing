@@ -73,9 +73,12 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
         {
             transformRequest.getOutputs().forEach(o ->
             {
-                o.getOutputStreamRefs().forEach(osr ->
-                    validateReference(osr, o.getLabel(), rootTransformNode)
-                );
+                if (o.getOutputStreamRefs() != null)
+                {
+                    o.getOutputStreamRefs().forEach(osr ->
+                        validateReference(osr, o.getLabel(), rootTransformNode)
+                    );
+                }
             });
         }
     }
