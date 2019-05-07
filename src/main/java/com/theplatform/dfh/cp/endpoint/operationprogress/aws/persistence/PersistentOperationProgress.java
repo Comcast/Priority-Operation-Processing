@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
@@ -23,12 +24,14 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getUpdatedTime()
     {
         return super.getUpdatedTime();
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getAddedTime()
     {
         return super.getAddedTime();
@@ -74,18 +77,21 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getAttemptTime()
     {
         return super.getAttemptTime();
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getStartedTime()
     {
         return super.getStartedTime();
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getCompletedTime()
     {
         return super.getCompletedTime();

@@ -11,6 +11,7 @@ import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
 import java.util.Date;
@@ -29,12 +30,14 @@ public class PersistentTransform extends TransformRequest
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getUpdatedTime()
     {
         return super.getUpdatedTime();
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getAddedTime()
     {
         return super.getAddedTime();

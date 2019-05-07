@@ -1,7 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.facility.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.theplatform.dfh.cp.api.facility.Customer;
+import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.ListOperationsConverter;
+import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 
 import java.util.Date;
 import java.util.List;
@@ -19,12 +22,14 @@ public class PersistentCustomer extends Customer
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getUpdatedTime()
     {
         return super.getUpdatedTime();
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getAddedTime()
     {
         return super.getAddedTime();
