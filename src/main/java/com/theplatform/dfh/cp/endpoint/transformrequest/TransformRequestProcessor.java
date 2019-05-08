@@ -96,7 +96,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         agendaProgressTracker.registerObject(prepAgendaProgress.getId());
 
         DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
-            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
         if (execAgendaProgressResponse.isError())
         {
             deleteTransformRequest(transformRequest.getId());
@@ -169,6 +169,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
     {
         AgendaProgress agendaProgress = new AgendaProgress();
         // NOTE: link id is the transformRequest id
+        agendaProgress.setCid(cid);
         agendaProgress.setCustomerId(customerId);
         agendaProgress.setLinkId(transformRequestId);
         agendaProgress.setExternalId(externalId);
