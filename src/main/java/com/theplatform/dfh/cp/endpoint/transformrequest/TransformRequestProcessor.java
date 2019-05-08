@@ -86,7 +86,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         // persist the prep/exec progress
         ////
         DataObjectResponse<AgendaProgress> prepAgendaProgressResponse = createAgendaProgress(
-            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), request.getCID());
+            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
         if (prepAgendaProgressResponse.isError())
         {
             deleteTransformRequest(transformRequest.getId());
