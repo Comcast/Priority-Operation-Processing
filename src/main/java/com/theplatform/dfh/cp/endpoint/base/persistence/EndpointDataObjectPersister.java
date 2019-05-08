@@ -37,14 +37,14 @@ public class EndpointDataObjectPersister<T extends EndpointDataObject> implement
     @Override
     public T persist(T object) throws PersistenceException
     {
-        //RequestProcessorUtil.applyAddedTime(object);
+        RequestProcessorUtil.applyAddedTime(object);
         return objectPersister.persist(object);
     }
 
     @Override
     public T update(T object) throws PersistenceException
     {
-        //RequestProcessorUtil.applyUpdatedTime(object);
+        RequestProcessorUtil.applyUpdatedTime(object);
         return objectPersister.update(object);
     }
 
