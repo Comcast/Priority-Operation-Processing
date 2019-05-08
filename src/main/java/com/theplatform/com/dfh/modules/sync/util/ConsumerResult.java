@@ -3,7 +3,7 @@ package com.theplatform.com.dfh.modules.sync.util;
 public class ConsumerResult<T>
 {
     private int itemsConsumedCount;
-    private boolean interrupt;
+    private boolean interrupted;
 
     public int getItemsConsumedCount()
     {
@@ -16,14 +16,14 @@ public class ConsumerResult<T>
         return this;
     }
 
-    public boolean isInterrupt()
+    public boolean isInterrupted()
     {
-        return interrupt;
+        return interrupted;
     }
 
-    public ConsumerResult<T> setInterrupt(boolean interrupt)
+    public ConsumerResult<T> setInterrupted(boolean interrupted)
     {
-        this.interrupt = interrupt;
+        this.interrupted = interrupted;
         return this;
     }
 }

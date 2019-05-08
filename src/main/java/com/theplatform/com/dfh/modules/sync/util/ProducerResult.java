@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public class ProducerResult<T>
 {
-    private boolean interrupt;
+    private boolean interrupted;
     private Collection<T> itemsProduced;
 
     public Collection<T> getItemsProduced()
@@ -18,14 +18,14 @@ public class ProducerResult<T>
         return this;
     }
 
-    public boolean isInterrupt()
+    public boolean isInterrupted()
     {
-        return interrupt;
+        return interrupted;
     }
 
-    public ProducerResult<T> setInterrupt(boolean interrupt)
+    public ProducerResult<T> setInterrupted(boolean interrupted)
     {
-        this.interrupt = interrupt;
+        this.interrupted = interrupted;
         return this;
     }
 }

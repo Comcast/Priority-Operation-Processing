@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.Collection;
 
 /**
  * Synchronously process a producer and consumer (produce then consume until complete)
@@ -41,19 +40,20 @@ public class SynchronousProducerConsumerProcessor<T>
         producer.reset();
         while(true)
         {
-            Collection<T> producedItems = producer.produce(endProcessingTime);
-            if(producedItems == null
-                || producedItems.size() == 0
+            ProducerResult<T> producerResult = producer.produce(endProcessingTime);
+            if(producerResult.isInterrupted()
+                || producerResult.getItemsProduced() == null
+                || producerResult.getItemsProduced().size() == 0
                 || InstantUtil.isEqualOrAfter(endProcessingTime))
             {
                 break;
             }
 
-            ConsumerResult<T> consumerResult = consumer.consume(producedItems, endProcessingTime);
+            ConsumerResult<T> consumerResult = consumer.consume(producerResult.getItemsProduced(), endProcessingTime);
 
             itemsProcessedCount += consumerResult.getItemsConsumedCount();
 
-            if(consumerResult.isInterrupt())
+            if(consumerResult.isInterrupted())
             {
                 break;
             }

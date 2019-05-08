@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -41,7 +40,7 @@ public class SynchronousProducerConsumerProcessorTest
     {
         processor.setRunMaxSeconds(0);
         // the producer needs to return something
-        doReturn(Arrays.asList(1)).when(mockProducer).produce(any());
+        doReturn(createProducerResult()).when(mockProducer).produce(any());
         SynchronousProducerConsumerProcessor spyProcessor = spy(processor);
         spyProcessor.execute();
         verify(mockConsumer, times(0)).consume(any(), any());
@@ -61,7 +60,7 @@ public class SynchronousProducerConsumerProcessorTest
     @Test(dataProvider = "noDataProvider")
     public void testNoDataProduced(Collection collection)
     {
-        doReturn(collection).when(mockProducer).produce(any());
+        doReturn(new ProducerResult().setItemsProduced(collection)).when(mockProducer).produce(any());
         processor.execute();
         verify(mockConsumer, times(0)).consume(any(), any());
     }
@@ -69,10 +68,10 @@ public class SynchronousProducerConsumerProcessorTest
     @Test
     public void testConsumerInterrupt()
     {
-        ConsumerResult consumerResult = new ConsumerResult().setInterrupt(true);
+        ConsumerResult consumerResult = new ConsumerResult().setInterrupted(true);
         doReturn(consumerResult).when(mockConsumer).consume(any(), any());
         // the producer needs to return something
-        doReturn(Arrays.asList(1)).when(mockProducer).produce(any());
+        doReturn(createProducerResult()).when(mockProducer).produce(any());
         SynchronousProducerConsumerProcessor spyProcessor = spy(processor);
         spyProcessor.execute();
         verify(mockConsumer, times(1)).consume(any(), any());
@@ -92,13 +91,20 @@ public class SynchronousProducerConsumerProcessorTest
             {
                 producerCalls++;
                 return producerCalls == 1
-                       ? Collections.singletonList(1)
-                       : null;
+                       ? createProducerResult()
+                       : new ProducerResult();
 
             }
         }).when(mockProducer).produce(any());
         SynchronousProducerConsumerProcessor spyProcessor = spy(processor);
         spyProcessor.execute();
         verify(mockConsumer, times(1)).consume(any(), any());
+    }
+
+    private ProducerResult createProducerResult()
+    {
+        ProducerResult producerResult = new ProducerResult();
+        producerResult.setItemsProduced(Arrays.asList(1));
+        return producerResult;
     }
 }
