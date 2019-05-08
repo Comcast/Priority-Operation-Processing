@@ -21,9 +21,11 @@ import com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator.PrepOps
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -119,7 +121,19 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             return new DefaultDataObjectResponse<>(agendaResponse.getErrorResponse());
         }
 
+        // The transformRequest needs to be persisted with the updated fields (TODO: this order of operations is not desirable)
         transformRequest.getParams().put(GeneralParamKey.agendaId, agendaResponse.getFirst().getId());
+        try
+        {
+            objectPersister.update(transformRequest);
+        }
+        catch(PersistenceException e)
+        {
+            deleteTransformRequest(transformRequest.getId());
+            trackerManager.cleanUp();
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(e, 500, request.getCID()));
+        }
+
         return response;
     }
 
