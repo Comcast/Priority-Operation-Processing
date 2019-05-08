@@ -70,7 +70,7 @@ public class SynchronousProducerConsumerProcessor<T>
     /**
      * Called when the processing time expires during execution
      */
-    public void processingTimeExpired()
+    protected void processingTimeExpired()
     {
 
     }
