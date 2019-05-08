@@ -10,7 +10,7 @@ public class ConsumerResult<T>
         return itemsConsumedCount;
     }
 
-    public ConsumerResult setItemsConsumedCount(int itemsConsumedCount)
+    public ConsumerResult<T> setItemsConsumedCount(int itemsConsumedCount)
     {
         this.itemsConsumedCount = itemsConsumedCount;
         return this;
@@ -21,7 +21,7 @@ public class ConsumerResult<T>
         return interrupt;
     }
 
-    public ConsumerResult setInterrupt(boolean interrupt)
+    public ConsumerResult<T> setInterrupt(boolean interrupt)
     {
         this.interrupt = interrupt;
         return this;

@@ -12,7 +12,7 @@ public class ProducerResult<T>
         return itemsProduced;
     }
 
-    public ProducerResult setItemsProduced(Collection<T> itemsProduced)
+    public ProducerResult<T> setItemsProduced(Collection<T> itemsProduced)
     {
         this.itemsProduced = itemsProduced;
         return this;
@@ -23,7 +23,7 @@ public class ProducerResult<T>
         return interrupt;
     }
 
-    public ProducerResult setInterrupt(boolean interrupt)
+    public ProducerResult<T> setInterrupt(boolean interrupt)
     {
         this.interrupt = interrupt;
         return this;
