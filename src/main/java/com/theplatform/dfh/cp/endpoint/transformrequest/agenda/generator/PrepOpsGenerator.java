@@ -90,15 +90,9 @@ public class PrepOpsGenerator
     {
         if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
 
-        ParamsMap transformRequestParams = transformRequest.getParams();
-        if(transformRequestParams == null) return;
         if(agenda.getParams() == null) agenda.setParams(new ParamsMap());
 
-        String cid = transformRequestParams.getString(GeneralParamKey.cid);
-        if(!StringUtils.isBlank(cid))
-        {
-            agenda.getParams().put(GeneralParamKey.cid, cid);
-        }
+        agenda.setCid(transformRequest.getCid());
     }
 
     protected void addOp(List<Operation> ops, String name, String type, Object payload)

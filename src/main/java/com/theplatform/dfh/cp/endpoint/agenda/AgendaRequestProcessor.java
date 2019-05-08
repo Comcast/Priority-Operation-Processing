@@ -261,6 +261,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
             operationProgress.setAgendaProgressId(agendaProgressId);
             operationProgress.setProcessingState(ProcessingState.WAITING);
             operationProgress.setOperation(operation.getName());
+            operationProgress.setCid(agenda.getCid());
             operationProgress.setId(OperationProgress.generateId(agendaProgressId, operation.getName()));
 
             if (operation.getParams() != null)
