@@ -44,7 +44,7 @@ public class SynchronousProducerConsumerProcessor<T>
             Collection<T> producedItems = producer.produce(endProcessingTime);
             if(producedItems == null
                 || producedItems.size() == 0
-                || isInstantEqualOrAfter(endProcessingTime))
+                || InstantUtil.isEqualOrAfter(endProcessingTime))
             {
                 break;
             }
@@ -59,17 +59,13 @@ public class SynchronousProducerConsumerProcessor<T>
             }
         }
 
-        if(isInstantEqualOrAfter(endProcessingTime))
+        if(InstantUtil.isEqualOrAfter(endProcessingTime))
         {
             processingTimeExpired();
         }
     }
 
-    private boolean isInstantEqualOrAfter(Instant endTime)
-    {
-        return Instant.now().equals(endTime)
-            || Instant.now().isAfter(endTime);
-    }
+
 
     /**
      * Called when the processing time expires during execution
