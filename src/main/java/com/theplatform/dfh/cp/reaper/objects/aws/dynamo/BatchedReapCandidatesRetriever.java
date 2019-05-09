@@ -67,6 +67,6 @@ public class BatchedReapCandidatesRetriever extends BatchedObjectFieldRetriever
         return "BatchedReapCandidatesRetriever{" +
             "timeFieldName='" + timeFieldName + '\'' +
             ", reapUpperBoundUTC=" + reapUpperBoundUTC +
-            '}';
+            "} " + super.toString();
     }
 }
