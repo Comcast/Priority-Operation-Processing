@@ -6,8 +6,6 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
 import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedDeleter;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedObjectFieldRetriever;
 import com.theplatform.dfh.cp.reaper.objects.aws.factory.ConsumerFactory;
 import com.theplatform.dfh.cp.reaper.objects.aws.factory.ProducerFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
@@ -24,7 +22,7 @@ import java.io.OutputStream;
  *
  * The incoming request from an event is whatever is specified in the event (assuming constant JSON text)
  */
-public class AWSLambdaStreamEntry implements RequestStreamHandler
+public class AWSDataObjectReaperEntry implements RequestStreamHandler
 {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,8 +32,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private ConsumerFactory consumerFactory = new ConsumerFactory();
     private AWSDynamoDBFactory awsDynamoDBFactory = new AWSDynamoDBFactory();
 
-    public AWSLambdaStreamEntry(
-    )
+    public AWSDataObjectReaperEntry()
     {
     }
 
