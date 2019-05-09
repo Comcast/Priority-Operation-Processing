@@ -70,7 +70,7 @@ public class BatchedReapCandidatesRetrieverTest
     public void testProduceToDesiredLimit(final int desiredRequestCount)
     {
         doReturn(createScanResult(1, false)).when(mockAmazonDynamoDB).scan(any(ScanRequest.class));
-        retriever.setBatchSize(desiredRequestCount);
+        retriever.setTargetBatchSize(desiredRequestCount);
         Assert.assertTrue(retriever.produce(Instant.now().plusSeconds(60)).getItemsProduced().size() >= desiredRequestCount);
     }
 

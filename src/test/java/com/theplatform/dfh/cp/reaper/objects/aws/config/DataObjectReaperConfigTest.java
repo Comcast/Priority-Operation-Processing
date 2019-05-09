@@ -12,7 +12,7 @@ public class DataObjectReaperConfigTest
     {
         return new Object[][]
             {
-                { new DataObjectReaperConfig().setBatchSize(0), "batchSize" },
+                { new DataObjectReaperConfig().setTargetBatchSize(0), "batchSize" },
                 { new DataObjectReaperConfig().setIdFieldName(""), "idFieldName" },
                 { new DataObjectReaperConfig().setTableName(""), "tableName" },
                 { new DataObjectReaperConfig().setTimeFieldName(""), "timeFieldName" },

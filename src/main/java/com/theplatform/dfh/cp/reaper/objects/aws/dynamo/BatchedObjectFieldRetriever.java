@@ -31,7 +31,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
     private final String tableName;
     private final String fieldName;
     private long scanDelayMillis = 0;
-    private int batchSize = 50;
+    private int targetBatchSize = 50;
     private int objectScanLimit = 50;
 
     // this is a dynamodb thing for tracking the last key evaluated (pagination)
@@ -62,8 +62,9 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
         if(scanComplete)
             return new ProducerResult<>();
 
+        logger.info("Attempting to scan for approximately {} items.", targetBatchSize);
         LinkedList<String> ids = new LinkedList<>();
-        while(ids.size() < batchSize)
+        while(ids.size() < targetBatchSize)
         {
             ScanResult scanResult;
             try
@@ -89,6 +90,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
             if(!delay(scanDelayMillis))
                 break;
         }
+        logger.info("Scan produced {} items.", ids.size());
         return new ProducerResult<String>().setItemsProduced(ids);
     }
 
@@ -139,9 +141,9 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
         return this;
     }
 
-    public BatchedObjectFieldRetriever setBatchSize(int batchSize)
+    public BatchedObjectFieldRetriever setTargetBatchSize(int targetBatchSize)
     {
-        this.batchSize = batchSize;
+        this.targetBatchSize = targetBatchSize;
         return this;
     }
 
