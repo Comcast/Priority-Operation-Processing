@@ -21,7 +21,7 @@ public class ProducerFactory
             reaperConfig.getTableName(),
             reaperConfig.getIdFieldName(),
             reaperConfig.getTimeFieldName(),
-            Instant.now().minusSeconds(reaperConfig.getReapAgeMinutes() * 60).getEpochSecond())
+            Instant.now().minusSeconds(reaperConfig.getReapAgeMinutes() * 60).toEpochMilli())
             .setTargetBatchSize(reaperConfig.getTargetBatchSize())
             .setObjectScanLimit(reaperConfig.getObjectScanLimit())
             .setScanDelayMillis(reaperConfig.getScanDelayMillis());
