@@ -152,4 +152,19 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
         this.scanDelayMillis = scanDelayMillis;
         return this;
     }
+
+    @Override
+    public String toString()
+    {
+        return "BatchedObjectFieldRetriever{" +
+            "dynamoDB=" + dynamoDB +
+            ", tableName='" + tableName + '\'' +
+            ", fieldName='" + fieldName + '\'' +
+            ", scanDelayMillis=" + scanDelayMillis +
+            ", targetBatchSize=" + targetBatchSize +
+            ", objectScanLimit=" + objectScanLimit +
+            ", lastKeyEvaluated=" + lastKeyEvaluated +
+            ", scanComplete=" + scanComplete +
+            '}';
+    }
 }

@@ -60,4 +60,13 @@ public class BatchedReapCandidatesRetriever extends BatchedObjectFieldRetriever
                         .withComparisonOperator(ComparisonOperator.LT)
                         .withAttributeValueList(new AttributeValue().withN(String.valueOf(reapUpperBoundUTC)))));
     }
+
+    @Override
+    public String toString()
+    {
+        return "BatchedReapCandidatesRetriever{" +
+            "timeFieldName='" + timeFieldName + '\'' +
+            ", reapUpperBoundUTC=" + reapUpperBoundUTC +
+            '}';
+    }
 }

@@ -158,4 +158,16 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
         this.logDeleteOnly = logDeleteOnly;
         return this;
     }
+
+    @Override
+    public String toString()
+    {
+        return "BatchedDeleter{" +
+            "dynamoDB=" + dynamoDB +
+            ", tableName='" + tableName + '\'' +
+            ", fieldName='" + fieldName + '\'' +
+            ", deleteCallDelayMillis=" + deleteCallDelayMillis +
+            ", logDeleteOnly=" + logDeleteOnly +
+            '}';
+    }
 }

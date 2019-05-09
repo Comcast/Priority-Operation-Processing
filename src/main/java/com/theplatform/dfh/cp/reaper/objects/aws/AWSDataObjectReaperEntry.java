@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.com.dfh.modules.sync.util.Consumer;
+import com.theplatform.com.dfh.modules.sync.util.Producer;
 import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
 import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
 import com.theplatform.dfh.cp.reaper.objects.aws.factory.ConsumerFactory;
@@ -56,11 +58,15 @@ public class AWSDataObjectReaperEntry implements RequestStreamHandler
 
         AmazonDynamoDB dynamoDB = awsDynamoDBFactory.getAmazonDynamoDB();
 
-        SynchronousProducerConsumerProcessor<String> processor = new SynchronousProducerConsumerProcessor<>(
-            producerFactory.createBatchedReapCandidatesRetriever(dynamoDB, reaperConfig),
-            consumerFactory.createBatchedDeleter(dynamoDB, reaperConfig)
-        )
-        .setRunMaxSeconds(reaperConfig.getMaximumExecutionSeconds());
+        Producer<String> producer = producerFactory.createBatchedReapCandidatesRetriever(dynamoDB, reaperConfig);
+        Consumer<String> consumer = consumerFactory.createBatchedDeleter(dynamoDB, reaperConfig);
+
+        logger.info(producer.toString());
+        logger.info(consumer.toString());
+
+        SynchronousProducerConsumerProcessor<String> processor =
+            new SynchronousProducerConsumerProcessor<>(producer, consumer)
+                .setRunMaxSeconds(reaperConfig.getMaximumExecutionSeconds());
 
         processor.execute();
     }
