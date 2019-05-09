@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.6</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.reaper</groupId>
+    <artifactId>pl-dfh-cp-data-object-reaper-aws</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Data object reaper AWS compatible zip package suitable for Lambda</name>
+
+    <properties>
+        <aws-java-jdk>1.11.100</aws-java-jdk>
+        <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
+        <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
+        <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
+        <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
+        <dfh-producer-consumer-util>1.0.0-SNAPSHOT</dfh-producer-consumer-util>
+        <dfh-dynamodb.version>1.0.1-SNAPSHOT</dfh-dynamodb.version>
+    </properties>
+
+    <dependencies>
+        <!-- DFH Dependencies -->
+        <dependency>
+            <groupId>com.theplatform.dfh</groupId>
+            <artifactId>pl-dfh-producer-consumer-util</artifactId>
+            <version>${dfh-producer-consumer-util}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.version</groupId>
+            <artifactId>pl-dfh-module-version-info</artifactId>
+            <version>${dfh-module-version-info.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
+            <version>${dfh-aws-base-endpoint.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
+            <version>${dfh-dynamodb.version}</version>
+        </dependency>
+
+        <!-- AWS Dependencies -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws-java-jdk}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws-lambda-java-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-lambda</artifactId>
+            <version>${aws-lambda-jdk.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!--  Note: Normally, this plugin would be run using
+                "mvn compile assembly:single" but the execution
+                clause below binds it to the normal 'package' lifecycle phase
+                -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/lambda_deployment_package_assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>lambda_deployment_package_execution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.theplatform.plugins</groupId>
+                <artifactId>buildproperty-plugin</artifactId>
+                <configuration>
+                    <service>true</service>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>buildprops</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>plbuild-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
