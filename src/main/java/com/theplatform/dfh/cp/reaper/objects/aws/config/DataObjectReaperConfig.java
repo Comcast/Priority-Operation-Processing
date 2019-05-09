@@ -5,26 +5,31 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Configuration object for the reaper functionality
+ */
 public class DataObjectReaperConfig
 {
     // lambda settings
-    private int maximumExecutionSeconds = 60000;
+    private int maximumExecutionSeconds = 60;
 
     // general settings
     private String tableName;
     private String idFieldName;
-    private long reapAgeMinutes;
+
+    // scan settings
+    private int reapAgeMinutes;
+    private long scanDelayMillis = 0;
+    private int targetBatchSize = 50;
+    private int objectScanLimit = 50;
 
     // delete settings
     private long deleteCallDelayMillis = 0;
-
-    // scan settings
-    private long scanDelayMillis = 0;
-    private int batchSize = 50;
-    private int objectScanLimit = 50;
+    private boolean logDeleteOnly = false;
 
     // reaper scan settings
     private String timeFieldName;
+
 
     public DataObjectReaperConfig()
     {
@@ -63,12 +68,12 @@ public class DataObjectReaperConfig
         return this;
     }
 
-    public long getReapAgeMinutes()
+    public int getReapAgeMinutes()
     {
         return reapAgeMinutes;
     }
 
-    public DataObjectReaperConfig setReapAgeMinutes(long reapAgeMinutes)
+    public DataObjectReaperConfig setReapAgeMinutes(int reapAgeMinutes)
     {
         this.reapAgeMinutes = reapAgeMinutes;
         return this;
@@ -96,14 +101,14 @@ public class DataObjectReaperConfig
         return this;
     }
 
-    public int getBatchSize()
+    public int getTargetBatchSize()
     {
-        return batchSize;
+        return targetBatchSize;
     }
 
-    public DataObjectReaperConfig setBatchSize(int batchSize)
+    public DataObjectReaperConfig setTargetBatchSize(int targetBatchSize)
     {
-        this.batchSize = batchSize;
+        this.targetBatchSize = targetBatchSize;
         return this;
     }
 
@@ -129,6 +134,17 @@ public class DataObjectReaperConfig
         return this;
     }
 
+    public boolean isLogDeleteOnly()
+    {
+        return logDeleteOnly;
+    }
+
+    public DataObjectReaperConfig setLogDeleteOnly(boolean logDeleteOnly)
+    {
+        this.logDeleteOnly = logDeleteOnly;
+        return this;
+    }
+
     public String validate()
     {
         List<String> validationIssues = new LinkedList<>();
@@ -151,8 +167,8 @@ public class DataObjectReaperConfig
         if(scanDelayMillis < 0)
             validationIssues.add("scanDelayMillis must be non-negative");
 
-        if(batchSize < 1)
-            validationIssues.add("batchSize must be 1 or more");
+        if(targetBatchSize < 1)
+            validationIssues.add("targetBatchSize must be 1 or more");
 
         if(objectScanLimit < 1)
             validationIssues.add("objectScanLimit must be 1 or more");

@@ -13,6 +13,7 @@ public class ConsumerFactory
             dynamoDB,
             reaperConfig.getTableName(),
             reaperConfig.getIdFieldName())
-            .setDeleteCallDelayMillis(reaperConfig.getDeleteCallDelayMillis());
+            .setDeleteCallDelayMillis(reaperConfig.getDeleteCallDelayMillis())
+            .setLogDeleteOnly(reaperConfig.isLogDeleteOnly());
     }
 }

@@ -38,6 +38,7 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
     private final String tableName;
     private final String fieldName;
     private long deleteCallDelayMillis = 0;
+    private boolean logDeleteOnly = false;
 
     public BatchedDeleter(AmazonDynamoDB dynamoDB,
         String tableName,
@@ -52,7 +53,12 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
     public ConsumerResult<String> consume(Collection<String> collection, Instant endProcessingTime)
     {
         if(collection == null)
+        {
+            logger.info("Input collection is null. No deletes to perform.");
             return new ConsumerResult<String>().setItemsConsumedCount(0);
+        }
+
+        logger.info("Attempting to delete {} items.", collection.size());
 
         int currentIndex = 0;
         int itemsRemoved = 0;
@@ -78,7 +84,7 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
             if(!delay(deleteCallDelayMillis))
                 break;
         }
-
+        logger.info("Delete removed {} items.", itemsRemoved);
         return new ConsumerResult<String>().setItemsConsumedCount(itemsRemoved);
     }
 
@@ -90,8 +96,14 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
                 .withRequestItems(createRequestItemMap(idsToDelete))
                 .withReturnConsumedCapacity(ReturnConsumedCapacity.TOTAL);
 
-            logger.info("Deleting the following ids from {}: {}", tableName, String.join(",", idsToDelete));
+            // do not perform the delete
+            if(logDeleteOnly)
+            {
+                logger.info("[Log Only Mode] Would delete the following ids from {}: {}", tableName, String.join(",", idsToDelete));
+                return idsToDelete.size();
+            }
 
+            logger.info("Deleting the following ids from {}: {}", tableName, String.join(",", idsToDelete));
             BatchWriteItemResult batchWriteItemResult = dynamoDB.batchWriteItem(batchWriteItemRequest);
             if(batchWriteItemResult.getUnprocessedItems() != null
                 && batchWriteItemResult.getUnprocessedItems().containsKey(tableName))
@@ -138,6 +150,12 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
     public BatchedDeleter setDeleteCallDelayMillis(long deleteCallDelayMillis)
     {
         this.deleteCallDelayMillis = deleteCallDelayMillis;
+        return this;
+    }
+
+    public BatchedDeleter setLogDeleteOnly(boolean logDeleteOnly)
+    {
+        this.logDeleteOnly = logDeleteOnly;
         return this;
     }
 }
