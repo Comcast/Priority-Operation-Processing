@@ -85,8 +85,9 @@ public class SynchronousProducerConsumerProcessor<T>
         return runMaxSeconds;
     }
 
-    public void setRunMaxSeconds(int runMaxSeconds)
+    public SynchronousProducerConsumerProcessor<T> setRunMaxSeconds(int runMaxSeconds)
     {
         this.runMaxSeconds = runMaxSeconds;
+        return this;
     }
 }
