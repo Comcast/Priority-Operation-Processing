@@ -84,7 +84,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
                 scanComplete = true;
                 break;
             }
-            if(InstantUtil.isEqualOrAfter(endProcessingTime))
+            if(InstantUtil.isNowAfterOrEqual(endProcessingTime))
                 break;
 
             if(!delay(scanDelayMillis))

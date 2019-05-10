@@ -78,13 +78,13 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
             }
             currentIndex += MAX_BATCH_WRITE_ITEM;
 
-            if(InstantUtil.isEqualOrAfter(endProcessingTime))
+            if(InstantUtil.isNowAfterOrEqual(endProcessingTime))
                 break;
 
             if(!delay(deleteCallDelayMillis))
                 break;
         }
-        logger.info("Delete {} items from {}", tableName, itemsRemoved);
+        logger.info("Deleted {} items from {}", tableName, itemsRemoved);
         return new ConsumerResult<String>().setItemsConsumedCount(itemsRemoved);
     }
 
