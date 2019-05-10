@@ -54,11 +54,11 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
     {
         if(collection == null)
         {
-            logger.info("Input collection is null. No deletes to perform.");
+            logger.info("Input collection is null. No deletes to perform on {}", tableName);
             return new ConsumerResult<String>().setItemsConsumedCount(0);
         }
 
-        logger.info("Attempting to delete {} items.", collection.size());
+        logger.info("Attempting to delete {} items from {}", collection.size(), tableName);
 
         int currentIndex = 0;
         int itemsRemoved = 0;
@@ -73,7 +73,7 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
             }
             catch(Exception e)
             {
-                logger.error("Delete operation failed. Interrupting processing.", e);
+                logger.error(String.format("Delete operation failed on %1$s. Interrupting processing.", tableName), e);
                 return new ConsumerResult<String>().setInterrupted(true);
             }
             currentIndex += MAX_BATCH_WRITE_ITEM;
@@ -84,7 +84,7 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
             if(!delay(deleteCallDelayMillis))
                 break;
         }
-        logger.info("Delete removed {} items.", itemsRemoved);
+        logger.info("Delete {} items from {}", tableName, itemsRemoved);
         return new ConsumerResult<String>().setItemsConsumedCount(itemsRemoved);
     }
 

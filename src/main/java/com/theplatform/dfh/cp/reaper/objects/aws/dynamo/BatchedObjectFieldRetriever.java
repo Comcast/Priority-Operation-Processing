@@ -62,7 +62,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
         if(scanComplete)
             return new ProducerResult<>();
 
-        logger.info("Attempting to scan for approximately {} items.", targetBatchSize);
+        logger.info("Attempting to scan {} for approximately {} items", tableName, targetBatchSize);
         LinkedList<String> ids = new LinkedList<>();
         while(ids.size() < targetBatchSize)
         {
@@ -73,7 +73,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
             }
             catch(Exception e)
             {
-                logger.error("Scan operation failed. Interrupting processing.", e);
+                logger.error(String.format("Scan operation failed on %1$s. Interrupting processing.", tableName), e);
                 return new ProducerResult<String>().setInterrupted(true);
             }
             appendItems(ids, fieldName, scanResult);
@@ -90,7 +90,7 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
             if(!delay(scanDelayMillis))
                 break;
         }
-        logger.info("Scan produced {} items.", ids.size());
+        logger.info("Scan of {} produced {} items", tableName, ids.size());
         return new ProducerResult<String>().setItemsProduced(ids);
     }
 
