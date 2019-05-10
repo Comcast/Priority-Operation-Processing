@@ -1,7 +1,9 @@
 package com.theplatform.dfh.cp.handler.reaper.impl.filter;
 
+import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
+import com.theplatform.com.dfh.modules.sync.util.Producer;
+import com.theplatform.com.dfh.modules.sync.util.ProducerResult;
 import com.theplatform.dfh.cp.handler.reaper.impl.kubernetes.KubernetesPodFacade;
-import com.theplatform.dfh.cp.handler.reaper.impl.util.InstantUtil;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.Pod;
@@ -24,22 +26,22 @@ import java.util.List;
  *
  * All pods for our handlers/components only use a single container. This code ASSUMES a single container per pod.
  */
-public class ReapPodLookupFilter implements PodLookupFilter
+public class ReapPodLookupFilter implements Producer<Pod>
 {
+    public static final int DEFAULT_POD_REAP_AGE_MINUTES = 60*24;
     private static Logger logger = LoggerFactory.getLogger(ReapPodLookupFilter.class);
+    private static final String STATUS_PHASE = "status.phase";
 
-    public static final int DEFAULT_POD_REAP_AGE_MINUTES = 60 * 24;
-
-    private final String STATUS_PHASE = "status.phase";
+    private final KubernetesPodFacade kubernetesPodFacade;
+    private final Instant reapUpperBoundUTC;
     private List<PodPhase> podPhases;
     private String namespace = "default";
-    private final KubernetesPodFacade kubernetesPodFacade;
-    private int podReapAgeMinutes = 60*24; // default to a day
     private boolean lookupComplete = false;
 
-    public ReapPodLookupFilter(KubernetesPodFacade kubernetesPodFacade)
+    public ReapPodLookupFilter(KubernetesPodFacade kubernetesPodFacade, Instant reapUpperBoundUTC)
     {
         this.kubernetesPodFacade = kubernetesPodFacade;
+        this.reapUpperBoundUTC = reapUpperBoundUTC;
     }
 
     public ReapPodLookupFilter withPodPhases(PodPhase... podPhases)
@@ -54,25 +56,20 @@ public class ReapPodLookupFilter implements PodLookupFilter
         return this;
     }
 
-    public ReapPodLookupFilter withReapPodAgeMinutes(int podReapAgeMinutes)
-    {
-        this.podReapAgeMinutes = podReapAgeMinutes;
-        return this;
-    }
-
     @Override
-    public List<Pod> getNextResults()
+    public ProducerResult<Pod> produce(Instant processEndTime)
     {
         if(lookupComplete)
-            return new LinkedList<>();
+            return new ProducerResult<>();
 
+        // TODO: There is no support for pagination for kubernetes yet (need a newer client)
         List<Pod> resultPods = new LinkedList<>();
         if(podPhases != null && podPhases.size() > 0)
         {
             podPhases.forEach(p -> appendPodsByPhaseStatusAndAge(p, resultPods));
         }
         lookupComplete = true;
-        return resultPods;
+        return new ProducerResult<Pod>().setItemsProduced(resultPods);
     }
 
     protected void appendPodsByPhaseStatusAndAge(PodPhase podPhase, List<Pod> resultPods)
@@ -85,7 +82,7 @@ public class ReapPodLookupFilter implements PodLookupFilter
                 FinalPodPhaseInfo podPhaseInfo = FinalPodPhaseInfo.fromPodStatus(pod.getMetadata().getName(), pod.getStatus());
                 if(podPhaseInfo.phase.hasFinished())
                 {
-                    if(isPodPastAge(pod, podReapAgeMinutes))
+                    if(isPodPastAge(pod, reapUpperBoundUTC))
                         resultPods.add(pod);
                 }
             });
@@ -96,7 +93,7 @@ public class ReapPodLookupFilter implements PodLookupFilter
         return pod.getStatus().getContainerStatuses().stream().allMatch(cs -> cs.getState() != null && cs.getState().getTerminated() != null);
     }
 
-    protected static boolean isPodPastAge(Pod pod, int podReapAgeMinutes)
+    protected static boolean isPodPastAge(Pod pod, Instant reapUpperBoundUTC)
     {
         String finishedAtString;
         if(pod.getStatus().getContainerStatuses() != null && pod.getStatus().getContainerStatuses().size() > 0)
@@ -123,12 +120,24 @@ public class ReapPodLookupFilter implements PodLookupFilter
             return false;
         }
 
-        return InstantUtil.haveMinutesPassedSince(finishedInstant, Instant.now(), podReapAgeMinutes);
+        return InstantUtil.isAfterOrEqual(reapUpperBoundUTC, finishedInstant);
     }
 
     @Override
     public void reset()
     {
         lookupComplete = false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ReapPodLookupFilter{" +
+            "kubernetesPodFacade=" + kubernetesPodFacade +
+            ", reapUpperBoundUTC=" + reapUpperBoundUTC +
+            ", podPhases=" + podPhases +
+            ", namespace='" + namespace + '\'' +
+            ", lookupComplete=" + lookupComplete +
+            '}';
     }
 }

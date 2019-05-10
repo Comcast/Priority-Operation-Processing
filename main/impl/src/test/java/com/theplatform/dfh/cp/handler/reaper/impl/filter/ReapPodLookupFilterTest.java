@@ -24,12 +24,20 @@ import java.util.List;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ReapPodLookupFilterTest
 {
     private static Logger logger = LoggerFactory.getLogger(ReapPodLookupFilterTest.class);
 
+    private final Instant END_PROCESSING_TIME = Instant.now().plusSeconds(60);
+
+    // no confusion about what now is across the tests
+    private final Instant NOW = Instant.now();
+
     private final int REAP_AGE_MINUTES = 240;
+    private final Instant REAP_UPPER_BOUND_UTC = NOW.minusSeconds(60*REAP_AGE_MINUTES);
     private ReapPodLookupFilter reapPodLookupFilter;
     private KubernetesPodFacade mockKubernetesPodFacade;
 
@@ -37,8 +45,25 @@ public class ReapPodLookupFilterTest
     public void setup()
     {
         mockKubernetesPodFacade = mock(KubernetesPodFacade.class);
-        reapPodLookupFilter = new ReapPodLookupFilter(mockKubernetesPodFacade)
-            .withReapPodAgeMinutes(REAP_AGE_MINUTES);
+        reapPodLookupFilter = new ReapPodLookupFilter(mockKubernetesPodFacade, REAP_UPPER_BOUND_UTC);
+    }
+
+    @Test
+    public void testReset()
+    {
+        reapPodLookupFilter.withPodPhases(PodPhase.SUCCEEDED);
+
+        reapPodLookupFilter.produce(END_PROCESSING_TIME);
+        verify(mockKubernetesPodFacade, times(1)).lookupPods(any(), any());
+
+        // no additional calls made
+        reapPodLookupFilter.produce(END_PROCESSING_TIME);
+        verify(mockKubernetesPodFacade, times(1)).lookupPods(any(), any());
+
+        // reset and mockKubernetesPodFacade called again
+        reapPodLookupFilter.reset();
+        reapPodLookupFilter.produce(END_PROCESSING_TIME);
+        verify(mockKubernetesPodFacade, times(2)).lookupPods(any(), any());
     }
 
     @DataProvider
@@ -46,7 +71,6 @@ public class ReapPodLookupFilterTest
     {
         return new Object[][]
             {
-
                 // no pods to reap
                 {
                     new ArrayList<>(), new ArrayList<>()
@@ -54,26 +78,28 @@ public class ReapPodLookupFilterTest
                 // no pods to reap
                 {
                     Arrays.asList(
-                        createPod("noreap1", PodPhase.FAILED, createStatus(Instant.now())),
-                        createPod("noreap2", PodPhase.FAILED, createStatus(Instant.now()))
+                        createPod("noreap1", PodPhase.FAILED, createStatus(NOW)),
+                        createPod("noreap2", PodPhase.FAILED, createStatus(NOW))
                     ),
                     new ArrayList<>()
                 },
                 // mix of pods to reap
                 {
                     Arrays.asList(
-                        createPod("reap1", PodPhase.FAILED, createStatus(Instant.now().minusSeconds(60 * REAP_AGE_MINUTES))),
-                        createPod("noreap2", PodPhase.FAILED, createStatus(Instant.now().minusSeconds(60 * (REAP_AGE_MINUTES - 10))))
+                        createPod("reap1", PodPhase.FAILED, createStatus(REAP_UPPER_BOUND_UTC)), // exactly the same reap time
+                        createPod("reap2", PodPhase.FAILED, createStatus(REAP_UPPER_BOUND_UTC.minusSeconds(1))),
+                        createPod("noreap2", PodPhase.FAILED, createStatus(NOW.minusSeconds(60 * (REAP_AGE_MINUTES - 10))))
                     ),
                     Arrays.asList(
-                        "reap1"
+                        "reap1",
+                        "reap2"
                     )
                 },
                 // only pods to reap
                 {
                     Arrays.asList(
-                        createPod("reap1", PodPhase.FAILED, createStatus(Instant.now().minusSeconds(60 * REAP_AGE_MINUTES))),
-                        createPod("reap2", PodPhase.FAILED, createStatus(Instant.now().minusSeconds(60 * REAP_AGE_MINUTES)))
+                        createPod("reap1", PodPhase.FAILED, createStatus(REAP_UPPER_BOUND_UTC)),
+                        createPod("reap2", PodPhase.FAILED, createStatus(REAP_UPPER_BOUND_UTC))
                     ),
                     Arrays.asList(
                         "reap1",
@@ -110,22 +136,22 @@ public class ReapPodLookupFilterTest
             {
                 // future
                 {
-                    Instant.now().plusSeconds(60 * 10),
+                    NOW.plusSeconds(60 * 10),
                     false
                 },
                 // now
                 {
-                    Instant.now(),
+                    NOW,
                     false
                 },
                 // before reap age
                 {
-                    Instant.now().minusSeconds(60 * (REAP_AGE_MINUTES - 1)),
+                    NOW.minusSeconds(60 * (REAP_AGE_MINUTES - 1)),
                     false
                 },
                 // beyond reap age
                 {
-                    Instant.now().minusSeconds(60 * 250),
+                    NOW.minusSeconds(60 * 250),
                     true
                 }
             };
@@ -141,8 +167,17 @@ public class ReapPodLookupFilterTest
                 startTime,
                 null // This is the abnormal exit (kubernetes basically never started any containers)
             ),
-            REAP_AGE_MINUTES
+            REAP_UPPER_BOUND_UTC
         ), EXPECT_REAP);
+    }
+
+    @Test
+    public void testInvalidTimeFormatString()
+    {
+        Assert.assertFalse(
+            reapPodLookupFilter.isPodPastAge(
+                createPod("thePod", PodPhase.FAILED, createStatus("invalid time string")),
+                REAP_UPPER_BOUND_UTC));
     }
 
     /**
@@ -172,10 +207,15 @@ public class ReapPodLookupFilterTest
 
     private List<ContainerStatus> createStatus(Instant statusEndTime)
     {
+        return createStatus(statusEndTime.toString());
+    }
+
+    private List<ContainerStatus> createStatus(String finishedAt)
+    {
         ContainerStatus containerStatus = new ContainerStatus();
         ContainerState containerState = new ContainerState();
         ContainerStateTerminated containerStateTerminated = new ContainerStateTerminated();
-        containerStateTerminated.setFinishedAt(statusEndTime.toString());
+        containerStateTerminated.setFinishedAt(finishedAt);
         containerStateTerminated.setExitCode(0);
         containerState.setTerminated(containerStateTerminated);
         containerStatus.setState(containerState);
