@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.reaper.impl.delete;
 
+import com.theplatform.com.dfh.modules.sync.util.CollectionUtil;
 import com.theplatform.com.dfh.modules.sync.util.Consumer;
 import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
 import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
@@ -39,20 +40,16 @@ public class BatchedPodDeleter implements Consumer<Pod>
 
         logger.info("Attempting to delete {} pods", collection.size());
 
-        int currentIndex = 0;
-        List<Pod> podsToDelete = new LinkedList<>(collection);
-        while(currentIndex < podsToDelete.size())
+        Collection<List<Pod>> podBatches = CollectionUtil.split(new LinkedList<>(collection), podReapBatchSize);
+        for(List<Pod> podBatch : podBatches)
         {
-            int lastIndex = Math.min(currentIndex + podReapBatchSize, podsToDelete.size());
-            List<Pod> deleteBatch = podsToDelete.subList(currentIndex, lastIndex);
-            deletePods(deleteBatch);
-            currentIndex += podReapBatchSize;
-
+            deletePods(podBatch);
             if(InstantUtil.isNowAfterOrEqual(endProcessingTime))
                 break;
         }
-        logger.info("Deleted {} pods", podsToDelete.size());
-        return new ConsumerResult<Pod>().setItemsConsumedCount(podsToDelete.size());
+
+        logger.info("Deleted {} pods", collection.size());
+        return new ConsumerResult<Pod>().setItemsConsumedCount(collection.size());
     }
 
     /**
