@@ -44,7 +44,7 @@ public class SynchronousProducerConsumerProcessor<T>
             if(producerResult.isInterrupted()
                 || producerResult.getItemsProduced() == null
                 || producerResult.getItemsProduced().size() == 0
-                || InstantUtil.isEqualOrAfter(endProcessingTime))
+                || InstantUtil.isNowAfterOrEqual(endProcessingTime))
             {
                 break;
             }
@@ -59,7 +59,7 @@ public class SynchronousProducerConsumerProcessor<T>
             }
         }
 
-        if(InstantUtil.isEqualOrAfter(endProcessingTime))
+        if(InstantUtil.isNowAfterOrEqual(endProcessingTime))
         {
             processingTimeExpired();
         }

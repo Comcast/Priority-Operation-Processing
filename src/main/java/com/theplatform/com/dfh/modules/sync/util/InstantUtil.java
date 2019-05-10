@@ -4,9 +4,14 @@ import java.time.Instant;
 
 public class InstantUtil
 {
-    public static boolean isEqualOrAfter(Instant endTime)
+    public static boolean isNowAfterOrEqual(Instant endTime)
     {
-        return Instant.now().equals(endTime)
-            || Instant.now().isAfter(endTime);
+        return isAfterOrEqual(Instant.now(), endTime);
+    }
+
+    public static boolean isAfterOrEqual(Instant source, Instant target)
+    {
+        return source.equals(target)
+            || source.isAfter(target);
     }
 }
