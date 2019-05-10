@@ -58,7 +58,6 @@ public class BatchedPodDeleter implements Consumer<Pod>
     /**
      * Deletes the specified pod list in batches as specified by the size
      * @param pods The pods to delete
-     * @return true if processing should continue, false otherwise
      */
     protected void deletePods(List<Pod> pods)
     {
