@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.BatchWriteItemResult;
 import com.amazonaws.services.dynamodbv2.model.DeleteRequest;
 import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
+import com.theplatform.com.dfh.modules.sync.util.CollectionUtil;
 import com.theplatform.com.dfh.modules.sync.util.Consumer;
 import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
 import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
@@ -60,13 +61,11 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
 
         logger.info("Attempting to delete {} items from {}", collection.size(), tableName);
 
-        int currentIndex = 0;
+        Collection<List<String>> batchedSets = CollectionUtil.split(new LinkedList<>(collection), MAX_BATCH_WRITE_ITEM);
+
         int itemsRemoved = 0;
-        List<String> itemKeys = new LinkedList<>(collection);
-        while(currentIndex < itemKeys.size())
+        for(List<String> deleteBatch : batchedSets)
         {
-            int lastIndex = Math.min(currentIndex + MAX_BATCH_WRITE_ITEM, itemKeys.size());
-            List<String> deleteBatch = itemKeys.subList(currentIndex, lastIndex);
             try
             {
                 itemsRemoved += deleteItems(deleteBatch);
@@ -76,7 +75,6 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
                 logger.error(String.format("Delete operation failed on %1$s. Interrupting processing.", tableName), e);
                 return new ConsumerResult<String>().setInterrupted(true);
             }
-            currentIndex += MAX_BATCH_WRITE_ITEM;
 
             if(InstantUtil.isNowAfterOrEqual(endProcessingTime))
                 break;
@@ -84,6 +82,7 @@ public class BatchedDeleter extends BaseBatchedOperation implements Consumer<Str
             if(!delay(deleteCallDelayMillis))
                 break;
         }
+
         logger.info("Deleted {} items from {}", tableName, itemsRemoved);
         return new ConsumerResult<String>().setItemsConsumedCount(itemsRemoved);
     }
