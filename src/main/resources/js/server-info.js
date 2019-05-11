@@ -1,6 +1,6 @@
 var labIDMURL = "https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1";
 var prodIDMURL = "https://identity.auth.theplatform.com/idm/web/Authentication?form=json&schema=1.1";
-var servers =
+var serverInfo =
         [
             {
                 name:"Twinkle (Lab)",

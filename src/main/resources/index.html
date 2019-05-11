@@ -1,68 +1,124 @@
 <html>
 <head>
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="css/jquery.json-viewer.css">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.json-viewer.js"></script>
-    <script type="text/javascript" src="servers.js"></script>
-    <script type="text/javascript" src="login.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/tab.css">
+    <link rel="stylesheet" href="css/external/jquery.json-viewer.css">
+    <script type="text/javascript" src="js/external/jquery.min-3.3.1.js"></script>
+    <script type="text/javascript" src="js/external/jquery.json-viewer.js"></script>
+    <script type="text/javascript" src="js/server-info.js"></script>
+    <script type="text/javascript" src="js/request.js"></script>
+    <script type="text/javascript" src="js/authorization.js"></script>
+    <script type="text/javascript" src="js/tab.js"></script>
 </head>
 <body>
-<img src="images/fission_logo.png" height="120">
-<br><br>
-<form id="loginForm">
-    <div class="container">
+<!--<form id="loginForm">-->
+<!-- NOTE: Everything was in a form, didn't appear to be necessary and messes up things like the tabs anyway -->
+<!--</form>-->
 
-        <label for="target_server"><b>Stack</b></label>
-        <select name="target_server" id="target_server">
-            <script>
-                servers.forEach(addServerSelectOption);
-                function addServerSelectOption(item, index) {
-                    document.write("<option value=\""+ index +"\">" + item.name + "</option>")
-                }
-            </script>
-        </select>
+<!-- General Settings -->
 
-        <hr>
+<table width="100%">
+    <tr>
+        <td>
+            <div class="container">
+                <label for="target_server"><b>Stack</b></label>
+                <select name="target_server" id="target_server">
+                    <script>
+                        serverInfo.forEach(addServerSelectOption);
+                        function addServerSelectOption(item, index) {
+                            document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                        }
+                    </script>
+                </select>
 
-        <label for="mpx_username"><b>Username *</b></label>
-        <input id="mpx_username" placeholder="Enter Username" name="mpx_username" required>
+                <hr>
 
-        <label for="mpx_password"><b>Password *</b></label>
-        <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" required>
+                <label for="mpx_username"><b>Username *</b></label>
+                <input id="mpx_username" placeholder="Enter Username" name="mpx_username" onchange="resetTokenInfo()" required>
 
-        <label for="mpx_account"><b>Account ID</b></label>
-        <input id="mpx_account" placeholder="Account ID" name="mpx_account" required>
+                <label for="mpx_password"><b>Password *</b></label>
+                <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" onchange="resetTokenInfo()" required>
 
-        <hr>
-        <label for="target_endpoint"><b>Endpoint</b></label>
-        <select name="target_endpoint"  id="target_endpoint">
-            <script>
-                endpoints.forEach(addEndpointSelectOption);
-                function addEndpointSelectOption(item, index) {
-                    document.write("<option value=\""+ index +"\">" + item.name + "</option>")
-                }
-            </script>
-        </select>
-        <select name="query" id="query">
-            <option value="byId">byId</option>
-            <option value="byCid">byCid</option>
-            <option value="bylinkId">byLinkId</option>
-            <option value="other">other</option>
-        </select>
-        <input id="query_value" name="query_value" required>
-        <input type="checkbox" id="showProgressTable" checked>Show Progress Table (Agenda Progress only)
-        <input type="submit" value="Submit Request" name="query_button" onclick="authorizeWithLambda(event)"/>
-    </div>
+                <label for="mpx_account"><b>Account ID</b></label>
+                <input id="mpx_account" placeholder="Account ID" name="mpx_account" required>
+
+                <hr>
+                <label for="target_endpoint"><b>Endpoint</b></label>
+                <select name="target_endpoint"  id="target_endpoint">
+                    <script>
+                        endpoints.forEach(addEndpointSelectOption);
+                        function addEndpointSelectOption(item, index) {
+                            document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                        }
+                    </script>
+                </select>
+            </div>
+        </td>
+        <td align="right"><img id="fission_logo" src="images/fission_logo.png" height="120"></td>
+    </tr>
+</table>
+
+<div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'GET')" id="defaultOpen">GET</button>
+    <button class="tablinks" onclick="openTab(event, 'POST')">POST</button>
+    <button class="tablinks" onclick="openTab(event, 'PUT')">PUT</button>
+    <button class="tablinks" onclick="openTab(event, 'DELETE')">DELETE</button>
+</div>
+
+<div id="GET" class="tabcontent">
+    <select name="get_query_type" id="get_query_type">
+        <option value="byId">byId</option>
+        <option value="byCid">byCid</option>
+        <option value="bylinkId">byLinkId</option>
+        <option value="other">other</option>
+    </select>
+    <input id="get_query_value" name="get_query_value" size="120" required>
+    <input type="checkbox" id="showProgressTable" checked>Show Progress Table (Agenda Progress only)
+</div>
+
+<div id="POST" class="tabcontent">
     <div>
-        <label for="response">Response</label>
-        <div id="progressTable"></div>
-        <textarea id="response" name="response" cols="200" rows="20"></textarea>
+        <textarea id="data_to_post" class="submissiondata" name="data_to_post"></textarea>
     </div>
-</form>
+</div>
+
+<div id="PUT" class="tabcontent">
+    <div>
+        <textarea id="data_to_put" class="submissiondata" name="data_to_put"></textarea>
+    </div>
+</div>
+<div id="DELETE" class="tabcontent">
+    Delete Id: <input id="delete_query_value" name="delete_query_value" size="120" required>
+</div>
+<div>
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)"/>
+            </td>
+            <td>
+                <div style="margin-left: 20px;height: 40px;width: 40px">
+                <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <label for="response">Response</label>
+    <div id="progressTable"></div>
+    <textarea id="response" name="response" class="response" rows="20"></textarea>
+</div>
+
 <div class="container">
     <pre id="json-renderer"></pre>
 </div>
 </body>
+<!-- Load up the default tab (TODO: put into onload method?)-->
+<script>
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+</script>
 </html>
 

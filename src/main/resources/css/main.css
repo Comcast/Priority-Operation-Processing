@@ -42,30 +42,33 @@ button:hover {
     margin: 24px 0 12px 0;
 }
 
-/* Avatar image */
-img.avatar {
-    width: 40%;
-    border-radius: 50%;
-}
-
 /* Add padding to containers */
 .container {
     padding: 16px;
 }
 
-/* The "Forgot password" text */
-span.psw {
-    float: right;
-    padding-top: 16px;
+input[type=submit] {
+    height: 32px;
 }
 
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    span.psw {
-        display: block;
-        float: none;
-    }
-    .cancelbtn {
-        width: 100%;
-    }
+textarea.submissiondata {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    white-space: pre;
+}
+
+textarea.response {
+    width: 100%;
+    overflow-y: scroll;
+    white-space: pre;
+}
+
+.rotate{
+    transform-origin:50% 50%;
+    animation:2s rotateRight infinite linear;
+}
+
+@keyframes rotateRight{
+    100%{ transform:rotate(360deg); }
 }
