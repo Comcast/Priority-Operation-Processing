@@ -88,9 +88,15 @@ public class PrepOpsGenerator
      */
     protected void addParamsFromTransformRequest(Agenda agenda, TransformRequest transformRequest)
     {
-        if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
 
         if(agenda.getParams() == null) agenda.setParams(new ParamsMap());
+
+        if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
+
+        String doNotRunParam = "DoNotRun";
+        ParamsMap transformParams = transformRequest.getParams();
+        if (transformParams != null && transformParams.containsKey(doNotRunParam))
+            agenda.getParams().put(doNotRunParam, transformParams.get(doNotRunParam));
 
         agenda.setCid(transformRequest.getCid());
     }

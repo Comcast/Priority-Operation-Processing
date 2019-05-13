@@ -81,6 +81,7 @@ public class AgendaRequestProcessorTest
         Assert.assertFalse(response.isError());
 
         verify(mockOperationProgressClient, times(numOps)).persistObject(any());
+        verify(mockReadyAgendaPersister, times(1)).persist(any());
     }
 
     @Test
@@ -248,6 +249,39 @@ public class AgendaRequestProcessorTest
         verify(mockOperationProgressClient, times(1)).deleteObject(any());
 
         // verify ReadyAgenda wasn't created
+        verify(mockReadyAgendaPersister, times(0)).persist(any());
+    }
+
+    @Test
+    public void testDoNotRun() throws PersistenceException
+    {
+        int numOps = 1;
+        String param = "DoNotRun";
+
+        Agenda agenda = getAgenda(numOps);
+        ParamsMap paramsMap = new ParamsMap();
+        paramsMap.put(param, true);
+        agenda.setParams(paramsMap);
+
+        AgendaProgress agendaProgressResponse = new AgendaProgress();
+        agendaProgressResponse.setId(UUID.randomUUID().toString());
+        DataObjectResponse<AgendaProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
+        dataObjectResponse.add(agendaProgressResponse);
+        doReturn(dataObjectResponse).when(mockAgendaProgressClient).persistObject(any());
+
+        doReturn(new Agenda()).when(mockAgendaPersister).persist(any());
+
+        DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
+        opProgressResponse.add(new OperationProgress());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+
+        DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(agenda);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
+        Assert.assertFalse(response.isError());
+
+        verify(mockOperationProgressClient, times(numOps)).persistObject(any());
         verify(mockReadyAgendaPersister, times(0)).persist(any());
     }
 

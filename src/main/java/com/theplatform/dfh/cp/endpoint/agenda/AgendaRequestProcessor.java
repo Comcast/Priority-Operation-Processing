@@ -166,11 +166,16 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         }
 
         Agenda agendaResp = agendaPersistResponse.getFirst();
-        DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId(), request.getCID());
-        if (readyAgendaResponse.isError())
+
+        String doNotRunParam = "DoNotRun";
+        if (!(agendaToPersist.getParams().containsKey(doNotRunParam) && (Boolean) agendaToPersist.getParams().get(doNotRunParam)))
         {
-            trackerManager.cleanUp();
-            return new DefaultDataObjectResponse<>(readyAgendaResponse.getErrorResponse());
+            DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId(), request.getCID());
+            if (readyAgendaResponse.isError())
+            {
+                trackerManager.cleanUp();
+                return new DefaultDataObjectResponse<>(readyAgendaResponse.getErrorResponse());
+            }
         }
 
         return agendaPersistResponse;
