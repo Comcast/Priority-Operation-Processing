@@ -20,7 +20,7 @@ function processRequest(e) {
 
     // reset view
     $("#response").val("");
-    $("#progressTable").innerHTML = "";
+    $("#progressTable").html("");
 
     if(!validateGeneralInputs())
         return;
