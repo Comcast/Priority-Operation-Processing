@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
@@ -166,9 +167,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         }
 
         Agenda agendaResp = agendaPersistResponse.getFirst();
-
-        String doNotRunParam = "DoNotRun";
-        if (!(agendaToPersist.getParams().containsKey(doNotRunParam) && (Boolean) agendaToPersist.getParams().get(doNotRunParam)))
+        if (!(agendaToPersist.getParams().containsKey(GeneralParamKey.doNotRun)))
         {
             DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(insight.getId(), agendaResp.getId(), agendaResp.getCustomerId(), request.getCID());
             if (readyAgendaResponse.isError())

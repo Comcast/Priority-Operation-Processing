@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
@@ -256,11 +257,9 @@ public class AgendaRequestProcessorTest
     public void testDoNotRun() throws PersistenceException
     {
         int numOps = 1;
-        String param = "DoNotRun";
-
         Agenda agenda = getAgenda(numOps);
         ParamsMap paramsMap = new ParamsMap();
-        paramsMap.put(param, true);
+        paramsMap.put(GeneralParamKey.doNotRun, true);
         agenda.setParams(paramsMap);
 
         AgendaProgress agendaProgressResponse = new AgendaProgress();

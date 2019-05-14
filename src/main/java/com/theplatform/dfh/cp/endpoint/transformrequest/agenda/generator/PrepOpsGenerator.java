@@ -93,10 +93,9 @@ public class PrepOpsGenerator
 
         if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
 
-        String doNotRunParam = "DoNotRun";
         ParamsMap transformParams = transformRequest.getParams();
-        if (transformParams != null && transformParams.containsKey(doNotRunParam))
-            agenda.getParams().put(doNotRunParam, transformParams.get(doNotRunParam));
+        if (transformParams != null && transformParams.containsKey(GeneralParamKey.doNotRun))
+            agenda.getParams().put(GeneralParamKey.doNotRun, transformParams.get(GeneralParamKey.doNotRun));
 
         agenda.setCid(transformRequest.getCid());
     }
