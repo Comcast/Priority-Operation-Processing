@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.agenda.reclaim.AgendaReclaimer;
 import com.theplatform.dfh.cp.agenda.reclaim.aws.config.AWSReclaimerConfig;
 import com.theplatform.dfh.cp.agenda.reclaim.aws.producer.TimeoutProducerFactory;
+import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
@@ -34,6 +35,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private AgendaReclaimerFactory agendaReclaimerFactory = new AgendaReclaimerFactory();
     private EnvironmentFacade environmentFacade = new EnvironmentFacade();
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -60,15 +62,24 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         }
         if(reclaimerConfig == null)
         {
-            throw new BadRequestException("TBD!");
+            throw new BadRequestException("Input not configured correctly. No parameters were specified.");
         }
 
-        new AgendaReclaimer(
-            new TimeoutProducerFactory(),
-            new TimeoutConsumerFactory(createHttpURLConnectionFactory()),
-            reclaimerConfig
-        )
-        .process();
+        HttpURLConnectionFactory urlConnectionFactory = createHttpURLConnectionFactory();
+
+        try
+        {
+            agendaReclaimerFactory.createAgendaReclaimer(
+                new TimeoutProducerFactory(),
+                new TimeoutConsumerFactory(urlConnectionFactory),
+                reclaimerConfig
+            )
+            .process();
+        }
+        catch (Throwable t)
+        {
+            throw new RuntimeException("Agenda reclaim processing failed.", t);
+        }
 
     }
 
@@ -80,20 +91,6 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
             throw new BadRequestException(String.format("Missing environment var: %1$s", var));
         }
         return value;
-    }
-
-    private void logObject(String nodeName, JsonNode node) throws JsonProcessingException
-    {
-        if(!logger.isDebugEnabled()) return;
-
-        if(node != null)
-        {
-            logger.debug("[{}]\n{}", nodeName, objectMapper/*.writerWithDefaultPrettyPrinter()*/.writeValueAsString(node));
-        }
-        else
-        {
-            logger.debug("[{}] node not found", nodeName);
-        }
     }
 
     private HttpURLConnectionFactory createHttpURLConnectionFactory() throws BadRequestException
@@ -115,5 +112,11 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     public void setEnvironmentLookupUtils(EnvironmentLookupUtils environmentLookupUtils)
     {
         this.environmentLookupUtils = environmentLookupUtils;
+    }
+
+    public AWSLambdaStreamEntry setAgendaReclaimerFactory(AgendaReclaimerFactory agendaReclaimerFactory)
+    {
+        this.agendaReclaimerFactory = agendaReclaimerFactory;
+        return this;
     }
 }
