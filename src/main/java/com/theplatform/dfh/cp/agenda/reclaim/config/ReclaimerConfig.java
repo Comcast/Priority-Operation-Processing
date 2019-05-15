@@ -1,18 +1,23 @@
 package com.theplatform.dfh.cp.agenda.reclaim.config;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class ReclaimerConfig
 {
-    private int maxRunSeconds = 60;
+    private int maximumExecutionSeconds = 60;
     private String agendaProgressEndpointURL;
 
-    public int getMaxRunSeconds()
+    public int getMaximumExecutionSeconds()
     {
-        return maxRunSeconds;
+        return maximumExecutionSeconds;
     }
 
-    public ReclaimerConfig setMaxRunSeconds(int maxRunSeconds)
+    public ReclaimerConfig setMaximumExecutionSeconds(int maximumExecutionSeconds)
     {
-        this.maxRunSeconds = maxRunSeconds;
+        this.maximumExecutionSeconds = maximumExecutionSeconds;
         return this;
     }
 
@@ -27,8 +32,19 @@ public class ReclaimerConfig
         return this;
     }
 
-    public boolean validate()
+    public String validate()
     {
-        return true;
+        List<String> validationIssues = new LinkedList<>();
+
+        if(StringUtils.isBlank(agendaProgressEndpointURL))
+            validationIssues.add("agendaProgressEndpointURL must be assigned");
+
+        if(maximumExecutionSeconds < 0)
+            validationIssues.add("maximumExecutionSeconds must be non-negative");
+
+        return validationIssues.size() == 0
+               ? null
+               : String.join(",", validationIssues);
+
     }
 }

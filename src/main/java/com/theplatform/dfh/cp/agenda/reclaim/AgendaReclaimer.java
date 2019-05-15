@@ -17,7 +17,7 @@ public class AgendaReclaimer
                 producerFactory.create(config),
                 consumerFactory.create(config)
             )
-            .setRunMaxSeconds(config.getMaxRunSeconds());
+            .setRunMaxSeconds(config.getMaximumExecutionSeconds());
     }
 
     public void process()
