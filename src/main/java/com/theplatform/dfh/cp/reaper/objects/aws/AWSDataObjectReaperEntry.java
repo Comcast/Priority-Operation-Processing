@@ -56,6 +56,10 @@ public class AWSDataObjectReaperEntry implements RequestStreamHandler
             throw new RuntimeException("Reaper cannot operate with a null DataObjectReaperConfig.");
         }
 
+        String validationResult = reaperConfig.validate();
+        if(validationResult != null)
+            throw new RuntimeException(String.format("Configuration validation failed: %1$s", validationResult));
+
         AmazonDynamoDB dynamoDB = awsDynamoDBFactory.getAmazonDynamoDB();
 
         Producer<String> producer = producerFactory.createBatchedReapCandidatesRetriever(dynamoDB, reaperConfig);
