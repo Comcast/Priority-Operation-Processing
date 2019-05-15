@@ -116,10 +116,10 @@ public class BatchedObjectFieldRetriever extends BaseBatchedOperation implements
     }
 
     /**
-     * Creates a scan spec for reading every object in the table for the specified id
+     * Creates a scan spec for reading every object in the table for the specified id field
      * @param tableName The name of the table to scan
      * @param startKey The starting key (may be null)
-     * @param idField The field of the id to retrieve
+     * @param idField The field of the id to retrieve from every object
      * @param maximumItemEvaluation The maximum number of results to scan for
      * @return ScanRequest with the specified settings
      */

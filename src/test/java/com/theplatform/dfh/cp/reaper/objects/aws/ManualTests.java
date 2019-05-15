@@ -1,51 +1,50 @@
 package com.theplatform.dfh.cp.reaper.objects.aws;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.theplatform.com.dfh.modules.sync.util.ProducerResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
+import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
 import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedDeleter;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedObjectFieldRetriever;
+import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedReapCandidatesRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-
-import java.time.Instant;
 
 public class ManualTests
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /*
-    @Test
-    public void clearTable()
+    //@Test
+    public void executeOnTable() throws Exception
     {
-        final String PROFILE_NAME = "saml";
+        final String PROFILE_NAME = "lab_DFH";
 
         AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder.standard()
             .withCredentials(new ProfileCredentialsProvider(PROFILE_NAME))
             .withRegion(Regions.US_WEST_2)
             .build();
 
-        final String TABLE = "DFH-Fission-Rage-TransformRequest-SEA1";
+        final String TABLE = "DFH-Fission-Twinkle-ProgressOperation-dev";
 
         SynchronousProducerConsumerProcessor<String> processor = new SynchronousProducerConsumerProcessor<>(
-            new BatchedObjectFieldRetriever(amazonDynamoDB, TABLE, "id")
-                .setScanDelayMillis(1000)
-                .setObjectScanLimit(75)
-                .setBatchSize(75),
+            new BatchedReapCandidatesRetriever(amazonDynamoDB, TABLE, "id", "updatedTime", 1557367401477L)
+                .setScanDelayMillis(500)
+                .setObjectScanLimit(25)
+                .setTargetBatchSize(75),
             new BatchedDeleter(amazonDynamoDB, TABLE, "id")
                 .setDeleteCallDelayMillis(1000)
-        );
+                .setLogDeleteOnly(true)
+        )
+        .setRunMaxSeconds(3600);
 
-        processor.setRunMaxSeconds(3600);
         processor.execute();
 
-        logger.info("");
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    }*/
+        logger.info(objectMapper.writeValueAsString(new DataObjectReaperConfig()));
+
+    }
 }
