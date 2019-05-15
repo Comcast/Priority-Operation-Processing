@@ -174,7 +174,7 @@ public class DataObjectReaperConfig
             validationIssues.add("objectScanLimit must be 1 or more");
 
         if(maximumExecutionSeconds < 0)
-            validationIssues.add("maximumExecutionSeconds must be 0 non-negative");
+            validationIssues.add("maximumExecutionSeconds must be non-negative");
 
         return validationIssues.size() == 0
             ? null
