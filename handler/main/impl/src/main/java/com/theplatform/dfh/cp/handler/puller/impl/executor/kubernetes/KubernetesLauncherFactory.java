@@ -13,19 +13,17 @@ import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * Factory for producing executors to get MediaProperties (via a mediainfo launch through kubernetes)
  */
 public class KubernetesLauncherFactory implements LauncherFactory
 {
+    private static final String DEFAULT_JSON_REGISTRY_PATH = "/config/registry.json";
     private static final Object registryLock = new Object();
     private static Logger logger = LoggerFactory.getLogger(KubernetesLauncherFactory.class);
 
@@ -44,6 +42,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
             if (podConfigRegistryClient == null)
             {
                 boolean useStaticRegistryClient = Boolean.parseBoolean(pullerLaunchDataWrapper.getPropertyRetriever().getField("useStaticRegistryClient", "false"));
+                String jsonRegistryPath = pullerLaunchDataWrapper.getPropertyRetriever().getField("registryPathOverride", DEFAULT_JSON_REGISTRY_PATH);
 
                 if (useStaticRegistryClient)
                 {
@@ -51,7 +50,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
                 }
                 else
                 {
-                    podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
+                    podConfigRegistryClient = new JsonPodConfigRegistryClient(jsonRegistryPath);
                 }
             }
         }
@@ -62,37 +61,26 @@ public class KubernetesLauncherFactory implements LauncherFactory
     {
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
-        PodConfig podConfig = null;
+        PodConfig executorPodConfig = null;
         try {
-            podConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
-
-            // add registry-json path mapping
-            if(podConfig.getConfigMapDetails().getMapKeyPaths() == null)
-            {
-                podConfig.getConfigMapDetails().setMapKeyPaths(new ArrayList<>());
-            }
-            podConfig.getConfigMapDetails().getMapKeyPaths().add(new KeyPathPair("registry-json", "registry.json"));
+            executorPodConfig = podConfigRegistryClient.getPodConfig(EXEC_OPERATION_TYPE);
         } catch (PodConfigRegistryClientException e) {
             logger.error("There was a problem trying to retrieve the PodConfig from PodConfigRegistryClient.");
         }
 
-        if (podConfig != null)
+        if (executorPodConfig != null)
         {
-            return buildLauncher(podConfig, pullerContext, kubeConfig);
+            return buildLauncher(executorPodConfig, kubeConfig);
         }
         else
         {
             logger.error("Could not retrieve PodConfig from Registry..");
-            throw new PullerException(String.format("Could not retrieve `" + EXEC_OPERATION_TYPE + "` handler from PodConfig registry.."));
+            throw new PullerException("Could not retrieve `" + EXEC_OPERATION_TYPE + "` handler from PodConfig registry..");
         }
     }
 
-    private BaseLauncher buildLauncher(PodConfig podConfig, PullerContext pullerContext, KubeConfig kubeConfig)
+    private BaseLauncher buildLauncher(PodConfig podConfig, KubeConfig kubeConfig)
     {
-        String execConfigMapName = pullerContext.getLaunchDataWrapper().getPullerConfig().getExecConfigMapName();
-        if(execConfigMapName != null)
-            podConfig.getConfigMapDetails().setConfigMapName(execConfigMapName);
-
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
                 .addEnvVar("LOG_LEVEL", "DEBUG");
 

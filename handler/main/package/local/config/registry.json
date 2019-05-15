@@ -10,8 +10,14 @@
   "executor": {
     "configMapName": "lab-main-t-aor-fhexec-t01",
     "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhexec:1.0.0",
-      "namePrefix": "dfh-exec"
+      "imageName": "docker-lab.repo.theplatform.com/fhexec:1.0.2",
+      "namePrefix": "dfh-exec",
+      "configMapDetails": {
+        "mapKeyPaths":[
+          { "key": "external-properties", "path": "external.properties"},
+          { "key": "registry-json", "path": "registry.json"}
+        ]
+      }
     }
   }
 }
