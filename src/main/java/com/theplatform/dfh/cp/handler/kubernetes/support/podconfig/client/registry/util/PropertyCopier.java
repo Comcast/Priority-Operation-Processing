@@ -13,7 +13,10 @@ import java.util.List;
  * - https://stackoverflow.com/questions/22743765/beanutils-not-works-for-chain-setter
  *
  * copyProperties() can _deep_ copy an object ignoring nulls AND supports decorator/fluent style setters
+ * @deprecated This was not performing a valid copy of sub properties (instead copying references in some cases)
+ * It was also found to be slower than doing things like object -> json -> object for cloning (an arguably lazy approach too)
  */
+@Deprecated
 public class PropertyCopier {
 
     /**

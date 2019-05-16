@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
-import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.util.PropertyCopier;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
@@ -12,32 +12,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     private static Logger logger = LoggerFactory.getLogger(JsonPodConfigRegistryClient.class);
 
-    public static final String DFH_SERVICE_ACCOUNT_NAME = "ffmpeg-service";
+    private static final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    public static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
     public static final String DEFAULT_CONFIG_MAP_JSON = "defaultConfigMap.json";
     public static final String BASE_POD_CONFIG_KEY = "basePodConfig";
-    public static final PodConfig BASE_POD_CONFIG;
+    public static final String DEFAULT_VOLUME_NAME = "config-volume";
+    public static final String DEFAULT_VOLUME_MOUNT_PATH = "/config";
+
+    public static final JsonNode CORE_POD_CONFIG_NODE;
 
     static {
-        BASE_POD_CONFIG = new PodConfig().applyDefaults();
+        PodConfig corePodConfig = new PodConfig().applyDefaults();
 
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
-                .setVolumeName("config-volume")
-                .setVolumeMountPath("/config");
+                .setVolumeName(DEFAULT_VOLUME_NAME)
+                .setVolumeMountPath(DEFAULT_VOLUME_MOUNT_PATH);
 
         List<KeyPathPair> keyPaths = new LinkedList<>();
         keyPaths.add(new KeyPathPair("external-properties", "external.properties"));
 
         configMapDetails.setMapKeyPaths(keyPaths);
 
-        BASE_POD_CONFIG.setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
+        corePodConfig.setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
                 .setConfigMapDetails(configMapDetails);
+
+        CORE_POD_CONFIG_NODE = objectMapper.valueToTree(corePodConfig);
     }
 
     private String path;
@@ -69,15 +75,13 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
         PodConfig originalConfig = podConfigMap.get(configMapName);
         if(originalConfig != null)
         {
-            PodConfig podConfig = new PodConfig();
             try
             {
-                PropertyCopier.copyProperties(podConfig, originalConfig);
+                return objectMapper.readValue(objectMapper.writeValueAsString(originalConfig), PodConfig.class);
             }
-            catch (IllegalAccessException | InvocationTargetException ex) {
+            catch (IOException ex) {
                 throw new PodConfigRegistryClientException("Unable to map properties when duplicating PodConfig from registry: " + configMapName, ex);
             }
-            return podConfig;
         }
         return null;
     }
@@ -104,7 +108,6 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
             }
         }
 
-        // get json
         try
         {
             String json = readFromInputStream(stream);
@@ -116,7 +119,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
             }
 
             // grab the basePodConfig json entry
-            PodConfig baseJsonPodConfig = new ObjectMapper().readValue(node.get(BASE_POD_CONFIG_KEY).toString(), PodConfig.class);
+            JsonNode basePodConfigNode = node.get(BASE_POD_CONFIG_KEY);
 
             // iterate over each handler-type key [sample, encode, analysis, etc..]
             Iterator<String> fieldNamesIter = node.fieldNames();
@@ -132,39 +135,35 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
                 String configMapName = handlerNode.get("configMapName").textValue();
                 JsonNode podConfigNode = handlerNode.get("podConfig");
 
-                // merge this class's basePodConfig with the JSON basePodConfig
-                PodConfig basePodConfig = generateBasePodConfig(configMapName, baseJsonPodConfig);
+                PodConfig combinedConfig = combineConfig(CORE_POD_CONFIG_NODE, basePodConfigNode, podConfigNode);
+                // the configmap is set here after all the combine actions
+                // TODO: this may be problematic later if we wish to use multiple configmaps
+                combinedConfig.getConfigMapDetails().setConfigMapName(configMapName);
 
-                // get the partial (or full) podConfig from the JSON registry entry
-                PodConfig loadedPodConfig = new ObjectMapper().readValue(podConfigNode.toString(), PodConfig.class);
-
-                // overlay the loadedPodConfig on top of the basePodConfig - this could overwrite some or ALL fields
-                PropertyCopier.copyProperties(basePodConfig, loadedPodConfig);
-
-                // add to map for lookup
-                podConfigMap.put(handlerType, basePodConfig);
+                podConfigMap.put(handlerType, combinedConfig);
             }
 
             loaded = true;
         }
         catch(IOException ex) {
             throw new PodConfigRegistryClientException("There was a problem trying to read from registry JSON file: " + this.path, ex);
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            throw new PodConfigRegistryClientException("There was a problem trying to load registry JSON file: " + this.path, ex);
         }
     }
 
-    private PodConfig generateBasePodConfig(String configMapName, PodConfig baseJsonPodConfig) throws InvocationTargetException, IllegalAccessException {
-        PodConfig result = new PodConfig();
-
-        // first overlay the base we have here
-        PropertyCopier.copyProperties(result, BASE_POD_CONFIG);
-        result.getConfigMapDetails().setConfigMapName(configMapName);
-
-        // next overlay the JSON base pod config
-        PropertyCopier.copyProperties(result, baseJsonPodConfig);
-
-        return result;
+    /**
+     * Combines the configs as layers via ObjectMapper (This does not merge sub objects, only overwrite!)
+     * @param podConfigLayers The ordered layers of PodConfigs to combine
+     * @return PodConfig with all the layers combined
+     * @throws IOException Thrown if there is an issue reading the json node
+     */
+    private PodConfig combineConfig(JsonNode... podConfigLayers) throws IOException
+    {
+        PodConfig podConfig = new PodConfig();
+        for(JsonNode nodeLayer : podConfigLayers)
+        {
+            objectMapper.readerForUpdating(podConfig).readValue(nodeLayer);
+        }
+        return podConfig;
     }
 
     public static String readFromInputStream(InputStream inputStream) throws IOException {
@@ -177,9 +176,5 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
             }
         }
         return resultStringBuilder.toString();
-    }
-
-    public String getPath() {
-        return path;
     }
 }

@@ -12,7 +12,15 @@
     "configMapName": "lab-main-t-aor-fhsamp-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhsamp:1.0.0",
-      "namePrefix": "dfh-samp"
+      "namePrefix": "dfh-samp",
+      "configMapDetails": {
+        "volumeName":"config-volume-ex",
+        "volumeMountPath":"/configex",
+        "mapKeyPaths":[
+          { "key": "1", "path": "2"},
+          { "key": "3", "path": "4"}
+        ]
+      }
     }
   },
 
