@@ -98,6 +98,10 @@ public class ErrorResponse
     {
         StringBuilder builder = new StringBuilder();
         builder.append("ErrorMessage:: ");
+        builder.append(" CID: ");
+        builder.append(getCorrelationId());
+        builder.append(" ResponseCode: ");
+        builder.append(getResponseCode());
         builder.append(" Type: ");
         builder.append(getTitle());
         builder.append(" Message: ");
