@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
@@ -18,6 +19,7 @@ import com.theplatform.module.authentication.client.EncryptedAuthenticationClien
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
@@ -79,11 +81,12 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
     protected HttpReporter createHttpReporter()
     {
-        FieldRetriever fieldRetriever = launchDataWrapper.getPropertyRetriever();
+        FieldRetriever propertyRetriever = launchDataWrapper.getPropertyRetriever();
+        FieldRetriever environmentRetriever = launchDataWrapper.getEnvironmentRetriever();
 
         int progressConnectionTimeout;
-        String agendaProgressUrl = fieldRetriever.getField(AGENDA_PROGRESS_URL);
-        String progressConnectionTimeoutString = fieldRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
+        String agendaProgressUrl = propertyRetriever.getField(AGENDA_PROGRESS_URL);
+        String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
         try
         {
             progressConnectionTimeout = Integer.parseInt(progressConnectionTimeoutString);
@@ -101,26 +104,29 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         return new HttpReporter()
             .setUrlRequestPerformer(new URLRequestPerformer())
-            .setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(fieldRetriever))
+            .setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(propertyRetriever, environmentRetriever))
             .setReportingUrl(agendaProgressUrl)
             .setConnectionTimeoutMilliseconds(progressConnectionTimeout);
     }
 
-    protected static IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever fieldRetriever)
+    protected static IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever, FieldRetriever environmentRetriever)
     {
-        String identityUrl = fieldRetriever.getField(IDM_URL_FIELD);
-        String user = fieldRetriever.getField(IDM_USER);
-        String encryptedPass = fieldRetriever.getField(IDM_ENCRYPTED_PASS);
+        String identityUrl = propertyRetriever.getField(IDM_URL_FIELD);
+        String user = propertyRetriever.getField(IDM_USER);
+        String encryptedPass = propertyRetriever.getField(IDM_ENCRYPTED_PASS);
         if(identityUrl == null || user == null || encryptedPass == null)
         {
             throw new HttpRequestHandlerException("Invalid IDM credentials configured for token generation.");
         }
 
-        return new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
+        IDMHTTPUrlConnectionFactory connectionFactory = new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
             identityUrl,
             user,
             encryptedPass,
             null
         ));
+        connectionFactory.setCid(environmentRetriever.getField(HandlerField.CID.name(), null));
+
+        return connectionFactory;
     }
 }
