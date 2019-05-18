@@ -2,12 +2,9 @@ package com.theplatform.dfh.cp.agenda.reclaim.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.agenda.reclaim.AgendaReclaimer;
 import com.theplatform.dfh.cp.agenda.reclaim.aws.config.AWSReclaimerConfig;
-import com.theplatform.dfh.cp.agenda.reclaim.aws.producer.TimeoutProducerFactory;
+import com.theplatform.dfh.cp.agenda.reclaim.aws.producer.DynamoDBTimeoutProducerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
@@ -15,6 +12,7 @@ import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +36,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private AgendaReclaimerFactory agendaReclaimerFactory = new AgendaReclaimerFactory();
     private EnvironmentFacade environmentFacade = new EnvironmentFacade();
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
+    private AWSDynamoDBFactory awsDynamoDBFactory = new AWSDynamoDBFactory();
 
     private final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
     private final String ENV_IDM_USER = "IDM_USER";
@@ -70,7 +69,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         try
         {
             agendaReclaimerFactory.createAgendaReclaimer(
-                new TimeoutProducerFactory(),
+                new DynamoDBTimeoutProducerFactory(awsDynamoDBFactory),
                 new TimeoutConsumerFactory(urlConnectionFactory),
                 reclaimerConfig
             )
@@ -80,7 +79,6 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         {
             throw new RuntimeException("Agenda reclaim processing failed.", t);
         }
-
     }
 
     private String getEnvironmentVar(String var) throws BadRequestException

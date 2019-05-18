@@ -23,15 +23,16 @@
         <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
+        <data-object-reaper-aws.version>1.0.0-SNAPSHOT</data-object-reaper-aws.version>
     </properties>
 
     <dependencies>
         <!-- DFH Dependencies -->
-        <!-- TODO: this dependency should have any shared parts removed -->
+        <!-- TODO: this dependency should have any shared parts removed (share a module) -->
         <dependency>
             <groupId>com.theplatform.dfh.cp.reaper</groupId>
             <artifactId>pl-dfh-cp-data-object-reaper-aws</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${data-object-reaper-aws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.agenda.reclaim</groupId>
