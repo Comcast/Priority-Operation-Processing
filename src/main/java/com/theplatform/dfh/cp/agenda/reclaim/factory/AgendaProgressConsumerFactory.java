@@ -6,5 +6,5 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 
 public interface AgendaProgressConsumerFactory
 {
-    Consumer<AgendaProgress> create(ReclaimerConfig config);
+    Consumer<String> create(ReclaimerConfig config);
 }

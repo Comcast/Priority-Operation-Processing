@@ -17,7 +17,7 @@ public class TimeoutConsumerFactory implements AgendaProgressConsumerFactory
     }
 
     @Override
-    public Consumer<AgendaProgress> create(ReclaimerConfig config)
+    public Consumer<String> create(ReclaimerConfig config)
     {
         HttpObjectClient<AgendaProgress> agendaProgressClient = new HttpObjectClient<>(config.getAgendaProgressEndpointURL(), httpURLConnectionFactory, AgendaProgress.class);
         return new AgendaProgressTimeoutConsumer(agendaProgressClient);

@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import org.mockito.invocation.InvocationOnMock;
@@ -22,7 +24,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -31,6 +35,7 @@ import static org.mockito.Mockito.verify;
 
 public class AgendaProgressTimeoutConsumerTest
 {
+    private final String AGENDA_PROGRESS_ID = "0";
     private final Date TIMED_OUT_DATE = new Date(Instant.now().minusSeconds(65535).toEpochMilli());
 
     private AgendaProgressTimeoutConsumer consumer;
@@ -40,6 +45,7 @@ public class AgendaProgressTimeoutConsumerTest
     public void setup()
     {
         mockAgendaProgressClient = (HttpObjectClient<AgendaProgress>)mock(HttpObjectClient.class);
+        doReturn(createResponse()).when(mockAgendaProgressClient).getObject(anyString());
         consumer = spy(new AgendaProgressTimeoutConsumer(mockAgendaProgressClient));
     }
 
@@ -62,7 +68,7 @@ public class AgendaProgressTimeoutConsumerTest
     @Test
     public void testConsumeTimeout()
     {
-        ConsumerResult consumerResult = consumer.consume(Arrays.asList(new AgendaProgress(), new AgendaProgress()), Instant.now().minusSeconds(60));
+        ConsumerResult consumerResult = consumer.consume(Arrays.asList("", ""), Instant.now().minusSeconds(60));
         Assert.assertEquals(consumerResult.getItemsConsumedCount(), 1);
         verify(consumer, times(1)).updateAgendaProgress(any());
     }
@@ -72,7 +78,7 @@ public class AgendaProgressTimeoutConsumerTest
     {
         final int ITEMS_TO_CONSUME = 50;
         ConsumerResult consumerResult = consumer.consume(
-            IntStream.range(0, ITEMS_TO_CONSUME).mapToObj(i -> new AgendaProgress()).collect(Collectors.toList()),
+            IntStream.range(0, ITEMS_TO_CONSUME).mapToObj(i -> Integer.toString(i)).collect(Collectors.toList()),
             Instant.now().plusSeconds(60));
         Assert.assertEquals(consumerResult.getItemsConsumedCount(), ITEMS_TO_CONSUME);
         verify(consumer, times(ITEMS_TO_CONSUME)).updateAgendaProgress(any());
@@ -82,11 +88,12 @@ public class AgendaProgressTimeoutConsumerTest
     public void testUpdateAgendaProgressException()
     {
         doThrow(new RuntimeException()).when(mockAgendaProgressClient).updateObject(any(), any());
-        Assert.assertFalse(consumer.updateAgendaProgress(createTimedOutAgendaProgress()));
+        Assert.assertFalse(consumer.updateAgendaProgress(AGENDA_PROGRESS_ID));
         verify(mockAgendaProgressClient, times(1)).updateObject(any(), any());
     }
 
-    @DataProvider Object[][] updateAgendaProgressProvider()
+    @DataProvider
+    public Object[][] updateAgendaProgressProvider()
     {
         return new Object[][]
             {
@@ -98,9 +105,12 @@ public class AgendaProgressTimeoutConsumerTest
     @Test(dataProvider = "updateAgendaProgressProvider")
     public void testUpdateAgendaProgress(AgendaProgress existingProgress)
     {
+        final String AGENDA_PROGRESS_ID = "0";
         final int EXPECTED_DIAGNOSTICS_COUNT = existingProgress.getDiagnosticEvents() == null
             ? 1
             : existingProgress.getDiagnosticEvents().length + 1;
+
+        doReturn(createResponse(existingProgress)).when(mockAgendaProgressClient).getObject(anyString());
 
         doAnswer(new Answer()
         {
@@ -116,9 +126,46 @@ public class AgendaProgressTimeoutConsumerTest
             }
         }).when(mockAgendaProgressClient).updateObject(any(), any());
 
-        Assert.assertTrue(consumer.updateAgendaProgress(existingProgress));
+        Assert.assertTrue(consumer.updateAgendaProgress(AGENDA_PROGRESS_ID));
 
         verify(mockAgendaProgressClient, times(1)).updateObject(any(), any());
+    }
+
+    @DataProvider
+    public Object[][] retrieveAgendaProgressErrorProvider()
+    {
+        return new Object[][]
+            {
+                {createResponse(true)},
+                {createResponse(false)}
+            };
+    }
+
+    @Test(dataProvider = "retrieveAgendaProgressErrorProvider")
+    public void testRetrieveAgendaProgressNull(DataObjectResponse<AgendaProgress> response)
+    {
+        doReturn(response).when(mockAgendaProgressClient).getObject(any());
+        Assert.assertNull(consumer.retrieveAgendaProgress("id"));
+    }
+
+    private DataObjectResponse<AgendaProgress> createResponse()
+    {
+        return createResponse(createTimedOutAgendaProgress());
+    }
+
+    private DataObjectResponse<AgendaProgress> createResponse(boolean error)
+    {
+        DataObjectResponse<AgendaProgress> response = new DefaultDataObjectResponse<>();
+        if(error)
+            response.setErrorResponse(new ErrorResponse());
+        return response;
+    }
+
+    private DataObjectResponse<AgendaProgress> createResponse(AgendaProgress agendaProgress)
+    {
+        DataObjectResponse<AgendaProgress> response = new DefaultDataObjectResponse<>();
+        response.add(agendaProgress);
+        return response;
     }
 
     private AgendaProgress createTimedOutAgendaProgress()
