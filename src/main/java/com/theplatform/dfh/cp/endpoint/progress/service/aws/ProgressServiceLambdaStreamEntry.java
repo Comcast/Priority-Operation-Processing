@@ -65,7 +65,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
             switch (httpMethod)
             {
                 case "POST":
-                    handlePost(lambdaRequest);
+                    responseObject = handlePost(lambdaRequest);
                     break;
                 default:
                     // todo: some bad response code
