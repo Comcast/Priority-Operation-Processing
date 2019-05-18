@@ -21,7 +21,7 @@
         <dfh-persistence-aws-dynamodb.version>1.0.1-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <cp-endpoint-base.version>1.0.0-SNAPSHOT</cp-endpoint-base.version>
-        <cp-endpoint-api.version>1.0.0-SNAPSHOT</cp-endpoint-api.version>
+        <cp-endpoint-api.version>1.0.2-SNAPSHOT</cp-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
