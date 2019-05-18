@@ -1,20 +1,17 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.*;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class GenericFissionClient<T extends ServiceResponse, R extends ServiceRequest>
+public class GenericFissionClient<T extends ServiceResponse, R>
 {
     private static final Logger logger = LoggerFactory.getLogger(GenericFissionClient.class);
 
@@ -57,7 +54,7 @@ public class GenericFissionClient<T extends ServiceResponse, R extends ServiceRe
         }
         catch(IOException e)
         {
-            return handleExceptions(e, requestObject.getCID(), urlConnection);
+            return handleExceptions(e, MDC.get("CID"), urlConnection);
         }
     }
 

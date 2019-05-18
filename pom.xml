@@ -15,7 +15,7 @@
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
-        <endpoint-api.version>1.0.1</endpoint-api.version>
+        <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
         <http-utils.version>1.0.0</http-utils.version>
         <http-api.version>1.0.0</http-api.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
