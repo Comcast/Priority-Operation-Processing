@@ -15,7 +15,6 @@ import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRespo
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
         logger.info("Progress Service endpoint request received.");
-        LambdaRequest lambdaRequest = new LambdaRequest(inputStreamNode);
+        LambdaRequest<ProgressSummaryRequest> lambdaRequest = new LambdaRequest<>(inputStreamNode, ProgressSummaryRequest.class);
 
         ProgressSummaryResponse responseObject = null;
         int httpStatusCode = 200;
@@ -66,11 +65,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
             switch (httpMethod)
             {
                 case "POST":
-                    String bodyJson = StringEscapeUtils.unescapeJson(inputStreamNode.at("/body").asText());
-                    ServiceRequest<ProgressSummaryRequest> progressSummaryRequest = new DefaultServiceRequest<>(jsonHelper.getObjectFromString(bodyJson,
-                        ProgressSummaryRequest.class));
-                    responseObject = createProgressSummaryRequestProcessor(lambdaRequest)
-                        .getProgressSummary(progressSummaryRequest);
+                    handlePost(lambdaRequest);
                     break;
                 default:
                     // todo: some bad response code
@@ -85,6 +80,13 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
             logger.error("Error retrieving progress", e);
         }
         responseWriter.writeResponse(outputStream, jsonHelper.getObjectMapper(), httpStatusCode, responseObject);
+    }
+
+    private ProgressSummaryResponse handlePost(LambdaRequest lambdaRequest) throws Exception
+    {
+        ServiceRequest<ProgressSummaryRequest> progressSummaryRequest = new DefaultServiceRequest<>((ProgressSummaryRequest) lambdaRequest.getPayload());
+        return createProgressSummaryRequestProcessor(lambdaRequest)
+            .getProgressSummary(progressSummaryRequest);
     }
 
     private ProgressSummaryRequestProcessor createProgressSummaryRequestProcessor(LambdaRequest lambdaRequest)

@@ -93,8 +93,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
     public void handleRequest(JsonNode inputStreamNode, OutputStream outputStream, Context context) throws IOException
     {
         logger.info("AgendaProvider endpoint request received.");
-        JsonNode rootRequestNode = inputStreamNode;
-        LambdaRequest lambdaRequest = new LambdaRequest(rootRequestNode, GetAgendaRequest.class);
+        LambdaRequest<GetAgendaRequest> lambdaRequest = new LambdaRequest<>(inputStreamNode, GetAgendaRequest.class);
 
         String responseBody = null;
         int httpStatusCode = 200;
@@ -118,7 +117,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         writer.close();
     }
 
-    public String handlePost(LambdaRequest lambdaRequest) throws IOException
+    private String handlePost(LambdaRequest lambdaRequest) throws IOException
     {
         // if no insights were provided, do the old mode (just send back any Agenda)
         // otherwise, do the new way with Insights
