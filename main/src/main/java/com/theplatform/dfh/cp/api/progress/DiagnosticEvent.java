@@ -126,6 +126,8 @@ public class DiagnosticEvent
 
     public static String convertThrowableToStackTrace(Throwable t)
     {
+        if(t == null)
+            return null;
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
