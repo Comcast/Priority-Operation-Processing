@@ -8,11 +8,11 @@ import java.util.List;
 
 public class AWSReclaimerConfig extends ReclaimerConfig
 {
-    // AgendaProgress scan
+    // AgendaProgress scan specific
     private String tableName;
     private String idFieldName;
     private String timeFieldName;
-    private int reclaimAgeMinutes;
+    private int reclaimAgeMinutes = 0;
     private long scanDelayMillis = 0;
     private int targetBatchSize = 50;
     private int objectScanLimit = 50;

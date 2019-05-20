@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.aws.producer;
+package com.theplatform.dfh.cp.agenda.reclaim.aws.dynamo;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -18,8 +18,8 @@ public class AgendaProgressTimeoutProducer extends BatchedObjectFieldRetriever
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String SEEK_STATE_VALUE = ProcessingState.EXECUTING.name();
-    private final String STATE_FIELD = "processingState";
+    private static final String SEEK_STATE_VALUE = ProcessingState.EXECUTING.name();
+    private static final String STATE_FIELD = "processingState";
 
     private final String timeFieldName;
     private final long reclaimUpperBoundUTC;
@@ -49,12 +49,14 @@ public class AgendaProgressTimeoutProducer extends BatchedObjectFieldRetriever
         String idField, int maximumItemEvaluation)
     {
         Map<String, Condition> scanFilters = new HashMap<>();
+        // timeFieldName.value < reapUpperBound
         scanFilters.put(
             timeFieldName,
             new Condition()
                 .withComparisonOperator(ComparisonOperator.LT)
                 .withAttributeValueList(new AttributeValue().withN(String.valueOf(reclaimUpperBoundUTC)))
         );
+        // state field = state value
         scanFilters.put(
             STATE_FIELD,
             new Condition()
@@ -69,7 +71,6 @@ public class AgendaProgressTimeoutProducer extends BatchedObjectFieldRetriever
             .withExclusiveStartKey(startKey)
             .withLimit(maximumItemEvaluation)
             .withReturnConsumedCapacity(ReturnConsumedCapacity.TOTAL)
-            // this filter is timeFieldName.value < reapUpperBound
             .withScanFilter(scanFilters);
     }
 }

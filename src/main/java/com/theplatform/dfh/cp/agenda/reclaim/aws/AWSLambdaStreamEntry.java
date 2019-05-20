@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.agenda.reclaim.aws.config.AWSReclaimerConfig;
-import com.theplatform.dfh.cp.agenda.reclaim.aws.producer.DynamoDBTimeoutProducerFactory;
+import com.theplatform.dfh.cp.agenda.reclaim.aws.dynamo.DynamoDBTimeoutProducerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
@@ -38,9 +38,9 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private AWSDynamoDBFactory awsDynamoDBFactory = new AWSDynamoDBFactory();
 
-    private final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
-    private final String ENV_IDM_USER = "IDM_USER";
-    private final String ENV_IDENTITY_URL = "IDENTITY_URL";
+    private static final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
+    private static final String ENV_IDM_USER = "IDM_USER";
+    private static final String ENV_IDENTITY_URL = "IDENTITY_URL";
 
     public AWSLambdaStreamEntry()
     {
@@ -69,8 +69,8 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         try
         {
             agendaReclaimerFactory.createAgendaReclaimer(
-                new DynamoDBTimeoutProducerFactory(awsDynamoDBFactory),
-                new TimeoutConsumerFactory(urlConnectionFactory),
+                new DynamoDBTimeoutProducerFactory(awsDynamoDBFactory, reclaimerConfig),
+                new TimeoutConsumerFactory(urlConnectionFactory, reclaimerConfig),
                 reclaimerConfig
             )
             .process();

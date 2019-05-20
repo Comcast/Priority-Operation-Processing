@@ -28,7 +28,6 @@
 
     <dependencies>
         <!-- DFH Dependencies -->
-        <!-- TODO: this dependency should have any shared parts removed (share a module) -->
         <dependency>
             <groupId>com.theplatform.dfh.cp.reaper</groupId>
             <artifactId>pl-dfh-cp-data-object-reaper-aws</artifactId>
