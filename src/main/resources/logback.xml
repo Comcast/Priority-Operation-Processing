@@ -17,6 +17,7 @@
     <logger name="net.sf" level="ERROR" />
     <logger name="com.theplatform.module" level="ERROR" />
     <logger name="httpclient.wire" level="ERROR" />
+    <logger name="com.amazonaws" level="INFO"/>
 
     <root level="${LogLevel:-DEBUG}">
         <appender-ref ref="STDOUT" />
