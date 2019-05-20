@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor.runner;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
@@ -45,29 +46,56 @@ public class OperationRunner implements Runnable
             String outputPayload = executor.execute(operationWrapper.getInputPayload());
             // get the last progress
             OperationProgress operationProgress = executor.retrieveOperationProgress();
-            switch (operationProgress.getProcessingState())
+            if(operationProgress == null)
             {
-                case COMPLETE:
+                setFailureOnOperationWrapper(
+                    operationWrapper,
+                    ExecutorMessages.OPERATION_EXECUTION_INCOMPLETE_NO_PROGRESS.getMessage(getOperationName(operationWrapper)),
+                    null);
+            }
+            else
+            {
+                if(operationProgress.getProcessingState() == ProcessingState.COMPLETE)
+                {
                     evaluateCompletedOperation(operationWrapper, operationProgress, outputPayload);
-                    break;
-                default:
-                    // TODO: make a new diagnostic indicating things went wrong ?
-                    operationWrapper.setSuccess(false);
-                    break;
+                }
+                else
+                {
+                    setFailureOnOperationWrapper(
+                        operationWrapper,
+                        ExecutorMessages.OPERATION_EXECUTION_INCOMPLETE.getMessage(getOperationName(operationWrapper), operationProgress.getProcessingState()),
+                        null);
+                }
             }
         }
         catch(Throwable t)
         {
-            String message = ExecutorMessages.OPERATION_EXECUTION_ERROR.getMessage(
-                operationWrapper.getOperation() == null
-                   ? "unknown"
-                   : operationWrapper.getOperation().getName());
-            logger.error(message, t);
-            operationWrapper.setSuccess(false);
-            operationWrapper.addDiagnosticEvent(new DiagnosticEvent(message, t));
+            setFailureOnOperationWrapper(
+                operationWrapper,
+                ExecutorMessages.OPERATION_EXECUTION_ERROR.getMessage(getOperationName(operationWrapper)),
+                t);
         }
         // always call the onComplete (critical for the operation conductor)
         if(onOperationCompleteListener != null) onOperationCompleteListener.onComplete(operationWrapper);
+    }
+
+    private void setFailureOnOperationWrapper(OperationWrapper operationWrapper, String message, Throwable t)
+    {
+        logger.error(message, t);
+        operationWrapper.setSuccess(false);
+        operationWrapper.addDiagnosticEvent(new DiagnosticEvent(message, t));
+    }
+
+    /**
+     * Gets the operation name, defaulting if one is not set.
+     * @param operationWrapper The operation wrapper to get the name from
+     * @return The operation name or unknown if unset
+     */
+    private String getOperationName(OperationWrapper operationWrapper)
+    {
+        return operationWrapper.getOperation() == null
+        ? "unknown"
+        : operationWrapper.getOperation().getName();
     }
 
     private void evaluateCompletedOperation(OperationWrapper operationWrapper, OperationProgress operationProgress, String outputPayload)

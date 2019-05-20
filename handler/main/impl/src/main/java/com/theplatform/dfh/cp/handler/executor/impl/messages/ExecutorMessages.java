@@ -9,6 +9,8 @@ public enum ExecutorMessages implements MessageLookup
     OPERATIONS_RUNNING,
     OPERATIONS_ERROR,
     OPERATION_EXECUTION_ERROR,
+    OPERATION_EXECUTION_INCOMPLETE,
+    OPERATION_EXECUTION_INCOMPLETE_NO_PROGRESS,
     OPERATION_RESIDENT_EXECUTION_FAILED;
 
     public static final String RESOURCE_PATH = "com/theplatform/handler/executor/executorMessages";
