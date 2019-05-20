@@ -10,18 +10,23 @@ import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 public class TimeoutConsumerFactory implements AgendaProgressConsumerFactory
 {
     private final HttpURLConnectionFactory httpURLConnectionFactory;
+    private final String agendaProgressURL;
     private final ReclaimerConfig config;
 
-    public TimeoutConsumerFactory(HttpURLConnectionFactory httpURLConnectionFactory, ReclaimerConfig config)
+    public TimeoutConsumerFactory(
+        HttpURLConnectionFactory httpURLConnectionFactory,
+        ReclaimerConfig config,
+        String agendaProgressURL)
     {
         this.httpURLConnectionFactory = httpURLConnectionFactory;
         this.config = config;
+        this.agendaProgressURL = agendaProgressURL;
     }
 
     @Override
     public Consumer<String> create()
     {
-        HttpObjectClient<AgendaProgress> agendaProgressClient = new HttpObjectClient<>(config.getAgendaProgressEndpointURL(), httpURLConnectionFactory, AgendaProgress.class);
+        HttpObjectClient<AgendaProgress> agendaProgressClient = new HttpObjectClient<>(agendaProgressURL, httpURLConnectionFactory, AgendaProgress.class);
         return new AgendaProgressTimeoutConsumer(agendaProgressClient)
             .setLogReclaimOnly(config.getLogReclaimOnly());
     }

@@ -13,8 +13,6 @@ public class ReclaimerConfigTest
         return new Object[][]
             {
                 { new ReclaimerConfig().setMaximumExecutionSeconds(-1), "MaximumExecutionSeconds"},
-                { new ReclaimerConfig().setAgendaProgressEndpointURL(null), "AgendaProgressEndpointURL"},
-                { new ReclaimerConfig().setAgendaProgressEndpointURL(""), "AgendaProgressEndpointURL"}
             };
     }
 
