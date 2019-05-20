@@ -4,18 +4,17 @@ import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProc
 import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaProgressConsumerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaProgressProducerFactory;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 
 public class AgendaReclaimer
 {
-    private SynchronousProducerConsumerProcessor<AgendaProgress> processor;
+    private SynchronousProducerConsumerProcessor<String> processor;
 
     public AgendaReclaimer(AgendaProgressProducerFactory producerFactory, AgendaProgressConsumerFactory consumerFactory, ReclaimerConfig config)
     {
-        this.processor =
+        processor =
             new SynchronousProducerConsumerProcessor<>(
-                producerFactory.create(config),
-                consumerFactory.create(config)
+                producerFactory.create(),
+                consumerFactory.create()
             )
             .setRunMaxSeconds(config.getMaximumExecutionSeconds());
     }
@@ -25,7 +24,7 @@ public class AgendaReclaimer
         this.processor.execute();
     }
 
-    protected void setProcessor(SynchronousProducerConsumerProcessor<AgendaProgress> processor)
+    protected void setProcessor(SynchronousProducerConsumerProcessor<String> processor)
     {
         this.processor = processor;
     }

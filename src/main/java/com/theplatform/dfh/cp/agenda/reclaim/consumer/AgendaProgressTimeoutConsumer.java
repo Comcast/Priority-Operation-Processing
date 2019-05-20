@@ -18,13 +18,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * AgendaProgress
+ * AgendaProgress timed out consumer
  */
 public class AgendaProgressTimeoutConsumer implements Consumer<String>
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final HttpObjectClient<AgendaProgress> agendaProgressClient;
+    private boolean logReclaimOnly = false;
 
     public AgendaProgressTimeoutConsumer(HttpObjectClient<AgendaProgress> agendaProgressClient)
     {
@@ -79,7 +80,9 @@ public class AgendaProgressTimeoutConsumer implements Consumer<String>
 
         try
         {
-            agendaProgressClient.updateObject(updatedAgendaProgress, updatedAgendaProgress.getId());
+            logger.info("Reclaiming Agenda: {} Updating AgendaProgress: {}", agendaProgress.getAgendaId(), updatedAgendaProgress.getId());
+            if(!logReclaimOnly)
+                agendaProgressClient.updateObject(updatedAgendaProgress, updatedAgendaProgress.getId());
         }
         catch (Exception e)
         {
@@ -108,5 +111,16 @@ public class AgendaProgressTimeoutConsumer implements Consumer<String>
             logger.error(String.format("Failed to retrieve AgendaProgress: %1$s", agendaProgressId), e);
         }
         return null;
+    }
+
+    public boolean getLogReclaimOnly()
+    {
+        return logReclaimOnly;
+    }
+
+    public AgendaProgressTimeoutConsumer setLogReclaimOnly(boolean logReclaimOnly)
+    {
+        this.logReclaimOnly = logReclaimOnly;
+        return this;
     }
 }

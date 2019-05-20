@@ -8,6 +8,7 @@ import java.util.List;
 public class ReclaimerConfig
 {
     private int maximumExecutionSeconds = 60;
+    private boolean logReclaimOnly = false;
     private String agendaProgressEndpointURL;
 
     public int getMaximumExecutionSeconds()
@@ -29,6 +30,17 @@ public class ReclaimerConfig
     public ReclaimerConfig setAgendaProgressEndpointURL(String agendaProgressEndpointURL)
     {
         this.agendaProgressEndpointURL = agendaProgressEndpointURL;
+        return this;
+    }
+
+    public boolean getLogReclaimOnly()
+    {
+        return logReclaimOnly;
+    }
+
+    public ReclaimerConfig setLogReclaimOnly(boolean logReclaimOnly)
+    {
+        this.logReclaimOnly = logReclaimOnly;
         return this;
     }
 
