@@ -80,10 +80,7 @@ public class AWSLambdaStreamEntryTest
     public void testProcessingException() throws Exception
     {
         doThrow(new RuntimeException("bad")).when(mockAgendaReclaimer).process();
-        callHandleRequest(objectMapper.writeValueAsString(
-            new ReclaimerConfig()
-                .setAgendaProgressEndpointURL(AGENDA_PROGRESS_ENDPOINT_URL))
-        );
+        callHandleRequest(objectMapper.writeValueAsString(new ReclaimerConfig()));
     }
 
     private void callHandleRequest(String input) throws IOException

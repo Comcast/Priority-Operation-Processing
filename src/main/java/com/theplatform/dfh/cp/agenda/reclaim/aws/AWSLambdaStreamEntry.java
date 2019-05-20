@@ -41,6 +41,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private static final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
     private static final String ENV_IDM_USER = "IDM_USER";
     private static final String ENV_IDENTITY_URL = "IDENTITY_URL";
+    private static final String ENV_AGENDA_PROGRESS_URL = "AGENDA_PROGRESS_URL";
 
     public AWSLambdaStreamEntry()
     {
@@ -66,11 +67,13 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
         HttpURLConnectionFactory urlConnectionFactory = createHttpURLConnectionFactory();
 
+        String agendaProgressURL = getEnvironmentVar(ENV_AGENDA_PROGRESS_URL);
+
         try
         {
             agendaReclaimerFactory.createAgendaReclaimer(
                 new DynamoDBTimeoutProducerFactory(awsDynamoDBFactory, reclaimerConfig),
-                new TimeoutConsumerFactory(urlConnectionFactory, reclaimerConfig),
+                new TimeoutConsumerFactory(urlConnectionFactory, reclaimerConfig, agendaProgressURL),
                 reclaimerConfig
             )
             .process();

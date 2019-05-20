@@ -37,8 +37,7 @@ public class AWSReclaimerConfigTest
         ReclaimerConfig config = new AWSReclaimerConfig()
             .setTableName("Table")
             .setIdFieldName("id")
-            .setTimeFieldName("timeField")
-            .setAgendaProgressEndpointURL("http://");
+            .setTimeFieldName("timeField");
         Assert.assertNull(config.validate());
     }
 }
