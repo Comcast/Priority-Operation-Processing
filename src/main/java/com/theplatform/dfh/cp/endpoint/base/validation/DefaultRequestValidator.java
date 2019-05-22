@@ -12,26 +12,28 @@ public class DefaultRequestValidator<R extends ServiceRequest> implements Reques
     @Override
     public void validateGET(R request)
     {
-        if(request == null)
-            throw new ValidationException("The request cannot be null.");
+        validateRequest(request);
     }
 
     @Override
     public void validatePOST(R request)
     {
-        if(request == null)
-            throw new ValidationException("The request cannot be null.");
+        validateRequest(request);
     }
 
     @Override
     public void validatePUT(R request)
     {
-        if(request == null)
-            throw new ValidationException("The request cannot be null.");
+        validateRequest(request);
     }
 
     @Override
     public void validateDELETE(R request)
+    {
+        validateRequest(request);
+    }
+
+    protected void validateRequest(R request)
     {
         if(request == null)
             throw new ValidationException("The request cannot be null.");

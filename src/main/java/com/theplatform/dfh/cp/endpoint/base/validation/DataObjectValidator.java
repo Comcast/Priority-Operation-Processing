@@ -10,23 +10,33 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
  */
 public class DataObjectValidator<T extends IdentifiedObject, R extends DataObjectRequest<T>> extends DefaultRequestValidator<R>
 {
-    // TODO: some more...
-
     @Override
     public void validatePOST(R request)
     {
         super.validatePOST(request);
-        T object = request.getDataObject();
-        if(object == null)
-            throw new ValidationException("Unable to POST a null object");
+        validateObjectRequest(request, "POST");
     }
 
     @Override
     public void validatePUT(R request)
     {
         super.validatePUT(request);
+        validateObjectRequest(request, "PUT");
+
+        if(request.getId() == null)
+            throw new ValidationException("Unable to PUT an object without specifying an id");
+
+        T object = request.getDataObject();
+        if(object.getId() != null && !object.getId().equals(request.getId()))
+            throw new ValidationException(String.format("Mismatched Id in URL and on input object: URLId: %1$s and ObjectId: %2$s",
+                request.getId(),
+                object.getId()));
+    }
+
+    protected void validateObjectRequest(R request, String requestType)
+    {
         T object = request.getDataObject();
         if(object == null)
-            throw new ValidationException("Unable to PUT a null object");
+            throw new ValidationException(String.format("Unable to %1$s a null object", requestType));
     }
 }
