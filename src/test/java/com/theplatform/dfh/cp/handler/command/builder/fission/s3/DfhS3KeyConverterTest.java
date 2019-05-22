@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.handler.command.builder.fission.s3;
 import com.theplatform.commandbuilder.impl.build.handler.ConnectData;
 import com.theplatform.commandbuilder.impl.build.handler.ConnectDataImpl;
 import com.theplatform.commandbuilder.impl.build.handler.NoopConnectKey;
-import com.theplatform.commandbuilder.impl.build.handler.s3.S3ConnectionKeys;
 import com.theplatform.commandbuilder.impl.build.handler.s3.S3Data;
 import com.theplatform.commandbuilder.impl.build.handler.s3.S3VhsConnect;
 import org.testng.annotations.Test;
@@ -21,7 +20,6 @@ public class DfhS3KeyConverterTest
     protected String bucket = "testbucket";
     protected String pathToFile = "/path/to/test.file";
     protected String s3Url = "https://"+bucket+".s3.amazonaws.com"+pathToFile;
-//    protected static final String DEFAULT_MOUNT = "/var/s3";
 
     @Test
     public void testKeyConversion()
