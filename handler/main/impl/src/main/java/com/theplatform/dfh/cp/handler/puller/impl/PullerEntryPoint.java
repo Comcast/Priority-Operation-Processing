@@ -2,6 +2,8 @@ package com.theplatform.dfh.cp.handler.puller.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
+import com.theplatform.dfh.cp.handler.base.messages.HandlerMessages;
+import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
@@ -14,6 +16,12 @@ import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.retriever.PullerArgumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.FAILED;
+import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.SUCCEEDED;
 
 public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor, PullerLaunchDataWrapper>
 {
@@ -69,6 +77,29 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, DEFAULT_CONF_PATH);
         String[] args2 = new String[] {"server", confPath};
         new PullerApp(pullerEntryPoint).run(args2);
+    }
+
+    /**
+     * Simplified execute method specific to the puller.
+     */
+    @Override
+    public void execute()
+    {
+        // get the operation specific context for running the overall process
+        PullerContext operationContext = getOperationContextFactory().createOperationContext();
+        try
+        {
+            operationContext.init();
+            createHandlerProcessor(operationContext).execute();
+        }
+        catch (Exception e)
+        {
+            operationContext.processUnhandledException(HandlerMessages.GENERAL_HANDLER_ERROR.getMessage("Puller"), e);
+        }
+        finally
+        {
+            operationContext.shutdown();
+        }
     }
 
     public AgendaClientFactory getAgendaClientFactory()
