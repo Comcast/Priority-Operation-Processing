@@ -121,27 +121,24 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     }
 
     /*
-<date> cid=<**> operationId=<*> owner=<*> conclustionStatus=<**>  elapsedTime<milliseconds> operation=<for example ffmpeg.filmstrip.0> payload=<json blob>
+        date cid=** operationId=** owner=** conclustionStatus=**  elapsedTime-milliseconds=** operation=for-example-ffmpeg.filmstrip.0 payload=json-blob
  */
     private void logFinalStateAndDuration(String conclusionStatus)
     {
         Boolean seesMetadata = launchDataWrapper.getEnvironmentRetriever() != null;
+
+        // Set default values
         String operationId = "operation id not visible";
         String owner = "owner not visible";
         String operation = "operation name not visible";
         String payload = "payload not visible";
-        String tempValue;
 
         if(seesMetadata)
         {
-            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
-            operationId = tempValue == null ? operationId : tempValue;
-            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CUSTOMER_ID.name());
-            owner = tempValue == null ? owner : tempValue;
-            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_NAME.name());
-            operation = tempValue == null ? operation : tempValue;
-            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PAYLOAD.name());
-            payload = tempValue == null ? payload : tempValue;
+            operationId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name(), operationId);
+            owner = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CUSTOMER_ID.name(), owner);
+            operation = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_NAME.name(), operation);
+            payload = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PAYLOAD.name(),payload);
         }
         String cid = setupLoggingCid();
         Long elapsedtime = System.currentTimeMillis() - start;
