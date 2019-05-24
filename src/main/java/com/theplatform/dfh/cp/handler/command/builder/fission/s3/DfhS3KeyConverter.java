@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class DfhS3KeyConverter implements KeyConversion
 {
-    private static ConnectionKeys notFound = new NoopConnectKey();
+    private static final ConnectionKeys notFound = new NoopConnectKey();
 
     public ConnectionKeys convertKey(String keyToConvert)
     {

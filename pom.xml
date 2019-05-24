@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.theplatform</groupId>
-        <artifactId>theplatform</artifactId>
-        <version>5.0.2</version>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.6</version>
     </parent>
 
     <groupId>com.theplatform.dfh.cp</groupId>
@@ -28,12 +28,6 @@
             <scope>provided</scope>
         </dependency>
         <!--testing-->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>

@@ -14,12 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DfhS3KeyConverterTest
 {
-    DfhS3KeyConverter keyConverter = new DfhS3KeyConverter();
-    protected static final String TEST_S3_ID = "test_s3_id";
-    protected static final String TEST_S3_SECRET = "test_s3_secret";
-    protected String bucket = "testbucket";
-    protected String pathToFile = "/path/to/test.file";
-    protected String s3Url = "https://"+bucket+".s3.amazonaws.com"+pathToFile;
+    private static final DfhS3KeyConverter keyConverter = new DfhS3KeyConverter();
+    private static final String TEST_S3_ID = "test_s3_id";
+    private static final String TEST_S3_SECRET = "test_s3_secret";
+    private static final String bucket = "testbucket";
+    private static final String pathToFile = "/path/to/test.file";
+    private static final String s3Url = "https://"+bucket+".s3.amazonaws.com"+pathToFile;
 
     @Test
     public void testKeyConversion()
@@ -65,7 +65,6 @@ public class DfhS3KeyConverterTest
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put(S3ConnectConvert.username.name(), TEST_S3_ID);
         paramsMap.put(S3ConnectConvert.password.name(), TEST_S3_SECRET);
-        ConnectData connectData = new ConnectDataImpl(s3Url, paramsMap);
-        return connectData;
+        return new ConnectDataImpl(s3Url, paramsMap);
     }
 }
