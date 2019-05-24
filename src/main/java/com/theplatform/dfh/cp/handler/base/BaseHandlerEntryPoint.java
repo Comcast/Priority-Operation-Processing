@@ -28,6 +28,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 {
     public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
     private static final String DURATION_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX +"operation: %s; completion status: %s; duration (millisec): %d";
+    private static final String OPERATION_METRICS_TEMPLATE = "cid=%s operationId=%s owner=%s conclusionStatus=%s elapsedTime=%s operation=%s payload=%s";
     private static final String CPU_Template = OPERATION_METADATA_TEMPLATE_PREFIX +"Requested CPUs (for handler and any utility pods): %1f";
     private static final double DEFAULT_HANDLER_CPU_REQUEST = 1.0; // note that request can be fractional; confirm that this value is good as a default.
     private static Logger logger = LoggerFactory.getLogger(BaseHandlerEntryPoint.class);
@@ -119,11 +120,32 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         return handlerMetadataRetriever.getMetadata().get(HandlerField.OPERATION_NAME.name());
     }
 
-    private void logFinalStateAndDuration(String status)
+    /*
+<date> cid=<**> operationId=<*> owner=<*> conclustionStatus=<**>  elapsedTime<milliseconds> operation=<for example ffmpeg.filmstrip.0> payload=<json blob>
+ */
+    private void logFinalStateAndDuration(String conclusionStatus)
     {
-        long durationMilli = System.currentTimeMillis() - start;
-        String operationName = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
-        logger.info(String.format(DURATION_TEMPLATE, operationName, status, durationMilli));
+        Boolean seesMetadata = launchDataWrapper.getEnvironmentRetriever() != null;
+        String operationId = "operation id not visible";
+        String owner = "owner not visible";
+        String operation = "operation name not visible";
+        String payload = "payload not visible";
+        String tempValue;
+
+        if(seesMetadata)
+        {
+            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_ID.name());
+            operationId = tempValue == null ? operationId : tempValue;
+            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CUSTOMER_ID.name());
+            owner = tempValue == null ? owner : tempValue;
+            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.OPERATION_NAME.name());
+            operation = tempValue == null ? operation : tempValue;
+            tempValue = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PAYLOAD.name());
+            payload = tempValue == null ? payload : tempValue;
+        }
+        String cid = setupLoggingCid();
+        Long elapsedtime = System.currentTimeMillis() - start;
+        logger.info(String.format(OPERATION_METRICS_TEMPLATE, cid, operationId, owner, conclusionStatus, elapsedtime.toString(), operation, payload));
     }
 
     public W getLaunchDataWrapper()
@@ -149,12 +171,17 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     /**
      * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
      */
-    protected void setupLoggingCid()
+    protected String setupLoggingCid()
     {
+        if(MDC.get(HandlerField.CID.name())!= null)
+        {
+            return MDC.get(HandlerField.CID.name());
+        }
         FieldRetriever fieldRetriever = launchDataWrapper.getEnvironmentRetriever();
         String cid = fieldRetriever != null
                      ? fieldRetriever.getField(HandlerField.CID.name(), UUID.randomUUID().toString())
                      : UUID.randomUUID().toString();
         MDC.put(HandlerField.CID.name(), cid);
+        return cid;
     }
 }

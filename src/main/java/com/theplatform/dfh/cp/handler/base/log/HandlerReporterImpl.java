@@ -9,13 +9,17 @@ public class HandlerReporterImpl implements HandlerReporter
 {
     private static Logger logger = LoggerFactory.getLogger(HandlerReporterImpl.class);
     public static final String OPERATION_METADATA_TEMPLATE_PREFIX = "Operation metadata - ";
-    private static final String KEY_VALUE_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX + "%s : %s";
     @Override
     public void reportMetadata(Map<String, String> metadata)
     {
+        StringBuilder b = new StringBuilder();
         for(String key: metadata.keySet())
         {
-            logger.info(String.format(KEY_VALUE_TEMPLATE, key, metadata.get(key)));
+            b.append(key);
+            b.append(" : ");
+            b.append(metadata.get(key));
+            b.append(" ");
         }
+        logger.info(OPERATION_METADATA_TEMPLATE_PREFIX + b.toString());
     }
 }
