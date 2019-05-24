@@ -10,7 +10,7 @@ import java.util.List;
 
 public enum AgendaReports implements Report<Agenda, String>
 {
-    CID
+    CID("cid")
             {
                 @Override
                 public String report(Agenda agenda)
@@ -21,11 +21,11 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         cid = agendaCid;
                     }
-                    return name() + ": " + cid;
+                    return label + ": " + cid;
                 }
             },
 
-    CUSTOMER_ID
+    CUSTOMER_ID("owner")
             {
                 @Override
                 public String report(Agenda agenda)
@@ -36,32 +36,45 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         customerId = agendaCustomerId;
                     }
-                    return name() + ": " + customerId;
+                    return label + ": " + customerId;
                 }
             },
-    AGENDA_ID
+    AGENDA_ID("agendaId")
             {
                 @Override
                 public String report(Agenda agenda)
                 {
-                    return name() + ": " + agenda.getId();
+                    return label + ": " + agenda.getId();
                 }
             },
-    MILLISECONDS_IN_QUEUE
+    MILLISECONDS_IN_QUEUE("elapsedTime")
             {
                 @Override
                 public String report(Agenda agenda)
                 {
                     if(agenda.getParams() == null || !agenda.getParams().keySet().contains(ADDED_KEY) || agenda.getParams().get(ADDED_KEY) == null || !(agenda.getParams().get(ADDED_KEY) instanceof Date))
                     {
-                        return name() +": No duration recorded";
+                        return label +": No duration recorded";
                     }
                     Date added = (Date)agenda.getParams().get(ADDED_KEY);
                     Long durationMilli = System.currentTimeMillis() - added.getTime();
-                    return name() +": " +durationMilli.toString();
+                    return label +": " +durationMilli.toString();
                 }
             },
-    LINK_ID
+    AGENDA_STATUS("conclusionStatus")
+            {
+                @Override
+                public String report(Agenda agenda)
+                {
+                    if(agenda.getParams() == null || !agenda.getParams().keySet().contains(CONCLUSION_STATUS_KEY) || agenda.getParams().get(CONCLUSION_STATUS_KEY) == null)
+                    {
+                        return label +": No conclusion status recorded";
+                    }
+                    String status = agenda.getParams().get(CONCLUSION_STATUS_KEY).toString();
+                    return label +": " + status;
+                }
+            },
+    LINK_ID("linkId")
             {
                 @Override
                 public String report(Agenda agenda)
@@ -72,18 +85,18 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         linkId = agendaLinkId;
                     }
-                    return name() + ": " + linkId;
+                    return label + ": " + linkId;
                 }
             },
-    AGENDA_TYPE
+    AGENDA_TYPE("agendaType")
             {
                 @Override
                 public String report(Agenda agenda) // TODO support when agenda type is implemented
                 {
-                    return name() + ": " + "basic";
+                    return label + ": " + "basic";
                 }
             },
-    OPERATION_PAYLOAD
+    OPERATION_PAYLOAD("payload")
             {
                 @Override
                 public String report(Agenda agenda)
@@ -91,12 +104,23 @@ public enum AgendaReports implements Report<Agenda, String>
                     List<Operation> operations = agenda.getOperations();
                     if(operations == null || operations.size() == 0)
                     {
-                        return name() + ": No operations";
+                        return label + ": No operations";
                     }
                     JsonHelper jsonHelper = new JsonHelper();
                     jsonHelper.getJSONString(agenda.getOperations());
-                        return name() + ": " + jsonHelper.getJSONString(agenda.getOperations());
+                        return label + ": " + jsonHelper.getJSONString(agenda.getOperations());
                 }
             };
 
+    protected final String label;
+
+    AgendaReports(String label)
+    {
+        this.label = label;
+    }
+
+    public String getLabel()
+    {
+        return label;
+    }
 }

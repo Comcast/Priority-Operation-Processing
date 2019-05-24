@@ -36,7 +36,17 @@ public class AgendaServiceRequestProcessor
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
     private static final String AGENDA_PREFIX = "Agenda metadata - ";
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - InsightId: %s; count: %d.";
-    private static final AgendaReports[] AGENDA_REPORTS = {AgendaReports.CID, AgendaReports.LINK_ID, AgendaReports.AGENDA_ID, AgendaReports.AGENDA_TYPE, AgendaReports.OPERATION_PAYLOAD};
+
+    private static final AgendaReports[] AGENDA_REPORTS = {
+            AgendaReports.CID,
+            AgendaReports.AGENDA_ID,
+            AgendaReports.LINK_ID,
+            AgendaReports.CUSTOMER_ID,
+            AgendaReports.AGENDA_STATUS,
+            AgendaReports.MILLISECONDS_IN_QUEUE,
+            AgendaReports.AGENDA_TYPE,
+            AgendaReports.OPERATION_PAYLOAD
+    };
 
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;

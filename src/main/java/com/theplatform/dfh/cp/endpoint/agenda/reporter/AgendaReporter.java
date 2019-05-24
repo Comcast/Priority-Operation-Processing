@@ -6,8 +6,12 @@ import org.slf4j.LoggerFactory;
 
 public class AgendaReporter
 {
-    private static Logger logger = LoggerFactory.getLogger(AgendaReporter.class);
-    private static final AgendaReports[] DEFAULT_REPORT = {AgendaReports.AGENDA_ID, AgendaReports.CID};
+    protected Logger logger = LoggerFactory.getLogger(AgendaReporter.class);
+    private static final AgendaReports[] DEFAULT_REPORT = {
+            AgendaReports.CID,
+            AgendaReports.AGENDA_ID,
+            AgendaReports.CUSTOMER_ID,
+            AgendaReports.AGENDA_TYPE};
 
     private String prefix;
     private AgendaReports[] agendaReports = DEFAULT_REPORT;
