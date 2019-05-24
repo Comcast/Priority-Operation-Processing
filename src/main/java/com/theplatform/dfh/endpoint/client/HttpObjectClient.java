@@ -31,6 +31,7 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
 {
     private static final Logger logger = LoggerFactory.getLogger(HttpObjectClient.class);
 
+    public final static String DEFAULT_RESPONSE_MESSAGE = "[No message from service provided]";
     private final String endpointURL;
     private final HttpURLConnectionFactory httpUrlConnectionFactory;
     private final Class<T> objectClass;
@@ -191,11 +192,13 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
         return objectMapper.readValue(response, type);
     }
 
-    private DataObjectResponse<T> buildExceptionResponse(IOException e, String message, HttpURLConnection urlConnection)
+    protected DataObjectResponse<T> buildExceptionResponse(IOException e, String message, HttpURLConnection urlConnection)
     {
+        String responseMessage = null;
         int responseCode = 400;
         try
         {
+            responseMessage = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
         }
         catch (IOException | NullPointerException e2)
@@ -203,8 +206,11 @@ public class HttpObjectClient<T extends IdentifiedObject> implements ObjectClien
             logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
         }
 
+        if(responseMessage == null)
+            responseMessage = DEFAULT_RESPONSE_MESSAGE;
+
         return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(
-            new ObjectClientException(message, e),
+            new ObjectClientException(String.join(" :: ", responseMessage, message), e),
             responseCode,
             MDC.get("CID")));
     }

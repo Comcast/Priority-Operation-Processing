@@ -2,6 +2,7 @@ package com.theplatform.dfh.endpoint.client;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
@@ -12,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +34,7 @@ public class HttpObjectClientTest
     private HttpURLConnection mockHttpURLConnection;
     private URLRequestPerformer mockURLRequestPerformer;
     private JsonHelper jsonHelper = new JsonHelper();
+    private final String HTTP_RESPONSE_MESSAGE = "theMessage";
     private final String LINK_ID = UUID.randomUUID().toString();
 
     @BeforeMethod
@@ -85,6 +88,40 @@ public class HttpObjectClientTest
     public void testGetQueryParams(final String expected, Collection<Query> queries)
     {
         Assert.assertEquals(client.getQueryParams(queries), expected);
+    }
+
+    @DataProvider
+    public Object[][] buildExceptionResponseProvider() throws IOException
+    {
+        return new Object[][]
+            {
+                { configureConnectionMock("test", 502), "test :: " + HTTP_RESPONSE_MESSAGE},
+                { configureConnectionMock("", 504), " :: " + HTTP_RESPONSE_MESSAGE},
+                { configureConnectionMock(null, 408), HttpObjectClient.DEFAULT_RESPONSE_MESSAGE + " :: " + HTTP_RESPONSE_MESSAGE},
+            };
+    }
+
+    @Test(dataProvider = "buildExceptionResponseProvider")
+    public void testBuildExceptionResponse(HttpURLConnection connection, String expectedMessage) throws IOException
+    {
+        final IOException e = new IOException();
+        DataObjectResponse<AgendaProgress> dataObjectResponse = client.buildExceptionResponse(e, HTTP_RESPONSE_MESSAGE, connection);
+        Assert.assertNotNull(dataObjectResponse.getErrorResponse());
+        Assert.assertTrue(dataObjectResponse.isError());
+        ErrorResponse errorResponse = dataObjectResponse.getErrorResponse();
+        Assert.assertEquals(errorResponse.getTitle(), ObjectClientException.class.getSimpleName());
+        Assert.assertTrue(errorResponse.getServerStackTrace().startsWith(e.getClass().getName()), "StackTrace should have the prefix: " + e.getClass().getName());
+        Assert.assertEquals(errorResponse.getResponseCode(), (Integer)connection.getResponseCode());
+        Assert.assertEquals(errorResponse.getDescription(), expectedMessage);
+    }
+
+    private HttpURLConnection configureConnectionMock(String responseMessage, int responseCode) throws IOException
+    {
+        // make a new one because BeforeMethod has not run yet...
+        HttpURLConnection mockHttpURLConnection = mock(HttpURLConnection.class);
+        doReturn(responseMessage).when(mockHttpURLConnection).getResponseMessage();
+        doReturn(responseCode).when(mockHttpURLConnection).getResponseCode();
+        return mockHttpURLConnection;
     }
 
     private Query makeQuery(String field, String value)
