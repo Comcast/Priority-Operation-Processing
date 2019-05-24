@@ -27,6 +27,8 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
      * Debugging running local with minikube for pod launches
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties -payloadFile ./handler/main/package/local/payload.json
      *
+     * NOTE! For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
+     *
      * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
      *

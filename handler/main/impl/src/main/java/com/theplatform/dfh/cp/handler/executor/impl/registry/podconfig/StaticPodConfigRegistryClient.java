@@ -53,7 +53,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 
         podConfigMap.put("package",
                 makeDfhBasePod("lab-main-t-aor-fhpkm-t01")
-                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.1")
+                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.2")
                 .setNamePrefix("dfh-package")
         );
     }
