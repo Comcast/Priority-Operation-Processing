@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.progress;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Date;
+
+import static com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter.AGENDA_RESPONSE_REPORTER_KEY;
 
 /**
  * Agenda specific RequestProcessor
@@ -42,6 +45,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         DataObjectResponse<AgendaProgress> response;
         objectToUpdate.setUpdatedTime(new Date());
         response = super.handlePUT(request);
+        logAgenda(response);
         if(response.isError())
             return response;
         //@todo tstair -- We post progress before agenda in POST but here we do it after????
@@ -58,6 +62,22 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
             }
         }
         return response;
+    }
+
+    private void logAgenda(DataObjectResponse<AgendaProgress> response)
+    {
+        AgendaProgress agendaProgress = response.getFirst();
+        if(agendaProgress == null || agendaProgress.getParams() == null)
+        {
+            return;
+        }
+        if(agendaProgress.getParams().keySet().contains(AGENDA_RESPONSE_REPORTER_KEY) && agendaProgress.getParams().get(AGENDA_RESPONSE_REPORTER_KEY) instanceof AgendaResponseReporter)
+        {
+            AgendaResponseReporter agendaResponseReporter = (AgendaResponseReporter) agendaProgress.getParams().get(AGENDA_RESPONSE_REPORTER_KEY);
+            agendaResponseReporter.setAgendaProgress(response.getFirst());
+            agendaResponseReporter.reportAgendaResponse();
+            agendaResponseReporter.reportAgendas();
+        }
     }
 
     /**

@@ -3,6 +3,8 @@ package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -45,5 +47,12 @@ public class AgendaBaseTest extends AgendaData
         operation.setParams(makeOperationParams());
         opsList.add(operation);
         return opsList;
+    }
+    protected AgendaProgress makeAgendaProgress(String state)
+    {
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setProcessingState(ProcessingState.COMPLETE);
+        agendaProgress.setProcessingStateMessage(state);
+        return agendaProgress;
     }
 }

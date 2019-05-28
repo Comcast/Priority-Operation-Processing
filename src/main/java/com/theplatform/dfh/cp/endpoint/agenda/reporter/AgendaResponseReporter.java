@@ -1,6 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,7 @@ import static com.theplatform.dfh.cp.endpoint.agenda.reporter.Report.CONCLUSION_
 public class AgendaResponseReporter
 {
     private static Logger logger = LoggerFactory.getLogger(AgendaResponseReporter.class);
+    public static final String AGENDA_RESPONSE_REPORTER_KEY = "AgendaResponseReporter";
 
     private static final AgendaReports[] AGENDA_REPORTS = {
             AgendaReports.CID,
@@ -43,15 +47,9 @@ public class AgendaResponseReporter
             return;
         }
         Agenda[] agendas = getAgendaResponse.getAgendas().toArray(new Agenda[0]);
-        setConclusionStatus(agendas[0]);
         agendaReporter.reportInLine(agendas[0]);
     }
 
-    private void setConclusionStatus(Agenda agenda)
-    {
-        AgendaConclusionStatus status = getAgendaResponse.isError() ? AgendaConclusionStatus.failed : AgendaConclusionStatus.succeeded;
-        agenda.getParams().put(CONCLUSION_STATUS_KEY, status.name());
-    }
 
     private String makeAgendaIdsPrefix(String agendaResponsePrefix, Agenda... agendas)
     {
@@ -60,7 +58,7 @@ public class AgendaResponseReporter
         b.append(" Agenda IDs: [");
         for(int i = 0; i < agendas.length; i++)
         {
-            b.append(AgendaReports.AGENDA_ID.report(agendas[i]));
+            b.append(AgendaReports.AGENDA_ID.report(new AgendaReportData(agendas[i], "agenda state not used here.")));
             if(i < agendas.length - 1)
             {
                 b.append("; ");
@@ -76,5 +74,19 @@ public class AgendaResponseReporter
         {
             agendaReporter.reportInLine(agenda);
         }
+    }
+
+    /**
+     * See http://tpconfluence/display/TD/DFH+Fission:+Endpoints:+Progress+Monitoring
+     */
+    public void setAgendaProgress( AgendaProgress agendaProgress)
+    {
+        ProcessingState processingState = agendaProgress.getProcessingState();
+        String agendaState = processingState.name();
+        if(processingState.equals(ProcessingState.COMPLETE))
+        {
+            agendaState = agendaProgress.getProcessingStateMessage();
+        }
+        agendaReporter.setProcessingState(agendaState);
     }
 }

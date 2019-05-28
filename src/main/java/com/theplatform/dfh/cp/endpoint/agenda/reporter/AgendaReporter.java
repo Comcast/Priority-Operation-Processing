@@ -15,6 +15,7 @@ public class AgendaReporter
 
     private String prefix;
     private AgendaReports[] agendaReports = DEFAULT_REPORT;
+    private String agendaState;
 
     public AgendaReporter(String prefix, AgendaReports... agendaReports)
     {
@@ -27,26 +28,57 @@ public class AgendaReporter
 
     public void report(Agenda agenda)
     {
-        for(Report<Agenda, String> report: agendaReports)
+        AgendaReportData agendaReportData = new AgendaReportData(agenda, agendaState);
+        for(Report<AgendaReportData, String> report: agendaReports)
         {
-            logger.info(prefix + report.report(agenda));
+            logger.info(prefix + report.report(agendaReportData));
         }
     }
 
     public void reportInLine(Agenda agenda)
     {
+        AgendaReportData agendaReportData = new AgendaReportData(agenda, agendaState);
         StringBuilder b = new StringBuilder();
         b.append(prefix).append("[");
         for(int i = 0; i < agendaReports.length;i++)
         {
-            Report<Agenda,String> report = agendaReports[i];
-            b.append(report.report(agenda));
+            Report<AgendaReportData,String> report = agendaReports[i];
+            b.append(report.report(agendaReportData));
             if(i < agendaReports.length - 1)
             {
                 b.append("; ");
             }
         }
+
         b.append("]");
         logger.info(b.toString());
+    }
+
+    public void setProcessingState(String agendaState)
+    {
+        this.agendaState = agendaState;
+    }
+}
+class AgendaReportData
+{
+
+    private Agenda agenda;
+    private String agendaState;
+
+    public AgendaReportData(Agenda agenda, String agendaState)
+    {
+
+        this.agenda = agenda;
+        this.agendaState = agendaState;
+    }
+
+    public Agenda getAgenda()
+    {
+        return agenda;
+    }
+
+    public String getAgendaState()
+    {
+        return agendaState;
     }
 }

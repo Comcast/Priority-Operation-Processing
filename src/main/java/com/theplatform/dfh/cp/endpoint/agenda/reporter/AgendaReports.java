@@ -8,13 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 import java.util.List;
 
-public enum AgendaReports implements Report<Agenda, String>
+public enum AgendaReports implements Report<AgendaReportData, String>
 {
     CID("cid")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
+                    Agenda agenda = agendaData.getAgenda();
                     String cid = "No CID defined for: "+agenda.getId();
                     String agendaCid = agenda.getCid();
                     if(!StringUtils.isEmpty(agendaCid))
@@ -28,8 +29,9 @@ public enum AgendaReports implements Report<Agenda, String>
     CUSTOMER_ID("owner")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
+                    Agenda agenda = agendaData.getAgenda();
                     String customerId = "No Customer ID defined for: "+agenda.getId();
                     String agendaCustomerId = agenda.getCustomerId();
                     if(!StringUtils.isEmpty(agendaCustomerId))
@@ -42,16 +44,17 @@ public enum AgendaReports implements Report<Agenda, String>
     AGENDA_ID("agendaId")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
-                    return label + ": " + agenda.getId();
+                    return label + ": " + agendaData.getAgenda().getId();
                 }
             },
     MILLISECONDS_IN_QUEUE("elapsedTime")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
+                    Agenda agenda = agendaData.getAgenda();
                     if(agenda.getParams() == null || !agenda.getParams().keySet().contains(ADDED_KEY) || agenda.getParams().get(ADDED_KEY) == null || !(agenda.getParams().get(ADDED_KEY) instanceof Date))
                     {
                         return label +": No duration recorded";
@@ -64,21 +67,21 @@ public enum AgendaReports implements Report<Agenda, String>
     AGENDA_STATUS("conclusionStatus")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
-                    if(agenda.getParams() == null || !agenda.getParams().keySet().contains(CONCLUSION_STATUS_KEY) || agenda.getParams().get(CONCLUSION_STATUS_KEY) == null)
+                    if(agendaData.getAgendaState() == null )
                     {
                         return label +": No conclusion status recorded";
                     }
-                    String status = agenda.getParams().get(CONCLUSION_STATUS_KEY).toString();
-                    return label +": " + status;
+                    return label +": " + agendaData.getAgendaState();
                 }
             },
     LINK_ID("linkId")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
+                    Agenda agenda = agendaData.getAgenda();
                     String linkId = "No link ID defined for: "+agenda.getLinkId();
                     String agendaLinkId = agenda.getLinkId();
                     if(!StringUtils.isEmpty(agendaLinkId))
@@ -91,7 +94,7 @@ public enum AgendaReports implements Report<Agenda, String>
     AGENDA_TYPE("agendaType")
             {
                 @Override
-                public String report(Agenda agenda) // TODO support when agenda type is implemented
+                public String report(AgendaReportData agendaData) // TODO support when agenda type is implemented
                 {
                     return label + ": " + "basic";
                 }
@@ -99,8 +102,9 @@ public enum AgendaReports implements Report<Agenda, String>
     OPERATION_PAYLOAD("payload")
             {
                 @Override
-                public String report(Agenda agenda)
+                public String report(AgendaReportData agendaData)
                 {
+                    Agenda agenda = agendaData.getAgenda();
                     List<Operation> operations = agenda.getOperations();
                     if(operations == null || operations.size() == 0)
                     {

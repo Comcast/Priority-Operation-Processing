@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReports;
@@ -28,6 +29,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter.AGENDA_RESPONSE_REPORTER_KEY;
+
 /**
  * Agenda service request processor
  */
@@ -51,8 +54,19 @@ public class AgendaServiceRequestProcessor
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
     private ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory;
+    private ObjectPersister<AgendaProgress> agendaProgressPersister;
+
+
 
     public AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
+                                         ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister)
+    {
+        this(agendaInfoItemQueueFactory, insightPersister, agendaPersister);
+        this.agendaProgressPersister = agendaProgressPersister;
+    }
+
+
+    protected AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister)
     {
         this.agendaInfoItemQueueFactory = agendaInfoItemQueueFactory;
@@ -151,9 +165,21 @@ public class AgendaServiceRequestProcessor
     private GetAgendaResponse createAgendaServiceResult(Collection<Agenda> agendas)
     {
         GetAgendaResponse getAgendaResponse = new GetAgendaResponse(agendas);
+        if(agendas == null || agendas.isEmpty())
+        {
+            return getAgendaResponse;
+        }
         AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(AGENDA_PREFIX, AGENDA_REPORTS));
-        agendaResponseReporter.reportAgendaResponse();
-        agendaResponseReporter.reportAgendas();
+        Agenda agenda = agendas.iterator().next();
+        try
+        {
+            AgendaProgress agendaProgress = agendaProgressPersister.retrieve(agenda.getProgressId());
+            agendaProgress.getParams().put(AGENDA_RESPONSE_REPORTER_KEY, agendaResponseReporter);
+            agendaProgressPersister.update(agendaProgress);
+        } catch (PersistenceException e)
+        {
+            logger.error("Failed to update agendaProgress: " + agenda.getProgressId());
+        }
         return getAgendaResponse;
     }
 
