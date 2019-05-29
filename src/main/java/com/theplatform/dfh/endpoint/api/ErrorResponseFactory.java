@@ -41,6 +41,11 @@ public class ErrorResponseFactory
         return buildErrorResponse(new RuntimeServiceException(message, 400), 400, cid);
     }
 
+    public static ErrorResponse runtimeServiceException(RuntimeServiceException exception, String cid)
+    {
+        return buildErrorResponse(exception, exception.getResponseCode(), cid);
+    }
+
     public static ErrorResponse buildErrorResponse(Throwable e, int responseCode, String cid)
     {
         return new ErrorResponse(e, responseCode, cid);
