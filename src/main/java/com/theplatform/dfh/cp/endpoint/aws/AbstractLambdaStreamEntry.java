@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
+import com.theplatform.dfh.endpoint.api.DefaultServiceResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
@@ -22,6 +25,7 @@ import java.util.UUID;
 
 public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req extends ServiceRequest> implements JsonRequestStreamHandler
 {
+    private static final String MDC_CID = "CID";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
@@ -45,6 +49,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     {
         Req request = getRequest(inputStreamNode);
         RequestProcessor<Res, Req> requestProcessor = getRequestProcessor(request);
+        ErrorResponse errorResponse = null;
         Object responseBodyObject = null;
         int httpStatusCode = 200;
 
@@ -76,21 +81,28 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         }
         catch (RuntimeServiceException e)
         {
-            httpStatusCode = e.getResponseCode();
-            responseBodyObject = e.getMessage();
+            errorResponse = ErrorResponseFactory.runtimeServiceException(e, getCid());
             logException(e);
         }
         catch (IllegalArgumentException e)
         {
             httpStatusCode = 400;
-            responseBodyObject = e.getMessage();
-            // todo maybe make this message json formatted?
+            errorResponse = ErrorResponseFactory.buildErrorResponse(e, httpStatusCode, getCid());
+            logException(e);
         }
         catch(Exception e)
         {
             httpStatusCode = 500;
-            responseBodyObject = e.getMessage();
+            errorResponse = ErrorResponseFactory.buildErrorResponse(e, httpStatusCode, getCid());
             logException(e);
+        }
+
+        // If there was an error set it up in a DefaultServiceResponse
+        if(errorResponse != null)
+        {
+            DefaultServiceResponse response = new DefaultServiceResponse();
+            response.setErrorResponse(errorResponse);
+            responseBodyObject = response;
         }
 
         responseWriter.writeResponse(outputStream, objectMapper, httpStatusCode, responseBodyObject);
@@ -171,6 +183,11 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     {
         // TODO: the request extractor should probably just be static...
         String cid = new LambdaRequest(rootRequestNode).getHeader("X-thePlatform-cid");
-        MDC.put("CID", cid == null ? UUID.randomUUID().toString() : cid);
+        MDC.put(MDC_CID, cid == null ? UUID.randomUUID().toString() : cid);
+    }
+
+    protected String getCid()
+    {
+        return MDC.get(MDC_CID);
     }
 }
