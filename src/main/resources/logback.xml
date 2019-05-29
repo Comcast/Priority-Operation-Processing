@@ -22,7 +22,7 @@
     <logger name="com.amazonaws.internal" level="INFO"/>
     <logger name="com.amazonaws.monitoring" level="WARN"/>
 
-    <root level="${LogLevel:-DEBUG}">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
