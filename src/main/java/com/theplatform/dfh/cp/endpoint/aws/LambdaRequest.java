@@ -131,10 +131,9 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
         String id = getRequestValue(pathParam);
         if(id == null)
         {
-            logger.error("No path param found!");
             return null;
         }
-        logger.info("objectId: {}", id);
+        logger.debug("path param objectId: {}", id);
         return id;
     }
 
