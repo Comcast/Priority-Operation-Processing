@@ -76,9 +76,9 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         this.operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
     }
 
-    protected AgendaServiceRequestProcessor getRequestProcessor(ObjectPersister<Insight> insightPersister, ObjectPersister<Agenda> agendaPersister)
+    protected AgendaServiceRequestProcessor getRequestProcessor(ObjectPersister<Insight> insightPersister, ObjectPersister<Agenda> agendaPersister, LambdaRequest lambdaRequest)
     {
-        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister);
+        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister, agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
             String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
             ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
 
-            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister);
+            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister, lambdaRequest);
             GetAgendaResponse getAgendaResponse = requestProcessor.processRequest(requestObject);
             responseBody = jsonHelper.getJSONString(getAgendaResponse);
         }
