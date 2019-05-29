@@ -30,8 +30,6 @@ import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.aws.sqs.AmazonSQSClientFactoryImpl;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
@@ -94,6 +92,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
     {
         logger.info("AgendaProvider endpoint request received.");
         LambdaRequest<GetAgendaRequest> lambdaRequest = new LambdaRequest<>(inputStreamNode, GetAgendaRequest.class);
+        LambdaRequest<AgendaProgress> lambdaProgressRequest = new LambdaRequest<>(inputStreamNode, AgendaProgress.class);
 
         String responseBody = null;
         int httpStatusCode = 200;
@@ -102,7 +101,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         switch (httpMethod)
         {
             case "POST":
-                responseBody = handlePost(lambdaRequest);
+                responseBody = handlePost(lambdaRequest, lambdaProgressRequest);
                 break;
             default:
                 // todo: some bad response code
@@ -117,7 +116,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         writer.close();
     }
 
-    private String handlePost(LambdaRequest lambdaRequest) throws IOException
+    private String handlePost(LambdaRequest lambdaRequest, LambdaRequest<AgendaProgress> lambdaProgressRequest) throws IOException
     {
         // if no insights were provided, do the old mode (just send back any Agenda)
         // otherwise, do the new way with Insights
@@ -132,7 +131,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
             String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
             ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
 
-            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister, lambdaRequest);
+            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister, lambdaProgressRequest);
             GetAgendaResponse getAgendaResponse = requestProcessor.processRequest(requestObject);
             responseBody = jsonHelper.getJSONString(getAgendaResponse);
         }
