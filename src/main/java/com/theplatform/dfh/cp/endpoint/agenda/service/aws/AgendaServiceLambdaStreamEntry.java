@@ -76,7 +76,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
 
     protected AgendaServiceRequestProcessor getRequestProcessor(ObjectPersister<Insight> insightPersister, ObjectPersister<Agenda> agendaPersister, LambdaRequest lambdaRequest)
     {
-        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister, agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)));
+        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister, agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)));
     }
 
     @Override
@@ -92,7 +92,6 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
     {
         logger.info("AgendaProvider endpoint request received.");
         LambdaRequest<GetAgendaRequest> lambdaRequest = new LambdaRequest<>(inputStreamNode, GetAgendaRequest.class);
-        LambdaRequest<AgendaProgress> lambdaProgressRequest = new LambdaRequest<>(inputStreamNode, AgendaProgress.class);
 
         String responseBody = null;
         int httpStatusCode = 200;
@@ -101,7 +100,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         switch (httpMethod)
         {
             case "POST":
-                responseBody = handlePost(lambdaRequest, lambdaProgressRequest);
+                responseBody = handlePost(lambdaRequest);
                 break;
             default:
                 // todo: some bad response code
@@ -116,7 +115,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         writer.close();
     }
 
-    private String handlePost(LambdaRequest lambdaRequest, LambdaRequest<AgendaProgress> lambdaProgressRequest) throws IOException
+    private String handlePost(LambdaRequest lambdaRequest) throws IOException
     {
         // if no insights were provided, do the old mode (just send back any Agenda)
         // otherwise, do the new way with Insights
@@ -131,7 +130,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
             String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
             ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
 
-            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister, lambdaProgressRequest);
+            AgendaServiceRequestProcessor requestProcessor = getRequestProcessor(insightPersister, agendaPersister, lambdaRequest);
             GetAgendaResponse getAgendaResponse = requestProcessor.processRequest(requestObject);
             responseBody = jsonHelper.getJSONString(getAgendaResponse);
         }
