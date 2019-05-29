@@ -17,7 +17,6 @@
     <logger name="net.sf" level="ERROR" />
     <logger name="com.theplatform.module" level="ERROR" />
     <logger name="httpclient.wire" level="ERROR" />
-    <logger name="httpclient.wire" level="ERROR" />
     <logger name="com.amazonaws.http.conn.ssl" level="ERROR"/>
     <logger name="com.amazonaws.internal" level="INFO"/>
     <logger name="com.amazonaws.monitoring" level="WARN"/>
