@@ -2,7 +2,6 @@ package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.AbstractStream;
-import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.input.InputStream;
 import com.theplatform.dfh.cp.api.output.OutputStream;
@@ -73,11 +72,16 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
         {
             transformRequest.getOutputs().forEach(o ->
             {
-                if (o.getOutputStreamRefs() != null)
+                if (o.getOutputStreamRefs() != null && o.getOutputStreamRefs().size() > 0)
                 {
                     o.getOutputStreamRefs().forEach(osr ->
                         validateReference(osr, o.getLabel(), rootTransformNode)
                     );
+                }
+                else
+                {
+                    validationIssues.add(String.format("Transform Request must include a value for required outputStreamRefs. Found issue on output - URL: %1$s, Type: %2$s",
+                        o.getUrl(), o.getType()));
                 }
             });
         }
