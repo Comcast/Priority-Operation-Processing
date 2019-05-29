@@ -117,6 +117,8 @@ public class AgendaServiceRequestProcessor
             if(agendaInfoQueueResult.isSuccessful())
             {
                 List<Agenda> agendaList = new LinkedList<>();
+                logger.info("Insight {} queue: {} poll results: {}", insight.getId(), insight.getQueueName(),
+                    agendaInfoQueueResult.getData() == null ? 0 : agendaInfoQueueResult.getData().size());
                 // TODO: if the results include more than the desired amount cap it
                 // TODO: this is not optimal, a multi-get would be better...
                 if(agendaInfoQueueResult.getData() != null)
