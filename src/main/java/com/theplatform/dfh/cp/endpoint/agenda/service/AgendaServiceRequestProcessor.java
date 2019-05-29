@@ -178,9 +178,9 @@ public class AgendaServiceRequestProcessor
             AgendaProgress agendaProgress = agendaProgressPersister.retrieve(agenda.getProgressId());
             agendaProgress.getParams().put(AGENDA_RESPONSE_REPORTER_KEY, agendaResponseReporter);
             agendaProgressPersister.update(agendaProgress);
-        } catch (PersistenceException e)
+        } catch (Exception | PersistenceException e)
         {
-            logger.error("Failed to update agendaProgress: " + agenda.getProgressId());
+            logger.error("Failed to update agendaProgress with agenda report details: " + agenda.getProgressId(), e);
         }
         return getAgendaResponse;
     }
