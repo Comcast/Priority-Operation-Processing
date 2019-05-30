@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.progress.service.aws;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
+import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
@@ -28,6 +29,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
     private static final JsonHelper jsonHelper = new JsonHelper();
     private final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
     private DynamoDBAgendaProgressPersisterFactory agendaProgressPersisterFactory;
+    private DynamoDBAgendaPersisterFactory agendaPersisterFactory;
     private DynamoDBOperationProgressPersisterFactory operationProgressPersisterFactory;
     private ResponseWriter responseWriter = new ResponseWriter();
 
@@ -35,6 +37,7 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
     {
         agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
         operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
+        agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
     }
 
     @Override
@@ -93,7 +96,9 @@ public class ProgressServiceLambdaStreamEntry implements JsonRequestStreamHandle
     {
         return new ProgressSummaryRequestProcessor(
             agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
-            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
+            operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
+                agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA))
+
         );
     }
 }

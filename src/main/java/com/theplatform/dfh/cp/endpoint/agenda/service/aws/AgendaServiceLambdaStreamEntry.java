@@ -76,7 +76,7 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
 
     protected AgendaServiceRequestProcessor getRequestProcessor(ObjectPersister<Insight> insightPersister, ObjectPersister<Agenda> agendaPersister, LambdaRequest lambdaRequest)
     {
-        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister, agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)));
+        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister);
     }
 
     @Override
@@ -138,9 +138,10 @@ public class AgendaServiceLambdaStreamEntry implements JsonRequestStreamHandler
         {
             Agenda responseObject = handlePostNoInsight(
                 agendaProgressUpdaterFactory.createAgendaProgressUpdater(
-                    agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
-                    operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS))
-                ),
+                                    agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
+                        operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
+                        agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA))
+                                ),
                 lambdaRequest);
             responseBody = responseObject == null ? null : jsonHelper.getJSONString(responseObject);
         }
