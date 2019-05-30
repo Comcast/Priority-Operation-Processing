@@ -36,7 +36,7 @@ public class AgendaServiceRequestProcessor
     private ObjectPersister<Agenda> agendaPersister;
     private ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory;
 
-    protected AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
+    public AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister)
     {
         this.agendaInfoItemQueueFactory = agendaInfoItemQueueFactory;
