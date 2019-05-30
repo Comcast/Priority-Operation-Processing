@@ -44,7 +44,7 @@ public enum AgendaReports implements Report<Agenda, String>
                 @Override
                 public String report(Agenda agenda)
                 {
-                    return label + ": " + agenda.getId();
+                    return label + "=" + agenda.getId();
                 }
             },
     MILLISECONDS_TOTAL("totalElapsedTime")
@@ -54,7 +54,7 @@ public enum AgendaReports implements Report<Agenda, String>
                 {
                     if(agenda.getParams() == null || !agenda.getParams().keySet().contains(ADDED_KEY) || agenda.getParams().get(ADDED_KEY) == null || !(agenda.getParams().get(ADDED_KEY) instanceof Date))
                     {
-                        return label +": No duration recorded";
+                        return label +"=No duration recorded";
                     }
                     Date added = (Date)agenda.getParams().get(ADDED_KEY);
                     Long durationMilli = System.currentTimeMillis() - added.getTime();
