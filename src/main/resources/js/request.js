@@ -112,10 +112,11 @@ function performRequest(httpVerb, url, data, successFunction){
                 successFunction(response);
         },
         error: function (response) {
+            resetTokenInfo();
             toggleSpinner(false);
             // show an error message
             $('#json-renderer').jsonViewer(response);
-            alert("Unsuccessful CID '" + g_requestCid +"'");
+            alert("Unsuccessful CID '" + g_requestCid +"' -- Identity token has been reset. Please try the request again.");
         }
     });
 }
