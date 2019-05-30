@@ -21,7 +21,7 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         cid = agendaCid;
                     }
-                    return label + ": " + cid;
+                    return label + "=" + cid;
                 }
             },
 
@@ -36,7 +36,7 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         customerId = agendaCustomerId;
                     }
-                    return label + ": " + customerId;
+                    return label + "=" + customerId;
                 }
             },
     AGENDA_ID("agendaId")
@@ -58,7 +58,7 @@ public enum AgendaReports implements Report<Agenda, String>
                     }
                     Date added = (Date)agenda.getParams().get(ADDED_KEY);
                     Long durationMilli = System.currentTimeMillis() - added.getTime();
-                    return label +": " +durationMilli.toString();
+                    return label +"=" +durationMilli.toString();
                 }
             },
     ELAPSED_TIME_EXEC_PATTERN("elapsedTime")
@@ -88,7 +88,7 @@ public enum AgendaReports implements Report<Agenda, String>
                     {
                         linkId = agendaLinkId;
                     }
-                    return label + ": " + linkId;
+                    return label + "=" + linkId;
                 }
             },
     AGENDA_TYPE("agendaType")
@@ -96,7 +96,7 @@ public enum AgendaReports implements Report<Agenda, String>
                 @Override
                 public String report(Agenda agenda) // TODO support when agenda type is implemented
                 {
-                    return label + ": " + "basic";
+                    return label + "=" + "basic";
                 }
             },
     OPERATION_PAYLOAD("payload")
@@ -111,7 +111,7 @@ public enum AgendaReports implements Report<Agenda, String>
                     }
                     JsonHelper jsonHelper = new JsonHelper();
                     jsonHelper.getJSONString(agenda.getOperations());
-                        return label + ": " + jsonHelper.getJSONString(agenda.getOperations());
+                        return label + "=" + jsonHelper.getJSONString(agenda.getOperations());
                 }
             },
     OPERATION_PAYLOAD_PATTERN("payload")
