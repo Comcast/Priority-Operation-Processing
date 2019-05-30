@@ -39,6 +39,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     {
         super(agendaProgressPersister, new DataObjectValidator());
         agendaProgressReporter = new AgendaProgressReporter(agendaPersister);
+        agendaProgressReporter.setAgendaProgressPersister(agendaProgressPersister);
         operationProgressClient = new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister));
     }
 

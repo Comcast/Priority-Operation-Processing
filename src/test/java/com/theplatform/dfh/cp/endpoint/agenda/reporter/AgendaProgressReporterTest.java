@@ -37,7 +37,7 @@ public class AgendaProgressReporterTest extends AgendaBaseTest
     }
 
     @Test
-    public void testLogCompletedAgenda()
+    public void testLogCompletedAgenda() throws PersistenceException
     {
         CaptureLogger logger = new CaptureLogger();
         agendaProgressReporter.setLogger(logger);
@@ -46,6 +46,11 @@ public class AgendaProgressReporterTest extends AgendaBaseTest
         agendaProgress.setStartedTime(startedTime);
         DataObjectResponse<AgendaProgress> response = mock(DataObjectResponse.class);
         when(response.getFirst()).thenReturn(agendaProgress);
+
+
+        ObjectPersister<AgendaProgress> agendaProgressPersister = mock(ObjectPersister.class);
+        when(agendaProgressPersister.retrieve(anyString())).thenReturn(agendaProgress);
+        agendaProgressReporter.setAgendaProgressPersister(agendaProgressPersister);
 
         agendaProgressReporter.logCompletedAgenda(response);
         String logs = logger.getMsg();

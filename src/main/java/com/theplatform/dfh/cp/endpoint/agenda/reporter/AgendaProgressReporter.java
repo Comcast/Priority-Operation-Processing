@@ -16,6 +16,7 @@ public class AgendaProgressReporter
     protected static Logger logger = LoggerFactory.getLogger(AgendaProgressReporter.class);
 
     private ObjectPersister<Agenda> agendaPersister;
+    private ObjectPersister<AgendaProgress> agendaProgressPersister;
 
     public AgendaProgressReporter( ObjectPersister<Agenda> agendaPersister)
     {
@@ -24,24 +25,34 @@ public class AgendaProgressReporter
 
     public void logCompletedAgenda(DataObjectResponse<AgendaProgress> response)
     {
-        AgendaProgress agendaProgress = response.getFirst();
-        if(agendaProgress == null || agendaProgress.getProcessingState() != ProcessingState.COMPLETE)
+        AgendaProgress partialAgendaProgress = response.getFirst();
+        if(partialAgendaProgress == null || partialAgendaProgress.getProcessingState() != ProcessingState.COMPLETE)
         {
             return;
         }
+        AgendaProgress fullAgendaProgress;
+        try
+        {
+             fullAgendaProgress = agendaProgressPersister.retrieve(partialAgendaProgress.getId());
+        } catch (Exception | PersistenceException e)
+        {
+            logger.error("Problem retrieving full agendaProgress: " + partialAgendaProgress.getId(), e);
+            return;
+        }
+
         AgendaReporter agendaReporter = new AgendaReporter();
         CaptureLogger captureLogger = new CaptureLogger();
         agendaReporter.setLogger(captureLogger);
 
-        String agendaConclusionStatus = agendaProgress.getProcessingStateMessage();
-        String elapsedTime = getElapsedTime(agendaProgress);
+        String agendaConclusionStatus = partialAgendaProgress.getProcessingStateMessage();
+        String elapsedTime = getElapsedTime(fullAgendaProgress);
         try
         {
-            Agenda agenda = agendaPersister.retrieve(agendaProgress.getAgendaId());
+            Agenda agenda = agendaPersister.retrieve(fullAgendaProgress.getAgendaId());
             agendaReporter.reportInLine(agenda);
         } catch (Exception | PersistenceException e)
         {
-            logger.error("Problem retrieving agenda: " + agendaProgress.getAgendaId(), e);
+            logger.error("Problem retrieving agenda: " + fullAgendaProgress.getAgendaId(), e);
             return;
         }
         String agendaReportPattern = captureLogger.getMsg();
@@ -61,5 +72,10 @@ public class AgendaProgressReporter
             elapsedTime = duration.toString();
         }
         return elapsedTime;
+    }
+
+    public void setAgendaProgressPersister(ObjectPersister<AgendaProgress> agendaProgressPersister)
+    {
+        this.agendaProgressPersister = agendaProgressPersister;
     }
 }
