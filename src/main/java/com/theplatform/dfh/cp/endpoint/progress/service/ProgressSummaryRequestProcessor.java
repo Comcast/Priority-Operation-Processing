@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.progress.service;
 
+import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
@@ -38,10 +39,11 @@ public class ProgressSummaryRequestProcessor
     }
 
     public ProgressSummaryRequestProcessor(ObjectPersister<AgendaProgress> agendaProgressPersister,
-        ObjectPersister<OperationProgress> operationProgressPersister)
+        ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<Agenda> agendaPersister)
     {
         this.agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(
             agendaProgressPersister,
+                agendaPersister,
             operationProgressPersister
         ));
     }

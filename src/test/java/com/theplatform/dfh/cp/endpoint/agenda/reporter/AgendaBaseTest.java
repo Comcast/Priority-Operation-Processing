@@ -12,9 +12,9 @@ import java.util.List;
 
 public class AgendaBaseTest extends AgendaData
 {
-    protected AgendaReports[] agendaReports = {AgendaReports.CID, AgendaReports.AGENDA_ID, AgendaReports.AGENDA_TYPE,  AgendaReports.CUSTOMER_ID, AgendaReports.LINK_ID, AgendaReports.AGENDA_STATUS, AgendaReports.MILLISECONDS_IN_QUEUE, AgendaReports.OPERATION_PAYLOAD};
-    protected TestAgendaReporter agendaReporter;
-    protected TestLogger testLogger;
+    protected AgendaReports[] agendaReports = {AgendaReports.CID, AgendaReports.AGENDA_ID, AgendaReports.AGENDA_TYPE,  AgendaReports.CUSTOMER_ID, AgendaReports.LINK_ID, AgendaReports.AGENDA_STATUS_PATTERN, AgendaReports.MILLISECONDS_TOTAL, AgendaReports.OPERATION_PAYLOAD};
+    protected AgendaReporter agendaReporter;
+    protected CaptureLogger testLogger;
     protected AgendaValidator agendaValidator = new AgendaValidator();
 
     protected Agenda makeAgenda()
@@ -53,6 +53,7 @@ public class AgendaBaseTest extends AgendaData
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setProcessingState(ProcessingState.COMPLETE);
         agendaProgress.setProcessingStateMessage(state);
+        agendaProgress.setAgendaId(agendaId);
         return agendaProgress;
     }
 }

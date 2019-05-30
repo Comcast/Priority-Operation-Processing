@@ -54,11 +54,12 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         ObjectPersister<OperationProgress> operationProgressPersister,
         ObjectPersister<ReadyAgenda> readyAgendaPersister,
         ObjectPersister<Insight> insightPersister,
-        ObjectPersister<Customer> customerPersister)
+        ObjectPersister<Customer> customerPersister
+        )
     {
         super(transformRequestObjectPersister, new TransformValidator());
         prepOpsGenerator = new PrepOpsGenerator();
-        agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister));
+        agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister));
         agendaClient = new DataObjectRequestProcessorClient<>(new AgendaRequestProcessor(
             agendaPersister,
             agendaProgressPersister,

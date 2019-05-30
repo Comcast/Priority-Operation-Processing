@@ -7,17 +7,36 @@ import org.slf4j.LoggerFactory;
 public class AgendaReporter
 {
     protected Logger logger = LoggerFactory.getLogger(AgendaReporter.class);
+
+    // todo needed?
     private static final AgendaReports[] DEFAULT_REPORT = {
             AgendaReports.CID,
             AgendaReports.AGENDA_ID,
             AgendaReports.CUSTOMER_ID,
             AgendaReports.AGENDA_TYPE};
 
-    private String prefix;
-    private AgendaReports[] agendaReports = DEFAULT_REPORT;
-    private String agendaState;
+    public static final Report[] AGENDA_REPORTS = new Report[]{
+            AgendaReports.CID,
+            AgendaReports.AGENDA_ID,
+            AgendaReports.LINK_ID,
+            AgendaReports.CUSTOMER_ID,
+            AgendaReports.AGENDA_STATUS_PATTERN,
+            AgendaReports.ELAPSED_TIME_EXEC_PATTERN,
+            AgendaReports.AGENDA_TYPE,
+            AgendaReports.OPERATION_PAYLOAD
+    };
 
-    public AgendaReporter(String prefix, AgendaReports... agendaReports)
+    public static final String AGENDA_RESPONSE_PREFIX = "Agenda metadata - ";
+
+    private String prefix;
+    private Report<Agenda, String>[] agendaReports = DEFAULT_REPORT;
+
+    public AgendaReporter()
+    {
+        this(AGENDA_RESPONSE_PREFIX, AGENDA_REPORTS);
+    }
+
+    public AgendaReporter(String prefix, Report... agendaReports)
     {
         this.prefix = prefix;
         if(agendaReports != null && agendaReports.length > 0)
@@ -28,22 +47,20 @@ public class AgendaReporter
 
     public void report(Agenda agenda)
     {
-        AgendaReportData agendaReportData = new AgendaReportData(agenda, agendaState);
-        for(Report<AgendaReportData, String> report: agendaReports)
+        for(Report<Agenda, String> report: agendaReports)
         {
-            logger.info(prefix + report.report(agendaReportData));
+            logger.info(prefix + report.report(agenda));
         }
     }
 
     public void reportInLine(Agenda agenda)
     {
-        AgendaReportData agendaReportData = new AgendaReportData(agenda, agendaState);
         StringBuilder b = new StringBuilder();
         b.append(prefix).append("[");
         for(int i = 0; i < agendaReports.length;i++)
         {
-            Report<AgendaReportData,String> report = agendaReports[i];
-            b.append(report.report(agendaReportData));
+            Report<Agenda,String> report = agendaReports[i];
+            b.append(report.report(agenda));
             if(i < agendaReports.length - 1)
             {
                 b.append("; ");
@@ -54,31 +71,13 @@ public class AgendaReporter
         logger.info(b.toString());
     }
 
-    public void setProcessingState(String agendaState)
+    public void setLogger(Logger logger)
     {
-        this.agendaState = agendaState;
-    }
-}
-class AgendaReportData
-{
-
-    private Agenda agenda;
-    private String agendaState;
-
-    public AgendaReportData(Agenda agenda, String agendaState)
-    {
-
-        this.agenda = agenda;
-        this.agendaState = agendaState;
+        this.logger = logger;
     }
 
-    public Agenda getAgenda()
+    public Logger getLogger( )
     {
-        return agenda;
-    }
-
-    public String getAgendaState()
-    {
-        return agendaState;
+        return logger;
     }
 }

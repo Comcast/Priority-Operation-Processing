@@ -2,10 +2,27 @@ package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
 import org.assertj.core.api.SoftAssertions;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 public class AgendaValidator extends AgendaData
 {
 
+    void validatePattern(String msg)
+    {
+        validateAgendaFields(msg);
+        assertThat(msg).contains("%s");
+    }
+
     void validateLogs(String msg)
+    {
+        validateAgendaFields(msg);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(msg).contains(elapsedTime);
+            softly.assertThat(msg).contains(conclusionStatus);
+        });
+    }
+
+    void validateAgendaFields(String msg)
     {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(msg).contains(prefix);
@@ -17,5 +34,6 @@ public class AgendaValidator extends AgendaData
             softly.assertThat(msg).contains(widthKey);
             softly.assertThat(msg).contains(withvalue);
         });
-    }
+    };
+
 }

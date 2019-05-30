@@ -45,25 +45,19 @@ public class AgendaServiceRequestProcessorTest
     private ObjectPersister<Agenda> mockAgendaPersister;
     private ItemQueueFactory<AgendaInfo> mockAgendaInfoItemQueueFactory;
     private ItemQueue<AgendaInfo> mockAgendaInfoItemQueue;
-    private ObjectPersister<AgendaProgress> mockAgendaProgressPersister;
-    private AgendaProgress agendaProgress;
 
     @BeforeMethod
     public void setup() throws PersistenceException
     {
-        agendaProgress = new AgendaProgress();
-        agendaProgress.setParams(new ParamsMap());
         getAgendaRequest = new DefaultServiceRequest<>(new GetAgendaRequest("InsightId", 1));
 
         mockInsightPersister = (ObjectPersister<Insight>)mock(ObjectPersister.class);
         mockAgendaPersister = (ObjectPersister<Agenda>)mock(ObjectPersister.class);
-        mockAgendaProgressPersister = (ObjectPersister<AgendaProgress>)mock(ObjectPersister.class);
         mockAgendaInfoItemQueueFactory = (ItemQueueFactory<AgendaInfo>)mock(ItemQueueFactory.class);
         mockAgendaInfoItemQueue = (ItemQueue<AgendaInfo>)mock(ItemQueue.class);
-        when(mockAgendaProgressPersister.retrieve(anyString())).thenReturn(agendaProgress);
         doReturn(mockAgendaInfoItemQueue).when(mockAgendaInfoItemQueueFactory).createItemQueue(anyString());
 
-        processor = new AgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister, mockAgendaProgressPersister);
+        processor = new AgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister);
     }
 
     @Test

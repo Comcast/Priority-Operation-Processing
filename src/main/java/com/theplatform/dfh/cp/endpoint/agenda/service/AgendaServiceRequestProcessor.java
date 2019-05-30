@@ -3,11 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReports;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
@@ -25,11 +21,8 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseReporter.AGENDA_RESPONSE_REPORTER_KEY;
 
 /**
  * Agenda service request processor
@@ -37,34 +30,11 @@ import static com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaResponseRepo
 public class AgendaServiceRequestProcessor
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
-    private static final String AGENDA_PREFIX = "Agenda metadata - ";
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - InsightId: %s; count: %d.";
-
-    private static final AgendaReports[] AGENDA_REPORTS = {
-            AgendaReports.CID,
-            AgendaReports.AGENDA_ID,
-            AgendaReports.LINK_ID,
-            AgendaReports.CUSTOMER_ID,
-            AgendaReports.AGENDA_STATUS,
-            AgendaReports.MILLISECONDS_IN_QUEUE,
-            AgendaReports.AGENDA_TYPE,
-            AgendaReports.OPERATION_PAYLOAD
-    };
 
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
     private ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory;
-    private ObjectPersister<AgendaProgress> agendaProgressPersister;
-
-
-
-    public AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
-                                         ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister)
-    {
-        this(agendaInfoItemQueueFactory, insightPersister, agendaPersister);
-        this.agendaProgressPersister = agendaProgressPersister;
-    }
-
 
     protected AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister)
@@ -147,7 +117,7 @@ public class AgendaServiceRequestProcessor
                         }
                     }
                 }
-                return createAgendaServiceResult(agendaList);
+                return new GetAgendaResponse(agendaList);
             }
             else
             {
@@ -162,27 +132,6 @@ public class AgendaServiceRequestProcessor
         {
             return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
-    }
-
-    private GetAgendaResponse createAgendaServiceResult(Collection<Agenda> agendas)
-    {
-        GetAgendaResponse getAgendaResponse = new GetAgendaResponse(agendas);
-        if(agendas == null || agendas.isEmpty())
-        {
-            return getAgendaResponse;
-        }
-        AgendaResponseReporter agendaResponseReporter = new AgendaResponseReporter(getAgendaResponse, new AgendaReporter(AGENDA_PREFIX, AGENDA_REPORTS));
-        Agenda agenda = agendas.iterator().next();
-        try
-        {
-            AgendaProgress agendaProgress = agendaProgressPersister.retrieve(agenda.getProgressId());
-            agendaProgress.getParams().put(AGENDA_RESPONSE_REPORTER_KEY, agendaResponseReporter);
-            agendaProgressPersister.update(agendaProgress);
-        } catch (Exception | PersistenceException e)
-        {
-            logger.error("Failed to update agendaProgress with agenda report details: " + agenda.getProgressId(), e);
-        }
-        return getAgendaResponse;
     }
 
     public Agenda retrieveAgenda(String agendaId) throws PersistenceException

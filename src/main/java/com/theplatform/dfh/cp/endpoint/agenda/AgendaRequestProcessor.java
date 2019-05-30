@@ -62,7 +62,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
     {
         this(agendaRequestPersister,
             readyAgendaPersister,
-            new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, operationProgressPersister)),
+            new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, agendaRequestPersister, operationProgressPersister)),
             new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister)),
             new InsightSelector(
                 new DataObjectRequestProcessorClient<>(new InsightRequestProcessor(insightPersister)),

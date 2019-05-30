@@ -21,8 +21,8 @@ public class AgendaReporterTest extends AgendaBaseTest
     @BeforeTest
     public void init()
     {
-        agendaReporter = new TestAgendaReporter(prefix, agendaReports);
-        testLogger = new TestLogger("test logger");
+        agendaReporter = new AgendaReporter(prefix, agendaReports);
+        testLogger = new CaptureLogger("test logger");
         agendaReporter.setLogger(testLogger);
     }
 
@@ -39,7 +39,7 @@ public class AgendaReporterTest extends AgendaBaseTest
     {
         Agenda agenda = makeAgenda();
         agendaReporter.reportInLine(agenda);
-        agendaValidator.validateLogs(testLogger.getMsg());
+        agendaValidator.validatePattern(testLogger.getMsg());
     }
 
     @Test
