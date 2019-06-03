@@ -4,10 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTyped;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.InsightMapper;
 import com.theplatform.dfh.cp.api.facility.SchedulingAlgorithm;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,5 +62,11 @@ public class PersistentInsight extends Insight
     public SchedulingAlgorithm getSchedulingAlgorithm()
     {
         return super.getSchedulingAlgorithm();
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return super.getTitle();
     }
 }
