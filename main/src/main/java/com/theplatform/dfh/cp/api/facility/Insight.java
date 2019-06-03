@@ -14,6 +14,7 @@ public class Insight implements IdentifiedObject
     private Map<String, Set<String>> mappers;
     private Set<String> allowedCustomerIds;
     private String customerId;
+    private String title;
 
     public String getId()
     {
@@ -139,4 +140,14 @@ public class Insight implements IdentifiedObject
         this.schedulingAlgorithm = SchedulingAlgorithm.valueOf(schedulingAlgorithm);
     }
 
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public Insight setTitle(String title)
+    {
+        this.title = title;
+        return this;
+    }
 }
