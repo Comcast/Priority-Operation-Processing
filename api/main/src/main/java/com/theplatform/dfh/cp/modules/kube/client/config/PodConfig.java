@@ -43,6 +43,10 @@ public class PodConfig
 
     private Boolean useTaintedNodes; // = false;
 
+    private String taintedNodeSelector;
+
+    private String taintedNodeToleration;
+
     // ServiceAccount value to execute the pod with
     private String serviceAccountName;
 
@@ -184,6 +188,28 @@ public class PodConfig
     public PodConfig setUseTaintedNodes(Boolean useTaintedNodes)
     {
         this.useTaintedNodes = useTaintedNodes;
+        return this;
+    }
+
+    public String getTaintedNodeSelector()
+    {
+        return taintedNodeSelector;
+    }
+
+    public PodConfig setTaintedNodeSelector(String taintedNodeSelector)
+    {
+        this.taintedNodeSelector = taintedNodeSelector;
+        return this;
+    }
+
+    public String getTaintedNodeToleration()
+    {
+        return taintedNodeToleration;
+    }
+
+    public PodConfig setTaintedNodeToleration(String taintedNodeToleration)
+    {
+        this.taintedNodeToleration = taintedNodeToleration;
         return this;
     }
 

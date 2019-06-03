@@ -6,6 +6,7 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.zjsonpatch.internal.guava.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +22,6 @@ public class Fabric8Helper
     public static final String APP_DUMPS = "/app/dumps";
     public static final String EXTERNAL_ID = "EXTERNAL_ID";
     public static final int MAX_CONCURRENT_REQUESTS_PER_HOST = 20;
-    public static final String NODE_SELECTOR_VALUE = "dfh";
-    public static final String TOLERATION_VALUE = "dfh";
     private static final String APP_KEY = "app";
     public static final String MY_POD_NAME = "MY_POD_NAME";
     public static final String EXTERNAL_GROUP_ID = "EXTERNAL_GROUP_ID";
@@ -255,8 +254,11 @@ public class Fabric8Helper
 
         if (podConfig.getUseTaintedNodes())
         {
+            if(StringUtils.isBlank(podConfig.getTaintedNodeSelector()) || StringUtils.isBlank(podConfig.getTaintedNodeToleration()))
+                throw new KubernetesClientException("Both the taintedNodeSelector and taintedNodeToleration must be specified if tainted node use is enabled.");
+
             NodeSelectorRequirement nodeSelectorRequirement = new NodeSelectorRequirement("dedicated", "In",
-                Collections.singletonList(NODE_SELECTOR_VALUE));
+                Collections.singletonList(podConfig.getTaintedNodeSelector()));
             NodeAffinity nodeAffinity = new NodeAffinityBuilder()
                 .withPreferredDuringSchedulingIgnoredDuringExecution(new PreferredSchedulingTermBuilder()
                     .withWeight(40)
@@ -267,7 +269,7 @@ public class Fabric8Helper
                 .build();
             Affinity affinity = new AffinityBuilder().withNodeAffinity(nodeAffinity).build();
             podSpec.withAffinity(affinity);
-            Toleration toleration = new Toleration("NoSchedule", "dedicated", "Equal", null, TOLERATION_VALUE);
+            Toleration toleration = new Toleration("NoSchedule", "dedicated", "Equal", null, podConfig.getTaintedNodeToleration());
             podSpec.withTolerations(toleration);
         }
 
