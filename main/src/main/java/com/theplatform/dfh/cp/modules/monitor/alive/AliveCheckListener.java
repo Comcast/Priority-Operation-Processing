@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.modules.alerts.alive;
+package com.theplatform.dfh.cp.modules.monitor.alive;
 
 public interface AliveCheckListener
 {

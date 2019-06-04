@@ -1,20 +1,18 @@
-package com.theplatform.dfh.cp.modules.alerts.alive;
+package com.theplatform.dfh.cp.modules.monitor.alive;
 
 import java.util.Properties;
 
-public class AlertingConfiguration extends com.comcast.cts.timeshifted.pump.configuration.AlertingConfiguration
+public class AliveCheckConfiguration
 {
     private static final String aliveCheckAlertDescriptionPropertyKey = "alive.check.alert.description";
     private static final String descriptionPropertyKey = "alert.description";
-    private static final String sampleSizePropertyKey = "sample.size";
     private static final String healthCheckFrequencyMillisecondsPropertyKey = "health.check.frequency.milliseconds";
-    private static final String alertThresholdPropertyKey = "alert.threshold";
-    private static final String dataPropagationDelayMillisecondsPropertyKey = "kinesis.data.propagation.delay.milliseconds";
     private String aliveCheckAlertDescription;
+    private Integer healthCheckFrequencyMillieconds;
 
-    public AlertingConfiguration(Properties properties)
+    public AliveCheckConfiguration(Properties properties)
     {
-        super(initDefaultProperties(properties));
+        initDefaultProperties(properties);
         if (properties == null)
             return;
 
@@ -28,23 +26,21 @@ public class AlertingConfiguration extends com.comcast.cts.timeshifted.pump.conf
             final String descProperty = properties.getProperty(descriptionPropertyKey);
             this.aliveCheckAlertDescription = descProperty == null ? "Alive check" : descProperty;
         }
+        healthCheckFrequencyMillieconds = new Integer( properties.getProperty(healthCheckFrequencyMillisecondsPropertyKey) );
     }
 
     public String getAliveCheckAlertDescription()
     {
         return aliveCheckAlertDescription;
     }
-
+    public Integer getAliveCheckFrequencyMilliseconds()
+    {
+        return healthCheckFrequencyMillieconds;
+    }
     private static Properties initDefaultProperties(Properties properties)
     {
-        if(properties.getProperty(sampleSizePropertyKey) == null)
-            properties.setProperty(sampleSizePropertyKey, "3");
         if(properties.getProperty(healthCheckFrequencyMillisecondsPropertyKey) == null)
             properties.setProperty(healthCheckFrequencyMillisecondsPropertyKey, "10000");
-        if(properties.getProperty(alertThresholdPropertyKey) == null)
-            properties.setProperty(alertThresholdPropertyKey, "2");
-        if(properties.getProperty(dataPropagationDelayMillisecondsPropertyKey) == null)
-            properties.setProperty(dataPropagationDelayMillisecondsPropertyKey, "90000");
         return properties;
     }
 }
