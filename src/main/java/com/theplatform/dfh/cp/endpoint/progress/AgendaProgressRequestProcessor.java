@@ -3,10 +3,7 @@ package com.theplatform.dfh.cp.endpoint.progress;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaProgressReporter;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaReporter;
-import com.theplatform.dfh.cp.endpoint.agenda.reporter.CaptureLogger;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
@@ -18,7 +15,6 @@ import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByAgendaProgressId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,31 +22,34 @@ public class AgendaReporterTest extends AgendaBaseTest
     public void init()
     {
         agendaReporter = new AgendaReporter(prefix, agendaReports);
-        testLogger = new CaptureLogger("test logger");
-        agendaReporter.setLogger(testLogger);
-    }
-
-    @Test
-    public void testNullReportDoesNotFail()
-    {
-        Agenda agenda = new Agenda();
-        agendaReporter.report(agenda);
-        assertThat(testLogger.getMsg()).contains(prefix);
     }
 
     @Test
     public void testHappyReport()
     {
         Agenda agenda = makeAgenda();
-        agendaReporter.reportInLine(agenda);
-        agendaValidator.validatePattern(testLogger.getMsg());
+        String pattern = agendaReporter.reportInLine(agenda);
+        agendaValidator.validatePattern(pattern);
     }
 
     @Test
     public void testNullReportInLineDoesNotFail()
     {
         Agenda agenda = new Agenda();
-        agendaReporter.reportInLine(agenda);
-        assertThat(testLogger.getMsg()).contains(prefix);
+        String pattern = agendaReporter.reportInLine(agenda);
+        assertThat(pattern).contains(prefix);
+    }
+
+
+    @Test
+    public void testFormatInputMatch()
+    {
+        String pattern = "abc %s %s";
+
+        String[] tokens = pattern.replace("%s", "a%sa").split("%s");
+        String text1 = String.format(pattern, "first", "second", "extra");
+
+        System.out.println(text1);
+
     }
 }

@@ -41,22 +41,37 @@ public class AgendaProgressReporter
         }
 
         AgendaReporter agendaReporter = new AgendaReporter();
-        CaptureLogger captureLogger = new CaptureLogger();
-        agendaReporter.setLogger(captureLogger);
 
         String agendaConclusionStatus = partialAgendaProgress.getProcessingStateMessage();
         String elapsedTime = getElapsedTime(fullAgendaProgress);
+        String agendaReportPattern;
         try
         {
             Agenda agenda = agendaPersister.retrieve(fullAgendaProgress.getAgendaId());
-            agendaReporter.reportInLine(agenda);
+            agendaReportPattern = agendaReporter.reportInLine(agenda);
         } catch (Exception | PersistenceException e)
         {
             logger.error("Problem retrieving agenda: " + fullAgendaProgress.getAgendaId(), e);
             return;
         }
-        String agendaReportPattern = captureLogger.getMsg();
-        logger.info(AgendaReporter.AGENDA_RESPONSE_PREFIX + String.format(agendaReportPattern, agendaConclusionStatus, elapsedTime));
+
+        String[] inputs = new String[]{agendaConclusionStatus, elapsedTime};
+        if(inputCountMatchesPattern(agendaReportPattern, inputs.length))
+        {
+            logger.info(AgendaReporter.AGENDA_RESPONSE_PREFIX + String.format(agendaReportPattern, inputs));
+        }else
+        {
+            logger.warn("Agenda progress input count does not match report pattern: " + agendaReportPattern);
+        }
+    }
+
+    private boolean inputCountMatchesPattern(String agendaReportPattern, int length)
+    {
+        if(agendaReportPattern == null)
+        {
+            return false;
+        }
+        return agendaReportPattern.replaceAll("%s", "a%sa").split("%s").length == length + 1;
     }
 
     protected String getElapsedTime(AgendaProgress agendaProgress)
