@@ -21,6 +21,10 @@ public class MetricReport
     {
         this.metricRegistry = metricRegistry == null ? SharedMetricRegistries.getOrCreate("default") : metricRegistry;
     }
+    public MetricReport()
+    {
+        this(null);
+    }
 
     public MetricRegistry getMetricRegistry()
     {
