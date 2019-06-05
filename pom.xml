@@ -17,6 +17,6 @@
     <modules>
         <module>main</module>
         <module>bananas/main</module>
-        <module>grafana/main</module>
+        <module>graphite/main</module>
     </modules>
 </project>
