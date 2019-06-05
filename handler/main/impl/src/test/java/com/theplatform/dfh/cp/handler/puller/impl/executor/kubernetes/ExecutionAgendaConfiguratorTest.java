@@ -9,15 +9,14 @@ import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ExecutionConfiguratorTest
+public class ExecutionAgendaConfiguratorTest
 {
     private CaptureLogger captureLogger = new CaptureLogger();
-    private ExecutionConfigurator executionConfigurator;
+    private ExecutionAgendaConfigurator executionConfigurator;
     private ExecutionConfig executionConfig;
     private String payload = "testPayload";
     private String agendaId = "testAgendaId";
@@ -31,7 +30,7 @@ public class ExecutionConfiguratorTest
         executionConfig = new ExecutionConfig();
         JsonHelper jsonHelper = mock(JsonHelper.class);
         when(jsonHelper.getJSONString(anyObject())).thenReturn(payload);
-        executionConfigurator = new ExecutionConfigurator(executionConfig, jsonHelper);
+        executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
         executionConfigurator.setLogger(captureLogger);
     }
 
@@ -56,10 +55,10 @@ public class ExecutionConfiguratorTest
         Agenda agenda = makeAgenda();
         agenda.setCustomerId(null);
         executionConfigurator.setEnvVars(agenda);
-        assertThat(captureLogger.getWarn()).isEqualTo("No value for key - CUSTOMER_ID - was set on the Agenda: testAgendaId");
 
-        // expect everything else is still good.
         SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(captureLogger.getWarn()).isEqualTo("No value for key - CUSTOMER_ID - was set on the Agenda: testAgendaId");
+            // expect everything else is still good.
             softly.assertThat(executionConfig.getEnvVars().get(HandlerField.CID.name())).isEqualTo(cid);
             softly.assertThat(executionConfig.getEnvVars().get(HandlerField.PAYLOAD.name())).isEqualTo(payload);
             softly.assertThat(executionConfig.getEnvVars().get(HandlerField.AGENDA_ID.name())).isEqualTo(agendaId);

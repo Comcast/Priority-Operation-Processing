@@ -8,14 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExecutionConfigurator
+public class ExecutionAgendaConfigurator
 {
-    private  Logger logger = LoggerFactory.getLogger(ExecutionConfigurator.class);
+    private  Logger logger = LoggerFactory.getLogger(ExecutionAgendaConfigurator.class);
     private final ExecutionConfig executionConfig;
     private final JsonHelper jsonHelper;
     private String agendaId;
 
-    public ExecutionConfigurator(ExecutionConfig executionConfig, JsonHelper jsonHelper)
+    public ExecutionAgendaConfigurator(ExecutionConfig executionConfig, JsonHelper jsonHelper)
     {
         this.executionConfig = executionConfig;
         this.jsonHelper = jsonHelper;

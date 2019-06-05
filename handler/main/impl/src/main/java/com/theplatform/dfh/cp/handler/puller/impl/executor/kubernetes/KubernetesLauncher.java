@@ -1,10 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.params.GeneralParamKey;
-import com.theplatform.dfh.cp.api.params.ParamKey;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -14,7 +10,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +89,7 @@ public class KubernetesLauncher implements BaseLauncher
     @Override
     public void execute(Agenda agenda)
     {
-        ExecutionConfigurator executionConfigurator = new ExecutionConfigurator(executionConfig, jsonHelper);
+        ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
         executionConfigurator.setEnvVars(agenda);
         podConfig.setReapCompletedPods(true);
         podPushClient.startWithoutWatcher(podConfig, executionConfig);
