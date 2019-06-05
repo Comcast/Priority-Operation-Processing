@@ -106,9 +106,9 @@ public class KubernetesLauncher implements BaseLauncher
         logger.info("Launching Executor with Payload: {}", payload);
 
         extractEnvVar(HandlerField.PAYLOAD.name(), payload);
-        extractEnvVar(HandlerField.CID.name(), getParam(agenda.getParams(), GeneralParamKey.cid));
+        extractEnvVar(HandlerField.CID.name(),agenda.getCid());
         extractEnvVar(HandlerField.AGENDA_ID.name(), agenda.getId());
-        extractEnvVar(HandlerField.CUSTOMER_ID.name(), getParam(agenda.getParams(), GeneralParamKey.customerId));
+        extractEnvVar(HandlerField.CUSTOMER_ID.name(), agenda.getCustomerId());
         extractEnvVar(HandlerField.PROGRESS_ID.name(), agenda.getProgressId());
     }
 
