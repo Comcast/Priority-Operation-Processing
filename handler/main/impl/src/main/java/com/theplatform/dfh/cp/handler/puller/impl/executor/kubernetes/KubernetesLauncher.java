@@ -94,40 +94,13 @@ public class KubernetesLauncher implements BaseLauncher
     @Override
     public void execute(Agenda agenda)
     {
-        extractEnvVars(agenda);
+        ExecutionConfigurator executionConfigurator = new ExecutionConfigurator(executionConfig, jsonHelper);
+        executionConfigurator.setEnvVars(agenda);
         podConfig.setReapCompletedPods(true);
         podPushClient.startWithoutWatcher(podConfig, executionConfig);
         followPod();
     }
 
-    private void extractEnvVars(Agenda agenda)
-    {
-        String payload = jsonHelper.getJSONString(agenda);
-        logger.info("Launching Executor with Payload: {}", payload);
-
-        extractEnvVar(HandlerField.PAYLOAD.name(), payload);
-        extractEnvVar(HandlerField.CID.name(),agenda.getCid());
-        extractEnvVar(HandlerField.AGENDA_ID.name(), agenda.getId());
-        extractEnvVar(HandlerField.CUSTOMER_ID.name(), agenda.getCustomerId());
-        extractEnvVar(HandlerField.PROGRESS_ID.name(), agenda.getProgressId());
-    }
-
-    private void extractEnvVar(String key, String value)
-    {
-        if(!StringUtils.isBlank(value))
-        {
-            executionConfig.getEnvVars().put(key, value);
-        }
-        else
-        {
-            logger.warn("No " + key + " was set on the Agenda.");
-        }
-    }
-
-    private String getParam(ParamsMap paramsMap, ParamKey key)
-    {
-        return paramsMap == null ? null : paramsMap.getString(key);
-    }
 
     // TODO consider if there is diagnostic value in conditionally enabling this logic or if it could be deleted.
     @Deprecated
