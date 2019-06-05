@@ -14,10 +14,12 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserve
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodEventListener;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -42,6 +44,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     private PodConfig podConfig;
     private ExecutionConfig executionConfig;
     private ConnectionTracker connectionTracker = new ConnectionTracker();
+    private List<PodEventListener> eventListeners = new ArrayList<>();
 
     public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
@@ -49,6 +52,12 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         this.executionConfig = executionConfig;
         podPushClient = podPushClientFactory.getClient(kubeConfig, connectionTracker.setPodName(executionConfig.getName()));
         podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesClient(), executionConfig.getName());
+    }
+
+    public PodFollowerImpl addEventListener(PodEventListener listener)
+    {
+        this.eventListeners.add(listener);
+        return this;
     }
 
     /**
@@ -76,7 +85,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
             // START POD
             podWatcher = podPushClient
                 .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure, connectionTracker);
-
+            podWatcher.addEventListeners(eventListeners);
             // CHECK POD: SCHEDULED
             // Doesn't need the podWatcher, since we have a latch to wait on.
             schedulePodCheck(podConfig, podName, podScheduled);

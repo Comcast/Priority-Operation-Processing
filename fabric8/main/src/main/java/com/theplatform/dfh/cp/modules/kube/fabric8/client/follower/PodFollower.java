@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodEventListener;
 
 import java.util.Map;
 
@@ -25,4 +26,6 @@ public interface PodFollower<C extends PodPushClient>
     public PodPushClient getPodPushClient();
 
     public Map<String, String> getPodAnnotations();
+
+    public PodFollower addEventListener(PodEventListener listener);
 }

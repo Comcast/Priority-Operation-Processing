@@ -3,6 +3,8 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.Watcher;
 
+import java.util.List;
+
 /**
  * This interface is created once per pod execution.
  * It's state is mutated as needed during the execution of the pod.
@@ -19,4 +21,6 @@ public interface PodWatcher extends Watcher<Pod>
      * You may reset logging at anytime, if you feel the log watching has failed you.
      */
     void resetLogging();
+
+    void addEventListeners(List<PodEventListener> listeners);
 }

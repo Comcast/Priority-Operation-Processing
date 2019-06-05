@@ -13,7 +13,9 @@ import io.fabric8.kubernetes.client.dsl.LogWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -36,6 +38,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private Watch watch;
     private int resetCounter = 0;
     private ConnectionTracker connectionTracker;
+    private List<PodEventListener> eventListeners = new ArrayList();
 
     public void setFinishedLatch(CountDownLatch finishedLatch)
     {
@@ -58,6 +61,12 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         this.logLineAccumulator = logLineAccumulator;
     }
 
+    @Override
+    public void addEventListeners(List<PodEventListener> listeners)
+    {
+        this.eventListeners = listeners;
+    }
+
     public String getPodName()
     {
         return podName;
@@ -76,7 +85,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     @Override
     public void eventReceived(Action action, Pod pod)
     {
-
+        fireEventReceived(action, pod);
         PodStatus podStatus = pod.getStatus();
         pod.setSpec(null);
 
@@ -147,6 +156,14 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
             {
                 gracefulShutdown();
             }
+        }
+    }
+
+    private void fireEventReceived(Action action, Pod pod)
+    {
+        for (PodEventListener eventListener : eventListeners)
+        {
+            eventListener.eventReceived(action, pod);
         }
     }
 
