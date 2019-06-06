@@ -19,15 +19,23 @@ import org.slf4j.LoggerFactory;
 public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(ParallelOperationAgendaProcessor.class);
+    private static final String METRICS_ENABLED_PROPERTY_KEY = "metrics.enabled";
 
-    private OperationConductorFactory operationAdviserFactory;
+    private OperationConductorFactory operationConductorFactory;
 
     public ParallelOperationAgendaProcessor(ExecutorContext executorContext)
     {
         super(executorContext);
-        this.operationAdviserFactory = new OperationConductorFactory();
+        if (executorContext.getLaunchDataWrapper().getPropertyRetriever() != null &&
+            executorContext.getLaunchDataWrapper().getPropertyRetriever().getBoolean(METRICS_ENABLED_PROPERTY_KEY, false))
+        {
+            this.operationConductorFactory = new MonitoringOperationConductorFactory(executorContext);
+        }
+        else
+        {
+            this.operationConductorFactory = new OperationConductorFactory();
+        }
     }
-
     protected void doExecute()
     {
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
@@ -51,7 +59,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
         try
         {
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
-            OperationConductor operationConductor = operationAdviserFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
+            OperationConductor operationConductor = operationConductorFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
             operationConductor.run();
             if(operationConductor.hasExecutionFailed())
                 agendaProgressReporter.addFailed(operationConductor.retrieveAllDiagnosticEvents());

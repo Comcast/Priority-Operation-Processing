@@ -30,6 +30,11 @@
         <http-request-util-handler.version>1.0.2-SNAPSHOT</http-request-util-handler.version>
         <ldap-filter.version>1.0.2-SNAPSHOT</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.2-SNAPSHOT</accelerate-filter-handler.version>
+
+        <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.0-SNAPSHOT</dfh-monitor-graphite.version>
+        <handler-kubernetes-monitor.version>1.0.0-SNAPSHOT</handler-kubernetes-monitor.version>
+
     </properties>
     
     <dependencies>
@@ -102,6 +107,24 @@
             <artifactId>pl-dfh-cp-api</artifactId>
             <version>${cp-api.version}</version>
         </dependency>
+
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
+            <version>${dfh-monitor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
+            <version>${dfh-monitor-graphite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-kubernetes-monitor</artifactId>
+            <version>${handler-kubernetes-monitor.version}</version>
+        </dependency>
+
 
         <!-- Logging -->
         <dependency>

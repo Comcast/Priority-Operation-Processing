@@ -85,7 +85,12 @@ public class OperationRunner implements Runnable
         operationWrapper.setSuccess(false);
         operationWrapper.addDiagnosticEvent(new DiagnosticEvent(message, t));
     }
-
+    protected String getOperationType()
+    {
+         return operationWrapper.getOperation() == null
+                      ? "unknown"
+                      : operationWrapper.getOperation().getType();
+    }
     /**
      * Gets the operation name, defaulting if one is not set.
      * @param operationWrapper The operation wrapper to get the name from
@@ -111,5 +116,10 @@ public class OperationRunner implements Runnable
             //operationWrapper.setOutputPayload();
             operationWrapper.setSuccess(false);
         }
+    }
+
+    public OperationWrapper getOperationWrapper()
+    {
+        return operationWrapper;
     }
 }
