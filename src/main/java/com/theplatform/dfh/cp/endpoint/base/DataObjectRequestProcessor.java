@@ -25,6 +25,9 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     private VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = new CustomerVisibilityFilter<>();
     private static final String OBJECT_NOT_FOUND_EXCEPTION = "Unable to get object by id %1$s";
     private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
+    private static final String UNABLE_TO_CREATE_EXCEPTION = "Unable to create object";
+    private static final String UNABLE_TO_UPDATE_EXCEPTION = "Unable to update object by id %1$s";
+    private static final String UNABLE_TO_DELETE_EXCEPTION = "Unable to delete object by id %1$s";
 
     public DataObjectRequestProcessor(ObjectPersister<T> objectPersister, DataObjectValidator<T, DataObjectRequest<T>> validator)
     {
@@ -95,7 +98,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         {
             T persistedObject = objectPersister.persist(dataObject);
             if(persistedObject == null) {
-                Throwable throwable = new RuntimeException("Unable to create object " +dataObject.getId());
+                Throwable throwable = new RuntimeException(UNABLE_TO_CREATE_EXCEPTION);
                 response.setErrorResponse(ErrorResponseFactory.buildErrorResponse(throwable, 400, request.getCID()));
                 return response;
             }
@@ -103,7 +106,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         }
         catch(PersistenceException e)
         {
-            BadRequestException badRequestException = new BadRequestException("Unable to create object", e);
+            BadRequestException badRequestException = new BadRequestException(UNABLE_TO_CREATE_EXCEPTION, e);
             response.setErrorResponse(ErrorResponseFactory.badRequest(badRequestException, request.getCID()));
         }
         return response;
@@ -154,7 +157,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         catch(PersistenceException e)
         {
             final String id = dataObjectToUpdate == null ? "UNKNOWN" : dataObjectToUpdate.getId();
-            BadRequestException badRequestException = new BadRequestException(String.format("Unable to update object by id %1$s", id), e);
+            BadRequestException badRequestException = new BadRequestException(String.format(UNABLE_TO_UPDATE_EXCEPTION, id), e);
             response.setErrorResponse(ErrorResponseFactory.badRequest(badRequestException, request.getCID()));
         }
         return response;
@@ -189,7 +192,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         catch(PersistenceException e)
         {
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.badRequest(
-                new BadRequestException(String.format("Unable to delete object by id %1$s", request.getId()), e), request.getCID()));
+                new BadRequestException(String.format(UNABLE_TO_DELETE_EXCEPTION, request.getId()), e), request.getCID()));
         }
     }
 
