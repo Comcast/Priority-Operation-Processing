@@ -1,8 +1,6 @@
 package com.theplatform.dfh.cp.modules.monitor.metric;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.ScheduledReporter;
-import com.codahale.metrics.SharedMetricRegistries;
+import com.codahale.metrics.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,5 +44,17 @@ public class MetricReport
         {
             reporter.report();
         }
+    }
+    public Meter getFailedMeter()
+    {
+        return getMetricRegistry().meter(MetricLabel.failed.name());
+    }
+    public Meter getDeletedMeter()
+    {
+        return getMetricRegistry().meter(MetricLabel.deleted.name());
+    }
+    public Timer getTimer()
+    {
+        return getMetricRegistry().timer(MetricLabel.duration.name());
     }
 }
