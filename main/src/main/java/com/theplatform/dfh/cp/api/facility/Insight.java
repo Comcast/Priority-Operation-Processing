@@ -145,9 +145,8 @@ public class Insight implements IdentifiedObject
         return title;
     }
 
-    public Insight setTitle(String title)
+    public void setTitle(String title)
     {
         this.title = title;
-        return this;
     }
 }
