@@ -21,7 +21,7 @@ public class MonitoringOperationRunner extends OperationRunner
     @Override
     public void run()
     {
-        Timer.Context timerContext = metricReport.getMetricRegistry().timer(MetricLabel.duration.name() +"." +getOperationType()).time();
+        Timer.Context timerContext = metricReport.getMetricRegistry().timer("op-" +getOperationType() +"." +MetricLabel.duration.name()).time();
         try
         {
             super.run();
@@ -30,9 +30,7 @@ public class MonitoringOperationRunner extends OperationRunner
         {
             timerContext.stop();
             if(getOperationWrapper().getSuccess() == Boolean.FALSE)
-                metricReport.getMetricRegistry().meter(MetricLabel.failed.name() +"." +getOperationType());
-
-            metricReport.report();
+                metricReport.getMetricRegistry().meter("op-" +getOperationType() +"." +MetricLabel.failed.name());
         }
     }
 

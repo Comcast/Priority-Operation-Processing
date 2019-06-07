@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.MonitoringOperationRunnerFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.monitor.GraphiteConfiguration;
 import com.theplatform.dfh.cp.modules.monitor.graphite.GraphiteMetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
@@ -30,6 +31,8 @@ public class MonitoringOperationConductorFactory extends OperationConductorFacto
     @Override
     public OperationConductor createOperationConductor(Collection<Operation> operations, ExecutorContext executorContext)
     {
-        return new MonitoringOperationConductor(metricReport, operations, executorContext);
+        MonitoringOperationConductor conductor = new MonitoringOperationConductor(metricReport, operations, executorContext);
+        conductor.setOperationRunnerFactory(new MonitoringOperationRunnerFactory(metricReport));
+        return conductor;
     }
 }
