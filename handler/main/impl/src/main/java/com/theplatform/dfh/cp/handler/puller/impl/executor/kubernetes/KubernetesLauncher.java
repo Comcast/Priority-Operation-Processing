@@ -20,7 +20,7 @@ public class KubernetesLauncher implements BaseLauncher
 {
     private static final String AGENDA_TYPE = "exec"; // todo constant pending implementation of agenda types
     private static final String PULLER_AGENDA_METADATA_PATTERN = " Puller Agenda metadata: agendaType=%s owner=%s agendaId=%s ";
-    private static Logger logger = LoggerFactory.getLogger(KubernetesLauncher.class);
+    protected Logger logger = LoggerFactory.getLogger(KubernetesLauncher.class);
 
     protected KubeConfig kubeConfig;
     protected PodConfig podConfig;
@@ -99,7 +99,7 @@ public class KubernetesLauncher implements BaseLauncher
         followPod();
     }
 
-    private void logAgendaMetadata(Agenda agenda)
+    protected void logAgendaMetadata(Agenda agenda)
     {
         String owner = "agenda owner not visible";
         owner = agenda != null && agenda.getCustomerId() != null ? agenda.getCustomerId() : owner;
