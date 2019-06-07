@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 
 public class KubernetesLauncher implements BaseLauncher
 {
+    private static final String AGENDA_TYPE = "exec"; // pending implementation
+    private static final String PULLER_AGENDA_METADATA_PATTERN = " Puller Agenda metadata: AGENDA_TYPE=%s owner=%s agendaId=%s ";
     private static Logger logger = LoggerFactory.getLogger(KubernetesLauncher.class);
 
     protected KubeConfig kubeConfig;
@@ -89,11 +91,21 @@ public class KubernetesLauncher implements BaseLauncher
     @Override
     public void execute(Agenda agenda)
     {
+        logAgendaMetadata(agenda);
         ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
         executionConfigurator.setEnvVars(agenda);
         podConfig.setReapCompletedPods(true);
         podPushClient.startWithoutWatcher(podConfig, executionConfig);
         followPod();
+    }
+
+    private void logAgendaMetadata(Agenda agenda)
+    {
+        String owner = "agenda owner not visible";
+        owner = agenda != null && agenda.getCustomerId() != null ? agenda.getCustomerId() : owner;
+        String agendId = "agendaId not visible";
+        agendId = agenda != null && agenda.getId() != null ? agenda.getId() : agendId;
+        logger.info(String.format(PULLER_AGENDA_METADATA_PATTERN, AGENDA_TYPE, owner, agendId));
     }
 
 
