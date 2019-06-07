@@ -1,10 +1,11 @@
 package com.theplatform.dfh.cp.handler.command.builder.fission.s3;
 
-import com.theplatform.commandbuilder.impl.build.handler.ConnectData;
-import com.theplatform.commandbuilder.impl.build.handler.ConnectDataImpl;
-import com.theplatform.commandbuilder.impl.build.handler.NoopConnectKey;
-import com.theplatform.commandbuilder.impl.build.handler.s3.S3Data;
-import com.theplatform.commandbuilder.impl.build.handler.s3.S3VhsConnect;
+
+import com.theplatform.commandbuilder.impl.build.handler.connect.ConnectData;
+import com.theplatform.commandbuilder.impl.build.handler.connect.ConnectDataImpl;
+import com.theplatform.commandbuilder.impl.build.handler.connect.NoopConnectKey;
+import com.theplatform.commandbuilder.impl.build.handler.connect.s3.S3Data;
+import com.theplatform.commandbuilder.impl.build.handler.connect.s3.S3VhsConnect;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;

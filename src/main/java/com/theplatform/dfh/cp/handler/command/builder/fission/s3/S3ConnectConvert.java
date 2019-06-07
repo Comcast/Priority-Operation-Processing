@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.command.builder.fission.s3;
 
-import com.theplatform.commandbuilder.impl.build.handler.ConnectionKeys;
-import com.theplatform.commandbuilder.impl.build.handler.s3.S3ConnectionKeys;
+import com.theplatform.commandbuilder.impl.build.handler.connect.ConnectionKeys;
+import com.theplatform.commandbuilder.impl.build.handler.connect.s3.S3ConnectionKeys;
 
 public enum S3ConnectConvert
 {
