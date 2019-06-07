@@ -23,7 +23,6 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
 {
     private JsonHelper jsonHelper = new JsonHelper();
     private List<String> validationIssues;
-    private final int MAX_ISSUES = 10;
 
     @Override
     public void validatePOST(DataObjectRequest<TransformRequest> request)
@@ -40,14 +39,7 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
 
         validateReferences(transform, rootTransformNode);
 
-        if(validationIssues.size() > 0)
-        {
-            int lastIssueIndex = Math.min(validationIssues.size(), MAX_ISSUES);
-            throw new ValidationException(String.format("Issues detected: %1$s%2$s",
-                String.join(",", validationIssues.subList(0, lastIssueIndex)),
-                lastIssueIndex < validationIssues.size() ? "[Truncating additional issues]" : "")
-            );
-        }
+        processValidationIssues(validationIssues);
     }
 
     protected void validateReferences(TransformRequest transformRequest, JsonNode rootTransformNode)
