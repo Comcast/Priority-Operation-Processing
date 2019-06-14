@@ -11,6 +11,7 @@ public class PullerConfig extends Configuration
     private int pullWait;
     private String insightId;
     private int agendaRequestCount=1;
+    private String localAgendaRelativePath;
 
     public String getAgendaProviderUrl()
     {
@@ -20,6 +21,17 @@ public class PullerConfig extends Configuration
     public PullerConfig setAgendaProviderUrl(String agendaProviderUrl)
     {
         this.agendaProviderUrl = agendaProviderUrl;
+        return this;
+    }
+
+    public String getLocalAgendaRelativePath()
+    {
+        return localAgendaRelativePath;
+    }
+
+    public PullerConfig setLocalAgendaRelativePath(String localAgendaRelativePath)
+    {
+        this.localAgendaRelativePath = localAgendaRelativePath;
         return this;
     }
 

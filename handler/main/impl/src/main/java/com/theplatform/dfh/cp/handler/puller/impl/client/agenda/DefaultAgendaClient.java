@@ -6,6 +6,7 @@ import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,18 @@ import java.util.List;
  */
 public class DefaultAgendaClient implements AgendaClient
 {
-    private String payloadFileName = "/EncodeAgenda2.json";
+    private String payloadFileName;
     private JsonHelper jsonHelper = new JsonHelper();
 
     private String work;
 
-    public DefaultAgendaClient()
+    private DefaultAgendaClient()
     {
+    }
+
+    public DefaultAgendaClient(String payloadFileName)
+    {
+        this.payloadFileName = payloadFileName;
         try {
             work = getStringFromResourceFile(payloadFileName);
         }
@@ -32,7 +38,6 @@ public class DefaultAgendaClient implements AgendaClient
         }
     }
 
-
     public Agenda getAgenda()
     {
         return jsonHelper.getObjectFromString(work, Agenda.class);
@@ -40,10 +45,17 @@ public class DefaultAgendaClient implements AgendaClient
 
     protected String getStringFromResourceFile(String file) throws IOException
     {
-        return IOUtils.toString(
-            this.getClass().getResource(file),
-            "UTF-8"
-        );
+        if (this.getClass().getResource(file) != null)
+        {
+            return IOUtils.toString(
+                    this.getClass().getResource(file),
+                    "UTF-8"
+            );
+        }
+        else
+        {
+            throw new IOException("File [" + file + "] doesn't exist");
+        }
     }
 
     @Override

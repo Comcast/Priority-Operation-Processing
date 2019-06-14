@@ -33,7 +33,7 @@
         }
       },
       "type": "encode",
-      "id": "clong.is.also.awesome.2",
+      "id": "clong.was.here.2",
       "name": "ffmpeg.demux.video.0"
     },
     {
@@ -64,7 +64,7 @@
         }
       },
       "type": "encode",
-      "id": "clong.is.also.awesome.3",
+      "id": "clong.was.here.3",
       "name": "ffmpeg.demux.audio.1"
     }
   ]

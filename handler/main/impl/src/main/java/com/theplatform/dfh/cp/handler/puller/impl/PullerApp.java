@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl;
 
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
@@ -23,7 +25,18 @@ public class PullerApp extends Application<PullerConfig>
     @Override
     public void run(PullerConfig config, Environment environment) throws Exception
     {
-        AwsAgendaProviderClientFactory agendaClientFactory = new AwsAgendaProviderClientFactory(config);
+        AgendaClientFactory agendaClientFactory;
+        logger.info("Agenda path: [" + config.getLocalAgendaRelativePath());
+        if (config.getLocalAgendaRelativePath() == null)
+        {
+            logger.info("Using AWS agenda provider");
+            agendaClientFactory = new AwsAgendaProviderClientFactory(config);
+        }
+        else
+        {
+            logger.info("Using Local agenda provider");
+            agendaClientFactory = new DefaultAgendaClientFactory(config.getLocalAgendaRelativePath());
+        }
         pullerEntryPoint.setAgendaClientFactory(agendaClientFactory);
         pullerEntryPoint.setPullerConfig(config);
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);

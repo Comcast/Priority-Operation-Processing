@@ -5,6 +5,7 @@ encryptedPassword: 'S3Y5+lF5RjG23wiV36Jb0VtOIxN+8EAcV6TipvvXnlI='
 pullWait: 10
 insightId: '599f2241-3877-4301-b3d2-aa7e4274e418'
 agendaRequestCount: 1
+localAgendaRelativePath: '/localAgenda.json'
 logging:
   level: INFO
   loggers:
