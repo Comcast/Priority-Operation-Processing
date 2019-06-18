@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
@@ -62,7 +63,9 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             default:
                 operationExecutorFactory = new KubernetesOperationExecutorFactory()
                     .setKubeConfigFactory(getKubeConfigFactory());
-                shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
+                // self-reap is enabled by default
+                if(launchDataWrapper.getPropertyRetriever().getBoolean(ExecutorProperty.EXECUTOR_REAP_SELF, true))
+                    shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
                 break;
         }
 
