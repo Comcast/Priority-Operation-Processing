@@ -5,6 +5,8 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
+import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
@@ -19,7 +21,9 @@ import com.theplatform.module.authentication.client.EncryptedAuthenticationClien
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Factory that creates a context object for this operation. This allows the command line to override the type of executor to use.
@@ -44,6 +48,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     public ExecutorContext createOperationContext()
     {
         OperationExecutorFactory operationExecutorFactory;
+        List<ShutdownProcessor> shutdownProcessors = new LinkedList<>();
 
         switch (getExternalLaunchType())
         {
@@ -57,12 +62,13 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             default:
                 operationExecutorFactory = new KubernetesOperationExecutorFactory()
                     .setKubeConfigFactory(getKubeConfigFactory());
+                shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
                 break;
         }
 
         operationExecutorFactory.setResidentOperationExecutorFactory(new ResidentOperationExecutorFactory());
 
-        return new ExecutorContext(createReporter(), launchDataWrapper, operationExecutorFactory);
+        return new ExecutorContext(createReporter(), launchDataWrapper, operationExecutorFactory, shutdownProcessors);
     }
 
     @Override

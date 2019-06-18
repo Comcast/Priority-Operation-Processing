@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.context;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.api.LaunchType;
 import com.theplatform.dfh.cp.handler.field.api.args.HandlerArgument;
@@ -17,6 +18,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * The context for this instance of the Executor
  */
@@ -28,12 +32,16 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private ProgressReporter reporter;
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
+    private List<ShutdownProcessor> shutdownProcessor;
 
-    public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory)
+    public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
+        List<ShutdownProcessor> shutdownProcessors)
     {
         super(launchDataWrapper);
         this.reporter = reporter;
         this.operationExecutorFactory = operationExecutorFactory;
+        this.shutdownProcessor = new LinkedList<>();
+        this.shutdownProcessor.addAll(shutdownProcessors);
         this.jsonContext = new JsonContext();
         agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
         String progressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
@@ -89,6 +97,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public void shutdown()
     {
         agendaProgressThread.shutdown(false);
+        shutdownProcessor.forEach(ShutdownProcessor::shutdown);
     }
 
     public OperationExecutorFactory getOperationExecutorFactory()
