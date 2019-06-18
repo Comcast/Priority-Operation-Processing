@@ -32,7 +32,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private ProgressReporter reporter;
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
-    private List<ShutdownProcessor> shutdownProcessor;
+    private List<ShutdownProcessor> shutdownProcessors;
 
     public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
@@ -40,8 +40,8 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         super(launchDataWrapper);
         this.reporter = reporter;
         this.operationExecutorFactory = operationExecutorFactory;
-        this.shutdownProcessor = new LinkedList<>();
-        this.shutdownProcessor.addAll(shutdownProcessors);
+        this.shutdownProcessors = new LinkedList<>();
+        this.shutdownProcessors.addAll(shutdownProcessors);
         this.jsonContext = new JsonContext();
         agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
         String progressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
@@ -97,7 +97,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public void shutdown()
     {
         agendaProgressThread.shutdown(false);
-        shutdownProcessor.forEach(ShutdownProcessor::shutdown);
+        shutdownProcessors.forEach(ShutdownProcessor::shutdown);
     }
 
     public OperationExecutorFactory getOperationExecutorFactory()
