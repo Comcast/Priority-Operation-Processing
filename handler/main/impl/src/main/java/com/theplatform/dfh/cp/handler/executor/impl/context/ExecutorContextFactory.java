@@ -51,6 +51,15 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         OperationExecutorFactory operationExecutorFactory;
         List<ShutdownProcessor> shutdownProcessors = new LinkedList<>();
 
+        switch(getLaunchType())
+        {
+            case kubernetes:
+                // self-reap is enabled by default
+                if(launchDataWrapper.getPropertyRetriever().getBoolean(ExecutorProperty.EXECUTOR_REAP_SELF, true))
+                    shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
+                break;
+        }
+
         switch (getExternalLaunchType())
         {
             case local:
@@ -63,9 +72,6 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             default:
                 operationExecutorFactory = new KubernetesOperationExecutorFactory()
                     .setKubeConfigFactory(getKubeConfigFactory());
-                // self-reap is enabled by default
-                if(launchDataWrapper.getPropertyRetriever().getBoolean(ExecutorProperty.EXECUTOR_REAP_SELF, true))
-                    shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
                 break;
         }
 
