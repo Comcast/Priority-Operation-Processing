@@ -25,9 +25,11 @@ public class BananasAliveCheckListener implements AliveCheckListener
 
     public BananasAliveCheckListener(Properties serviceProperties)
     {
-        this.statusQueue = new StatusQueue(new AlertingConfiguration(serviceProperties));
-        AliveCheckConfiguration aliveCheckConfiguration = new AliveCheckConfiguration(serviceProperties);
-        BananasConfiguration bananasConfiguration = new BananasConfiguration(serviceProperties);
+        this(new AlertingConfiguration(serviceProperties), new AliveCheckConfiguration(serviceProperties), new BananasConfiguration(serviceProperties));
+    }
+    public BananasAliveCheckListener(AlertingConfiguration alertingConfiguration, AliveCheckConfiguration aliveCheckConfiguration, BananasConfiguration bananasConfiguration)
+    {
+        this.statusQueue = new StatusQueue(alertingConfiguration);
         BananasMessage.BananaMessageBuilder builder = new BananasMessage.BananaMessageBuilder();
         builder.withDescription(aliveCheckConfiguration.getAliveCheckAlertDescription());
         BananasMessage message = builder.withBananasConfigDefaults(bananasConfiguration).create();
@@ -36,17 +38,25 @@ public class BananasAliveCheckListener implements AliveCheckListener
     }
     public void processAliveCheck(boolean isAlive)
     {
-        AppState previousState = statusQueue.getCurrentOverallStatus();
-        //do something
-        if (isAlive)
+        try
         {
-            statusQueue.addSuccessAndEvaluateAppState();
+            AppState previousState = statusQueue.getCurrentOverallStatus();
+            //do something
+            if (isAlive)
+            {
+                statusQueue.addSuccessAndEvaluateAppState();
+            }
+            else
+            {
+                logger.error("isAlive = failed");
+                statusQueue.addFailureAndUpdateAppState();
+            }
+            sender.sendAlert(previousState, statusQueue);
         }
-        else
+        catch (Throwable e)
         {
-            logger.error("isAlive = failed");
-            statusQueue.addFailureAndUpdateAppState();
+            //don't crash our application if we can't send alerts.
+            logger.error("Error occurred trying to get/send alerts via Bananas. Ignoring until next check.", e);
         }
-        sender.sendAlert(previousState, statusQueue);
     }
 }
