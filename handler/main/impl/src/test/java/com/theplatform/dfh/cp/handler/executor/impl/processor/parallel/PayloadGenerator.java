@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.field.retriever.environment.EnvironmentFieldRetriever;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class PayloadGenerator
                         "../package/local/config/external.properties"
                     }
             );
-        launchDataWrapper.setEnvironmentRetriever(new FieldRetriever()
+        launchDataWrapper.setEnvironmentRetriever(new EnvironmentFieldRetriever()
         {
             @Override
             public String getField(String s)
