@@ -1,8 +1,12 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
+import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
+import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.kubernetes.KubernetesReporter;
@@ -16,11 +20,15 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Executor for launching the necessary components via kubernetes to complete the operation
@@ -28,12 +36,15 @@ import java.util.function.Consumer;
 public class KubernetesOperationExecutor extends BaseOperationExecutor
 {
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutor.class);
+    public static final int MAX_POD_LOG_LINES = 1024;
+    public static final int DEFAULT_FAIL_DIAGNOSTIC_LINE_LIMIT = 10;
 
-    protected KubeConfig kubeConfig;
-    protected PodConfig podConfig;
-    protected ExecutionConfig executionConfig;
-    protected PodFollower<PodPushClient> follower;
-    protected JsonHelper jsonHelper;
+    private KubeConfig kubeConfig;
+    private PodConfig podConfig;
+    private ExecutionConfig executionConfig;
+    private PodFollower<PodPushClient> follower;
+    private JsonHelper jsonHelper;
+    private OperationProgress defaultFailedOperationProgress;
 
     public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, LaunchDataWrapper launchDataWrapper)
     {
@@ -73,7 +84,10 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             Map<String,String> podAnnotations = follower.getPodAnnotations();
             String progressJson = podAnnotations.getOrDefault(KubernetesReporter.REPORT_PROGRESS_ANNOTATION, null);
             String resultPayload = podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);
-            if(progressJson == null) return null;
+            if(progressJson == null)
+            {
+                return defaultFailedOperationProgress;
+            }
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
             operationProgress.setOperation(operation.getName());
             operationProgress.setResultPayload(resultPayload);
@@ -95,49 +109,51 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         logger.info("Operation {} INPUT  Payload: {}", operation.getId(), payload);
 
+        CircularFifoQueue<String> podLogOutputQueue = new CircularFifoQueue<>(MAX_POD_LOG_LINES);
+
         configureMetadata(payload);
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
         logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
-        StringBuilder allStdout = new StringBuilder();
         logLineObserver.addConsumer(new Consumer<String>()
         {
             @Override
             public void accept(String s)
             {
-                // TEMP commented out... probably don't want this in the long term
-                logger.info("STDOUT: {}", s);
+                podLogOutputQueue.add(s);
+                logger.trace("STDOUT: {}", s);
             }
         });
-        FinalPodPhaseInfo lastPodPhase = null;
+        FinalPodPhaseInfo lastPodPhase;
+        String errorMessage = null;
+        Exception exception = null;
         try
         {
             logger.info("Starting the pod with name {}", executionConfig.getName());
-
             lastPodPhase = follower.startAndFollowPod(logLineObserver);
-
             logger.info("{} completed with pod status {}", operation.getName(), lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
             {
                 if (lastPodPhase.phase.isFailed())
                 {
-                    logger.error("{} failed to produce metadata, output was : {}", operation.getName(), allStdout);
-                    throw new RuntimeException(allStdout.toString());
+                    errorMessage = ExecutorMessages.KUBERNETES_POD_FAILED.getMessage(executionConfig.getName());
                 }
-            }
-
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("{} produced: {}", operation.getName(), allStdout.toString());
             }
         }
         catch (Exception e)
         {
-            String allStringMetadata = allStdout.toString();
-            logger.error("Exception caught {}", allStringMetadata, e);
-            throw new RuntimeException(allStringMetadata, e);
+            errorMessage = ExecutorMessages.KUBERNETES_FOLLOW_ERROR.getMessage(executionConfig.getName());
+            exception = e;
         }
+
+        if(errorMessage != null)
+        {
+            // setup the default failed progress just in case the pod annotations have nothing of use (no op progress payload)
+            defaultFailedOperationProgress = generateFailedOperationProgress(operation.getName(), errorMessage, exception, podLogOutputQueue);
+            throw new RuntimeException(errorMessage, exception);
+        }
+
         logger.info("Done with execution of pod: {}", executionConfig.getName());
 
         Map<String,String> podAnnotations = follower.getPodAnnotations();
@@ -160,5 +176,25 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         String handlerFieldValue = launchDataWrapper.getEnvironmentRetriever().getField(handlerField.name(), null);
         if(handlerFieldValue != null) envVars.put(handlerField.name(), handlerFieldValue);
+    }
+
+    protected static OperationProgress generateFailedOperationProgress(String operationName, String diagnosticMessage,
+        Throwable t, CircularFifoQueue<String> podLogOutput)
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setOperation(operationName);
+        operationProgress.setProcessingState(ProcessingState.COMPLETE);
+        operationProgress.setProcessingStateMessage(CompleteStateMessage.FAILED.toString());
+
+        List<String> strings = IntStream.range(Math.max(0, podLogOutput.size() - DEFAULT_FAIL_DIAGNOSTIC_LINE_LIMIT), podLogOutput.size())
+            .mapToObj(podLogOutput::get).collect(Collectors.toList());
+        operationProgress.setDiagnosticEvents(new DiagnosticEvent[]
+            {
+                new DiagnosticEvent(
+                    diagnosticMessage,
+                    t,
+                    strings)
+            });
+        return operationProgress;
     }
 }
