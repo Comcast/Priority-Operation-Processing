@@ -18,16 +18,16 @@ public class KubernetesLauncherTest
 
     TestLogKuberentesLauncher kubernetesLauncher;
 
-    //@BeforeTest
+    @BeforeTest
     public void init()
     {
         kubernetesLauncher = new TestLogKuberentesLauncher(new KubeConfig(), new PodConfig(), new ExecutionConfig());
     }
 
-    @Test(enabled = false)
+    @Test
     public void testLog()
     {
-        Logger captureLogger = new CaptureLogger("testLogger");
+        CaptureLogger captureLogger = new CaptureLogger("testLogger");
         kubernetesLauncher.setLogger(captureLogger);
         Agenda agenda = new Agenda();
         String customerId = "testCustomerId";
@@ -35,33 +35,33 @@ public class KubernetesLauncherTest
         String agendaId = "testAgendaId";
         agenda.setId(agendaId);
         kubernetesLauncher.logAgendaMetadata(agenda);
-        String capturedLog = ((CaptureLogger) captureLogger).getInfo();
+        String capturedLog = captureLogger.getInfo();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(capturedLog).contains(customerId);
             softly.assertThat(capturedLog).contains(agendaId);
         });
     }
 
-    @Test(enabled = false)
+    @Test
     public void testLogNullAgenda()
     {
-        Logger captureLogger = new CaptureLogger("testLogger");
+        CaptureLogger captureLogger = new CaptureLogger("testLogger");
         kubernetesLauncher.setLogger(captureLogger);
         kubernetesLauncher.logAgendaMetadata(null);
-        String capturedLog = ((CaptureLogger) captureLogger).getInfo();
+        String capturedLog = captureLogger.getInfo();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(capturedLog).contains("agenda owner not visible");
             softly.assertThat(capturedLog).contains("agendaId not visible");
         });
     }
 
-    @Test(enabled = false)
+    @Test
     public void testLogNullAgendaFields()
     {
-        Logger captureLogger = new CaptureLogger("testLogger");
+        CaptureLogger captureLogger = new CaptureLogger("testLogger");
         kubernetesLauncher.setLogger(captureLogger);
         kubernetesLauncher.logAgendaMetadata(new Agenda());
-        String capturedLog = ((CaptureLogger) captureLogger).getInfo();
+        String capturedLog = captureLogger.getInfo();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(capturedLog).contains("agenda owner not visible");
             softly.assertThat(capturedLog).contains("agendaId not visible");

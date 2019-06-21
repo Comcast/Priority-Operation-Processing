@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.puller.impl.config;
 
+import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesLaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 
 /**
@@ -12,7 +12,7 @@ public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
 
     private LastRequestAliveCheck lastRequestAliveCheck = new LastRequestAliveCheck();
 
-    public PullerLaunchDataWrapper(FieldRetriever argumentRetriever)
+    public PullerLaunchDataWrapper(ArgumentRetriever argumentRetriever)
     {
         super(argumentRetriever);
         lastRequestAliveCheck.setNotAliveThresholdMilliseconds(

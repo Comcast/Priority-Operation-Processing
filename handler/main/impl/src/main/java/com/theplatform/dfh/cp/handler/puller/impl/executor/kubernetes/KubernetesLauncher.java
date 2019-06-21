@@ -3,10 +3,13 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodFollowerFactory;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
@@ -22,6 +25,8 @@ public class KubernetesLauncher implements BaseLauncher
     private static final String PULLER_AGENDA_METADATA_PATTERN = " Puller Agenda metadata: agendaType=%s owner=%s agendaId=%s ";
     protected Logger logger = LoggerFactory.getLogger(KubernetesLauncher.class);
 
+    protected PodPushClientFactory<CpuRequestModulator> podPushClientFactory;
+    protected PodFollowerFactory<PodPushClient> podFollowerFactory;
     protected KubeConfig kubeConfig;
     protected PodConfig podConfig;
     protected ExecutionConfig executionConfig;
@@ -31,11 +36,19 @@ public class KubernetesLauncher implements BaseLauncher
 
     public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
+        this(kubeConfig, podConfig, executionConfig, new PodPushClientFactoryImpl(), new PodFollowerFactory<>());
+    }
+
+    public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig,
+        PodPushClientFactory<CpuRequestModulator> podPushClientFactory, PodFollowerFactory<PodPushClient> podFollowerFactory)
+    {
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
-        this.podPushClient = new PodPushClientFactoryImpl().getClient(kubeConfig);
-        this.follower = new PodFollowerImpl<>(this.kubeConfig, podConfig, executionConfig);
+        this.podPushClientFactory = podPushClientFactory;
+        this.podFollowerFactory = podFollowerFactory;
+        this.podPushClient = podPushClientFactory.getClient(kubeConfig);
+        this.follower = podFollowerFactory.createPodFollower(this.kubeConfig, podConfig, executionConfig);
         this.jsonHelper = new JsonHelper();
     }
 
