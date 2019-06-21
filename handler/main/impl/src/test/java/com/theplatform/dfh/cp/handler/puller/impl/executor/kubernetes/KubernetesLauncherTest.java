@@ -18,13 +18,13 @@ public class KubernetesLauncherTest
 
     TestLogKuberentesLauncher kubernetesLauncher;
 
-    @BeforeTest
+    //@BeforeTest
     public void init()
     {
         kubernetesLauncher = new TestLogKuberentesLauncher(new KubeConfig(), new PodConfig(), new ExecutionConfig());
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLog()
     {
         Logger captureLogger = new CaptureLogger("testLogger");
@@ -42,7 +42,7 @@ public class KubernetesLauncherTest
         });
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLogNullAgenda()
     {
         Logger captureLogger = new CaptureLogger("testLogger");
@@ -55,7 +55,7 @@ public class KubernetesLauncherTest
         });
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLogNullAgendaFields()
     {
         Logger captureLogger = new CaptureLogger("testLogger");
