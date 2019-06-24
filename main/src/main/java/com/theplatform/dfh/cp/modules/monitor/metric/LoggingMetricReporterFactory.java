@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.modules.monitor.metric;
 
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Slf4jReporter;
@@ -21,8 +22,15 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     @Override
     public ScheduledReporter register(MetricRegistry metricRegistry)
     {
+        return register(metricRegistry, MetricFilter.ALL);
+    }
+
+    @Override
+    public ScheduledReporter register(MetricRegistry metricRegistry, MetricFilter filterMetrics)
+    {
         return Slf4jReporter.forRegistry(metricRegistry)
             .convertRatesTo(TimeUnit.MILLISECONDS)
+            .filter(filterMetrics)
             .build();
     }
 

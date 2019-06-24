@@ -28,6 +28,12 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
     @Override
     public ScheduledReporter register(MetricRegistry metricRegistry)
     {
+        return register(metricRegistry, MetricFilter.ALL);
+    }
+
+    @Override
+    public ScheduledReporter register(MetricRegistry metricRegistry, MetricFilter metricFilter)
+    {
         // set up "standard" graphite push for metrics
         InetSocketAddress metricsServerLocation =
             new InetSocketAddress( metricsConfiguration.getGraphiteEndpoint(), metricsConfiguration.getGraphitePort() );
@@ -36,6 +42,7 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
             .convertRatesTo(TimeUnit.MILLISECONDS)
             // N.B 1m is "somewhat" arbitrary - it controls the retention period of the metrics for comparision purposes
             .prefixedWith( metricsConfiguration.getGraphitePath() )
+            .filter(metricFilter)
             .build(standardPusher);
         //We need to override the Graphite Reporter to catch all exceptions from preventing our applications to fail.
         //However, the reporter builder and instance is private, so we wrap it
