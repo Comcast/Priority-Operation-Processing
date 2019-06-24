@@ -1,20 +1,19 @@
 package com.theplatform.dfh.cp.modules.monitor.metric;
 
-import com.codahale.metrics.Timer;
+import com.codahale.metrics.Meter;
 import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckListener;
 
 /**
- * Simple timer metric around failed alive checks.
+ * Simple counter around failed alive checks.
  */
 public class MetricAliveCheckListener implements AliveCheckListener
 {
-    Timer timer;
-    Timer.Context timerContext;
+   Meter failedMeter;
 
-    public MetricAliveCheckListener(MetricReport reporter)
+    public MetricAliveCheckListener(MetricReporter reporter)
     {
         //@todo babs -- Make the metric value configurable.
-        timer = reporter.getMetricRegistry().timer("AliveCheck.failed");
+        failedMeter = reporter.getMetricRegistry().meter("AliveCheck.failed");
     }
 
     @Override
@@ -22,15 +21,10 @@ public class MetricAliveCheckListener implements AliveCheckListener
     {
         if (!isAlive)
         {
-            if (timerContext == null)
+            if (failedMeter == null)
             {
-                timerContext = timer.time();
+                failedMeter.mark();
             }
-        }
-        else if (timerContext != null)
-        {
-            timerContext.stop();
-            timerContext = null;
         }
     }
 }

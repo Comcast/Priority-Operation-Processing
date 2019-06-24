@@ -10,16 +10,19 @@ import java.util.concurrent.TimeUnit;
  * Receives a metric register and registers reporters using a factory class for abstraction.
  * Allows for selective reporting as well as scheduled.
  */
-public class MetricReport
+public class MetricReporter
 {
     private MetricRegistry metricRegistry;
     private List<ScheduledReporter> reporters = new ArrayList<>();
+    private Meter failedMeter;
+    private Meter deletedMeter;
+    private Timer durationTimer;
 
-    public MetricReport(MetricRegistry metricRegistry)
+    public MetricReporter(MetricRegistry metricRegistry)
     {
-        this.metricRegistry = metricRegistry == null ? SharedMetricRegistries.getOrCreate("default") : metricRegistry;
+        this.metricRegistry = metricRegistry == null ? SharedMetricRegistries.getOrCreate("metric-reporter") : metricRegistry;
     }
-    public MetricReport()
+    public MetricReporter()
     {
         this(null);
     }
@@ -29,14 +32,31 @@ public class MetricReport
         return metricRegistry;
     }
 
-    public MetricReport register(MetricReporterFactory reporterFactory)
+    public MetricReporter register(MetricReporterFactory reporterFactory)
     {
         ScheduledReporter reporter = reporterFactory.register(metricRegistry);
         reporter.start(reporterFactory.getReportIntervalInMilli(), TimeUnit.MILLISECONDS);
         reporters.add(reporter);
         return this;
     }
-
+    public MetricReporter withFailedMeter()
+    {
+        if(failedMeter == null)
+            this.failedMeter = getMetricRegistry().meter(MetricLabel.failed.name());
+       return this;
+    }
+    public MetricReporter withDeletedMeter()
+    {
+        if(deletedMeter == null)
+            this.deletedMeter = getMetricRegistry().meter(MetricLabel.deleted.name());
+        return this;
+    }
+    public MetricReporter withDurationTimer()
+    {
+        if(durationTimer == null)
+            this.durationTimer = getMetricRegistry().timer(MetricLabel.duration.name());
+        return this;
+    }
     //The reporters are currently a scheduled reporter. In some cases, we want to report now.
     public void report()
     {
@@ -47,14 +67,14 @@ public class MetricReport
     }
     public Meter getFailedMeter()
     {
-        return getMetricRegistry().meter(MetricLabel.failed.name());
+        return failedMeter;
     }
     public Meter getDeletedMeter()
     {
-        return getMetricRegistry().meter(MetricLabel.deleted.name());
+        return deletedMeter;
     }
     public Timer getTimer()
     {
-        return getMetricRegistry().timer(MetricLabel.duration.name());
+        return durationTimer;
     }
 }

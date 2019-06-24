@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckPoller;
 import com.theplatform.dfh.cp.modules.monitor.alive.LogAliveCheckListener;
 import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricAliveCheckListener;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReport;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class AliveCheckTest implements AliveCheck
     {
         Properties serviceProperties = PropertyLoader.loadResource("../../../../../../service.properties");
         final int logMetricFrequency = 500;
-        MetricReport reporter = new MetricReport(null);
+        MetricReporter reporter = new MetricReporter(null);
         reporter.register(new LoggingMetricReporterFactory(logMetricFrequency));
         LogAliveCheckListener loggerAliveCheck = new LogAliveCheckListener();
         MetricAliveCheckListener metricsAliveCheck = new MetricAliveCheckListener(reporter);

@@ -3,8 +3,6 @@ package com.theplatform.dfh.cp.modules.monitor.bananas;
 import com.comcast.cts.timeshifted.pump.bananas.BananasMessage;
 import com.comcast.cts.timeshifted.pump.bananas.BananasMessageDecider;
 import com.comcast.cts.timeshifted.pump.bananas.BananasMessageSender;
-import com.comcast.cts.timeshifted.pump.configuration.AlertingConfiguration;
-import com.comcast.cts.timeshifted.pump.configuration.BananasConfiguration;
 import com.comcast.cts.timeshifted.pump.status.AppState;
 import com.comcast.cts.timeshifted.pump.status.StatusQueue;
 import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckConfiguration;

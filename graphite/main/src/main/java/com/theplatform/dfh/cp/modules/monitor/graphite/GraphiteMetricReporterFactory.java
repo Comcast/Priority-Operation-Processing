@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Sends graphite metrics. Usage see: MetricReport for registering.
+ * Sends graphite metrics. Usage see: MetricReporter for registering.
  */
 public class GraphiteMetricReporterFactory implements MetricReporterFactory
 {
@@ -32,11 +32,14 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
         InetSocketAddress metricsServerLocation =
             new InetSocketAddress( metricsConfiguration.getGraphiteEndpoint(), metricsConfiguration.getGraphitePort() );
         Graphite standardPusher = new Graphite(metricsServerLocation);
-        return GraphiteReporter.forRegistry(metricRegistry)
+        GraphiteReporter reporter = GraphiteReporter.forRegistry(metricRegistry)
             .convertRatesTo(TimeUnit.MILLISECONDS)
             // N.B 1m is "somewhat" arbitrary - it controls the retention period of the metrics for comparision purposes
             .prefixedWith( metricsConfiguration.getGraphitePath() )
             .build(standardPusher);
+        //We need to override the Graphite Reporter to catch all exceptions from preventing our applications to fail.
+        //However, the reporter builder and instance is private, so we wrap it
+        return new GraphiteReporterWrapper(metricRegistry, "graphite-reporter", MetricFilter.ALL, TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS, reporter);
     }
 
     @Override
