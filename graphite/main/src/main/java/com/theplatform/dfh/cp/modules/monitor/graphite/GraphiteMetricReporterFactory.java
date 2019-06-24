@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class GraphiteMetricReporterFactory implements MetricReporterFactory
 {
     private GraphiteConfiguration metricsConfiguration;
+    private MetricFilter metricFilter = MetricFilter.ALL;
 
     public GraphiteMetricReporterFactory(Properties properties)
     {
@@ -27,12 +28,6 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
 
     @Override
     public ScheduledReporter register(MetricRegistry metricRegistry)
-    {
-        return register(metricRegistry, MetricFilter.ALL);
-    }
-
-    @Override
-    public ScheduledReporter register(MetricRegistry metricRegistry, MetricFilter metricFilter)
     {
         // set up "standard" graphite push for metrics
         InetSocketAddress metricsServerLocation =
@@ -53,5 +48,10 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
     public int getReportIntervalInMilli()
     {
         return metricsConfiguration.getMetricsReportInterval();
+    }
+
+    public void setMetricFilter(MetricFilter metricFilter)
+    {
+        this.metricFilter = metricFilter;
     }
 }

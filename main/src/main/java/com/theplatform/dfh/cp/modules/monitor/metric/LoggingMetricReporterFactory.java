@@ -10,9 +10,15 @@ import java.util.concurrent.TimeUnit;
 public class LoggingMetricReporterFactory implements MetricReporterFactory
 {
     private int reportIntervalInMilli = 30000;
+    private MetricFilter metricFilter;
 
     public LoggingMetricReporterFactory()
     {
+        this(MetricFilter.ALL);
+    }
+    public LoggingMetricReporterFactory(MetricFilter metricFilter)
+    {
+        this.metricFilter = metricFilter;
     }
     public LoggingMetricReporterFactory(int reportIntervalInMilli)
     {
@@ -22,15 +28,9 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     @Override
     public ScheduledReporter register(MetricRegistry metricRegistry)
     {
-        return register(metricRegistry, MetricFilter.ALL);
-    }
-
-    @Override
-    public ScheduledReporter register(MetricRegistry metricRegistry, MetricFilter filterMetrics)
-    {
         return Slf4jReporter.forRegistry(metricRegistry)
             .convertRatesTo(TimeUnit.MILLISECONDS)
-            .filter(filterMetrics)
+            .filter(metricFilter)
             .build();
     }
 
@@ -38,5 +38,10 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     public int getReportIntervalInMilli()
     {
         return reportIntervalInMilli;
+    }
+
+    public void setMetricFilter(MetricFilter metricFilter)
+    {
+        this.metricFilter = metricFilter;
     }
 }
