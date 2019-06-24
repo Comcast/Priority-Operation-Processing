@@ -1,11 +1,14 @@
 package com.theplatform.dfh.cp.handler.puller.impl;
 
+import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyRetriever;
+import com.theplatform.dfh.cp.handler.kubernetes.monitor.AliveCheckPollerFactory;
+import com.theplatform.dfh.cp.handler.kubernetes.monitor.MetricReporterFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
-import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.slf4j.Logger;
@@ -39,7 +42,15 @@ public class PullerApp extends Application<PullerConfig>
         }
         pullerEntryPoint.setAgendaClientFactory(agendaClientFactory);
         pullerEntryPoint.setPullerConfig(config);
+
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);
+
+        //Initialize our metric / alert monitoring
+        PropertyRetriever propertyRetriever = pullerEntryPoint.getLaunchDataWrapper().getPropertyRetriever();
+        MetricReporter metricReporter = MetricReporterFactory.getInstance(propertyRetriever);
+        AliveCheckPollerFactory.startInstance(pullerExecution, propertyRetriever, metricReporter);
+
+        pullerEntryPoint.setMetricReporter(metricReporter);
 
         environment.healthChecks().register("basic-health",
             new AliveHealthCheck(pullerExecution.getExecutionContext())
@@ -48,4 +59,5 @@ public class PullerApp extends Application<PullerConfig>
 
         pullerExecution.start();
     }
+
 }

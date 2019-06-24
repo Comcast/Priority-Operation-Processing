@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
+import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
@@ -7,6 +8,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFact
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 
     private String insightId;
     private int agendaRequestCount = 1;
+    private MetricReporter metricReporter;
 
     public PullerProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
     {
@@ -59,53 +62,81 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
      */
     public void execute()
     {
-        GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
-        GetAgendaResponse getAgendaResponse;
+        Timer.Context timer = startTimer();
+
         try
         {
-            getAgendaResponse = getAgendaClient().getAgenda(getAgendaRequest);
-        } catch (Exception e)
-        {
-            logger.error("Failed to getAgenda: {}", e);
-            return;
-        }
-
-        if (getAgendaResponse == null || getAgendaResponse.getAgendas() == null)
-        {
-            logger.error("Failed to getAgenda"); // todo what should we do here?
-            return;
-        }
-        else if (getAgendaResponse.isError())
-        {
-            logger.error("Failed to getAgenda: {}", getAgendaResponse.getErrorResponse().toString());
-            return;
-        }
-
-        if(launchDataWrapper.getLastRequestAliveCheck() != null) launchDataWrapper.getLastRequestAliveCheck().updateLastRequestDate();
-
-        Collection<Agenda> agendas = getAgendaResponse.getAgendas();
-
-        if (agendas != null && agendas.size() > 0)
-        {
-            Agenda agenda = (Agenda) agendas.toArray()[0];
-            logger.info("Retrieved Agenda: {}", agenda); // logs agenda hashcode?
-
-            // launch an executor and pass it the agenda payload
-            getLauncher().execute(agenda);
-        }
-        else
-        {
-            int pullWait = getLaunchDataWrapper().getPullerConfig().getPullWait();
-            logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", getLaunchDataWrapper().getPullerConfig().getPullWait());
+            GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
+            GetAgendaResponse getAgendaResponse;
             try
             {
-                Thread.sleep(pullWait * 1000);
+                getAgendaResponse = getAgendaClient().getAgenda(getAgendaRequest);
             }
-            catch (InterruptedException e)
+            catch (Exception e)
             {
-                logger.warn("Puller execution was stopped. {}", e);
+                logger.error("Failed to getAgenda: {}", e);
+                reportFailure();
+                return;
+            }
+
+            if (getAgendaResponse == null || getAgendaResponse.getAgendas() == null)
+            {
+                logger.error("Failed to getAgenda"); // todo what should we do here?
+                reportFailure();
+                return;
+            }
+            else if (getAgendaResponse.isError())
+            {
+                logger.error("Failed to getAgenda: {}", getAgendaResponse.getErrorResponse().toString());
+                reportFailure();
+                return;
+            }
+
+            if (launchDataWrapper.getLastRequestAliveCheck() != null)
+                launchDataWrapper.getLastRequestAliveCheck().updateLastRequestDate();
+
+            Collection<Agenda> agendas = getAgendaResponse.getAgendas();
+
+            if (agendas != null && agendas.size() > 0)
+            {
+                Agenda agenda = (Agenda) agendas.toArray()[0];
+                logger.info("Retrieved Agenda: {}", agenda); // logs agenda hashcode?
+
+                // launch an executor and pass it the agenda payload
+                getLauncher().execute(agenda);
+            }
+            else
+            {
+                int pullWait = getLaunchDataWrapper().getPullerConfig().getPullWait();
+                logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", getLaunchDataWrapper().getPullerConfig().getPullWait());
+                try
+                {
+                    Thread.sleep(pullWait * 1000);
+                }
+                catch (InterruptedException e)
+                {
+                    logger.warn("Puller execution was stopped. {}", e);
+                }
             }
         }
+        finally
+        {
+            endTimer(timer);
+        }
+    }
+    private Timer.Context startTimer()
+    {
+        return metricReporter != null ? metricReporter.getTimer().time() : null;
+    }
+    private void endTimer(Timer.Context timer)
+    {
+        if(timer != null)
+            timer.stop();
+    }
+    private void reportFailure()
+    {
+        if(metricReporter != null)
+            metricReporter.getFailedMeter().mark();
     }
 
     public PullerLaunchDataWrapper getLaunchDataWrapper()
@@ -139,5 +170,15 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     {
         this.agendaClient = agendaClient;
         return this;
+    }
+
+    public void setMetricReporter(MetricReporter metricReporter)
+    {
+        if(metricReporter != null)
+        {
+            this.metricReporter = metricReporter;
+            this.metricReporter.withFailedMeter();
+            this.metricReporter.withDurationTimer();
+        }
     }
 }

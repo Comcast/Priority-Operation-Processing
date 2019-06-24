@@ -3,9 +3,9 @@ package com.theplatform.dfh.cp.handler.puller.impl;
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.base.messages.HandlerMessages;
-import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
+import com.theplatform.dfh.cp.handler.kubernetes.monitor.GraphiteConfiguration;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
@@ -14,22 +14,19 @@ import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContextFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.processor.PullerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.retriever.PullerArgumentProvider;
+import com.theplatform.dfh.cp.modules.monitor.graphite.GraphiteMetricReporterFactory;
+import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.FAILED;
-import static com.theplatform.dfh.cp.api.progress.CompleteStateMessage.SUCCEEDED;
 
 public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor, PullerLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
-
     private static final String DEFAULT_CONF_PATH = "/config/conf.yaml";
 
     private AgendaClientFactory agendaClientFactory;
+    private MetricReporter metricReporter;
 
     public PullerEntryPoint(String[] args)
     {
@@ -90,7 +87,9 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         try
         {
             operationContext.init();
-            createHandlerProcessor(operationContext).execute();
+            PullerProcessor pullerProcessor = createHandlerProcessor(operationContext);
+            pullerProcessor.setMetricReporter(metricReporter);
+            pullerProcessor.execute();
         }
         catch (Exception e)
         {
@@ -122,5 +121,14 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     {
         getLaunchDataWrapper().setPullerConfig(pullerConfig);
         return this;
+    }
+    public void setMetricReporter(MetricReporter metricReporter)
+    {
+        if(metricReporter != null)
+        {
+            this.metricReporter = metricReporter;
+            this.metricReporter.withFailedMeter();
+            this.metricReporter.withDurationTimer();
+        }
     }
 }
