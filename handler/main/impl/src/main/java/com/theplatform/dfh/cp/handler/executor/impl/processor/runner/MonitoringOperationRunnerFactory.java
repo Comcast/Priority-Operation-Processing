@@ -3,13 +3,13 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor.runner;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReport;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 
 public class MonitoringOperationRunnerFactory extends OperationRunnerFactory
 {
-    MetricReport metricReport;
+    MetricReporter metricReport;
 
-    public MonitoringOperationRunnerFactory(MetricReport metricReport)
+    public MonitoringOperationRunnerFactory(MetricReporter metricReport)
     {
         this.metricReport = metricReport;
     }

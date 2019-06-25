@@ -5,13 +5,13 @@ import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReport;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 
 public class MonitoringOperationRunner extends OperationRunner
 {
-    MetricReport metricReport;
+    MetricReporter metricReport;
 
-    public MonitoringOperationRunner(MetricReport metricReport, OperationWrapper operationWrapper, ExecutorContext executorContext,
+    public MonitoringOperationRunner(MetricReporter metricReport, OperationWrapper operationWrapper, ExecutorContext executorContext,
         OnOperationCompleteListener onOperationCompleteListener)
     {
         super(operationWrapper, executorContext, onOperationCompleteListener);
@@ -21,7 +21,7 @@ public class MonitoringOperationRunner extends OperationRunner
     @Override
     public void run()
     {
-        Timer.Context timerContext = metricReport.getMetricRegistry().timer("op-" +getOperationType() +"." +MetricLabel.duration.name()).time();
+        Timer.Context timerContext = metricReport.getMetricRegistry().timer("op." +getOperationType() +"." +MetricLabel.duration.name()).time();
         try
         {
             super.run();
@@ -30,7 +30,7 @@ public class MonitoringOperationRunner extends OperationRunner
         {
             timerContext.stop();
             if(getOperationWrapper().getSuccess() == Boolean.FALSE)
-                metricReport.getMetricRegistry().meter("op-" +getOperationType() +"." +MetricLabel.failed.name());
+                metricReport.getMetricRegistry().meter("op." +getOperationType() +"." +MetricLabel.failed.name());
         }
     }
 
