@@ -227,7 +227,10 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     public void resetLogging()
     {
         logger.warn("Log watch is being reset");
-        k8LogReader.shutdown();
+        if(k8LogReader != null)
+            k8LogReader.shutdown();
+        else
+            logger.warn("resetLogging called without a k8LogReader configured.");
         this.resetCounter++;
         if(resetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
         {
