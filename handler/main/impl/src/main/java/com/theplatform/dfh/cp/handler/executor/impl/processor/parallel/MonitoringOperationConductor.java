@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 
 import java.util.Collection;
@@ -14,13 +15,12 @@ public class MonitoringOperationConductor extends OperationConductor
     {
         super(operations, executorContext);
         this.metricReport = metricReport;
-        this.metricReport.withDurationTimer();
     }
 
     @Override
     public void run()
     {
-        Timer.Context timerContext = metricReport.getTimer().time();
+        Timer.Context timerContext = metricReport.getTimer(MetricLabel.duration).time();
         try
         {
             super.run();
