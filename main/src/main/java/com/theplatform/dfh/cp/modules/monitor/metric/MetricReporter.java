@@ -14,9 +14,7 @@ public class MetricReporter
 {
     private MetricRegistry metricRegistry;
     private List<ScheduledReporter> reporters = new ArrayList<>();
-    private Meter failedMeter;
-    private Meter deletedMeter;
-    private Timer durationTimer;
+
 
     public MetricReporter(MetricRegistry metricRegistry)
     {
@@ -39,24 +37,37 @@ public class MetricReporter
         reporters.add(reporter);
         return this;
     }
-    public MetricReporter withFailedMeter()
+    public Counter getCounter(MetricLabel metricLabel)
     {
-        if(failedMeter == null)
-            this.failedMeter = getMetricRegistry().meter(MetricLabel.failed.name());
-       return this;
+        if(metricLabel == null) return null;
+        return getCounter(metricLabel.name());
     }
-    public MetricReporter withDeletedMeter()
+    public Meter getMeter(MetricLabel metricLabel)
     {
-        if(deletedMeter == null)
-            this.deletedMeter = getMetricRegistry().meter(MetricLabel.deleted.name());
-        return this;
+        if(metricLabel == null) return null;
+        return getMeter(metricLabel.name());
     }
-    public MetricReporter withDurationTimer()
+    public Counter getCounter(String metricLabel)
     {
-        if(durationTimer == null)
-            this.durationTimer = getMetricRegistry().timer(MetricLabel.duration.name());
-        return this;
+        if(metricLabel == null) return null;
+        return getMetricRegistry().counter(metricLabel);
     }
+    public Meter getMeter(String metricLabel)
+    {
+        if(metricLabel == null) return null;
+        return getMetricRegistry().meter(metricLabel);
+    }
+    public Timer getTimer(MetricLabel metricLabel)
+    {
+        if(metricLabel == null) return null;
+        return getTimer(metricLabel.name());
+    }
+    public Timer getTimer(String metricLabel)
+    {
+        if(metricLabel == null) return null;
+        return getMetricRegistry().timer(metricLabel);
+    }
+
     //The reporters are currently a scheduled reporter. In some cases, we want to report now.
     public void report()
     {
@@ -64,17 +75,5 @@ public class MetricReporter
         {
             reporter.report();
         }
-    }
-    public Meter getFailedMeter()
-    {
-        return failedMeter;
-    }
-    public Meter getDeletedMeter()
-    {
-        return deletedMeter;
-    }
-    public Timer getTimer()
-    {
-        return durationTimer;
     }
 }
