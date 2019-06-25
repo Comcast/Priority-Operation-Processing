@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProvide
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricFilterBuilder;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
@@ -47,7 +48,8 @@ public class PullerApp extends Application<PullerConfig>
 
         //Initialize our metric / alert monitoring
         PropertyRetriever propertyRetriever = pullerEntryPoint.getLaunchDataWrapper().getPropertyRetriever();
-        MetricReporter metricReporter = MetricReporterFactory.getInstance(propertyRetriever);
+        MetricFilterBuilder.MetricFilter metricFilter = new MetricFilterBuilder().filterCountZero().filterTimer().build();
+        MetricReporter metricReporter = MetricReporterFactory.getInstance(propertyRetriever, metricFilter);
         AliveCheckPollerFactory.startInstance(pullerExecution, propertyRetriever, metricReporter);
 
         pullerEntryPoint.setMetricReporter(metricReporter);
