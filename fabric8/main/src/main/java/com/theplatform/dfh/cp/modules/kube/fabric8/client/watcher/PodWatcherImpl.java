@@ -177,14 +177,11 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         finishedLatch.countDown();
     }
 
-    private void intializeAndStartLogObservation()
+    private synchronized void intializeAndStartLogObservation()
     {
-        k8LogReader = new K8LogReader(podName, logLineAccumulator, connectionTracker);
-        setupLogObserveration();
-    }
+        if(k8LogReader == null)
+            k8LogReader = new K8LogReader(podName, logLineAccumulator, connectionTracker);
 
-    private void setupLogObserveration()
-    {
         Pod pod = podResource.get();
         if (pod == null)
         {
@@ -193,6 +190,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         logger.debug("Pod {} has phase {}", podName, pod.getStatus().getPhase());
         LogWatch logWatch = podResource.watchLog();
         k8LogReader.observeRuntimeLog(logWatch);
+
     }
 
     private void extractLogsForFastFail()
@@ -228,9 +226,15 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     {
         logger.warn("Log watch is being reset");
         if(k8LogReader != null)
+        {
             k8LogReader.shutdown();
+        }
         else
+        {
+            // may be that the pod complete so quickly this did not get initialized
             logger.warn("resetLogging called without a k8LogReader configured.");
+        }
+
         this.resetCounter++;
         if(resetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
         {
@@ -241,7 +245,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
             }
         } else
         {
-            setupLogObserveration();
+            intializeAndStartLogObservation();
         }
     }
 
