@@ -127,8 +127,6 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         if(metricReporter != null)
         {
             this.metricReporter = metricReporter;
-            this.metricReporter.withFailedMeter();
-            this.metricReporter.withDurationTimer();
         }
     }
 }

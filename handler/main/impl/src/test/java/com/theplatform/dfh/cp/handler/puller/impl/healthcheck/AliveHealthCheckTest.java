@@ -2,7 +2,6 @@ package com.theplatform.dfh.cp.handler.puller.impl.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
-import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

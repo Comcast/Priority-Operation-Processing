@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
+import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
@@ -8,6 +9,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFact
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
+import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
@@ -97,6 +99,8 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 
             Collection<Agenda> agendas = getAgendaResponse.getAgendas();
 
+            reportSuccess();
+
             if (agendas != null && agendas.size() > 0)
             {
                 Agenda agenda = (Agenda) agendas.toArray()[0];
@@ -126,19 +130,30 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     }
     private Timer.Context startTimer()
     {
-        return metricReporter != null ? metricReporter.getTimer().time() : null;
+        return metricReporter != null ? metricReporter.getTimer(MetricLabel.duration).time() : null;
     }
     private void endTimer(Timer.Context timer)
     {
         if(timer != null)
             timer.stop();
     }
+    private void reportSuccess()
+    {
+        if (metricReporter != null)
+        {
+            Counter failedCounter = metricReporter.getCounter(MetricLabel.failed);
+            if(failedCounter.getCount() > 0)
+                failedCounter.dec();
+        }
+    }
     private void reportFailure()
     {
-        if(metricReporter != null)
-            metricReporter.getFailedMeter().mark();
+        if (metricReporter != null)
+        {
+            metricReporter.getMeter(MetricLabel.failed).mark();
+            metricReporter.getCounter(MetricLabel.failed).inc();
+        }
     }
-
     public PullerLaunchDataWrapper getLaunchDataWrapper()
     {
         return launchDataWrapper;
@@ -177,8 +192,6 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         if(metricReporter != null)
         {
             this.metricReporter = metricReporter;
-            this.metricReporter.withFailedMeter();
-            this.metricReporter.withDurationTimer();
         }
     }
 }
