@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
+package com.theplatform.dfh.cp.handler.puller.impl.client.depricatedAgenda;
 
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;

@@ -33,21 +33,15 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     private int agendaRequestCount = 1;
     private MetricReporter metricReporter;
 
-    public PullerProcessor(PullerContext pullerContext, AgendaClientFactory agendaClientFactory)
+    public PullerProcessor(PullerContext pullerContext)
     {
-        this(pullerContext);
-        this.agendaClient = agendaClientFactory.getClient();
+        super(pullerContext);
+        this.agendaClient = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig()).getClient();
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
 
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
         agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
     }
-
-    public PullerProcessor(PullerContext pullerContext)
-    {
-        super(pullerContext);
-    }
-
 
     /**
      * For testing
@@ -72,6 +66,12 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             GetAgendaResponse getAgendaResponse;
             try
             {
+                logger.debug("PullerProcessor: Getting agenda. Request[" + getAgendaRequest + "]" +
+                                     ", InsightId: " + getAgendaRequest.getInsightId() +
+                                     ", CID: " + getAgendaRequest.getCID() +
+                                     ", Endpoint: " + getAgendaRequest.getEndpoint() +
+                                     ", AuthHeader: " + getAgendaRequest.getAuthorizationHeader() +
+                                     ", HTTPMethod: " + getAgendaRequest.getHTTPMethod("something"));
                 getAgendaResponse = getAgendaClient().getAgenda(getAgendaRequest);
             }
             catch (Exception e)
@@ -80,6 +80,9 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
                 reportFailure();
                 return;
             }
+
+            logger.debug("PullerProcessor: AgendaResponse[" + getAgendaResponse + "], agendas[" +
+                                 (getAgendaResponse == null ? "null object" : getAgendaResponse.getAgendas()) + "]");
 
             if (getAgendaResponse == null || getAgendaResponse.getAgendas() == null)
             {
@@ -94,6 +97,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
                 return;
             }
 
+            logger.debug("PullerProcessor: Getting agendas from response");
             if (launchDataWrapper.getLastRequestAliveCheck() != null)
                 launchDataWrapper.getLastRequestAliveCheck().updateLastRequestDate();
 
@@ -128,10 +132,12 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             endTimer(timer);
         }
     }
+
     private Timer.Context startTimer()
     {
         return metricReporter != null ? metricReporter.getTimer(MetricLabel.duration).time() : null;
     }
+
     private void endTimer(Timer.Context timer)
     {
         if(timer != null)
@@ -146,6 +152,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
                 failedCounter.dec();
         }
     }
+
     private void reportFailure()
     {
         if (metricReporter != null)

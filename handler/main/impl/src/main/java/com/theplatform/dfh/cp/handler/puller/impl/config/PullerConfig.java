@@ -12,6 +12,8 @@ public class PullerConfig extends Configuration
     private String insightId;
     private int agendaRequestCount=1;
     private String localAgendaRelativePath;
+    private String proxyHost;
+    private String proxyPort;
 
     public String getAgendaProviderUrl()
     {
@@ -33,6 +35,26 @@ public class PullerConfig extends Configuration
     {
         this.localAgendaRelativePath = localAgendaRelativePath;
         return this;
+    }
+
+    public String getProxyHost()
+    {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost)
+    {
+        this.proxyHost = proxyHost;
+    }
+
+    public String getProxyPort()
+    {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String proxyPort)
+    {
+        this.proxyPort = proxyPort;
     }
 
     public String getIdentityUrl()

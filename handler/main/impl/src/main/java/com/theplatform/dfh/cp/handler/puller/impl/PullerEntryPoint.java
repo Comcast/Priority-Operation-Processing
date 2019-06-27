@@ -6,8 +6,6 @@ import com.theplatform.dfh.cp.handler.base.messages.HandlerMessages;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.monitor.GraphiteConfiguration;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
@@ -25,15 +23,12 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
     private static final String DEFAULT_CONF_PATH = "/config/conf.yaml";
 
-    private AgendaClientFactory agendaClientFactory;
     private MetricReporter metricReporter;
 
     public PullerEntryPoint(String[] args)
     {
         super(args);
         logger.debug("ARGS: {}", String.join("\n", args));
-
-        agendaClientFactory = new DefaultAgendaClientFactory();
     }
 
     @Override
@@ -51,8 +46,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     @Override
     protected PullerProcessor createHandlerProcessor(PullerContext handlerContext)
     {
-        return new PullerProcessor(handlerContext, agendaClientFactory);
-
+        return new PullerProcessor(handlerContext);
     }
 
     /**
@@ -99,17 +93,6 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         {
             operationContext.shutdown();
         }
-    }
-
-    public AgendaClientFactory getAgendaClientFactory()
-    {
-        return agendaClientFactory;
-    }
-
-    public PullerEntryPoint setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
-    {
-        this.agendaClientFactory = agendaClientFactory;
-        return this;
     }
 
     public PullerConfig getPullerConfig()

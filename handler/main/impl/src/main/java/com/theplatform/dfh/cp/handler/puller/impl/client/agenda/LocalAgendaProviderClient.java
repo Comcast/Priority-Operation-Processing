@@ -6,7 +6,6 @@ import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +14,22 @@ import java.util.List;
  * Basic client for making calls to get Agenda objects.  Eventually this will
  * talk to the API Gateway to getWork, but for now it returns a static Agenda
  */
-public class DefaultAgendaClient implements AgendaClient
+public class LocalAgendaProviderClient implements AgendaClient
 {
     private String payloadFileName;
     private JsonHelper jsonHelper = new JsonHelper();
 
     private String work;
 
-    private DefaultAgendaClient()
+    private LocalAgendaProviderClient()
     {
     }
 
-    public DefaultAgendaClient(String payloadFileName)
+    public LocalAgendaProviderClient(String payloadFileName)
     {
         this.payloadFileName = payloadFileName;
-        try {
+        try
+        {
             work = getStringFromResourceFile(payloadFileName);
         }
         catch(IOException e)

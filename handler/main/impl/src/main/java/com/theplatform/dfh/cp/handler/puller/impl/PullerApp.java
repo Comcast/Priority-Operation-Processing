@@ -3,11 +3,9 @@ package com.theplatform.dfh.cp.handler.puller.impl;
 import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.monitor.AliveCheckPollerFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.monitor.MetricReporterFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.DefaultAgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
+import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricFilterBuilder;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import io.dropwizard.Application;
@@ -29,19 +27,6 @@ public class PullerApp extends Application<PullerConfig>
     @Override
     public void run(PullerConfig config, Environment environment) throws Exception
     {
-        AgendaClientFactory agendaClientFactory;
-        logger.info("Agenda path: [" + config.getLocalAgendaRelativePath());
-        if (config.getLocalAgendaRelativePath() == null)
-        {
-            logger.info("Using AWS agenda provider");
-            agendaClientFactory = new AwsAgendaProviderClientFactory(config);
-        }
-        else
-        {
-            logger.info("Using Local agenda provider");
-            agendaClientFactory = new DefaultAgendaClientFactory(config.getLocalAgendaRelativePath());
-        }
-        pullerEntryPoint.setAgendaClientFactory(agendaClientFactory);
         pullerEntryPoint.setPullerConfig(config);
 
         PullerExecution pullerExecution = new PullerExecution(pullerEntryPoint);
@@ -61,5 +46,4 @@ public class PullerApp extends Application<PullerConfig>
 
         pullerExecution.start();
     }
-
 }
