@@ -4,7 +4,6 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
@@ -27,20 +26,22 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 
     private BaseLauncher launcher;
 
-    private AgendaClient agendaClient;
+    private AgendaClientFactory agendaClientFactory;
 
     private String insightId;
     private int agendaRequestCount = 1;
     private MetricReporter metricReporter;
+    private int pullWaitSeconds = 30000;
 
     public PullerProcessor(PullerContext pullerContext)
     {
         super(pullerContext);
-        this.agendaClient = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig()).getClient();
+        this.agendaClientFactory = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig());
         launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
 
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
         agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
+        pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
     }
 
     /**
@@ -54,9 +55,20 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     }
 
     /**
-     * Executes the request to get an Agenda and starts the executor pod as necessary
+     * Initiates the endless processing loop to retrieve/start agendas.
      */
     public void execute()
+    {
+        while(true)
+        {
+            performAgendaRequest();
+        }
+    }
+
+    /**
+     * Executes the request to get an Agenda and starts the executor pod as necessary.
+     */
+    protected void performAgendaRequest()
     {
         Timer.Context timer = startTimer();
 
@@ -72,7 +84,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
                                      ", Endpoint: " + getAgendaRequest.getEndpoint() +
                                      ", AuthHeader: " + getAgendaRequest.getAuthorizationHeader() +
                                      ", HTTPMethod: " + getAgendaRequest.getHTTPMethod("something"));
-                getAgendaResponse = getAgendaClient().getAgenda(getAgendaRequest);
+                getAgendaResponse = agendaClientFactory.getClient().getAgenda(getAgendaRequest);
             }
             catch (Exception e)
             {
@@ -115,22 +127,35 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             }
             else
             {
-                int pullWait = getLaunchDataWrapper().getPullerConfig().getPullWait();
-                logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", getLaunchDataWrapper().getPullerConfig().getPullWait());
-                try
-                {
-                    Thread.sleep(pullWait * 1000);
-                }
-                catch (InterruptedException e)
-                {
-                    logger.warn("Puller execution was stopped. {}", e);
-                }
+                logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", pullWaitSeconds);
+                pullWait();
+            }
+        }
+        catch(InterruptedException e)
+        {
+            throw new RuntimeException("Thread interrupted.", e);
+        }
+        catch(Exception e)
+        {
+            logger.error("performAgendaRequest failed to process. ", e);
+            try
+            {
+                pullWait();
+            }
+            catch(InterruptedException ex)
+            {
+                throw new RuntimeException("Thread interrupted.", ex);
             }
         }
         finally
         {
             endTimer(timer);
         }
+    }
+
+    private void pullWait() throws InterruptedException
+    {
+        Thread.sleep(pullWaitSeconds * 1000);
     }
 
     private Timer.Context startTimer()
@@ -166,11 +191,16 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         return launchDataWrapper;
     }
 
-//    public PullerProcessor setLaunchDataWrapper(PullerLaunchDataWrapper launchDataWrapper)
-//    {
-//        this.launchDataWrapper = launchDataWrapper;
-//        return this;
-//    }
+    public AgendaClientFactory getAgendaClientFactory()
+    {
+        return agendaClientFactory;
+    }
+
+    public PullerProcessor setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
+    {
+        this.agendaClientFactory = agendaClientFactory;
+        return this;
+    }
 
     public BaseLauncher getLauncher()
     {
@@ -180,17 +210,6 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     public PullerProcessor setLauncher(BaseLauncher launcher)
     {
         this.launcher = launcher;
-        return this;
-    }
-
-    public AgendaClient getAgendaClient()
-    {
-        return agendaClient;
-    }
-
-    public PullerProcessor setAgendaClient(AgendaClient agendaClient)
-    {
-        this.agendaClient = agendaClient;
         return this;
     }
 

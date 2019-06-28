@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
@@ -43,8 +45,10 @@ public class PullerProcessorTest
             getAgendaResponse.setAgendas(Arrays.asList(agenda));
         }
 
-        AwsAgendaProviderClient clientMock = mock(AwsAgendaProviderClient.class);
+        AgendaClient clientMock = mock(AgendaClient.class);
         when(clientMock.getAgenda(any())).thenReturn(getAgendaResponse);
+        AgendaClientFactory clientFactoryMock = mock(AgendaClientFactory.class);
+        when(clientFactoryMock.getClient()).thenReturn(clientMock);
 
         int pullWait = 0;
         String insightId = UUID.randomUUID().toString();
@@ -56,12 +60,11 @@ public class PullerProcessorTest
         PullerLaunchDataWrapper launchDataWrapper = mock(PullerLaunchDataWrapper.class);
         doReturn(pullerConfig).when(launchDataWrapper).getPullerConfig();
 
-
         PullerProcessor pullerProcessor = new PullerProcessor(insightId);
-        pullerProcessor.setAgendaClient(clientMock);
+        pullerProcessor.setAgendaClientFactory(clientFactoryMock);
         pullerProcessor.setLauncher(launcherMock);
         pullerProcessor.setLaunchDataWrapper(launchDataWrapper);
-        pullerProcessor.execute();
+        pullerProcessor.performAgendaRequest();
 
         verify(launcherMock, times(executeCalls)).execute(agenda);
     }

@@ -7,19 +7,11 @@ import org.slf4j.LoggerFactory;
 
 public class PullerExecution implements AliveCheck
 {
-    private static Logger logger = LoggerFactory.getLogger(PullerExecution.class);
-
     private ExecutionContext executionContext;
 
     public PullerExecution(PullerEntryPoint pullerEntryPoint)
     {
-        Runnable executePuller = () -> {
-            for (; ; )
-            {
-                logger.info("Executing Puller");
-                pullerEntryPoint.execute();
-            }
-        };
+        Runnable executePuller = pullerEntryPoint::execute;
         Thread pullerThread = new Thread(executePuller);
         this.executionContext = new ExecutionContext(pullerThread);
     }
