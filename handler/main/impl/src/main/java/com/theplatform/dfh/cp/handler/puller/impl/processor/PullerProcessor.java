@@ -7,7 +7,7 @@ import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcesso
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
-import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
+import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
@@ -24,9 +24,8 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
 
-    private BaseLauncher launcher;
-
     private AgendaClientFactory agendaClientFactory;
+    private LauncherFactory launcherFactory;
 
     private String insightId;
     private int agendaRequestCount = 1;
@@ -37,7 +36,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     {
         super(pullerContext);
         this.agendaClientFactory = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig());
-        launcher = pullerContext.getLauncherFactory().createLauncher(pullerContext);
+        launcherFactory = pullerContext.getLauncherFactory();
 
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
         agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
@@ -123,7 +122,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
                 logger.info("Retrieved Agenda: {}", agenda); // logs agenda hashcode?
 
                 // launch an executor and pass it the agenda payload
-                getLauncher().execute(agenda);
+                launcherFactory.createLauncher(getOperationContext()).execute(agenda);
             }
             else
             {
@@ -196,20 +195,20 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         return agendaClientFactory;
     }
 
-    public PullerProcessor setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
+    public LauncherFactory getLauncherFactory()
     {
-        this.agendaClientFactory = agendaClientFactory;
+        return launcherFactory;
+    }
+
+    public PullerProcessor setLauncherFactory(LauncherFactory launcherFactory)
+    {
+        this.launcherFactory = launcherFactory;
         return this;
     }
 
-    public BaseLauncher getLauncher()
+    public PullerProcessor setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
     {
-        return launcher;
-    }
-
-    public PullerProcessor setLauncher(BaseLauncher launcher)
-    {
-        this.launcher = launcher;
+        this.agendaClientFactory = agendaClientFactory;
         return this;
     }
 
