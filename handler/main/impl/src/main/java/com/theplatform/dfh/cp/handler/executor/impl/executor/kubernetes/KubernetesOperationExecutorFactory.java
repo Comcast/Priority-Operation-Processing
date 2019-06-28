@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory for producing executors to get MediaProperties (via a mediainfo launch through kubernetes)
+ * Factory for producing kubernetes based operation executors
  */
 public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
 {
@@ -29,15 +29,9 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
     private PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
 
-    public KubernetesOperationExecutorFactory()
+    public KubernetesOperationExecutorFactory(LaunchDataWrapper launchDataWrapper)
     {
-
-    }
-
-    @Override
-    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
-    {
-        boolean useStaticRegistryClient = Boolean.parseBoolean(((KubeConfigFactoryImpl)kubeConfigFactory).getLaunchDataWrapper().getPropertyRetriever().getField("useStaticRegistryClient", "false"));
+        boolean useStaticRegistryClient = launchDataWrapper.getPropertyRetriever().getBoolean("useStaticRegistryClient", false);
 
         if (useStaticRegistryClient)
         {
@@ -47,14 +41,19 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
         {
             this.podConfigRegistryClient = new JsonPodConfigRegistryClient("/config/registry.json");
         }
+    }
 
+    @Override
+    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
+    {
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig podConfig = null;
         try {
             podConfig = podConfigRegistryClient.getPodConfig(operation.getType());
         } catch (PodConfigRegistryClientException e) {
-            logger.error("There was a problem trying to retrieve the PodConfig from PodConfigRegistryClient.");
+            logger.error("There was a problem trying to retrieve the PodConfig {} from PodConfigRegistryClient.",
+                operation == null ? "unknown" : operation.getType());
         }
 
         if(podConfig == null) {

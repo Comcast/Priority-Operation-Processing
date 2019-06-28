@@ -70,7 +70,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
                 throw new AgendaExecutorException("Docker is not supported for agenda execution.");
             case kubernetes:
             default:
-                operationExecutorFactory = new KubernetesOperationExecutorFactory()
+                operationExecutorFactory = new KubernetesOperationExecutorFactory(launchDataWrapper)
                     .setKubeConfigFactory(getKubeConfigFactory());
                 break;
         }
