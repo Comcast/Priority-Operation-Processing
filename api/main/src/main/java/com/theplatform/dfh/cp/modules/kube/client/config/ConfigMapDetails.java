@@ -24,9 +24,10 @@ public class ConfigMapDetails {
         return mapKeyPaths;
     }
 
-    public void setMapKeyPaths(List<KeyPathPair> mapKeyPaths)
+    public ConfigMapDetails setMapKeyPaths(List<KeyPathPair> mapKeyPaths)
     {
         this.mapKeyPaths = mapKeyPaths;
+        return this;
     }
 
     public String getMapKey()
