@@ -4,8 +4,10 @@ import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
+import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +42,16 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.2")
                 .setNamePrefix("dfh-exec")
                 .setConfigMapDetails(new ConfigMapDetails()
-                    .setConfigMapName("lab-main-t-aor-fhexec-t01")
-                    .setMapKey("external-properties")
-                    .setMapPath("external.properties")
+                    .setConfigMapName("lab-main-t-aor-fhexec-t02")
                     .setVolumeName("config-volume")
-                    .setVolumeMountPath("/config"))
+                    .setVolumeMountPath("/config")
+                    .setMapKeyPaths(
+                        Arrays.asList(
+                            new KeyPathPair("external-properties", "external.properties"),
+                            new KeyPathPair("registry-json", "registry.json")
+                        )
+                    )
+                )
         );
     }
 
