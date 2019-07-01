@@ -16,7 +16,7 @@
     <properties>
         <dfh-kube-client-api.version>1.0.2-SNAPSHOT</dfh-kube-client-api.version>
         <!-- WARNING: IF THIS VERSION IS UPDATED PLEASE UPDATE THE HttpClientFactory CLASS ACCORDINGLY -->
-        <kubernetes-client.version>3.1.7</kubernetes-client.version>
+        <kubernetes-client.version>4.1.1</kubernetes-client.version>
         <rx-java.version>1.2.3</rx-java.version>
         <rx-java-string.version>1.1.1</rx-java-string.version>
     </properties>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-server-mock</artifactId>
-            <version>3.1.0</version>
+            <version>${kubernetes-client.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
