@@ -39,19 +39,16 @@ public class ConnectionTracker
         sockets.stream()
             .filter(socket -> !socket.isClosed())
             .forEach(socket ->
+        {
+            try
             {
-                try
-                {
-                    if(!socket.isClosed())
-                    {
-                        logger.debug("Attempting to update socket timeout {} -> {} for pod: {}", socket.getSoTimeout(), timeout, podName);
-                        socket.setSoTimeout(timeout);
-                    }
-                }
-                catch (SocketException e)
-                {
-                    logger.error(String.format("Failed to update socket timeout to: %1$s for pod: %2$s", timeout, podName), e);
-                }
-            });
+                logger.debug("Attempting to update socket timeout {} -> {} for pod: {}", socket.getSoTimeout(), timeout, podName);
+                socket.setSoTimeout(timeout);
+            }
+            catch (SocketException e)
+            {
+                logger.error(String.format("Failed to update socket timeout to: %1$s for pod: %2$s", timeout, podName), e);
+            }
+        });
     }
 }
