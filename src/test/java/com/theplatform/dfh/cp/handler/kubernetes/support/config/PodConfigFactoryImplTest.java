@@ -2,11 +2,13 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigStations.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -44,18 +46,21 @@ public class PodConfigFactoryImplTest
     }
 
     @Test(dataProvider = "taintedNodeSettingsProvider")
-    public void testFactoryWithTaintedNodeConfig(final Boolean useTaintedNodes, final String expectedSelector, final String expectedToleration)
+    public void testFactoryWithTaintedNodeConfig(final Boolean useTaintedNodesFlag, final String expectedSelector, final String expectedToleration)
     {
-        doReturn(useTaintedNodes).when(mockRetriever).getBoolean(PodConfigFactoryImpl.USE_TAINTED_NODES_PROPERTY, false);
-        doReturn(expectedSelector).when(mockRetriever).getField(PodConfigFactoryImpl.TAINTED_NODES_SELECTOR_PROPERTY);
-        doReturn(expectedToleration).when(mockRetriever).getField(PodConfigFactoryImpl.TAINTED_NODES_TOLERATION_PROPERTY);
+        doReturn(useTaintedNodesFlag).when(mockRetriever).getBoolean(useTaintedNodes.getFieldName(), false);
+        doReturn(expectedSelector).when(mockRetriever).getField(useTaintedNodesSelector.getFieldName(), null);
+        doReturn(expectedToleration).when(mockRetriever).getField(useTaintedNodesToleration.getFieldName(),null);
 
         configFactory = new PodConfigFactoryImpl(mockRetriever);
         PodConfig podConfig = configFactory.createPodConfig();
 
         Assert.assertNotNull(podConfig);
-        Assert.assertEquals(podConfig.getUseTaintedNodes(), useTaintedNodes);
-        Assert.assertEquals(podConfig.getTaintedNodeSelector(), expectedSelector);
-        Assert.assertEquals(podConfig.getTaintedNodeToleration(), expectedToleration);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(podConfig.getUseTaintedNodes()).isEqualTo(useTaintedNodesFlag);
+            softly.assertThat(podConfig.getTaintedNodeSelector()).isEqualTo(expectedSelector);
+            softly.assertThat(podConfig.getTaintedNodeToleration()).isEqualTo(expectedToleration);
+                });
+
     }
 }

@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
-public enum KubeConfigField
+import com.theplatform.dfh.cp.handler.field.retriever.api.NamedField;
+
+public enum KubeConfigField implements NamedField
 {
     MASTER_URL("cp.kubernetes.masterUrl"),
     NAMESPACE("cp.kubernetes.namespace");
