@@ -36,7 +36,6 @@
         <handler-kubernetes-monitor.version>1.0.0-SNAPSHOT</handler-kubernetes-monitor.version>
 
         <commons-collections4.version>4.3</commons-collections4.version>
-
     </properties>
     
     <dependencies>
@@ -139,6 +138,17 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
     </dependencies>
