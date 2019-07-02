@@ -5,6 +5,12 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.config;
         import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
         import java.util.Optional;
 
+/**
+ * Each enum is a 'station' that:
+ * - defines a DFH-Fission supported configuration key;
+ * - defines a default value; and
+ * - provides an operation to retrieve a configured value and set it on a PodConfig instance.
+ */
 public enum PodConfigStations implements NamedField, ConfigurePod
 {
     eolIdentifier("cp.kubernetes.podconfig.endOfLogIdentifier")
@@ -15,7 +21,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setEndOfLogIdentifier(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(),DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    namePrefix("namePrefix")
+    namePrefix("cp.kubernetes.podconfig.namePrefix")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -23,7 +29,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setNamePrefix(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(),DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    imageName("dockerImageName")
+    imageName("cp.kubernetes.podconfig.docker.imageName")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -31,7 +37,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setImageName(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(), DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    dockerImagePullAlways("dockerImagePullAlways")
+    dockerImagePullAlways("cp.kubernetes.podconfig.docker.imagePullAlways")
             {
                 private final Boolean DEFAULT_PULL_ALWAYS = false;
 
