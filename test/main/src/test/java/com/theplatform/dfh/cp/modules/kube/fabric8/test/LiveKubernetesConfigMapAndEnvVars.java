@@ -10,7 +10,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator.HiLowCpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         {
             CountDownLatch podSched = new CountDownLatch(1);
             CountDownLatch podFinished = new CountDownLatch(1);
-            PodWatcher podWatcher = podPushClient.start(podConfig, executionConfig, podSched, podFinished);
+            PodWatcher podWatcher = podPushClient.start(podConfig, executionConfig, podSched, podFinished, null);
 
             boolean isFinished;
             do
@@ -112,7 +111,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         {
             CountDownLatch podSched = new CountDownLatch(1);
             CountDownLatch podFinished = new CountDownLatch(1);
-            PodWatcher podWatcher = client.start(podConfig, executionConfig, podSched, podFinished);
+            PodWatcher podWatcher = client.start(podConfig, executionConfig, podSched, podFinished, null);
 
             boolean isFinished;
             do

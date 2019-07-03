@@ -4,11 +4,10 @@ import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator.HiLowCpuRequestModulator;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -32,7 +31,7 @@ public class AnnotationEditingTest extends KubeClientTestBase
         PodFollower podFollower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
         podFollower.startAndFollowPod(podFollower.getDefaultLogLineObserver(executionConfig));
 
-        DefaultKubernetesClient fabric8Client = podFollower.getPodPushClient().getFabric8Client();
+        KubernetesClientFacade fabric8Client = podFollower.getPodPushClient().getKubernetesClient();
         PodAnnotationClient podAnnotationClient = new PodAnnotationClient(fabric8Client, executionConfig.getName());
 
         // Round 1, ensure that old annotations don't get blown away
@@ -47,9 +46,7 @@ public class AnnotationEditingTest extends KubeClientTestBase
 
         podAnnotationClient.editPodAnnotations(annotations2nd);
 
-        Map<String, String> actualAnnotations = fabric8Client.inNamespace("dfh").pods()
-            .withName(executionConfig.getName())
-            .get().getMetadata().getAnnotations();
+        Map<String, String> actualAnnotations = fabric8Client.getPodAnnotations(executionConfig.getName());
 
         try
         {

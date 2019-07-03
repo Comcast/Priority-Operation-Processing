@@ -46,9 +46,7 @@ public class PodNameTest extends KubeClientTestBase
         PodFollower podFollower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
         podFollower.startAndFollowPod(podFollower.getDefaultLogLineObserver(executionConfig));
 
-        PodResource<Pod, DoneablePod> p = podFollower.getPodPushClient().getFabric8Client()
-            .inNamespace(kubeConfig.getNameSpace()).pods()
-            .withName(executionConfig.getName());
+        PodResource<Pod, DoneablePod> p = podFollower.getPodPushClient().getKubernetesClient().getPodResource(kubeConfig.getNameSpace(), executionConfig.getName());
         Thread.sleep(10000);
 
         try

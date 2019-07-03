@@ -109,7 +109,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
         if (exitCode != 0)
         {
             Assert.assertTrue(lastPhase.phase.isFailed(), testName);
-            Assert.assertEquals(exitCode, lastPhase.exitCode, testName);
+            Assert.assertEquals(new Integer(exitCode), lastPhase.exitCode, testName);
         }
         else
         {
@@ -153,7 +153,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
         FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
         Assert.assertTrue(lastPhase.phase.isFailed());
-        Assert.assertEquals(255, lastPhase.exitCode);
+        Assert.assertEquals(new Integer(255), lastPhase.exitCode);
     }
 
     @Test
