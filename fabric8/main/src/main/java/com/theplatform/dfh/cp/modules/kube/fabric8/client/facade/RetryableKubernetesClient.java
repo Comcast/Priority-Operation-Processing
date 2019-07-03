@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client.facade;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import net.jodah.failsafe.Failsafe;
@@ -70,5 +71,11 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     public void close()
     {
         kubernetesClient.close();
+    }
+
+    @Override
+    public KubernetesClient getInternalClient()
+    {
+        return kubernetesClient;
     }
 }
