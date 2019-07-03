@@ -47,7 +47,7 @@
             "outputStreamRefs": null
           }
         ],
-        "input_streams": {
+        "inputStreams": {
           "video": [
             {
               "type": null,
