@@ -29,12 +29,12 @@ public class DefaultConfigFactory
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setNfsDetails(nfsDetails);
         podConfig.setAliveCheckDetails(aliveCheckDetails);
-        podConfig.setMemoryRequestCount("16000m");
+        podConfig.setMemoryRequestCount("1000m");
         podConfig.setReapCompletedPods(true);
         podConfig.setPodScheduledTimeoutMs(100000L);
         podConfig.setPodStdoutTimeout((long)60 * 1000 * 2);
-        podConfig.setCpuMinRequestCount("8000m");
-        podConfig.setCpuMaxRequestCount("16000m");
+        podConfig.setCpuMinRequestCount("1000m");
+        podConfig.setCpuMaxRequestCount("1000m");
         // PULL ALWAYS FOR THE TESTS
         podConfig.setPullAlways(true);
 

@@ -21,7 +21,7 @@ public class AnnotationEditingTest extends KubeClientTestBase
     @Test
     public void testAnnotationsCanBeAdded() throws Exception
     {
-        PodConfig podConfig = quickPod;
+        PodConfig podConfig = TestPodConfigType.quickPod.createPodConfig();
         podConfig.setReapCompletedPods(false);
 
         CpuRequestModulator cpuModulator = new HiLowCpuRequestModulator();

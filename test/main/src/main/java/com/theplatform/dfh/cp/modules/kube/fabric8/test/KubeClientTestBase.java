@@ -1,13 +1,8 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.test;
 
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-
-import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFactory.getDefaultPodConfig;
 
 /**
  * User: kimberly.todd
@@ -18,36 +13,60 @@ public class KubeClientTestBase
 
     public final KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
 
-    public PodConfig quickPod;
-    public PodConfig longerExecutionPod;
-    public PodConfig longerExecutionSucceedsPod;
-    public PodConfig longerExecutionFailsFastPod;
-
-    @BeforeMethod
-    public void setUpPodConfigs()
+    /**
+     * This contains the basic pods config types used by the tests. This is primarily to avoid the timing issues of a DataProvider vs. BeforeClass/BeforeMethod.
+     */
+    enum TestPodConfigType implements PodConfigCreator
     {
-        quickPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/mediainfo:1.0")
-            .setNamePrefix("dfhk8clienttest")
-            .setArguments(new String[] { "--Output=XML", "-f", "/testFiles/vault/podtest.mp4" })
-            .setEndOfLogIdentifier("</Mediainfo>");
-
-        longerExecutionFailsFastPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-            .setNamePrefix("dfhffmpeg-test")
-            .setArguments(new String[] {
-                "-i", "shortInsideContainer.mp4", "shortInsideContainer.out.mp4", "-y", "-loglevel", "debug" });
-
-        longerExecutionSucceedsPod = getDefaultPodConfig()
-            .setImageName("bash")
-            .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
-            .setNamePrefix("dfh-sleep");
-
-        longerExecutionPod = getDefaultPodConfig()
-            .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-            .setNamePrefix("dfhffmpeg-test")
-            .setArguments(new String[] {
-                "-i", "/var/tmp/shortInsideContainer.mp4", "/var/tmp/shortInsideContainer.out.mp4", "-y", "-loglevel",
-                "debug" });
+        quickPod
+            {
+                @Override
+                public PodConfig createPodConfig()
+                {
+                    return DefaultConfigFactory.getDefaultPodConfig()
+                        .setImageName("docker-lab.repo.theplatform.com/mediainfo:1.0")
+                        .setNamePrefix("dfhk8clienttest")
+                        .setArguments(new String[] { "--version" })
+                        .setEndOfLogIdentifier("MediaInfoLib");
+                }
+            },
+        longerExecutionFailsFastPod
+            {
+                @Override
+                public PodConfig createPodConfig()
+                {
+                    return DefaultConfigFactory.getDefaultPodConfig()
+                        .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
+                        .setNamePrefix("dfhffmpeg-test")
+                        .setArguments(new String[] {
+                            "-i", "shortInsideContainer.mp4", "shortInsideContainer.out.mp4", "-y", "-loglevel", "debug" });
+                }
+            },
+        longerExecutionSucceedsPod
+            {
+                @Override
+                public PodConfig createPodConfig()
+                {
+                    return DefaultConfigFactory.getDefaultPodConfig()
+                        .setImageName("bash")
+                        .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
+                        .setNamePrefix("dfh-sleep");
+                }
+            },
+        longerExecutionPod
+            {
+                @Override
+                public PodConfig createPodConfig()
+                {
+                    return DefaultConfigFactory.getDefaultPodConfig()
+                        .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
+                        .setNamePrefix("dfhffmpeg-test")
+                        .setCpuMinRequestCount("4000m")
+                        .setCpuMaxRequestCount("8000m")
+                        .setArguments(new String[] {
+                            "-i", "/var/tmp/shortInsideContainer.mp4", "/var/tmp/shortInsideContainer.out.mp4", "-y", "-loglevel",
+                            "debug" });
+                }
+            }
     }
 }
