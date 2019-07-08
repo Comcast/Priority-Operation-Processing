@@ -26,6 +26,7 @@
         <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
+        <jackson.version>2.9.8</jackson.version>
     </properties>
 
     <dependencies>
@@ -60,11 +61,6 @@
 
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.scheduling</groupId>
-            <artifactId>pl-dfh-cp-scheduling-insight-mapper-impl</artifactId>
-            <version>${dfh-scheduling-insight.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
             <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
             <version>${endpoint-base-aws.version}</version>
@@ -95,6 +91,21 @@
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
             <version>${cp-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
