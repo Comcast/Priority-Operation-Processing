@@ -36,6 +36,7 @@
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${dfh-persistence-api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 3rd party -->
@@ -48,6 +49,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
