@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFact
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
@@ -115,7 +116,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             if (agendas != null && agendas.size() > 0)
             {
                 Agenda agenda = (Agenda) agendas.toArray()[0];
-                logger.info("Retrieved Agenda: {}", agenda); // logs agenda hashcode?
+                logger.info("Retrieved Agenda: {}", new JsonHelper().getJSONString(agenda)); // logs agenda hashcode?
 
                 // launch an executor and pass it the agenda payload
                 launcherFactory.createLauncher(getOperationContext()).execute(agenda);
