@@ -17,7 +17,6 @@
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <logback.version>1.2.3</logback.version>
-        <dfh-docker.version>1.0.1</dfh-docker.version>
         <dropwizard.version>1.3.5</dropwizard.version>
         <jackson.version>2.9.8</jackson.version>
         <dfh-http-idm.version>1.0.0</dfh-http-idm.version>
@@ -51,17 +50,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>18.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.modules</groupId>
-            <artifactId>pl-dfh-docker</artifactId>
-            <version>${dfh-docker.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
