@@ -33,7 +33,10 @@ public class AliveCheckPoller implements Runnable
     public AliveCheckPoller(ConfigurationProperties configurationProperties, AliveCheck aliveCheck, List<AliveCheckListener> listeners)
     {
         if(listeners == null)
-            throw new RuntimeException("No listeners registered to respond to the alive check.");
+            throw new IllegalArgumentException("No listeners registered to respond to the alive check.");
+        if(aliveCheck == null)
+            throw new IllegalArgumentException("Unable to start alive check. Make sure your alive check class is configured.");
+
         isEnabled = configurationProperties.get(AliveCheckConfigKeys.ENABLED) != null ? configurationProperties.get(AliveCheckConfigKeys.ENABLED) : Boolean.FALSE;
         if(!isEnabled)
         {
@@ -48,9 +51,7 @@ public class AliveCheckPoller implements Runnable
 
     public void start()
     {
-        if(aliveCheck == null)
-            throw new RuntimeException("Unable to start alive check. Make sure your alive check class is configured.");
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         future = executor.scheduleWithFixedDelay(this, 0, aliveCheckFrequency, TimeUnit.MILLISECONDS);
     }
 
