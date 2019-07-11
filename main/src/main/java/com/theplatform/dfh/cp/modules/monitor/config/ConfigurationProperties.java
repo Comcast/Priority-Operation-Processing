@@ -39,6 +39,8 @@ public class ConfigurationProperties
     public static ConfigurationProperties from(Properties properties, ConfigKeys... configKeys)
     {
         ConfigurationProperties config = new ConfigurationProperties();
+        if(properties == null) return config;
+
         if(configKeys != null)
         {
             for(ConfigKeys keys : configKeys)
