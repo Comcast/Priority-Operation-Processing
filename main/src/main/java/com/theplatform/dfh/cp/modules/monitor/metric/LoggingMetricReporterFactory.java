@@ -6,6 +6,7 @@ import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Slf4jReporter;
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class LoggingMetricReporterFactory implements MetricReporterFactory
@@ -20,6 +21,10 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     public LoggingMetricReporterFactory(ConfigurationProperties configurationProperties, MetricFilter metricFilter)
     {
         this(configurationProperties != null ? configurationProperties.get(LoggingConfigKeys.REPORT_FREQUENCY) : null, metricFilter);
+    }
+    public LoggingMetricReporterFactory(Properties properties, MetricFilter metricFilter)
+    {
+        this(ConfigurationProperties.from(properties, new LoggingConfigKeys()), metricFilter);
     }
     public LoggingMetricReporterFactory(Integer reportIntervalInMilli, MetricFilter metricFilter)
     {
