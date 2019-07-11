@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.modules.monitor;
+package com.theplatform.dfh.cp.modules.monitor.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;

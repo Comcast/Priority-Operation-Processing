@@ -16,16 +16,16 @@ import java.util.concurrent.TimeUnit;
 public class AliveCheckPoller implements Runnable
 {
     private static final Logger logger = LoggerFactory.getLogger(AliveCheckPoller.class);
-    private AliveCheckConfiguration alertConfiguration;
+    private Integer aliveCheckFrequency;
     private AliveCheck aliveCheck;
     private List<AliveCheckListener> listeners = new ArrayList<>();
     private ScheduledFuture future;
 
-    public AliveCheckPoller(AliveCheckConfiguration alertConfiguration, AliveCheck aliveCheck, List<AliveCheckListener> listeners)
+    public AliveCheckPoller(Integer aliveCheckFrequency, AliveCheck aliveCheck, List<AliveCheckListener> listeners)
     {
         if(listeners == null)
             throw new RuntimeException("No listeners registered to respond to the alive check.");
-        this.alertConfiguration = alertConfiguration;
+        this.aliveCheckFrequency = aliveCheckFrequency == null ? AliveCheckConfigKeys.CHECK_FREQUENCY.getDefaultValue() : aliveCheckFrequency;
         this.aliveCheck = aliveCheck;
         this.listeners.addAll(listeners);
     }
@@ -35,7 +35,7 @@ public class AliveCheckPoller implements Runnable
         if(aliveCheck == null)
             throw new RuntimeException("Unable to start alive check. Make sure your alive check class is configured.");
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        future = executor.scheduleWithFixedDelay(this, 0, alertConfiguration.getAliveCheckFrequencyMilliseconds(), TimeUnit.MILLISECONDS);
+        future = executor.scheduleWithFixedDelay(this, 0, aliveCheckFrequency, TimeUnit.MILLISECONDS);
     }
 
     @Override

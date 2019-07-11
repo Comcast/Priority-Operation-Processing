@@ -1,12 +1,13 @@
 package com.theplatform.dfh.cp.modules.monitor.bananas;
 
-import com.comcast.cts.timeshifted.pump.bananas.BananasMessage;
-import com.comcast.cts.timeshifted.pump.bananas.BananasMessageDecider;
-import com.comcast.cts.timeshifted.pump.bananas.BananasMessageSender;
-import com.comcast.cts.timeshifted.pump.status.AppState;
-import com.comcast.cts.timeshifted.pump.status.StatusQueue;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckConfiguration;
+import com.theplatform.dfh.cp.modules.monitor.alert.AlertConfigKeys;
+import com.theplatform.dfh.cp.modules.monitor.alert.AlertException;
+import com.theplatform.dfh.cp.modules.monitor.alert.AlertLevel;
+import com.theplatform.dfh.cp.modules.monitor.alert.AlertReporter;
 import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckListener;
+import com.theplatform.dfh.cp.modules.monitor.bananas.config.BananasPropertiesFactory;
+import com.theplatform.dfh.cp.modules.monitor.bananas.message.BananasMessage;
+import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,38 +19,45 @@ import java.util.Properties;
 public class BananasAliveCheckListener implements AliveCheckListener
 {
     private static final Logger logger = LoggerFactory.getLogger(BananasAliveCheckListener.class);
-    private BananasMessageDecider sender;
-    private StatusQueue statusQueue;
+    private AlertReporter alertReporter;
+    private BananasMessage message;
 
     public BananasAliveCheckListener(Properties serviceProperties)
     {
-        this(new AlertingConfiguration(serviceProperties), new AliveCheckConfiguration(serviceProperties), new BananasConfiguration(serviceProperties));
+        this(BananasPropertiesFactory.from(serviceProperties));
     }
-    public BananasAliveCheckListener(AlertingConfiguration alertingConfiguration, AliveCheckConfiguration aliveCheckConfiguration, BananasConfiguration bananasConfiguration)
+    public BananasAliveCheckListener(ConfigurationProperties configurationProperties)
     {
-        this.statusQueue = new StatusQueue(alertingConfiguration);
-        BananasMessage.BananaMessageBuilder builder = new BananasMessage.BananaMessageBuilder();
-        builder.withDescription(aliveCheckConfiguration.getAliveCheckAlertDescription());
-        BananasMessage message = builder.withBananasConfigDefaults(bananasConfiguration).create();
+        if(configurationProperties == null)
+            throw new AlertException("Unable to configure bananas due to missing configuration.");
+        message = BananasMessage.fromConfigurationProperties(configurationProperties);
 
-        this.sender = new BananasMessageDecider(message, new BananasMessageSender(bananasConfiguration));
+        final String host = configurationProperties.get(AlertConfigKeys.HOST);
+        final Integer retryTimeout = configurationProperties.get(AlertConfigKeys.RETRY_TIMEOUT);
+        final Integer retryCount = configurationProperties.get(AlertConfigKeys.RETRY_COUNT);
+        final String failedLevel = configurationProperties.get(AlertConfigKeys.LEVEL_FAILED);
+        final String passedLevel = configurationProperties.get(AlertConfigKeys.LEVEL_PASSED);
+        BananasSender sender = new BananasSender(host, retryTimeout, retryCount);
+        
+        alertReporter = new AlertReporter(message, sender);
+        alertReporter.setAlertFailedLevel(failedLevel);
+        alertReporter.setAlertPassedLevel(passedLevel);
     }
+
     public void processAliveCheck(boolean isAlive)
     {
         try
         {
-            AppState previousState = statusQueue.getCurrentOverallStatus();
             //do something
             if (isAlive)
             {
-                statusQueue.addSuccessAndEvaluateAppState();
+                alertReporter.markPassed();
             }
             else
             {
                 logger.error("isAlive = failed");
-                statusQueue.addFailureAndUpdateAppState();
+                alertReporter.markFailed();
             }
-            sender.sendAlert(previousState, statusQueue);
         }
         catch (Throwable e)
         {

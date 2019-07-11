@@ -1,9 +1,7 @@
-package com.theplatform.dfh.cp.modules.monitor;
+package com.theplatform.dfh.cp.modules.monitor.alive;
 
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheck;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckConfiguration;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckPoller;
-import com.theplatform.dfh.cp.modules.monitor.alive.LogAliveCheckListener;
+import com.theplatform.dfh.cp.modules.monitor.PropertyLoader;
+import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
 import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricAliveCheckListener;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
@@ -31,10 +29,10 @@ public class AliveCheckTest implements AliveCheck
         reporter.register(new LoggingMetricReporterFactory(logMetricFrequency));
         LogAliveCheckListener loggerAliveCheck = new LogAliveCheckListener();
         MetricAliveCheckListener metricsAliveCheck = new MetricAliveCheckListener(reporter);
-        AliveCheckConfiguration aliveCheckConfiguration = new AliveCheckConfiguration(serviceProperties);
-        AliveCheckPoller poller = new AliveCheckPoller(aliveCheckConfiguration, this, Arrays.asList(loggerAliveCheck, metricsAliveCheck));
+        ConfigurationProperties configurationProperties = ConfigurationProperties.from(serviceProperties, new AliveCheckConfigKeys());
+        AliveCheckPoller poller = new AliveCheckPoller(configurationProperties.get(AliveCheckConfigKeys.CHECK_FREQUENCY), this, Arrays.asList(loggerAliveCheck, metricsAliveCheck));
         poller.start();
-        long endTime = (aliveCheckConfiguration.getAliveCheckFrequencyMilliseconds() * 10);
+        long endTime = (configurationProperties.get(AliveCheckConfigKeys.CHECK_FREQUENCY) * 10);
         Thread.sleep(endTime);
     }
 }

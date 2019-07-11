@@ -16,25 +16,30 @@
     <properties>
         <commons-http.version>3.1</commons-http.version>
         <commons-lang3.version>3.1</commons-lang3.version>
+        <apache-httpclient.version>4.5.2</apache-httpclient.version>
+        <jackson-databind.version>2.9.6</jackson-databind.version>
         <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
     </properties>
     
     <dependencies>
-
         <dependency>
-            <groupId>com.comcast.cts.timeshifted</groupId>
-            <artifactId>TimeshiftedSyntheticMonitor</artifactId>
-            <version>0.0.7</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+            <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache-httpclient.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-monitor</artifactId>
             <version>${dfh-monitor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${commons-http.version}</version>
         </dependency>
 
         <dependency>
@@ -42,7 +47,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

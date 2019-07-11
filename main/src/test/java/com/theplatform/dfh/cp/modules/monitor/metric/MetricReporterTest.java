@@ -1,9 +1,6 @@
-package com.theplatform.dfh.cp.modules.monitor;
+package com.theplatform.dfh.cp.modules.monitor.metric;
 
 import com.codahale.metrics.Counter;
-import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +13,6 @@ public class MetricReporterTest
     @BeforeClass
     public void beforeClass()
     {
-        loggingMetricReporterFactory.register(reporter.getMetricRegistry());
         reporter.register(loggingMetricReporterFactory);
     }
     @Test
