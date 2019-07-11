@@ -86,7 +86,8 @@ public class AliveCheckPoller implements Runnable
 
     public void stop()
     {
-        future.cancel(false);
+        if(future != null)
+            future.cancel(false);
     }
 
 }
