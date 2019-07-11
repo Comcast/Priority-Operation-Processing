@@ -47,7 +47,7 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
             .build(standardPusher);
         //We need to override the Graphite Reporter to catch all exceptions from preventing our applications to fail.
         //However, the reporter builder and instance is private, so we wrap it
-        return new GraphiteReporterWrapper(metricRegistry, "graphite-reporter", MetricFilter.ALL, TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS, reporter);
+        return new GraphiteReporterWrapper(metricsConfiguration, metricRegistry, "graphite-reporter", MetricFilter.ALL, TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS, reporter);
     }
 
     @Override
