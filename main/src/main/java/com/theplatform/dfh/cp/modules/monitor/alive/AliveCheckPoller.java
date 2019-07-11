@@ -38,11 +38,7 @@ public class AliveCheckPoller implements Runnable
             throw new IllegalArgumentException("Unable to start alive check. Make sure your alive check class is configured.");
 
         isEnabled = configurationProperties.get(AliveCheckConfigKeys.ENABLED) != null ? configurationProperties.get(AliveCheckConfigKeys.ENABLED) : Boolean.FALSE;
-        if(!isEnabled)
-        {
-            logger.error("Alive check monitoring is disabled.");
-            return;
-        }
+
         Integer frequency = configurationProperties.get(AliveCheckConfigKeys.CHECK_FREQUENCY);
         this.aliveCheckFrequency = frequency == null ? AliveCheckConfigKeys.CHECK_FREQUENCY.getDefaultValue() : frequency;
         this.aliveCheck = aliveCheck;
@@ -51,7 +47,13 @@ public class AliveCheckPoller implements Runnable
 
     public void start()
     {
-         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        if(!isEnabled)
+        {
+            logger.error("Alive check monitoring is disabled.");
+            return;
+        }
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         future = executor.scheduleWithFixedDelay(this, 0, aliveCheckFrequency, TimeUnit.MILLISECONDS);
     }
 
