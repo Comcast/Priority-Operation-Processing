@@ -10,9 +10,11 @@ import java.util.Set;
 public class AliveCheckConfigKeys implements ConfigKeys<ConfigKey>
 {
     public static final ConfigKey<Integer> CHECK_FREQUENCY = new ConfigKey<>("alive.check.frequency", 10000, Integer.class);
+    public static final ConfigKey<Boolean> ENABLED = new ConfigKey<>("alive.check.enabled", true, Boolean.class);
 
     public static final Set<ConfigKey> keys = new HashSet<>(Arrays.asList(
-        CHECK_FREQUENCY
+        CHECK_FREQUENCY,
+        ENABLED
     ));
 
     @Override

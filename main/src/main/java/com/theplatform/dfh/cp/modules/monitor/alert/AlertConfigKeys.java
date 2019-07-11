@@ -15,6 +15,7 @@ public class AlertConfigKeys implements ConfigKeys<ConfigKey>
     public static final ConfigKey<String> HOST = new ConfigKey<>("alert.host", null, String.class);
     public static final ConfigKey<String> LEVEL_FAILED = new ConfigKey<>("alert.level.failed", AlertLevel.CRITICAL.name(), String.class);
     public static final ConfigKey<String> LEVEL_PASSED = new ConfigKey<>("alert.level.passed", AlertLevel.CLEAR.name(), String.class);
+    public static final ConfigKey<Boolean> ENABLED = new ConfigKey<>("alert.enabled", true, Boolean.class);
 
     public static final Set<ConfigKey> keys = new HashSet<>(Arrays.asList(
         THRESHOLD,
