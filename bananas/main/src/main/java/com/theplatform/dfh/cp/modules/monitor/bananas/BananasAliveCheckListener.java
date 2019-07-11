@@ -21,7 +21,6 @@ public class BananasAliveCheckListener implements AliveCheckListener
     private static final Logger logger = LoggerFactory.getLogger(BananasAliveCheckListener.class);
     private AlertReporter alertReporter;
     private BananasMessage message;
-    private Boolean isEnabled;
 
     public BananasAliveCheckListener(Properties serviceProperties)
     {
@@ -31,12 +30,6 @@ public class BananasAliveCheckListener implements AliveCheckListener
     {
         if(configurationProperties == null)
             throw new AlertException("Unable to configure bananas due to missing configuration.");
-        isEnabled = configurationProperties.get(AlertConfigKeys.ENABLED) != null ? configurationProperties.get(AlertConfigKeys.ENABLED) : Boolean.FALSE;
-        if(!isEnabled)
-        {
-            logger.error("Alert monitoring is disabled.");
-            return;
-        }
         message = BananasMessage.fromConfigurationProperties(configurationProperties);
 
         final String host = configurationProperties.get(AlertConfigKeys.HOST);
@@ -53,11 +46,6 @@ public class BananasAliveCheckListener implements AliveCheckListener
 
     public void processAliveCheck(boolean isAlive)
     {
-        if(!isEnabled)
-        {
-            logger.error("Alert monitoring is disabled.");
-            return;
-        }
         try
         {
             //do something

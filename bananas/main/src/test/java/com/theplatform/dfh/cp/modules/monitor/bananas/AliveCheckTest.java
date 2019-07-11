@@ -35,7 +35,7 @@ public class AliveCheckTest implements AliveCheck
         Properties serviceProperties = PropertyLoader.loadResource("../../../../../../service.properties");
         ConfigurationProperties configurationProperties = BananasPropertiesFactory.from(serviceProperties);
         BananasAliveCheckListener bananasAliveCheck = new BananasAliveCheckListener(configurationProperties);
-        AliveCheckPoller poller = new AliveCheckPoller(configurationProperties.get(AliveCheckConfigKeys.CHECK_FREQUENCY), this, Arrays.asList(bananasAliveCheck));
+        AliveCheckPoller poller = new AliveCheckPoller(configurationProperties, this, Arrays.asList(bananasAliveCheck));
         poller.start();
 
         while(keepChecking)

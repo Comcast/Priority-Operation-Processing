@@ -43,7 +43,7 @@ public class AliveCheckTest implements AliveCheck
         report.register(loggingFactory);
         MetricAliveCheckListener metricsAliveCheck = new MetricAliveCheckListener(report);
         ConfigurationProperties configurationProperties = ConfigurationProperties.from(serviceProperties, new AliveCheckConfigKeys());
-        poller = new AliveCheckPoller(configurationProperties.get(AliveCheckConfigKeys.CHECK_FREQUENCY), this, Arrays.asList(metricsAliveCheck));
+        poller = new AliveCheckPoller(configurationProperties, this, Arrays.asList(metricsAliveCheck));
         poller.start();
 
         while(keepChecking)
