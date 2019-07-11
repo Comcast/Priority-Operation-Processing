@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.modules.monitor.alive;
 
-import com.theplatform.dfh.cp.modules.monitor.alert.AlertConfigKeys;
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
