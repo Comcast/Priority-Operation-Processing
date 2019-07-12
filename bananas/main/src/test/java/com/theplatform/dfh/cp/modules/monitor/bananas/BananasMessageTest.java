@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.monitor.bananas;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theplatform.dfh.cp.modules.monitor.alert.AlertConfigKeys;
 import com.theplatform.dfh.cp.modules.monitor.bananas.config.BananasConfigKeys;
 import com.theplatform.dfh.cp.modules.monitor.bananas.message.BananasMessage;
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
@@ -18,7 +19,7 @@ public class BananasMessageTest
         Properties serviceProperties = new Properties();
         generateBananasProperties(serviceProperties);
         Assert.assertNotNull(serviceProperties);
-        ConfigurationProperties configurationProperties = ConfigurationProperties.from(serviceProperties, new BananasConfigKeys());
+        ConfigurationProperties configurationProperties = ConfigurationProperties.from(serviceProperties, new BananasConfigKeys(), new AlertConfigKeys());
         Assert.assertNotNull(configurationProperties);
         BananasMessage bananasMessage = BananasMessage.fromConfigurationProperties(configurationProperties);
         Assert.assertNotNull(bananasMessage);

@@ -43,8 +43,11 @@ public class ConfigurationProperties
 
         if(configKeys != null)
         {
+            Set<ConfigKey> allKeys = new HashSet<>();
             for(ConfigKeys keys : configKeys)
-                config.load(keys.getKeys(), properties);
+                allKeys.addAll(keys.getKeys());
+
+            config.load(allKeys, properties);
         }
         else
         {
