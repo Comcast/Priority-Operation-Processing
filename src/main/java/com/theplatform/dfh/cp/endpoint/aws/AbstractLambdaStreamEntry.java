@@ -36,7 +36,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public abstract RequestProcessor getRequestProcessor(Req lambdaRequest);
+    public abstract RequestProcessor getRequestProcessor(Req serviceRequest);
     public abstract Req getRequest(JsonNode node) throws BadRequestException;
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
