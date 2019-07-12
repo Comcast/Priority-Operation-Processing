@@ -118,7 +118,7 @@ public class BananasMessage implements AlertMessage
         BananasMessage message = new BananasMessage();
         message.setHost(properties.get(BananasConfigKeys.HOST));
         message.setService(properties.get(BananasConfigKeys.SERVICE));
-        message.setTags((String[])properties.get(BananasConfigKeys.TAGS));
+        message.setTags(properties.get(BananasConfigKeys.TAGS));
         message.setDescription(properties.get(BananasConfigKeys.DESCRIPTION));
 
         if(attributeTypeKeys != null)

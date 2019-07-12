@@ -25,6 +25,8 @@ public class BananasMessageTest
         Assert.assertEquals(bananasMessage.getHost(), serviceProperties.getProperty(BananasConfigKeys.HOST.getPropertyKey()));
         Assert.assertEquals(bananasMessage.getDescription(), serviceProperties.getProperty(BananasConfigKeys.DESCRIPTION.getPropertyKey()));
         Assert.assertEquals(bananasMessage.getService(), serviceProperties.getProperty(BananasConfigKeys.SERVICE.getPropertyKey()));
+        Assert.assertEquals(bananasMessage.getTags(), new String[] { "zenoss","slack"});
+
         Assert.assertEquals(bananasMessage.getAttributes().get(BananasConfigKeys.SERVICE_CODE.getAttributeKey()), serviceProperties.getProperty(BananasConfigKeys.SERVICE_CODE.getPropertyKey()));
 
         ObjectMapper mapper = new ObjectMapper();
