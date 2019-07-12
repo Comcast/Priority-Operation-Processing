@@ -4,13 +4,13 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Agenda service request processor
  */
-public class AgendaServiceRequestProcessor
+public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaResponse, ServiceRequest<GetAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - InsightId: %s; count: %d.";
@@ -44,19 +44,9 @@ public class AgendaServiceRequestProcessor
         this.agendaPersister = agendaPersister;
     }
 
-    public GetAgendaResponse processRequest(ServiceRequest<GetAgendaRequest> serviceRequest)
+    @Override
+    protected GetAgendaResponse handlePOST(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
-        try
-        {
-            getRequestValidator().validateGET(serviceRequest);
-        } catch (ValidationException e)
-        {
-            String cid = null;
-            if (serviceRequest != null)
-                cid = serviceRequest.getCID();
-            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), cid));
-        }
-
         GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
         {
