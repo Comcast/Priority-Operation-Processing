@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.modules.monitor.config;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -8,30 +7,28 @@ import java.util.stream.Collectors;
 
 /**
  * Converts a properties object to a key / value storage. The values are typed and validated.
- * Properties are converted using ConvertUtilsBean. The documentation indicates the supported types and defaults.
- * https://commons.apache.org/proper/commons-beanutils/apidocs/org/apache/commons/beanutils/ConvertUtilsBean.html
  */
 public class ConfigurationProperties
 {
-    private final Map<ConfigKey<?>, Object> configMap = new HashMap<>();
+    private final Map<ConfigKey, Object> configMap = new HashMap<>();
 
     public ConfigurationProperties()
     {
     }
 
-    public <T> void put( ConfigKey<T> key, T value ) {
+    public <T> void put(ConfigKey key, T value) {
         if(key == null)
             return;
         configMap.put( key, value );
     }
 
-    public <T> T get( ConfigKey<T> key ) {
+    public <T> T get(ConfigKey<T> key ) {
         if(key == null)
             return null;
         return key.getType().cast( configMap.get( key ) );
     }
 
-    public Set<ConfigKey<?>> getKeys()
+    public Set<ConfigKey> getKeys()
     {
         return configMap.keySet();
     }
@@ -43,8 +40,9 @@ public class ConfigurationProperties
 
         if(configKeys != null)
         {
+
             Set<ConfigKey> allKeys = new HashSet<>();
-            for(ConfigKeys keys : configKeys)
+            for(ConfigKeys<?> keys : configKeys)
                 allKeys.addAll(keys.getKeys());
 
             config.load(allKeys, properties);
@@ -59,21 +57,22 @@ public class ConfigurationProperties
     private void load(Set<ConfigKey> keys, Properties properties)
     {
         Map<String, ConfigKey> configKeyStrings = keys == null ? new HashMap<>() : keys.stream()
-                .collect(Collectors.toMap(configKey -> configKey.getPropertyKey(), configKey -> configKey));
+            .collect(Collectors.toMap(configKey -> configKey.getPropertyKey(), configKey -> configKey));
 
         Enumeration propertyStringKeys = properties.propertyNames();
-        if(properties == null) return;
+        if(propertyStringKeys == null) return;
 
-        for(; propertyStringKeys.hasMoreElements(); )
+        while(propertyStringKeys.hasMoreElements())
         {
-            Object propertyKey = propertyStringKeys.nextElement();
-            String propertyValue = properties.getProperty(propertyKey.toString());
+            Object property = propertyStringKeys.nextElement();
+            String propertyName = property.toString();
+            String propertyValue = properties.getProperty(propertyName);
 
-            ConfigKey configKeyForProperty = configKeyStrings.get(propertyKey);
+            ConfigKey configKeyForProperty = configKeyStrings.get(propertyName);
             //if configKeyForProperty is null, then it's something we don't have defined in our key class.
             if(configKeyForProperty == null)
             {
-                 put(new ConfigKey(propertyKey.toString(), null, String.class), propertyValue);
+                put(new ConfigKey<>(propertyName, null, String.class), propertyValue);
             }
             else if (StringUtils.isBlank(propertyValue) && configKeyForProperty.getDefaultValue() != null)
             {
@@ -81,20 +80,11 @@ public class ConfigurationProperties
             }
             else
             {
-                if (configKeyForProperty.getType() == String[].class)
-                {
-                    put(configKeyForProperty, propertyValue.split(","));
-                }
-                else
-                {
-                    Object value = ConvertUtils.convert(propertyValue, configKeyForProperty.getType());
-                    if(value == null)
-                    {
-                        value = configKeyForProperty.getDefaultValue();
-                    }
-                    //bad integers will become zero, don't use default???
-                    put(configKeyForProperty, configKeyForProperty.getType() != null ? value : propertyValue);
-                }
+                Object value = configKeyForProperty.getConfigPropertyConverter().convertPropertyValue(propertyValue);
+                if(value == null)
+                    value = configKeyForProperty.getDefaultValue();
+
+                put(configKeyForProperty, value);
             }
         }
     }

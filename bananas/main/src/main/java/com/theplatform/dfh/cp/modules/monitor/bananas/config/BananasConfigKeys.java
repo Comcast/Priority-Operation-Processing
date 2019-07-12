@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.modules.monitor.bananas.config;
 
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigKey;
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigKeys;
+import com.theplatform.dfh.cp.modules.monitor.config.converter.StringArrayPropertyConverter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ public class BananasConfigKeys implements ConfigKeys<ConfigKey>
     public static final ConfigKey<String> SERVICE = new ConfigKey<>("bananas.message.service", null, String.class);
 
     //attributes
-    public static final MessageAttributeKey<String[]> TAGS = new MessageAttributeKey<>("bananas.message.tags", null, "tags", String[].class);
+    public static final MessageAttributeKey<String[]> TAGS = new MessageAttributeKey<>("bananas.message.tags", null, "tags", String[].class, new StringArrayPropertyConverter(","));
     public static final MessageAttributeKey<String> ORIGIN = new MessageAttributeKey<>("bananas.message.origin", null, "origin", String.class);
     public static final MessageAttributeKey<String> SERVICE_CODE = new MessageAttributeKey<>("bananas.message.service.code", null, "service_code", String.class);
     public static final MessageAttributeKey<String> TSG = new MessageAttributeKey<>("bananas.message.tsg", null, "tsg", String.class);

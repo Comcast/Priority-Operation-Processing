@@ -1,15 +1,26 @@
 package com.theplatform.dfh.cp.modules.monitor.config;
 
+import com.theplatform.dfh.cp.modules.monitor.config.converter.ConfigPropertyConverter;
+import com.theplatform.dfh.cp.modules.monitor.config.converter.DefaultPropertyConverter;
+
 public class ConfigKey<T>
 {
-    private String propertyKey;
-    private T defaultValue;
-    private Class<T> type;
+    private final String propertyKey;
+    private final T defaultValue;
+    private final Class<T> type;
+    private final ConfigPropertyConverter<T> configPropertyConverter;
+
     public ConfigKey(String propertyKey, T defaultValue, Class<T> type)
+    {
+        this(propertyKey, defaultValue, type, new DefaultPropertyConverter<>(type));
+    }
+
+    public ConfigKey(String propertyKey, T defaultValue, Class<T> type, ConfigPropertyConverter<T> configPropertyConverter)
     {
         this.propertyKey = propertyKey;
         this.defaultValue = defaultValue;
         this.type = type;
+        this.configPropertyConverter = configPropertyConverter;
     }
 
     public String getPropertyKey()
@@ -25,6 +36,11 @@ public class ConfigKey<T>
     public Class<T> getType()
     {
         return type;
+    }
+
+    public ConfigPropertyConverter<T> getConfigPropertyConverter()
+    {
+        return configPropertyConverter;
     }
 
     @Override
