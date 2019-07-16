@@ -59,6 +59,13 @@ public class KubernetesLauncherFactory implements LauncherFactory
     @Override
     public BaseLauncher createLauncher(PullerContext pullerContext)
     {
+        // This is a call to the local K8s API. We can't use
+        // any proxies. Make sure that we are not.
+        System.clearProperty("https.proxyHost");
+        System.clearProperty("https.proxyPort");
+        System.clearProperty("http.proxyHost");
+        System.clearProperty("http.proxyPort");
+
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
         PodConfig executorPodConfig = null;
