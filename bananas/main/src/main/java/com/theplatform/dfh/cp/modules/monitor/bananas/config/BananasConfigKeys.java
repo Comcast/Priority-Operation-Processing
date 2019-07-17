@@ -30,8 +30,8 @@ public class BananasConfigKeys implements ConfigKeys<ConfigKey>
     public static final MessageAttributeKey<String> ZENOSS_INSTANCE = new MessageAttributeKey<>("bananas.message.zenoss.instance", null, "zenoss_instance", String.class);
     public static final MessageAttributeKey<String> ZENOSS_GUID = new MessageAttributeKey<>("bananas.message.zenoss.guid", UUID.randomUUID().toString(), "guid", String.class);
 
-    public static final MessageAttributeKey<String> GRAPHITE_LINK = new MessageAttributeKey<>("bananas.graphite.link", null, "graphite", String.class);
-    public static final MessageAttributeKey<String> GRAPHITE_IMAGE = new MessageAttributeKey<>("bananas.graphite.image", null, "graphite_img", String.class);
+    public static final MessageAttributeKey<String> GRAPHITE_LINK = new MessageAttributeKey<>("bananas.graphite.link", "N/A", "graphite", String.class);
+    public static final MessageAttributeKey<String> GRAPHITE_IMAGE = new MessageAttributeKey<>("bananas.graphite.image", "N/A", "graphite_img", String.class);
 
     public static final MessageAttributeKey<String> SLACK_CHANNEL = new MessageAttributeKey<>("bananas.message.slack.channel", null, "slack_channel", String.class);
     public static final Set<MessageAttributeKey> attributeKeys = new HashSet<>(Arrays.asList(
