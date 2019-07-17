@@ -12,9 +12,8 @@ import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightP
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ServiceResponse;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.aws.sqs.AmazonSQSClientFactoryImpl;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
@@ -23,7 +22,7 @@ import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AgendaServiceLambdaStreamEntry extends AbstractLambdaStreamEntry<ServiceResponse<ErrorResponse>, LambdaRequest<GetAgendaRequest>>
+public class AgendaServiceLambdaStreamEntry extends AbstractLambdaStreamEntry<GetAgendaResponse, LambdaRequest<GetAgendaRequest>>
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
