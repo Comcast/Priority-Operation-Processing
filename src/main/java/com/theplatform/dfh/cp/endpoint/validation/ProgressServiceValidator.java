@@ -13,16 +13,16 @@ public class ProgressServiceValidator extends DefaultRequestValidator<ServiceReq
 {
 
     @Override
-    public void validateGET(ServiceRequest<ProgressSummaryRequest> request)
+    public void validatePOST(ServiceRequest<ProgressSummaryRequest> request)
     {
-        super.validateGET(request);
+        super.validatePOST(request);
 
         if (request.getPayload() == null)
-            throw new ValidationException("LinkId is required to getProgressSummary.");
+            throw new ValidationException("LinkId is required to call getProgressSummary.");
 
         if (StringUtils.isBlank(request.getPayload().getLinkId()))
         {
-            throw new ValidationException("LinkId is required to getProgressSummary.");
+            throw new ValidationException("LinkId is required to call getProgressSummary.");
         }
     }
 }

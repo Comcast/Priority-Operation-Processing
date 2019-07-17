@@ -5,16 +5,14 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
-import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.cp.endpoint.validation.ProgressServiceValidator;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByLinkId;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
@@ -27,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
-public class ProgressSummaryRequestProcessor
+public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSummaryResponse, ServiceRequest<ProgressSummaryRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(ProgressSummaryRequestProcessor.class);
 
@@ -48,20 +46,9 @@ public class ProgressSummaryRequestProcessor
         ));
     }
 
-    public ProgressSummaryResponse getProgressSummary(ServiceRequest<ProgressSummaryRequest> progressSummaryRequest) throws Exception
+    @Override
+    protected ProgressSummaryResponse handlePOST(ServiceRequest<ProgressSummaryRequest> progressSummaryRequest)
     {
-        try
-        {
-            getRequestValidator().validateGET(progressSummaryRequest);
-        }
-        catch (ValidationException e)
-        {
-            String cid = null;
-            if (progressSummaryRequest != null)
-                cid = progressSummaryRequest.getCID();
-            return new ProgressSummaryResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), cid));
-        }
-
         if(progressSummaryRequest == null)
         {
             return new ProgressSummaryResponse(ErrorResponseFactory.badRequest("The request may not be null.", null));
@@ -95,6 +82,12 @@ public class ProgressSummaryRequestProcessor
         return result;
     }
 
+    @Override
+    public RequestValidator<ServiceRequest<ProgressSummaryRequest>> getRequestValidator()
+    {
+        return new ProgressServiceValidator();
+    }
+
     private boolean didAnyOperationFail(List<AgendaProgress> progressList)
     {
         return progressList.stream()
@@ -117,10 +110,5 @@ public class ProgressSummaryRequestProcessor
     public void setAgendaProgressClient(ObjectClient<AgendaProgress> agendaProgressClient)
     {
         this.agendaProgressClient = agendaProgressClient;
-    }
-
-    public RequestValidator<ServiceRequest<ProgressSummaryRequest>> getRequestValidator()
-    {
-        return new ProgressServiceValidator();
     }
 }
