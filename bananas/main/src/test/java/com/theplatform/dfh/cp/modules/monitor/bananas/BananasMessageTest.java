@@ -29,6 +29,7 @@ public class BananasMessageTest
         Assert.assertEquals(bananasMessage.getTags(), new String[] { "zenoss","slack"});
 
         Assert.assertEquals(bananasMessage.getAttributes().get(BananasConfigKeys.SERVICE_CODE.getAttributeKey()), serviceProperties.getProperty(BananasConfigKeys.SERVICE_CODE.getPropertyKey()));
+        Assert.assertEquals(bananasMessage.getAttributes().get(BananasConfigKeys.ZENOSS_GUID.getAttributeKey()), BananasConfigKeys.ZENOSS_GUID.getDefaultValue());
 
         ObjectMapper mapper = new ObjectMapper();
         StringWriter writer = new StringWriter();

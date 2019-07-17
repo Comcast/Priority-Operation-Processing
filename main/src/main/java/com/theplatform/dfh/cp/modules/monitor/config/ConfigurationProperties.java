@@ -40,7 +40,7 @@ public class ConfigurationProperties
 
         if(configKeys != null)
         {
-
+            //If there are supplied keys we load properties from each
             Set<ConfigKey> allKeys = new HashSet<>();
             for(ConfigKeys<?> keys : configKeys)
                 allKeys.addAll(keys.getKeys());
@@ -49,6 +49,7 @@ public class ConfigurationProperties
         }
         else
         {
+            //There are no supplied keys so just load properties with generic config key
             config.load(null, properties);
         }
         return config;
@@ -62,13 +63,14 @@ public class ConfigurationProperties
         Enumeration propertyStringKeys = properties.propertyNames();
         if(propertyStringKeys == null) return;
 
+        //Loop through all Properites.properties. If a key matches, use it for our map, if not make a generic one.
         while(propertyStringKeys.hasMoreElements())
         {
             Object property = propertyStringKeys.nextElement();
             String propertyName = property.toString();
             String propertyValue = properties.getProperty(propertyName);
 
-            ConfigKey configKeyForProperty = configKeyStrings.get(propertyName);
+            ConfigKey configKeyForProperty = configKeyStrings.remove(propertyName);
             //if configKeyForProperty is null, then it's something we don't have defined in our key class.
             if(configKeyForProperty == null)
             {
@@ -86,6 +88,14 @@ public class ConfigurationProperties
 
                 put(configKeyForProperty, value);
             }
+        }
+        //If any of our supplied config keys are left over after loading properties
+        //we set any that have defaults configured. So if "myprop.x" is not found in the properties
+        //file we still set a lookup with it's default value found int he config class.
+        for(Map.Entry<String, ConfigKey> configKey : configKeyStrings.entrySet())
+        {
+            if(configKey.getValue().getDefaultValue() != null)
+                put(configKey.getValue(), configKey.getValue().getDefaultValue());
         }
     }
 

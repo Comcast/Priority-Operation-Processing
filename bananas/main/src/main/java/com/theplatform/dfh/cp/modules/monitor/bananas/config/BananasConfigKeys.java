@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.modules.monitor.config.converter.StringArrayProper
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class BananasConfigKeys implements ConfigKeys<ConfigKey>
 {
@@ -27,6 +28,7 @@ public class BananasConfigKeys implements ConfigKeys<ConfigKey>
     public static final MessageAttributeKey<String> ZENOSS_COMPONENT = new MessageAttributeKey<>("bananas.message.zenoss.component", null, "zenoss_component", String.class);
     public static final MessageAttributeKey<String> ZENOSS_DESCRIPTION = new MessageAttributeKey<>("bananas.message.zenoss.description", null, "zenoss_summary", String.class);
     public static final MessageAttributeKey<String> ZENOSS_INSTANCE = new MessageAttributeKey<>("bananas.message.zenoss.instance", null, "zenoss_instance", String.class);
+    public static final MessageAttributeKey<String> ZENOSS_GUID = new MessageAttributeKey<>("bananas.message.zenoss.guid", UUID.randomUUID().toString(), "guid", String.class);
 
     public static final MessageAttributeKey<String> GRAPHITE_LINK = new MessageAttributeKey<>("bananas.graphite.link", null, "graphite", String.class);
     public static final MessageAttributeKey<String> GRAPHITE_IMAGE = new MessageAttributeKey<>("bananas.graphite.image", null, "graphite_img", String.class);
@@ -40,6 +42,7 @@ public class BananasConfigKeys implements ConfigKeys<ConfigKey>
         ZENOSS_COMPONENT,
         ZENOSS_DESCRIPTION,
         ZENOSS_INSTANCE,
+        ZENOSS_GUID,
         GRAPHITE_LINK,
         GRAPHITE_IMAGE,
         SLACK_CHANNEL
@@ -58,6 +61,7 @@ public class BananasConfigKeys implements ConfigKeys<ConfigKey>
         ZENOSS_COMPONENT,
         ZENOSS_DESCRIPTION,
         ZENOSS_INSTANCE,
+        ZENOSS_GUID,
         GRAPHITE_LINK,
         GRAPHITE_IMAGE,
         SLACK_CHANNEL
