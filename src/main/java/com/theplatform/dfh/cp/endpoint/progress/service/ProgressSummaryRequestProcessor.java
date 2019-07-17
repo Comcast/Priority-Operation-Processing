@@ -7,6 +7,8 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
@@ -30,6 +32,7 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
     private static final Logger logger = LoggerFactory.getLogger(ProgressSummaryRequestProcessor.class);
 
     private ObjectClient<AgendaProgress> agendaProgressClient;
+    private VisibilityFilter<AgendaProgress, ServiceRequest<ProgressSummaryRequest>> visibilityFilter = new CustomerVisibilityFilter<>();
 
     protected ProgressSummaryRequestProcessor()
     {
@@ -60,9 +63,9 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
 
         DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(progressSummaryRequest.getPayload().getLinkId())));
 
-        List<AgendaProgress> progressList = feed.getAll();
+        List<AgendaProgress> progressList = visibilityFilter.filterByVisible(progressSummaryRequest, feed.getAll());
         ProgressSummaryResponse result = new ProgressSummaryResponse();
-        result.setProgressList(feed.getAll());
+        result.setProgressList(progressList);
 
         if(didAnyOperationFail(progressList))
         {
@@ -110,5 +113,12 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
     public void setAgendaProgressClient(ObjectClient<AgendaProgress> agendaProgressClient)
     {
         this.agendaProgressClient = agendaProgressClient;
+    }
+
+    public ProgressSummaryRequestProcessor setVisibilityFilter(
+        VisibilityFilter<AgendaProgress, ServiceRequest<ProgressSummaryRequest>> visibilityFilter)
+    {
+        this.visibilityFilter = visibilityFilter;
+        return this;
     }
 }

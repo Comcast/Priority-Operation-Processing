@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.progress.service;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
@@ -9,15 +10,20 @@ import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -25,13 +31,25 @@ public class ProgressSummaryRequestProcessorTest
 {
     private ObjectClient<AgendaProgress> mockAgendaProgressClient;
     private ProgressSummaryRequestProcessor progressSummaryRequestProcessor;
+    private VisibilityFilter mockVisibilityFilter;
 
     @BeforeMethod
     public void setup()
     {
-        progressSummaryRequestProcessor = new ProgressSummaryRequestProcessor();
         mockAgendaProgressClient = (ObjectClient<AgendaProgress>)mock(ObjectClient.class);
+        mockVisibilityFilter = mock(VisibilityFilter.class);
+        progressSummaryRequestProcessor = new ProgressSummaryRequestProcessor();
         progressSummaryRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
+        progressSummaryRequestProcessor.setVisibilityFilter(mockVisibilityFilter);
+        // by default the filterByVisible just returns the input list
+        doAnswer(new Answer()
+        {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+            {
+                return invocationOnMock.getArguments()[1];
+            }
+        }).when(mockVisibilityFilter).filterByVisible(any(), any());
     }
 
     @Test
@@ -61,6 +79,18 @@ public class ProgressSummaryRequestProcessorTest
         ServiceRequest<ProgressSummaryRequest> request = new DefaultServiceRequest<>(new ProgressSummaryRequest().setLinkId("theLinkId"));
         ProgressSummaryResponse progressSummaryResponse = progressSummaryRequestProcessor.handlePOST(request);
         Assert.assertEquals(progressSummaryResponse.getProcessingState(), expectedState);
+    }
+
+    @Test
+    public void testGetProgressNotVisible()
+    {
+        setupAgendaProgress(new ProcessingState[] { ProcessingState.COMPLETE, ProcessingState.COMPLETE } );
+        // everything is filtered
+        doReturn(new ArrayList<>()).when(mockVisibilityFilter).filterByVisible(any(), any());
+        ProgressSummaryResponse progressSummaryResponse = progressSummaryRequestProcessor.handlePOST(
+            new DefaultServiceRequest<>(new ProgressSummaryRequest().setLinkId("theLinkId"))
+        );
+        Assert.assertEquals(progressSummaryResponse.getProgressList().size(), 0);
     }
 
     private void setupAgendaProgress(ProcessingState[] states)
