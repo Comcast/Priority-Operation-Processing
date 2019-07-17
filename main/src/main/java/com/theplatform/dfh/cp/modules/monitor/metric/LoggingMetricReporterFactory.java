@@ -13,6 +13,7 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
 {
     private int reportIntervalInMilli;
     private MetricFilter metricFilter;
+    private ConfigurationProperties configurationProperties;
 
     public LoggingMetricReporterFactory()
     {
@@ -21,6 +22,7 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     public LoggingMetricReporterFactory(ConfigurationProperties configurationProperties, MetricFilter metricFilter)
     {
         this(configurationProperties != null ? configurationProperties.get(LoggingConfigKeys.REPORT_FREQUENCY) : null, metricFilter);
+        this.configurationProperties = configurationProperties;
     }
     public LoggingMetricReporterFactory(Properties properties, MetricFilter metricFilter)
     {
@@ -35,10 +37,13 @@ public class LoggingMetricReporterFactory implements MetricReporterFactory
     @Override
     public ScheduledReporter register(MetricRegistry metricRegistry)
     {
-        return Slf4jReporter.forRegistry(metricRegistry)
-            .convertRatesTo(TimeUnit.MILLISECONDS)
-            .filter(metricFilter)
-            .build();
+        return new ScheduledReporterWrapper<>(
+            configurationProperties,
+            Slf4jReporter.forRegistry(metricRegistry)
+                .convertRatesTo(TimeUnit.MILLISECONDS)
+                .filter(metricFilter)
+                .build(),
+            LoggingConfigKeys.ENABLED);
     }
 
     @Override

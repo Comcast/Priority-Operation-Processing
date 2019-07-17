@@ -5,6 +5,6 @@ import com.codahale.metrics.ScheduledReporter;
 
 public interface MetricReporterFactory
 {
-    public ScheduledReporter register(MetricRegistry registry);
-    public int getReportIntervalInMilli();
+    ScheduledReporter register(MetricRegistry registry);
+    int getReportIntervalInMilli();
 }

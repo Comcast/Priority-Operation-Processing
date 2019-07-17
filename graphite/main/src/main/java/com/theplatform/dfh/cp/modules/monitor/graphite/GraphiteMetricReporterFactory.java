@@ -5,6 +5,7 @@ import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporterFactory;
+import com.theplatform.dfh.cp.modules.monitor.metric.ScheduledReporterWrapper;
 
 import java.net.InetSocketAddress;
 import java.util.Properties;
@@ -47,7 +48,10 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
             .build(standardPusher);
         //We need to override the Graphite Reporter to catch all exceptions from preventing our applications to fail.
         //However, the reporter builder and instance is private, so we wrap it
-        return new GraphiteReporterWrapper(metricsConfiguration, metricRegistry, "graphite-reporter", MetricFilter.ALL, TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS, reporter);
+        return new ScheduledReporterWrapper<>(
+            metricsConfiguration,
+            reporter,
+            GraphiteConfigKeys.ENABLED);
     }
 
     @Override
