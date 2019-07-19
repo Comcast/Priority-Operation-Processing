@@ -13,6 +13,7 @@ public enum AudioParamKey implements ParamKey
     profile,
     samplingRate,
     sampleSize,
+    streamOrder,
     streamSize,
     title
     ;

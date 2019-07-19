@@ -22,6 +22,7 @@ public class VideoStreamParams
     private String profile;
     private String scanOrder;
     private String scanType;
+    private String streamOrder;
     private Long streamSize;
     private Integer width;
 
@@ -193,6 +194,16 @@ public class VideoStreamParams
     public void setScanType(String scanType)
     {
         this.scanType = scanType;
+    }
+
+    public String getStreamOrder()
+    {
+        return streamOrder;
+    }
+
+    public void setStreamOrder(String streamOrder)
+    {
+        this.streamOrder = streamOrder;
     }
 
     public Long getStreamSize()

@@ -19,6 +19,7 @@ public enum VideoParamKey implements ParamKey
     profile,
     scanOrder,
     scanType,
+    streamOrder,
     streamSize,
     width,
     ;

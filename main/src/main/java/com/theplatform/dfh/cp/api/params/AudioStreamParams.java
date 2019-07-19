@@ -15,6 +15,7 @@ public class AudioStreamParams
     private String profile;
     private Integer samplingRate;
     private Integer sampleSize;
+    private String streamOrder;
     private Long streamSize;
     private String title;
 
@@ -116,6 +117,16 @@ public class AudioStreamParams
     public void setSampleSize(Integer sampleSize)
     {
         this.sampleSize = sampleSize;
+    }
+
+    public String getStreamOrder()
+    {
+        return streamOrder;
+    }
+
+    public void setStreamOrder(String streamOrder)
+    {
+        this.streamOrder = streamOrder;
     }
 
     public Long getStreamSize()
