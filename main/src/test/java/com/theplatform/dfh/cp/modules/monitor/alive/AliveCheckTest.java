@@ -24,9 +24,8 @@ public class AliveCheckTest implements AliveCheck
     public void testAlive() throws Exception
     {
         Properties serviceProperties = PropertyLoader.loadResource("../../../../../../service.properties");
-        final int logMetricFrequency = 500;
         MetricReporter reporter = new MetricReporter(null);
-        reporter.register(new LoggingMetricReporterFactory(logMetricFrequency,null));
+        reporter.register(new LoggingMetricReporterFactory());
         LogAliveCheckListener loggerAliveCheck = new LogAliveCheckListener();
         MetricAliveCheckListener metricsAliveCheck = new MetricAliveCheckListener(reporter);
         ConfigurationProperties configurationProperties = ConfigurationProperties.from(serviceProperties, new AliveCheckConfigKeys());

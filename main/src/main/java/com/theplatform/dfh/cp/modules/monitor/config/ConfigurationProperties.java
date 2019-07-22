@@ -36,7 +36,6 @@ public class ConfigurationProperties
     public static ConfigurationProperties from(Properties properties, ConfigKeys... configKeys)
     {
         ConfigurationProperties config = new ConfigurationProperties();
-        if(properties == null) return config;
 
         if(configKeys != null)
         {
@@ -60,33 +59,35 @@ public class ConfigurationProperties
         Map<String, ConfigKey> configKeyStrings = keys == null ? new HashMap<>() : keys.stream()
             .collect(Collectors.toMap(configKey -> configKey.getPropertyKey(), configKey -> configKey));
 
-        Enumeration propertyStringKeys = properties.propertyNames();
-        if(propertyStringKeys == null) return;
+        Enumeration propertyStringKeys = properties == null ? null : properties.propertyNames();
 
-        //Loop through all Properites.properties. If a key matches, use it for our map, if not make a generic one.
-        while(propertyStringKeys.hasMoreElements())
+        //Loop through all Properties.properties. If a key matches, use it for our map, if not make a generic one.
+        if(properties != null)
         {
-            Object property = propertyStringKeys.nextElement();
-            String propertyName = property.toString();
-            String propertyValue = properties.getProperty(propertyName);
+            while(propertyStringKeys.hasMoreElements())
+            {
+                Object property = propertyStringKeys.nextElement();
+                String propertyName = property.toString();
+                String propertyValue = properties.getProperty(propertyName);
 
-            ConfigKey configKeyForProperty = configKeyStrings.remove(propertyName);
-            //if configKeyForProperty is null, then it's something we don't have defined in our key class.
-            if(configKeyForProperty == null)
-            {
-                put(new ConfigKey<>(propertyName, null, String.class), propertyValue);
-            }
-            else if (StringUtils.isBlank(propertyValue) && configKeyForProperty.getDefaultValue() != null)
-            {
-                put(configKeyForProperty, configKeyForProperty.getDefaultValue());
-            }
-            else
-            {
-                Object value = configKeyForProperty.getConfigPropertyConverter().convertPropertyValue(propertyValue);
-                if(value == null)
-                    value = configKeyForProperty.getDefaultValue();
+                ConfigKey configKeyForProperty = configKeyStrings.remove(propertyName);
+                //if configKeyForProperty is null, then it's something we don't have defined in our key class.
+                if(configKeyForProperty == null)
+                {
+                    put(new ConfigKey<>(propertyName, null, String.class), propertyValue);
+                }
+                else if (StringUtils.isBlank(propertyValue) && configKeyForProperty.getDefaultValue() != null)
+                {
+                    put(configKeyForProperty, configKeyForProperty.getDefaultValue());
+                }
+                else
+                {
+                    Object value = configKeyForProperty.getConfigPropertyConverter().convertPropertyValue(propertyValue);
+                    if(value == null)
+                        value = configKeyForProperty.getDefaultValue();
 
-                put(configKeyForProperty, value);
+                    put(configKeyForProperty, value);
+                }
             }
         }
         //If any of our supplied config keys are left over after loading properties
