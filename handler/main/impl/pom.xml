@@ -23,6 +23,7 @@
         <auth-client.version>1.2.6</auth-client.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-io.version>2.6</commons-io.version>
+        <apache-httpclient.version>4.5.2</apache-httpclient.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
 
@@ -81,6 +82,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache-httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
