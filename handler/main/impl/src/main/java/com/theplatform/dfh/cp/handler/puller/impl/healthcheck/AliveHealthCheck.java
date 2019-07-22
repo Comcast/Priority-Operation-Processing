@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.healthcheck;
 import com.codahale.metrics.health.HealthCheck;
 import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.AliveCheck;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;

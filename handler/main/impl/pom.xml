@@ -21,6 +21,8 @@
         <jackson.version>2.9.8</jackson.version>
         <dfh-http-idm.version>1.0.0</dfh-http-idm.version>
         <auth-client.version>1.2.6</auth-client.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-io.version>2.6</commons-io.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
 
@@ -35,17 +37,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -80,6 +71,16 @@
             <groupId>com.theplatform.dfh.modules.http</groupId>
             <artifactId>pl-dfh-http-idm</artifactId>
             <version>${dfh-http-idm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -144,6 +145,16 @@
         </dependency>
 
         <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-logging-extension-logback</artifactId>

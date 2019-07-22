@@ -15,7 +15,7 @@ public class CaptureLogger extends SubstituteLogger
 
     public CaptureLogger(String name)
     {
-        super(name, null, true);
+        super(name);
     }
 
     @Override
