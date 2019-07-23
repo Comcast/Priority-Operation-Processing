@@ -18,6 +18,7 @@ public class DefaultDataObjectResponse<D extends IdentifiedObject> extends Defau
         setErrorResponse(errorResponse);
     }
 
+    private Integer count;
     private List<D> dataObjects = new ArrayList<>();
 
     public void add(D dataObject)
@@ -33,6 +34,16 @@ public class DefaultDataObjectResponse<D extends IdentifiedObject> extends Defau
     public List<D> getAll()
     {
         return dataObjects;
+    }
+
+    public Integer getCount()
+    {
+        return count == null && dataObjects != null ? dataObjects.size() : count;
+    }
+
+    public void setCount(Integer count)
+    {
+        this.count = count;
     }
 
     @JsonIgnore
