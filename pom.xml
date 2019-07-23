@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.6</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cts.fission.scheduling</groupId>
+    <artifactId>pl-fission-scheduling-queue-impl</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Scheduling Queue Monitor implementation</name>
+
+    <properties>
+        <scheduling-api.version>1.0.0-SNAPSHOT</scheduling-api.version>
+        <persistent-api.version>1.0.1-SNAPSHOT</persistent-api.version>
+        <queue-api.version>1.0.1-SNAPSHOT</queue-api.version>
+        <scheduling-agenga-fairness.version>1.0.0-SNAPSHOT</scheduling-agenga-fairness.version>
+        <endpoint-client.version>1.0.1</endpoint-client.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
+        <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.0-SNAPSHOT</dfh-monitor-graphite.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
+            <version>${dfh-monitor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
+            <version>${dfh-monitor-graphite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-client</artifactId>
+            <version>${endpoint-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${persistent-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.queue</groupId>
+            <artifactId>pl-dfh-modules-queue-api</artifactId>
+            <version>${queue-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.scheduling.api</groupId>
+            <artifactId>pl-dfh-cp-scheduling-api</artifactId>
+            <version>${scheduling-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+    </dependencies>
+</project>
