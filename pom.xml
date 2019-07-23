@@ -14,7 +14,7 @@
     <name>Endpoint implementation</name>
 
     <properties>
-        <dfh-persistence-api.version>1.0.0-SNAPSHOT</dfh-persistence-api.version>
+        <dfh-persistence-api.version>1.0.1-SNAPSHOT</dfh-persistence-api.version>
         <endpoint-base.version>1.0.0-SNAPSHOT</endpoint-base.version>
         <cp-scheduling-api.version>1.0.0-SNAPSHOT</cp-scheduling-api.version>
         <cp-json-helper.version>1.0.1-SNAPSHOT</cp-json-helper.version>
@@ -40,6 +40,7 @@
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${dfh-persistence-api.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
