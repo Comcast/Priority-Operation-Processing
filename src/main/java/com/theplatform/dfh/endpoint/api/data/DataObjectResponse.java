@@ -11,5 +11,6 @@ public interface DataObjectResponse<D extends IdentifiedObject> extends ServiceR
     void add(D dataObject);
     void addAll(List<D> dataObjects);
     List<D> getAll();
+    Integer getCount();
     D getFirst();
 }
