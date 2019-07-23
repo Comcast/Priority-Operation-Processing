@@ -14,7 +14,7 @@
     <name>Persistence API</name>
 
     <properties>
-        <dfh-object-api.version>1.0.0</dfh-object-api.version>
+        <dfh-object-api.version>1.0.2-SNAPSHOT</dfh-object-api.version>
     </properties>
 
     <dependencies>

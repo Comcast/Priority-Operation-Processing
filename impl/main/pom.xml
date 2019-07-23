@@ -14,7 +14,8 @@
     <name>Persistence impl</name>
 
     <properties>
-        <persistence-api.version>1.0.0</persistence-api.version>
+        <persistence-api.version>1.0.1-SNAPSHOT</persistence-api.version>
+        <dfh-object-api.version>1.0.2-SNAPSHOT</dfh-object-api.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
@@ -25,7 +26,12 @@
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.theplatform.dfh.object</groupId>
+            <artifactId>pl-dfh-object-api</artifactId>
+            <version>${dfh-object-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

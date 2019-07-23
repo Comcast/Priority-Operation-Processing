@@ -10,6 +10,7 @@ public class DataObjectFeed<D> implements Serializable
 
     private List<D> dataObjects = new ArrayList<>();
     private PersistenceException exception;
+    private Integer count;
     
     public PersistenceException getException()
     {
@@ -19,6 +20,16 @@ public class DataObjectFeed<D> implements Serializable
     public void setException(PersistenceException exception)
     {
         this.exception = exception;
+    }
+
+    public void setCount(Integer count)
+    {
+        this.count = count;
+    }
+
+    public Integer getCount()
+    {
+        return count;
     }
 
     public boolean isError()

@@ -5,7 +5,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
+import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.util.StringUtils;
+import com.theplatform.dfh.persistence.api.field.CountField;
 import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
@@ -38,6 +40,7 @@ public class QueryExpression<T>
     private TableIndexes tableIndexes;
     private Query primaryOrIndexQuery;
     private Query limitQuery;
+    private Select selectQuery;
     private List<Query> filterQueries = new ArrayList<>();
 
     public QueryExpression(TableIndexes tableIndexes, List<Query> queries)
@@ -74,7 +77,8 @@ public class QueryExpression<T>
                 addCondition(filterConditions, awsQueryValueMap, filterQuery);
             expression.withFilterExpression(StringUtils.join(" AND ", filterConditions.toArray(new String[filterConditions.size()])));
         }
-
+        if(selectQuery != null)
+            expression.withSelect(selectQuery);
         expression.withKeyConditionExpression(StringUtils.join(" AND ", keyConditions.toArray(new String[keyConditions.size()])))
             .withExpressionAttributeValues(awsQueryValueMap)
             .withConsistentRead(false);
@@ -111,6 +115,10 @@ public class QueryExpression<T>
     {
         return this.primaryOrIndexQuery != null;
     }
+    public boolean hasCount()
+    {
+        return this.selectQuery != null && selectQuery == Select.COUNT;
+    }
     private void addCondition(List<String> conditions, Map<String, AttributeValue> valueMap, Query query)
     {
         final String awsQueryValueKey = String.format(QUERY_VALUE, query.getField().name());
@@ -134,6 +142,10 @@ public class QueryExpression<T>
             if (LimitField.fieldName().equals(queryFieldName))
             {
                 limitQuery = query;
+            }
+            else if(CountField.fieldName().equals(queryFieldName) && query.getBooleanValue() == true)
+            {
+                selectQuery = Select.COUNT;
             }
             else
             {

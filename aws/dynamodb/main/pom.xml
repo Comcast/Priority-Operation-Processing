@@ -14,14 +14,21 @@
     <name>Persistence AWS DynamoDB</name>
 
     <properties>
-        <persistence-api.version>1.0.0</persistence-api.version>
-        <persistence-impl.version>1.0.0</persistence-impl.version>
+        <persistence-api.version>1.0.1-SNAPSHOT</persistence-api.version>
+        <persistence-impl.version>1.0.1-SNAPSHOT</persistence-impl.version>
+        <dfh-object-api.version>1.0.2-SNAPSHOT</dfh-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <dfh-compression.version>1.0.0</dfh-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.object</groupId>
+            <artifactId>pl-dfh-object-api</artifactId>
+            <version>${dfh-object-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-api</artifactId>

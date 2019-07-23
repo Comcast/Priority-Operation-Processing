@@ -93,7 +93,11 @@ public class Query<T>
         if(value instanceof Integer) return (Integer) value;
         return Integer.valueOf(value.toString());
     }
-
+    public Boolean getBooleanValue()
+    {
+        if(value instanceof Boolean) return (Boolean) value;
+        return Boolean.valueOf(value.toString());
+    }
 
 
     @Override
