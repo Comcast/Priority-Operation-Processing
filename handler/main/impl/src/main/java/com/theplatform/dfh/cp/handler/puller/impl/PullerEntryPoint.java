@@ -48,6 +48,8 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
     }
 
     /**
+     * Be sure to specify -Dlogback.configurationFile=./handler/main/package/monitors/logback_local.xml (VM option)
+     *
      * Debugging/running with a local-only build use these args:
      * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -confPath ./handler/main/package/local/config/conf.yaml
      *

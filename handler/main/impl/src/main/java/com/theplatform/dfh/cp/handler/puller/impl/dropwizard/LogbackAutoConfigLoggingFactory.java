@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is a custom LoggingFactory intended for use with DropWizard to allow it to use the logback.xml when executing.
+ *
+ * References:
  * https://github.com/dropwizard/dropwizard/issues/1567
- * Override getLoggingFactory for your configuration
  * Taken from https://gist.github.com/fedotxxl/0b3cc5e5e4eaeffdcde1f9834796edc6
  */
 public class LogbackAutoConfigLoggingFactory implements LoggingFactory {

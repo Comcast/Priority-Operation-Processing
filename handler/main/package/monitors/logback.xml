@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
+<!-- ########################################################### -->
+<!-- Please update the logback_local.xml if this file is changed -->
+<!-- ########################################################### -->
+
 <configuration>
     
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

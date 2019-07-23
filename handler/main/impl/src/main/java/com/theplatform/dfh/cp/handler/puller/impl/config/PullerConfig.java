@@ -133,6 +133,7 @@ public class PullerConfig extends Configuration
     @Override
     public synchronized LoggingFactory getLoggingFactory()
     {
+        // This custom factory allows drop wizard to use the logback.xml (by default it only uses the config yaml)
         return new LogbackAutoConfigLoggingFactory();
     }
 }
