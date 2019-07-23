@@ -14,7 +14,7 @@
     <name>TransformRequest endpoint implementation</name>
 
     <properties>
-        <dfh-persistence-api.version>1.0.0-SNAPSHOT</dfh-persistence-api.version>
+        <dfh-persistence-api.version>1.0.1-SNAPSHOT</dfh-persistence-api.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
     </properties>

@@ -66,6 +66,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
             {
                 DataObjectFeed<T> feed = objectPersister.retrieve(request.getQueries());
                 List<T> filteredObjects = visibilityFilter.filterByVisible(request, feed.getAll());
+                response.setCount(feed.getCount());
                 response.addAll(filteredObjects);
             }
         }
