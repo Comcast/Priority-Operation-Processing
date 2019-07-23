@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.handler.kubernetes.monitor.AliveCheckPollerFactory
 import com.theplatform.dfh.cp.handler.kubernetes.monitor.MetricReporterFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.healthcheck.AliveHealthCheck;
-import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricFilterBuilder;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import io.dropwizard.Application;

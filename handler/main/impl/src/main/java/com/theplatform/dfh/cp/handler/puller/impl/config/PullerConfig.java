@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.config;
 
+import com.theplatform.dfh.cp.handler.puller.impl.dropwizard.LogbackAutoConfigLoggingFactory;
 import io.dropwizard.Configuration;
+import io.dropwizard.logging.LoggingFactory;
 
 public class PullerConfig extends Configuration
 {
@@ -126,5 +128,11 @@ public class PullerConfig extends Configuration
     {
         this.agendaRequestCount = agendaRequestCount;
         return this;
+    }
+
+    @Override
+    public synchronized LoggingFactory getLoggingFactory()
+    {
+        return new LogbackAutoConfigLoggingFactory();
     }
 }
