@@ -2,8 +2,6 @@ package com.cts.fission.scheduling.queue.monitor;
 
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.cts.fission.scheduling.queue.algorithm.AgendaScheduler;
 import com.cts.fission.scheduling.queue.algorithm.AgendaSchedulerFactory;
@@ -52,15 +50,12 @@ public class QueueMonitorTest
     public void setup()
     {
         doReturn(mockReadyAgendaQueue).when(mockReadyAgendaQueueFactory).createItemQueue(anyString());
-        MetricReporter metricReporter = new MetricReporter();
-        metricReporter.register(new LoggingMetricReporterFactory());
         queueMonitor = new QueueMonitor(
             mockReadyAgendaQueueFactory,
             mockReadyAgendaPersister,
             mockInsightClient,
             mockCustomerClient,
-            mockInsightSchedulingInfoPersister,
-            metricReporter);
+            mockInsightSchedulingInfoPersister);
         queueMonitor.setAgendaSchedulerFactory(mockAgendaSchedulerFactory);
     }
 

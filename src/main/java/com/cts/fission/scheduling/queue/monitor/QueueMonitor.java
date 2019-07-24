@@ -3,8 +3,6 @@ package com.cts.fission.scheduling.queue.monitor;
 import com.cts.fission.scheduling.queue.algorithm.AgendaScheduler;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.cts.fission.scheduling.queue.algorithm.AgendaSchedulerFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
@@ -41,22 +39,19 @@ public class QueueMonitor
 
     private ObjectPersister<ReadyAgenda> readyAgendaPersister;
     private ObjectClient<Customer> customerClient;
-    private MetricReporter metricReporter;
 
     public QueueMonitor(
         ItemQueueFactory<ReadyAgenda> readyAgendaQueueFactory,
         ObjectPersister<ReadyAgenda> readyAgendaPersister,
         ObjectClient<Insight> insightClient,
         ObjectClient<Customer> customerClient,
-        ObjectPersister<InsightScheduleInfo> insightScheduleInfoPersister,
-        MetricReporter metricReporter)
+        ObjectPersister<InsightScheduleInfo> insightScheduleInfoPersister)
     {
         this.readyAgendaQueueFactory = readyAgendaQueueFactory;
         this.readyAgendaPersister = readyAgendaPersister;
         this.insightClient = insightClient;
         this.customerClient = customerClient;
         this.insightScheduleInfoPersister = insightScheduleInfoPersister;
-        this.metricReporter = metricReporter == null ? new MetricReporter() : metricReporter;
     }
 
     public void processResourcePool(String resourcePoolId) throws Throwable
@@ -66,7 +61,6 @@ public class QueueMonitor
         if(insightObjectFeed.isError())
         {
             logger.error("Error getting any insights by resourcePoolId: {}", resourcePoolId);
-            reportFailed("resourcePool");
             return;
         }
         if(insightObjectFeed.getAll() == null || insightObjectFeed.getAll().size() == 0)
@@ -90,7 +84,6 @@ public class QueueMonitor
             catch(Exception e)
             {
                 logger.error("Failed to process ResourcePool: {} Insight: {}", resourcePoolId, insight.getId(), e);
-                reportFailed(insight.getId());
             }
         }
         logger.info("Processed ResourcePool: {}", resourcePoolId);
@@ -104,7 +97,6 @@ public class QueueMonitor
         {
             // TODO: what exactly?
             logger.error("Failed to get queue size for queue: {} from insight: {}", insight.getQueueName(), insight.getId());
-            reportFailed(insight.getId());
             return;
         }
         final int itemsOnQueueCount = Integer.parseInt(queueResult.getMessage());
@@ -113,7 +105,6 @@ public class QueueMonitor
         {
             // TODO: human readable insight name might be helpful...
             logger.info("Queue for insight {} does not require queue. Min: {} Current: {}", insight.getId(), maxQueueSize, itemsOnQueueCount);
-            reportSkipped(insight.getId());
             return;
         }
         else
@@ -122,17 +113,6 @@ public class QueueMonitor
         }
 
         int requestedCount = maxQueueSize - itemsOnQueueCount;
-        try
-        {
-            DataObjectFeed feed = readyAgendaPersister.retrieve(Arrays.asList(new ByInsightId(insight.getId()), new Query(new CountField(), true)));
-            final int waitingAgendaCount = feed.getCount();
-            if(waitingAgendaCount > requestedCount)
-                reportWaiting(insight.getId(), waitingAgendaCount - requestedCount);
-        }
-        catch (Throwable e)
-        {
-            //just for metrics. ignore.
-        }
 
         AgendaScheduler agendaScheduler = agendaSchedulerFactory.getAgendaScheduler(insight, readyAgendaPersister, customerClient);
 
@@ -147,10 +127,6 @@ public class QueueMonitor
                if(moveReadyAgenda(readyAgenda, readyAgendaQueue))
                {
                    itemsQueued++;
-               }
-               else
-               {
-                   reportFailed(insight.getId());
                }
            }
         }
@@ -217,27 +193,5 @@ public class QueueMonitor
     public void setAgendaSchedulerFactory(AgendaSchedulerFactory agendaSchedulerFactory)
     {
         this.agendaSchedulerFactory = agendaSchedulerFactory;
-    }
-
-    public void setMetricReporter(MetricReporter metricReporter)
-    {
-        this.metricReporter = metricReporter;
-    }
-
-    private void reportFailed(String insight)
-    {
-        metricReporter.getCounter(MetricLabel.failed +"." +insight).inc();
-        metricReporter.report();
-    }
-    private void reportSkipped(String insight)
-    {
-        metricReporter.getCounter(METRIC_SKIPPED +"." +insight).inc();
-        metricReporter.report();
-    }
-    private void reportWaiting(String insight, int count)
-    {
-        for(int countIndex = 0; countIndex < count; countIndex ++)
-            metricReporter.getCounter(METRIC_WAITING +"." +insight).inc();
-        metricReporter.report();
     }
 }

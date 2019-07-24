@@ -2,7 +2,6 @@ package com.cts.fission.scheduling.queue.monitor;
 
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -20,9 +19,8 @@ public class QueueMonitorFactory
         ObjectPersister<ReadyAgenda> readyAgendaPersister,
         ObjectClient<Insight> insightClient,
         ObjectClient<Customer> customerClient,
-        ObjectPersister<InsightScheduleInfo> insightSchedulingInfoPersister,
-        MetricReporter reporter)
+        ObjectPersister<InsightScheduleInfo> insightSchedulingInfoPersister)
     {
-         return new QueueMonitor(readyAgendaQueueFactory, readyAgendaPersister, insightClient, customerClient, insightSchedulingInfoPersister, reporter);
+         return new QueueMonitor(readyAgendaQueueFactory, readyAgendaPersister, insightClient, customerClient, insightSchedulingInfoPersister);
     }
 }
