@@ -11,22 +11,30 @@ import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 public class DynamoDBPersisterFactory<D extends IdentifiedObject> implements ObjectPersisterFactory<D>
 {
     protected String persistenceKeyFieldName;
-    private Class<D> dataObjectClass;
-    private TableIndexes tableIndexes;
-    private IdGenerator idGenerator = new UUIDGenerator();
+    protected Class<D> dataObjectClass;
+    protected TableIndexes tableIndexes;
+    protected AWSDynamoDBFactory awsDynamoDBFactory;
+    protected IdGenerator idGenerator = new UUIDGenerator();
 
     public DynamoDBPersisterFactory(String persistenceKeyFieldName, Class<D> dataObjectClass, TableIndexes tableIndexes)
+    {
+        this(persistenceKeyFieldName, dataObjectClass, tableIndexes, new AWSDynamoDBFactory());
+    }
+
+    public DynamoDBPersisterFactory(String persistenceKeyFieldName, Class<D> dataObjectClass, TableIndexes tableIndexes,
+        AWSDynamoDBFactory awsDynamoDBFactory)
     {
         this.persistenceKeyFieldName = persistenceKeyFieldName;
         this.dataObjectClass = dataObjectClass;
         this.tableIndexes = tableIndexes;
+        this.awsDynamoDBFactory = awsDynamoDBFactory;
     }
 
     @Override
     public ObjectPersister<D> getObjectPersister(String containerName)
     {
         DynamoDBObjectPersister<D> objectPersister = new DynamoDBObjectPersister<>(containerName, persistenceKeyFieldName,
-           new AWSDynamoDBFactory(), dataObjectClass, tableIndexes);
+            awsDynamoDBFactory, dataObjectClass, tableIndexes);
         objectPersister.setIdGenerator(idGenerator);
         return objectPersister;
     }
