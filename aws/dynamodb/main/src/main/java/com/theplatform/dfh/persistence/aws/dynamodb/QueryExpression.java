@@ -143,7 +143,7 @@ public class QueryExpression<T>
             {
                 limitQuery = query;
             }
-            else if(CountField.fieldName().equals(queryFieldName) && query.getBooleanValue() == true)
+            else if(CountField.fieldName().equals(queryFieldName))
             {
                 selectQuery = Select.COUNT;
             }
