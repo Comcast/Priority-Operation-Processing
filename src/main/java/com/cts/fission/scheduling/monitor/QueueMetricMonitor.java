@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.query.ByCount;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -58,7 +59,7 @@ public class QueueMetricMonitor
         {
             try
             {
-                DataObjectFeed feed = readyAgendaPersister.retrieve(Arrays.asList(new ByInsightId(insight.getId()), new Query(new CountField(), true)));
+                DataObjectFeed feed = readyAgendaPersister.retrieve(Arrays.asList(new ByInsightId(insight.getId()), new ByCount(true)));
                 Integer waitingAgendaCount = feed.getCount();
                 reportWaiting(insight.getId(), waitingAgendaCount);
 
