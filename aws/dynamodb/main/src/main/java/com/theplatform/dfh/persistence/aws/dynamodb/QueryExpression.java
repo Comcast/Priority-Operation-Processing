@@ -51,7 +51,11 @@ public class QueryExpression<T>
 
     public DynamoDBQueryExpression<T> forQuery()
     {
-        if(primaryOrIndexQuery == null) return null;
+        if(primaryOrIndexQuery == null)
+        {
+            logger.warn("No primary or index found for query.");
+            return null;
+        }
 
         List<String> keyConditions = new ArrayList<>();
         List<String> filterConditions = new ArrayList<>();
