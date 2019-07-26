@@ -62,7 +62,7 @@ public class QueueMetricMonitor
             {
                 DataObjectFeed feed = readyAgendaPersister.retrieve(Arrays.asList(new ByInsightId(insight.getId()), new ByCount(true)));
                 Integer waitingAgendaCount = feed.getCount();
-                if(waitingAgendaCount > 0)
+                if(waitingAgendaCount != null && waitingAgendaCount > 0)
                     reportWaiting(insight.getId(), waitingAgendaCount);
 
                 logger.info("Insight: {} Waiting: {}", insight.getId(), waitingAgendaCount);
