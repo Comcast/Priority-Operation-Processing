@@ -1,5 +1,6 @@
 package com.cts.fission.scheduling.monitor;
 
+import com.codahale.metrics.Counter;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
@@ -81,15 +82,24 @@ public class QueueMetricMonitor
 
     private void reportFailed(String insight)
     {
-        metricReporter.getCounter(MetricLabel.failed +"." +insight).inc();
+        Counter counter = metricReporter.getCounter(METRIC_WAITING +"." +insight);
+        counter.inc();
         metricReporter.report();
+        //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
+        //know if/when we'll get a new instance of our lambda running.
+        counter.dec();
     }
     private void reportWaiting(String insight, Integer count)
     {
         if(count == null) return;
-
+        Counter waitingCounter = metricReporter.getCounter(METRIC_WAITING +"." +insight);
         for(int countIndex = 0; countIndex < count; countIndex ++)
-            metricReporter.getCounter(METRIC_WAITING +"." +insight).inc();
+            waitingCounter.inc();
         metricReporter.report();
+
+        //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
+        //know if/when we'll get a new instance of our lambda running.
+        for(int countIndex = 0; countIndex < count; countIndex ++)
+            waitingCounter.dec();
     }
 }
