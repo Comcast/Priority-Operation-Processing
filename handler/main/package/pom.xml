@@ -57,13 +57,13 @@
             <plugin>
                 <groupId>com.theplatform.maven.plugins</groupId>
                 <artifactId>docker-image-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <configuration>
                     <ccdsService>cppull</ccdsService>
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
-                    <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
-                    <appMainClass>PullerEntryPoint.class</appMainClass>
+                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>
+                    <appMainClass>com.theplatform.dfh.cp.handler.puller.impl.PullerEntryPoint</appMainClass>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>
