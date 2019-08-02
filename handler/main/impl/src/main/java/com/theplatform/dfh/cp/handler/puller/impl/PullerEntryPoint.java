@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, PullerProcessor, PullerLaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerEntryPoint.class);
-    private static final String DEFAULT_CONF_PATH = "/config/conf.yaml";
+    private static final String DEFAULT_CONF_PATH = "/app/config/conf.yaml";
 
     private MetricReporter metricReporter;
 

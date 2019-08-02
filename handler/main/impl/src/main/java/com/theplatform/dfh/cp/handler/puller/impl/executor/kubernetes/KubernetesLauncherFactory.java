@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class KubernetesLauncherFactory implements LauncherFactory
 {
-    private static final String DEFAULT_JSON_REGISTRY_PATH = "/config/registry.json";
+    private static final String DEFAULT_JSON_REGISTRY_PATH = "/app/config/registry.json";
     private static final Object registryLock = new Object();
     private static Logger logger = LoggerFactory.getLogger(KubernetesLauncherFactory.class);
 
