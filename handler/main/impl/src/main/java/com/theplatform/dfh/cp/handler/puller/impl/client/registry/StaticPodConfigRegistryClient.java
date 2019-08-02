@@ -44,7 +44,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setConfigMapDetails(new ConfigMapDetails()
                     .setConfigMapName("lab-main-t-aor-fhexec-t02")
                     .setVolumeName("config-volume")
-                    .setVolumeMountPath("/config")
+                    .setVolumeMountPath("/app/config")
                     .setMapKeyPaths(
                         Arrays.asList(
                             new KeyPathPair("external-properties", "external.properties"),
