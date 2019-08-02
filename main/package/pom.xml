@@ -57,7 +57,7 @@
             <plugin>
                 <groupId>com.theplatform.maven.plugins</groupId>
                 <artifactId>docker-image-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <configuration>
                     <ccdsService>fhpr</ccdsService>
                     <applicationType>application</applicationType>
