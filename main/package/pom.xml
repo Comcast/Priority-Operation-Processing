@@ -62,8 +62,8 @@
                     <ccdsService>fhpr</ccdsService>
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
-                    <baseImage>${env.DOCKER_PROD}/runajar:1.1</baseImage>
-                    <appMainClass>Must.Be.Here.Due.To.Plugin</appMainClass>
+                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>
+                    <appMainClass>com.theplatform.dfh.cp.handler.reaper.impl.HandlerEntryPoint</appMainClass>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>
