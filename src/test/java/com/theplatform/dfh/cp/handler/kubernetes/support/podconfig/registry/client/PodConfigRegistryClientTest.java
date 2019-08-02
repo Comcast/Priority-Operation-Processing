@@ -18,6 +18,7 @@ import java.io.IOException;
 public class PodConfigRegistryClientTest {
 
     final String POD_REGISTRY_FILE = "testConfigMap.json";
+    final String POD_REGISTRY_FILE_WITH_BASE_CONFIG_MAP_DETAILS = "testConfigMap_BaseConfigMap.json";
     final String POD_REGISTRY_PATH =  getClass().getClassLoader().getResource(POD_REGISTRY_FILE).getPath();
     private JsonPodConfigRegistryClient podConfigRegistryClient;
 
@@ -91,6 +92,7 @@ public class PodConfigRegistryClientTest {
     {
         // see json file for the base config settings
         final KeyPathPair KeyPathZero = new KeyPathPair("external-properties", "external.properties");
+        final KeyPathPair KeyPathOne = new KeyPathPair("env-properties", "env.properties");
 
         PodConfig pConfig = podConfigRegistryClient.getPodConfig(type);
 
@@ -100,8 +102,9 @@ public class PodConfigRegistryClientTest {
         // validate the nested fields are set
         Assert.assertNotNull(pConfig.getConfigMapDetails());
         Assert.assertNotNull(pConfig.getConfigMapDetails().getMapKeyPaths());
-        Assert.assertEquals(pConfig.getConfigMapDetails().getMapKeyPaths().size(), 1);
+        Assert.assertEquals(pConfig.getConfigMapDetails().getMapKeyPaths().size(), 2);
         verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(0), KeyPathZero);
+        verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(1), KeyPathOne);
     }
 
     // cheapo comparison method
@@ -131,6 +134,23 @@ public class PodConfigRegistryClientTest {
 
         PodConfig clonedConfig = podConfigRegistryClient.getPodConfig("sample");
         Assert.assertEquals(clonedConfig.getConfigMapDetails().getMapKeyPaths().size(), MAP_KEY_PATHS_SIZE, "Cloned configuration is using the same references as the original!");
+    }
+
+    @Test
+    void testPodConfigBaseMapDetails() throws Exception
+    {
+        JsonPodConfigRegistryClient client = createJsonRegistryClient(POD_REGISTRY_FILE_WITH_BASE_CONFIG_MAP_DETAILS);
+        PodConfig podConfig = client.getPodConfig("analysis");
+
+        Assert.assertEquals(podConfig.getConfigMapDetails().getVolumeName(), "config-volume-ex");
+        Assert.assertEquals(podConfig.getConfigMapDetails().getVolumeMountPath(), "/configex");
+
+        // validate the nested fields are set
+        Assert.assertNotNull(podConfig.getConfigMapDetails());
+        Assert.assertNotNull(podConfig.getConfigMapDetails().getMapKeyPaths());
+        Assert.assertEquals(podConfig.getConfigMapDetails().getMapKeyPaths().size(), 1);
+        verifyKeyPathMatches(podConfig.getConfigMapDetails().getMapKeyPaths().get(0),
+            new KeyPathPair("X", "Y"));
     }
 
     private PodConfig getBaseJsonPodConfig(String path) throws IOException

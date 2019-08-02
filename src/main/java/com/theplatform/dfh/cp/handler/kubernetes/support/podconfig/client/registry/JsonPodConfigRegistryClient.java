@@ -23,7 +23,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     public static final String DEFAULT_CONFIG_MAP_JSON = "defaultConfigMap.json";
     public static final String BASE_POD_CONFIG_KEY = "basePodConfig";
     public static final String DEFAULT_VOLUME_NAME = "config-volume";
-    public static final String DEFAULT_VOLUME_MOUNT_PATH = "/config";
+    public static final String DEFAULT_VOLUME_MOUNT_PATH = "/app/config";
 
     public static final JsonNode CORE_POD_CONFIG_NODE;
 
@@ -36,6 +36,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
 
         List<KeyPathPair> keyPaths = new LinkedList<>();
         keyPaths.add(new KeyPathPair("external-properties", "external.properties"));
+        keyPaths.add(new KeyPathPair("env-properties", "env.properties"));
 
         configMapDetails.setMapKeyPaths(keyPaths);
 
