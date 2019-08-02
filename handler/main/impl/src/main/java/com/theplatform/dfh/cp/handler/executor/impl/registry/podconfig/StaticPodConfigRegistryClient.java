@@ -59,7 +59,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 
         podConfigMap.put("telephone",
             makeDfhBasePod("lab-main-t-aor-fhtele-t01")
-                .setImageName("docker-proto.repo.theplatform.com/tele-agent:1.0.0")
+                .setImageName("docker-proto.repo.theplatform.com/fhtele:1.0.0")
                 .setNamePrefix("dfh-telephone")
         );
     }
