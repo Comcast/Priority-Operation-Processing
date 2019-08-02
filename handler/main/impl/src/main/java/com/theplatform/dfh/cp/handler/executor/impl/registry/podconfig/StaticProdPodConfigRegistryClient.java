@@ -77,7 +77,7 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
                 .setMapKey("external-properties")
                 .setMapPath("external.properties")
                 .setVolumeName("config-volume")
-                .setVolumeMountPath("/config");
+                .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
                 .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")

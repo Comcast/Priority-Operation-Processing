@@ -56,6 +56,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.2")
                 .setNamePrefix("dfh-package")
         );
+
+        podConfigMap.put("telephone",
+            makeDfhBasePod("lab-main-t-aor-fhtele-t01")
+                .setImageName("docker-proto.repo.theplatform.com/tele-agent:1.0.0")
+                .setNamePrefix("dfh-telephone")
+        );
     }
 
     @Override
@@ -71,7 +77,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setMapKey("external-properties")
                 .setMapPath("external.properties")
                 .setVolumeName("config-volume")
-                .setVolumeMountPath("/config");
+                .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
                 .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
