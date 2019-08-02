@@ -5,8 +5,10 @@ import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
+import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,8 +76,10 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
     {
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
                 .setConfigMapName(configMapName)
-                .setMapKey("external-properties")
-                .setMapPath("external.properties")
+                .setMapKeyPaths(Arrays.asList(
+                    new KeyPathPair("env-properties", "env.properties"),
+                    new KeyPathPair("external-properties", "external.properties")
+                ))
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
