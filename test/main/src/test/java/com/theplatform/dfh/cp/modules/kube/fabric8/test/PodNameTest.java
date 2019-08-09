@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.test;
 
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
@@ -32,6 +33,7 @@ public class PodNameTest extends KubeClientTestBase
     @Test
     public void testPodName_ExternalId_CanBeSeen() throws Exception
     {
+        KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
 
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setImageName("ubuntu:14.04");

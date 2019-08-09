@@ -27,14 +27,14 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
     @Test
     public void testEnvVars() throws Exception
     {
-        PodPushClient podPushClient = new PodPushClientFactoryImpl().getClient(kubeConfig);
+        PodPushClient podPushClient = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
 
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setImageName("ubuntu:14.04");
         podConfig.setArguments(new String[] { "printenv" });
         podConfig.setNamePrefix("test-envvar");
         podConfig.setUseTaintedNodes(false);
-        podConfig.setServiceAccountName("ffmpeg-service");
+        podConfig.setServiceAccountName("dfh-service");
         podConfig.setDefaultEmptyDirLogging(true);
         podConfig.setReapCompletedPods(true);
 
@@ -81,10 +81,13 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         return logs;
     }
 
+    //
+    // Warning: this test is very specific to this config: https://github.comcast.com/VideoPlatformConfigurations/fhexec/blob/master/lab-main-t-aor-fhexec-t02/ConfigMap.yaml
+    //
     @Test
     public void testProperties() throws Exception
     {
-        PodPushClient client = new PodPushClientFactoryImpl().getClient(kubeConfig);
+        PodPushClient client = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
 
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setImageName(IMAGE_NAME);
@@ -94,12 +97,12 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         podConfig.setConfigMapDetails(new ConfigMapDetails()
             .setMapKey("external-properties")
             .setMapPath("external.properties")
-            .setConfigMapName("lab-main-t-aor-feh-fun1")
+            .setConfigMapName(resourceReader.getValue("configMap"))
             .setVolumeName("config-volume")
             .setVolumeMountPath("/config"));
 
         podConfig.setUseTaintedNodes(false);
-        podConfig.setServiceAccountName("ffmpeg-service");
+        podConfig.setServiceAccountName("dfh-service");
         podConfig.setDefaultEmptyDirLogging(true);
 
         LogLineAccumulatorImpl logLineAccumulator = new LogLineAccumulatorImpl();
@@ -122,7 +125,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
             while (!isFinished);
 
             String logs = getString(logLineAccumulator);
-            Assert.assertTrue(logs.contains("identityServiceURL=http://identity.auth.test.corp.theplatform.com/idm"));
+            Assert.assertTrue(logs.contains("idm.url=http://identity.auth.test.corp.theplatform.com/idm"));
             logger.info("Pod finished w/{}", podWatcher.getFinalPodPhaseInfo());
             client.deletePod(executionConfig.getName());
         }

@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.test;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
-import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFactory;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
@@ -12,19 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- * User: kimberly.todd
- * Date: 8/24/18
- */
 public class OAuthTest extends KubeClientTestBase
 {
 
     private static Logger logger = LoggerFactory.getLogger(OAuthTest.class);
 
     @Test
-    public void testName() throws Exception
+    public void testName()
     {
-        KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
+        KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
         OAuthCredentialCapture oauthCredentialCapture = new OAuthCredentialCapture().init();
         if(oauthCredentialCapture.isOAuthAvailable())
         {

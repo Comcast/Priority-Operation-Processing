@@ -1,24 +1,32 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.test.factory;
 
 import com.theplatform.dfh.cp.modules.kube.client.config.*;
+import com.theplatform.test.modules.resourcereader.ResourceReader;
 
-public class DefaultConfigFactory
+public class DefaultConfigFactory implements ConfigFactory
 {
-    public static KubeConfig getDefaultKubeConfig()
+    private final ResourceReader resourceReader;
+
+    public DefaultConfigFactory(ResourceReader resourceReader)
+    {
+        this.resourceReader = resourceReader;
+    }
+
+    public KubeConfig getDefaultKubeConfig()
     {
         KubeConfig kubeConfig = new KubeConfig();
-        kubeConfig.setMasterUrl("https://api.alpha.k8s.aort.theplatform.com");
-        kubeConfig.setNameSpace("dfh");
+        kubeConfig.setMasterUrl(resourceReader.getValue("kubernetesMaster"));
+        kubeConfig.setNameSpace(resourceReader.getValue("kubernetesNamespace"));
         return kubeConfig;
     }
 
-    public static PodConfig getDefaultPodConfig()
+    public PodConfig getDefaultPodConfig()
     {
         NfsDetails nfsDetails = new NfsDetails();
-        nfsDetails.setNfsServerPath("/");
+        nfsDetails.setNfsServerPath(resourceReader.getValue("nfs.serverPath"));
         nfsDetails.setNfsReadOnly(false);
-        nfsDetails.setNfsMountPaths(new String[] { "/testFiles" });
-        nfsDetails.setNfsServer("fs-21cc1888.efs.us-west-2.amazonaws.com");
+        nfsDetails.setNfsMountPaths(new String[] { resourceReader.getValue("nfs.mountPath") });
+        nfsDetails.setNfsServer(resourceReader.getValue("nfs.server"));
 
         AliveCheckDetails aliveCheckDetails = new AliveCheckDetails();
         aliveCheckDetails.setAliveCheckHost("example.com");

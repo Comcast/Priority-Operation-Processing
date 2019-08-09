@@ -2,7 +2,15 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.test;
 
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.ConfigFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFactory;
+import com.theplatform.test.modules.resourcereader.ResourceReader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * User: kimberly.todd
@@ -10,8 +18,14 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFac
  */
 public class KubeClientTestBase
 {
+    final ResourceReader resourceReader;
+    final ConfigFactory configFactory;
 
-    public final KubeConfig kubeConfig = DefaultConfigFactory.getDefaultKubeConfig();
+    public KubeClientTestBase()
+    {
+        resourceReader = new ResourceReader(null);
+        configFactory = new DefaultConfigFactory(resourceReader);
+    }
 
     /**
      * This contains the basic pods config types used by the tests. This is primarily to avoid the timing issues of a DataProvider vs. BeforeClass/BeforeMethod.
@@ -21,9 +35,9 @@ public class KubeClientTestBase
         quickPod
             {
                 @Override
-                public PodConfig createPodConfig()
+                public PodConfig createPodConfig(ConfigFactory configFactory)
                 {
-                    return DefaultConfigFactory.getDefaultPodConfig()
+                    return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/mediainfo:1.0")
                         .setNamePrefix("dfhk8clienttest")
                         .setArguments(new String[] { "--version" })
@@ -33,9 +47,9 @@ public class KubeClientTestBase
         longerExecutionFailsFastPod
             {
                 @Override
-                public PodConfig createPodConfig()
+                public PodConfig createPodConfig(ConfigFactory configFactory)
                 {
-                    return DefaultConfigFactory.getDefaultPodConfig()
+                    return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
                         .setNamePrefix("dfhffmpeg-test")
                         .setArguments(new String[] {
@@ -45,9 +59,9 @@ public class KubeClientTestBase
         longerExecutionSucceedsPod
             {
                 @Override
-                public PodConfig createPodConfig()
+                public PodConfig createPodConfig(ConfigFactory configFactory)
                 {
-                    return DefaultConfigFactory.getDefaultPodConfig()
+                    return configFactory.getDefaultPodConfig()
                         .setImageName("bash")
                         .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
                         .setNamePrefix("dfh-sleep");
@@ -56,9 +70,9 @@ public class KubeClientTestBase
         longerExecutionPod
             {
                 @Override
-                public PodConfig createPodConfig()
+                public PodConfig createPodConfig(ConfigFactory configFactory)
                 {
-                    return DefaultConfigFactory.getDefaultPodConfig()
+                    return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
                         .setNamePrefix("dfhffmpeg-test")
                         .setCpuMinRequestCount("4000m")

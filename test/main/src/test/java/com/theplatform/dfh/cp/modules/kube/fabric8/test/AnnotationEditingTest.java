@@ -19,16 +19,16 @@ public class AnnotationEditingTest extends KubeClientTestBase
 {
 
     @Test
-    public void testAnnotationsCanBeAdded() throws Exception
+    public void testAnnotationsCanBeAdded()
     {
-        PodConfig podConfig = TestPodConfigType.quickPod.createPodConfig();
+        PodConfig podConfig = TestPodConfigType.quickPod.createPodConfig(configFactory);
         podConfig.setReapCompletedPods(false);
 
         CpuRequestModulator cpuModulator = new HiLowCpuRequestModulator();
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
         executionConfig.setCpuRequestModulator(cpuModulator);
 
-        PodFollower podFollower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
+        PodFollower podFollower = new PodFollowerImpl(configFactory.getDefaultKubeConfig(), podConfig, executionConfig);
         podFollower.startAndFollowPod(podFollower.getDefaultLogLineObserver(executionConfig));
 
         KubernetesClientFacade fabric8Client = podFollower.getPodPushClient().getKubernetesClient();
