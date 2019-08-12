@@ -32,7 +32,7 @@
     <logger name="com.theplatform.web.marshalling" level="ERROR" />
     <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
 
-    <root level="INFO">
+    <root level="${LOG_LEVEL:-INFO}">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="asyncLogAppender" />
     </root>
