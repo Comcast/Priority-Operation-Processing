@@ -66,7 +66,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         byteArrayInputStream.mark(Integer.MAX_VALUE);
         JsonNode rootRequestNode = getObjectMapper().readTree(byteArrayInputStream);
         byteArrayInputStream.reset();
-        setupLoggingCid(rootRequestNode);
+        setupLoggingMDC(rootRequestNode);
 
         logObject("request: ", rootRequestNode);
 
