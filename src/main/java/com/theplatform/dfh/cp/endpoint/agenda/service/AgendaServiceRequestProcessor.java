@@ -30,7 +30,7 @@ import java.util.List;
 public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaResponse, ServiceRequest<GetAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
-    private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - InsightId: %s; count: %d.";
+    private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - insightid=%s agendarequestcount=%d";
 
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
