@@ -26,6 +26,7 @@ import java.util.UUID;
 public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req extends ServiceRequest> implements JsonRequestStreamHandler
 {
     private static final String MDC_CID = "CID";
+    private static final String MDC_ENDPOINT_NAME = "ENDPOINT_NAME";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
@@ -179,11 +180,13 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     /**
      * Default CID setup assumes it comes from the CID environment variable. At worst a cid is generated.
      */
-    protected void setupLoggingCid(JsonNode rootRequestNode)
+    protected void setupLoggingMDC(JsonNode rootRequestNode)
     {
         // TODO: the request extractor should probably just be static...
-        String cid = new LambdaRequest(rootRequestNode).getHeader("X-thePlatform-cid");
+        LambdaRequest lambdaRequest = new LambdaRequest(rootRequestNode);
+        String cid = lambdaRequest.getHeader("X-thePlatform-cid");
         MDC.put(MDC_CID, cid == null ? UUID.randomUUID().toString() : cid);
+        MDC.put(MDC_ENDPOINT_NAME, lambdaRequest.getEndpoint());
     }
 
     protected String getCid()
