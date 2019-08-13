@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
@@ -16,7 +15,6 @@ import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.cts.fission.scheduling.queue.monitor.QueueMonitor;
 import com.cts.fission.scheduling.queue.monitor.QueueMonitorFactory;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
@@ -35,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 
 /**
  * Main entry point class for a CloudWatch Event trigger
@@ -51,7 +48,6 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private final String ENV_IDM_USER = "IDM_USER";
     private final String ENV_IDENTITY_URL = "IDENTITY_URL";
     private final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
-    private final String ENV_RESOURCEPOOL_ENDPOINT_PATH = "RESOURCEPOOL_ENDPOINT_PATH";
     private final String ENV_INSIGHT_ENDPOINT_PATH = "INSIGHT_ENDPOINT_PATH";
     private final String ENV_CUSTOMER_ENDPOINT_PATH = "CUSTOMER_ENDPOINT_PATH";
     private final String ENV_INSIGHT_SCHEDULING_INFO_TABLE = "INSIGHT_SCHEDULING_INFO_TABLE";
