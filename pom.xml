@@ -18,7 +18,7 @@
         <persistent-api.version>1.0.1-SNAPSHOT</persistent-api.version>
         <queue-api.version>1.0.1-SNAPSHOT</queue-api.version>
         <scheduling-agenga-fairness.version>1.0.0-SNAPSHOT</scheduling-agenga-fairness.version>
-        <endpoint-client.version>1.0.1</endpoint-client.version>
+        <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
     </properties>
 
