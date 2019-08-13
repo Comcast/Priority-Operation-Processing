@@ -104,48 +104,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         }
 
         String endpointURL = getEnvironmentVar(ENV_ENDPOINT_URL);
-        if(StringUtils.isBlank(request.getResourcePoolId()))
-        {
-            processAllResourcePools(request, endpointURL);
-        }
-        else
-        {
-            processResourcePool(request, endpointURL);
-        }
-    }
-
-    private void processAllResourcePools(ResourcePoolSchedulerRequest request, String endpointURL)
-    {
-        String resourcePoolEndpointPath = getEnvironmentVar(ENV_RESOURCEPOOL_ENDPOINT_PATH);
-        HttpObjectClient<ResourcePool> resourcePoolClient = new HttpObjectClient<>(
-            environmentLookupUtils.getAPIEndpointURL(endpointURL, request.getStageId(), resourcePoolEndpointPath),
-            getHttpURLConnectionFactory(),
-            ResourcePool.class);
-
-        try
-        {
-            DataObjectResponse<ResourcePool> response = resourcePoolClient.getObjects(new ArrayList<>());
-            if(response.isError())
-            {
-                logger.error("Failed to get all resource pools!");
-                return;
-            }
-            response.getAll().stream().forEach( resourcePool ->
-                {
-                    logger.info("Resource Pool to process: {}:{}", resourcePool.getId(), resourcePool.getTitle());
-/*
-                    AWSLambda awsLambda = AWSLambdaClient.builder()
-                        .build();
-                    InvokeRequest invokeRequest = new InvokeRequest();
-                    invokeRequest.setFunctionName();
-                    awsLambda.invoke()*/
-                }
-            );
-        }
-        catch (Throwable t)
-        {
-            throw new RuntimeException("Error processing queue for resource pools.", t);
-        }
+        processResourcePool(request, endpointURL);
     }
 
     private void processResourcePool(ResourcePoolSchedulerRequest request, String endpointURL)
