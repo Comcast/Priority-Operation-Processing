@@ -36,12 +36,12 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected static final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
-    protected static final String ENV_IDM_USER = "IDM_USER";
-    protected static final String ENV_IDENTITY_URL = "IDENTITY_URL";
-    protected static final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
-    protected static final String ENV_RESOURCEPOOL_ENDPOINT_PATH = "RESOURCEPOOL_ENDPOINT_PATH";
-    protected static final String ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME = "ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME";
+    public static final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
+    public static final String ENV_IDM_USER = "IDM_USER";
+    public static final String ENV_IDENTITY_URL = "IDENTITY_URL";
+    public static final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
+    public static final String ENV_RESOURCEPOOL_ENDPOINT_PATH = "RESOURCEPOOL_ENDPOINT_PATH";
+    public static final String ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME = "ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME";
 
     private EnvironmentFacade environmentFacade = new EnvironmentFacade();
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
