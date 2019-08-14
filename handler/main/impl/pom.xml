@@ -26,7 +26,7 @@
         <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.1-SNAPSHOT</logger-reporter.version>
         <reporter-progress-agenda.version>1.0.2-SNAPSHOT</reporter-progress-agenda.version>
-        <dfh-http-idm.version>1.0.0</dfh-http-idm.version>
+        <dfh-http-idm.version>1.0.1-SNAPSHOT</dfh-http-idm.version>
         <dfh-http-util.version>1.0.0</dfh-http-util.version>
 
         <!-- Resident Handlers-->
