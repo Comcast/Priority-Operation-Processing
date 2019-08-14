@@ -4,10 +4,14 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 public class URLRequestPerformer
 {
+    private static Logger logger = LoggerFactory.getLogger(URLRequestPerformer.class);
+
     /**
      * Makes a request to the specified HttpURLConnection
      * @param connection The connection to operate with
@@ -25,6 +29,8 @@ public class URLRequestPerformer
             output.write(data);
             output.close();
         }
+
+        logger.info("performURLRequest: [" + connection.getRequestMethod() + "]");
 
         InputStream is = connection.getInputStream();
 
