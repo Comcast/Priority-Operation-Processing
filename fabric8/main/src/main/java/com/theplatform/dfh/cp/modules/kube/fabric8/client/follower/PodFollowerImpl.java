@@ -83,13 +83,16 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
             CountDownLatch podFinishedSuccessOrFailure = new CountDownLatch(1);
 
             // START POD
+            logger.debug("K8s URL [" + executionConfig.getName() + "], image [" + podConfig.getImageName() +
+                                 "], service account [" + podConfig.getServiceAccountName() + "]");
+
             podWatcher = podPushClient
                 .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure, connectionTracker);
+
             podWatcher.addEventListeners(eventListeners);
             // CHECK POD: SCHEDULED
             // Doesn't need the podWatcher, since we have a latch to wait on.
             schedulePodCheck(podConfig, podName, podScheduled);
-
             // CHECK POD: SUCCESS/FAILURE
             keepCheckForFinishedState(podConfig, executionConfig, logLineObserver, podFinishedSuccessOrFailure, podWatcher);
         }

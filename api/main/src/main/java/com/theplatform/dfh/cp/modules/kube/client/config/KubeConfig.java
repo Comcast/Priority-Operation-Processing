@@ -14,6 +14,18 @@ public class KubeConfig
     private String caCertData;
     private String oauthToken;
 
+    private String zone;
+
+    public String getZone()
+    {
+        return zone;
+    }
+
+    public void setZone(String zone)
+    {
+        this.zone = zone;
+    }
+
     public String getMasterUrl()
     {
         return masterUrl;

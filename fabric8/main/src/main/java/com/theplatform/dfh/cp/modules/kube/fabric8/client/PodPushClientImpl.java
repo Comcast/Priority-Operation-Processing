@@ -125,6 +125,7 @@ public class PodPushClientImpl implements PodPushClient
         {
             throw new IllegalArgumentException("Must provide podConfig.imageName.");
         }
+        logger.debug("Master url [" + kubeConfig.getMasterUrl() + "]");
         Pod podToCreate = Fabric8Helper.getPodSpec(kubeConfig, podConfig, executionConfig);
         logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
     }
@@ -144,6 +145,22 @@ public class PodPushClientImpl implements PodPushClient
 
     private Pod startPod(Pod podToCreate)
     {
+        PodSpec podSpec = podToCreate.getSpec();
+        Map<String, String> selector = podSpec.getNodeSelector();
+        if (selector != null && selector.size() > 0)
+        {
+            String selectorString = "Node selector: ";
+            for (String selectorName : selector.keySet())
+            {
+                selectorString += selectorName + "/" + selector.get(selectorName) + " ";
+            }
+            logger.debug(selectorString);
+        }
+        else
+        {
+            logger.warn("No node selector set");
+        }
+
         return kubernetesClient.startPod(podToCreate);
     }
 

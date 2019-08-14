@@ -273,6 +273,16 @@ public class Fabric8Helper
             podSpec.withTolerations(toleration);
         }
 
+        if (kubeConfig.getZone() != null && kubeConfig.getZone().length() > 0)
+        {
+            logger.debug("Adding zone: " + kubeConfig.getZone());
+            podSpec.addToNodeSelector(kubeConfig.getZone(), "true");
+        }
+        else
+        {
+            logger.debug("No zone to add");
+        }
+
         return podSpec
             .withRestartPolicy(RESTART_POLICY)
             .endSpec()
