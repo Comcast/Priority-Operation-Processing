@@ -38,33 +38,46 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
     }
     protected void doExecute()
     {
+        logger.debug("Getting progress reporter");
         AgendaProgressReporter agendaProgressReporter = operationContext.getAgendaProgressReporter();
 
+        logger.debug("Translating payload");
         PayloadTranslationResult<ExecutorHandlerInput> translationResult = new JsonPayloadTranslator<ExecutorHandlerInput>()
             .translatePayload(launchDataWrapper.getPayload(), ExecutorHandlerInput.class);
         if(!translationResult.isSuccessful())
         {
+            logger.error("Failure to translate payload");
             agendaProgressReporter.addFailed(translationResult.getDiagnosticEvent());
             return;
         }
 
+        logger.debug("Getting executor handler input");
         ExecutorHandlerInput handlerInput = translationResult.getObject();
 
         if (handlerInput == null || handlerInput.getOperations() == null)
         {
+            logger.error("Failed to get handler input");
             agendaProgressReporter.addFailed(new DiagnosticEvent(ExecutorMessages.AGENDA_NO_OPERATIONS.getMessage()));
             return;
         }
 
         try
         {
+            logger.debug("Adding progress");
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
+            logger.debug("Running operation");
             OperationConductor operationConductor = operationConductorFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
             operationConductor.run();
             if(operationConductor.hasExecutionFailed())
+            {
+                logger.error("Execution failed");
                 agendaProgressReporter.addFailed(operationConductor.retrieveAllDiagnosticEvents());
+            }
             else
+            {
                 agendaProgressReporter.addSucceeded();
+                logger.debug("Execute successful");
+            }
         }
         catch (AgendaExecutorException e)
         {

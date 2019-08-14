@@ -40,6 +40,17 @@ public class OperationRunner implements Runnable
         // TODO: should this perform any retries?
         try
         {
+            logger.debug("OperationWrapper [" + operationWrapper.getOperation().getName() + "]");
+            if (executorContext.getJsonContext() == null)
+            {
+                logger.warn("Executor context is null");
+            }
+            else
+            {
+                logger.debug("Executor Context [" + executorContext.getJsonContext().toString() + "], Executor ProgressReporter [" +
+                             executorContext.getAgendaProgressReporter() + "], Executor Reporter [" + executorContext.getReporter() + "]");
+            }
+            logger.debug("Executing start of Pod");
             BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operationWrapper.getOperation());
             // register the executor as a provider of operation progress
             executorContext.getAgendaProgressReporter().registerOperationProgressProvider(executor);

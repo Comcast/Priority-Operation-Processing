@@ -36,6 +36,15 @@ public class KubernetesShutdownProcessor implements ShutdownProcessor
                 return;
             }
 
+            // This is a call to the local K8s API. We can't use
+            // any proxies. Make sure that we are not.
+            System.clearProperty("https.proxyHost");
+            System.clearProperty("https.proxyPort");
+            System.clearProperty("http.proxyHost");
+            System.clearProperty("http.proxyPort");
+
+            logger.debug("Creating kube config with no proxies for shutting down");
+
             KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
             KubernetesClient kubernetesClient = new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig));
             Pod pod = new PodBuilder()

@@ -79,19 +79,21 @@ public class OperationConductor implements OnOperationCompleteListener
      */
     public void run()
     {
-
         final int ORIGINAL_OP_COUNT = pendingOperations.size();
 
         try
         {
+            logger.debug("Getting executor service");
             if(executorService == null)
             {
                 executorService = Executors.newFixedThreadPool(Integer.parseInt(executorContext.getLaunchDataWrapper().getPropertyRetriever().getField(THREAD_POOL_SIZE_SETTING,
                     Integer.toString(DEFAULT_THREAD_POOL_SIZE))));
             }
 
+            logger.debug("Adding progress");
             executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
 
+            logger.debug("Before drain/launch operations.");
             while (!pendingOperations.isEmpty())
             {
                 drainPostProcessOperations();

@@ -38,6 +38,8 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     public static final String IDM_ENCRYPTED_PASS = "idm.service.user.encryptedpass";
     public static final String AGENDA_PROGRESS_CONNECTION_TIMEOUT = "agenda.progress.connection.timeout";
     public static final String AGENDA_PROGRESS_URL = "agenda.progress.url";
+    public static final String AGENDA_PROGRESS_PROXY_HOST = "agenda.progress.proxy.host";
+    public static final String AGENDA_PROGRESS_PROXY_PORT = "agenda.progress.proxy.port";
     public static final int DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT = 30000;
 
     public ExecutorContextFactory(LaunchDataWrapper launchDataWrapper)
@@ -101,6 +103,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         int progressConnectionTimeout;
         String agendaProgressUrl = propertyRetriever.getField(AGENDA_PROGRESS_URL);
+        logger.debug("PAgendaUrl: [" + agendaProgressUrl + "]");
         String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
         try
         {
@@ -117,11 +120,13 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             throw new RuntimeException("Invalid AgendaProgress url specified.");
         }
 
+        String proxyHost = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST);
+        String proxyPort = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT);
         return new HttpReporter()
-            .setUrlRequestPerformer(new URLRequestPerformer())
-            .setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(propertyRetriever, environmentRetriever))
-            .setReportingUrl(agendaProgressUrl)
-            .setConnectionTimeoutMilliseconds(progressConnectionTimeout);
+                .setUrlRequestPerformer(new URLRequestPerformer()).setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(propertyRetriever, environmentRetriever))
+                .setReportingUrl(agendaProgressUrl)
+                .setConnectionTimeoutMilliseconds(progressConnectionTimeout)
+                .setProxyHost(proxyHost).setProxyPort(proxyPort);
     }
 
     protected static IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever, FieldRetriever environmentRetriever)
@@ -134,7 +139,13 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             throw new HttpRequestHandlerException("Invalid IDM credentials configured for token generation.");
         }
 
+        String proxyHost = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST);
+        String proxyPort = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT);
+        logger.debug("Proxy=[" + proxyHost + ":" + proxyPort + "]");
+
         IDMHTTPUrlConnectionFactory connectionFactory = new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
+                proxyHost,
+            proxyPort,
             identityUrl,
             user,
             encryptedPass,
