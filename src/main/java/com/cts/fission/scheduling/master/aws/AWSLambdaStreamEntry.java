@@ -41,7 +41,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     public static final String ENV_IDENTITY_URL = "IDENTITY_URL";
     public static final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
     public static final String ENV_RESOURCEPOOL_ENDPOINT_PATH = "RESOURCEPOOL_ENDPOINT_PATH";
-    public static final String ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME = "ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME";
+    public static final String ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME = "RESOURCEPOOL_SCHEDULER_LAMBDA_NAME";
 
     private EnvironmentFacade environmentFacade = new EnvironmentFacade();
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
