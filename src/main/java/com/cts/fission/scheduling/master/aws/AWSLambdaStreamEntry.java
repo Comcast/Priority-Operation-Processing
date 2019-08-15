@@ -1,4 +1,4 @@
-package com.cts.fission.scheduling.queue.aws;
+package com.cts.fission.scheduling.master.aws;
 
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.model.InvocationType;

@@ -1,10 +1,10 @@
-package com.cts.fission.scheduling.queue.aws.live;
+package com.cts.fission.scheduling.master.aws.live;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.cts.fission.scheduling.queue.aws.AWSLambdaFactory;
-import com.cts.fission.scheduling.queue.aws.AWSLambdaStreamEntry;
+import com.cts.fission.scheduling.master.aws.AWSLambdaFactory;
+import com.cts.fission.scheduling.master.aws.AWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
