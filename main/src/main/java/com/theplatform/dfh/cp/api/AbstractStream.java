@@ -35,4 +35,12 @@ public abstract class AbstractStream
     {
         return params;
     }
+
+    public void addParam(String key, Object value)
+    {
+        if (params == null)
+            params = new ParamsMap();
+
+        params.put(key, value);
+    }
 }
