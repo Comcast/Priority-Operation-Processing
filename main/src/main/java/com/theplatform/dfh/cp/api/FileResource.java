@@ -15,5 +15,5 @@ public interface FileResource
     public String getUrl();
     public void setUrl(String url);
     public ParamsMap getParams();
-
+    public void addParam(String name, Object value);
 }

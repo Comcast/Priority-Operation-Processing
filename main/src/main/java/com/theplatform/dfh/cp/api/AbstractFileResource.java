@@ -70,4 +70,8 @@ public class AbstractFileResource implements FileResource
         return params;
     }
 
+    public void addParam(String name, Object value)
+    {
+        params.put(name, value);
+    }
 }
