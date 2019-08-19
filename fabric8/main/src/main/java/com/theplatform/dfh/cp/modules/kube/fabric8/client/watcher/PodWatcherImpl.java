@@ -38,7 +38,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private Watch watch;
     private int resetCounter = 0;
     private ConnectionTracker connectionTracker;
-    private List<PodEventListener> eventListeners = new ArrayList();
+    private List<PodEventListener> eventListeners = new ArrayList<>();
 
     public void setFinishedLatch(CountDownLatch finishedLatch)
     {
@@ -224,7 +224,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     @Override
     public void resetLogging()
     {
-        logger.warn("Log watch is being reset");
+        logger.warn("[{}]Log watch is being reset", podName);
         if(k8LogReader != null)
         {
             k8LogReader.shutdown();
@@ -232,7 +232,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         else
         {
             // may be that the pod complete so quickly this did not get initialized
-            logger.warn("resetLogging called without a k8LogReader configured.");
+            logger.warn("[{}]resetLogging called without a k8LogReader configured.", podName);
         }
 
         this.resetCounter++;
@@ -240,11 +240,13 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         {
             if(logLineAccumulator.isAllLogDataRequired() && finalPodPhaseInfo != null)
             {
-                logger.warn("Waited too long. Truncating our wait for log data.");
+                logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
                 logLineAccumulator.forceCompletion();
             }
         } else
         {
+            // allow the log reader to be re-created
+            k8LogReader = null;
             intializeAndStartLogObservation();
         }
     }
