@@ -219,9 +219,12 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         }
 
         logThisPodsLogs(linesProduced, podName);
-        resetableProductivityTimeout.timeout(podName);
         int inactivityCounter = resetableProductivityTimeout.getInactivityCounter();
-        logger.info("[{}]Overall log inactivity counter: {} - Next reset ({}/{})", podName, inactivityCounter, logActivityResetCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
+        if(inactivityCounter > 0)
+        {
+            logger.info("[{}]Overall log inactivity counter: {} - Next reset ({}/{})", podName, inactivityCounter, logActivityResetCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
+        }
+        resetableProductivityTimeout.timeout(podName);
         if(logActivityResetCounter >= MAX_INACTIVITY_BEFORE_LOG_RESET)
         {
             logger.warn("[{}]Noticing inactivity on logging system. Resetting log connection.", podName);
