@@ -45,6 +45,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     private ExecutionConfig executionConfig;
     private ConnectionTracker connectionTracker = new ConnectionTracker();
     private List<PodEventListener> eventListeners = new ArrayList<>();
+    private int logActivityResetCounter = 0;
 
     public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
@@ -84,7 +85,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 
             // START POD
             logger.debug("K8s URL [" + executionConfig.getName() + "], image [" + podConfig.getImageName() +
-                                 "], service account [" + podConfig.getServiceAccountName() + "]");
+                "], service account [" + podConfig.getServiceAccountName() + "]");
 
             podWatcher = podPushClient
                 .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure, connectionTracker);
@@ -210,15 +211,21 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
             resetableProductivityTimeout.reset();
             logger.debug("Lines produced for [{}] : {}", podName, size);
             logLineObserver.send(linesProduced);
+            logActivityResetCounter = 0;
+        }
+        else
+        {
+            logActivityResetCounter++;
         }
 
         logThisPodsLogs(linesProduced, podName);
         resetableProductivityTimeout.timeout(podName);
         int inactivityCounter = resetableProductivityTimeout.getInactivityCounter();
-        logger.info("Current pod {} log inactivity counter {}, max {}", podName, inactivityCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
-        if(inactivityCounter > MAX_INACTIVITY_BEFORE_LOG_RESET)
+        logger.info("[{}]Overall log inactivity counter: {} - Next reset ({}/{})", podName, inactivityCounter, logActivityResetCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
+        if(logActivityResetCounter >= MAX_INACTIVITY_BEFORE_LOG_RESET)
         {
-            logger.warn("Noticing inactivity on logging system. ");
+            logger.warn("[{}]Noticing inactivity on logging system. Resetting log connection.", podName);
+            logActivityResetCounter = 0;
             podWatcher.resetLogging();
         }
         return isFinished;
