@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations.ResidentOperationRegistry;
 
 /**
@@ -20,8 +21,10 @@ public class ResidentOperationExecutorFactory extends OperationExecutorFactory
     }
 
     @Override
-    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
+    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, OperationWrapper operationWrapper)
     {
+        Operation operation = operationWrapper.getOperation();
+
         ResidentHandler residentHandler = residentOperationsRegistry.getHandler(operation.getType());
         // if no resident handler was found it is fine, if one was found pass it back
         return residentHandler == null ? null : new ResidentOperationExecutor(operation, residentHandler, executorContext.getLaunchDataWrapper());

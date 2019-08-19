@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  */
 public class OperationWrapper
 {
+    private BaseOperationExecutor operationExecutor;
     private Set<String> dependencies = new HashSet<>();
     private Operation operation;
     private boolean ready;
@@ -190,5 +192,16 @@ public class OperationWrapper
     {
         if(diagnosticEvents == null) diagnosticEvents = new ArrayList<>();
         diagnosticEvents.add(diagnosticEvent);
+    }
+
+    public BaseOperationExecutor getOperationExecutor()
+    {
+        return operationExecutor;
+    }
+
+    public OperationWrapper setOperationExecutor(BaseOperationExecutor operationExecutor)
+    {
+        this.operationExecutor = operationExecutor;
+        return this;
     }
 }

@@ -13,6 +13,7 @@ public abstract class BaseOperationExecutor implements OperationProgressProvider
 {
     protected Operation operation;
     protected LaunchDataWrapper launchDataWrapper;
+    protected String idenitifier;
 
     public BaseOperationExecutor(Operation operation, LaunchDataWrapper launchDataWrapper)
     {
@@ -22,11 +23,6 @@ public abstract class BaseOperationExecutor implements OperationProgressProvider
 
     public abstract String execute(String payload);
 
-    protected static String generateContainerNameSuffix()
-    {
-        return "-" + UUID.randomUUID().toString();
-    }
-
     public void setOperation(Operation operation)
     {
         this.operation = operation;
@@ -35,5 +31,16 @@ public abstract class BaseOperationExecutor implements OperationProgressProvider
     public void setLaunchDataWrapper(LaunchDataWrapper launchDataWrapper)
     {
         this.launchDataWrapper = launchDataWrapper;
+    }
+
+    public String getIdenitifier()
+    {
+        return idenitifier;
+    }
+
+    protected BaseOperationExecutor setIdenitifier(String idenitifier)
+    {
+        this.idenitifier = idenitifier;
+        return this;
     }
 }

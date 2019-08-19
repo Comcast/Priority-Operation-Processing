@@ -54,6 +54,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         this.executionConfig = executionConfig;
         this.jsonHelper = new JsonHelper();
         this.follower = new PodFollowerImpl<>(this.kubeConfig, this.podConfig, this.executionConfig);
+        setIdenitifier(executionConfig.getName());
     }
 
     public void setFollower(PodFollower<PodPushClient> follower)
@@ -81,7 +82,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     {
         try
         {
-            logger.debug("Getting Pod annotations");
+            logger.debug("[{}] Getting Pod annotations", executionConfig.getName());
             Map<String,String> podAnnotations = follower.getPodAnnotations();
             String progressJson = podAnnotations.getOrDefault(KubernetesReporter.REPORT_PROGRESS_ANNOTATION, null);
             String resultPayload = podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);
@@ -90,20 +91,21 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             {
                 return defaultFailedOperationProgress;
             }
-            logger.debug("Getting operationProgress");
+            logger.debug("[{}] Getting operationProgress", executionConfig.getName());
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
-            logger.debug("operationProgress [" + operationProgress.getOperation() + "]");
+            logger.debug("[{}] OperationProgress [{}]",  executionConfig.getName(), operationProgress.getOperation());
             operationProgress.setOperation(operation.getName());
             operationProgress.setResultPayload(resultPayload);
             return operationProgress;
         }
         catch(JsonHelperException je)
         {
-            logger.error("{} - Unable to convert progress string to OperationProgress", operation.getName());
+            logger.error("[{}] {} - Unable to convert progress string to OperationProgress", executionConfig.getName(), operation.getName());
         }
         catch(Exception e)
         {
-            logger.error("{} - Unable to pull pod annotation: {}", operation.getName(), KubernetesReporter.REPORT_PROGRESS_ANNOTATION);
+            logger.error("[{}] {} - Unable to pull pod annotation: {}",
+                executionConfig.getName(), operation.getName(), KubernetesReporter.REPORT_PROGRESS_ANNOTATION);
         }
         return null;
     }
@@ -119,7 +121,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
 
         LogLineObserver logLineObserver = follower.getDefaultLogLineObserver(executionConfig);
 
-        logger.info("Getting progress until the pod {} is finished.", executionConfig.getName());
+        logger.info("[{}] Getting progress until the pod is finished.", executionConfig.getName());
         logLineObserver.addConsumer(new Consumer<String>()
         {
             @Override
@@ -136,7 +138,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         {
             logger.info("Starting the pod with name {}", executionConfig.getName());
             lastPodPhase = follower.startAndFollowPod(logLineObserver);
-            logger.info("{} completed with pod status {}", operation.getName(), lastPodPhase.phase.getLabel());
+            logger.info("[{}]{} completed with pod status {}", executionConfig.getName(), operation.getName(), lastPodPhase.phase.getLabel());
             if (lastPodPhase.phase.hasFinished())
             {
                 if (lastPodPhase.phase.isFailed())
@@ -158,7 +160,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             throw new RuntimeException(errorMessage, exception);
         }
 
-        logger.info("Done with execution of pod: {}", executionConfig.getName());
+        logger.info("[{}] Pod execution complete", executionConfig.getName());
 
         Map<String,String> podAnnotations = follower.getPodAnnotations();
         return podAnnotations.get(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION);

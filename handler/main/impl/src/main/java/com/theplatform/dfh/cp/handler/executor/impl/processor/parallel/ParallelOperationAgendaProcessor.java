@@ -70,13 +70,13 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
             operationConductor.run();
             if(operationConductor.hasExecutionFailed())
             {
-                logger.error("Execution failed");
+                logger.error("Execution failed. Failed operations: {}", operationConductor.getFailedOperationsDelimited(","));
                 agendaProgressReporter.addFailed(operationConductor.retrieveAllDiagnosticEvents());
             }
             else
             {
                 agendaProgressReporter.addSucceeded();
-                logger.debug("Execute successful");
+                logger.debug("Execution successful");
             }
         }
         catch (AgendaExecutorException e)

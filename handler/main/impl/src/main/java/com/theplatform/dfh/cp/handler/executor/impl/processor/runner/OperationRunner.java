@@ -51,7 +51,7 @@ public class OperationRunner implements Runnable
                              executorContext.getAgendaProgressReporter() + "], Executor Reporter [" + executorContext.getReporter() + "]");
             }
             logger.debug("Executing start of Pod");
-            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operationWrapper.getOperation());
+            BaseOperationExecutor executor = executorContext.getOperationExecutorFactory().generateOperationExecutor(executorContext, operationWrapper);
             // register the executor as a provider of operation progress
             executorContext.getAgendaProgressReporter().registerOperationProgressProvider(executor);
             String outputPayload = executor.execute(operationWrapper.getInputPayload());

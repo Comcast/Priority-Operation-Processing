@@ -103,7 +103,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         int progressConnectionTimeout;
         String agendaProgressUrl = propertyRetriever.getField(AGENDA_PROGRESS_URL);
-        logger.debug("PAgendaUrl: [" + agendaProgressUrl + "]");
+        logger.debug("AgendaProgressUrl: [" + agendaProgressUrl + "]");
         String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
         try
         {

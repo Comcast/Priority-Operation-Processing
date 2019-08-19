@@ -6,11 +6,11 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 
+import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticProdPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
-import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
@@ -45,7 +45,7 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
     }
 
     @Override
-    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, Operation operation)
+    public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, OperationWrapper operationWrapper)
     {
         // This is a call to the local K8s API. We can't use
         // any proxies. Make sure that we are not.
@@ -53,6 +53,8 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
         System.clearProperty("https.proxyPort");
         System.clearProperty("http.proxyHost");
         System.clearProperty("http.proxyPort");
+
+        Operation operation = operationWrapper.getOperation();
 
         logger.info("Creating kube config with no proxies");
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
