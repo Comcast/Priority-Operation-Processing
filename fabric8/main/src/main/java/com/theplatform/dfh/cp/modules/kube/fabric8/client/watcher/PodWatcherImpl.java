@@ -210,6 +210,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     @Override
     public void onClose(KubernetesClientException cause)
     {
+        logger.info("[{}]PodWatcherImpl close. Shutting down watch and k8LogReader.");
         if (watch != null)
         {
             watch.close();
@@ -236,9 +237,22 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
             logger.warn("[{}]resetLogging called without a k8LogReader configured.", podName);
         }
 
-        if(logLineAccumulator.isAllLogDataRequired() && finalPodPhaseInfo != null)
+        // TODO: if this becomes any more complex just make this a base class and create two implementations
+        if(logLineAccumulator.isAllLogDataRequired())
         {
-            this.podCompleteResetCounter++;
+            processLogResetOnPodWithCompletionIdentifier();
+        }
+        else
+        {
+            processLogResetOnPodWithoutCompletionIdentifier();
+        }
+    }
+
+    protected void processLogResetOnPodWithCompletionIdentifier()
+    {
+        if(finalPodPhaseInfo != null)
+        {
+            podCompleteResetCounter++;
             if(podCompleteResetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
             {
                 logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
@@ -249,6 +263,15 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         }
         // allow the log reader to be re-created
         intializeAndStartLogObservation();
+    }
+
+    protected void processLogResetOnPodWithoutCompletionIdentifier()
+    {
+        if(finalPodPhaseInfo == null)
+        {
+            // allow the log reader to be re-created ONLY if the pod is not complete
+            intializeAndStartLogObservation();
+        }
     }
 
     public void setPodResource(PodResourceFacade podResource)
