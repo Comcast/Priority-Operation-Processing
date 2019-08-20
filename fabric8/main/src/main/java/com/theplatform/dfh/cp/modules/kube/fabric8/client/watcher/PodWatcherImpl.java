@@ -228,6 +228,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         if(k8LogReader != null)
         {
             k8LogReader.shutdown();
+            k8LogReader = null;
         }
         else
         {
@@ -236,17 +237,16 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         }
 
         this.resetCounter++;
-        if(resetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
+        if(resetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP
+            && logLineAccumulator.isAllLogDataRequired()
+            && finalPodPhaseInfo != null)
         {
-            if(logLineAccumulator.isAllLogDataRequired() && finalPodPhaseInfo != null)
-            {
-                logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
-                logLineAccumulator.forceCompletion();
-            }
-        } else
+            logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
+            logLineAccumulator.forceCompletion();
+        }
+        else
         {
             // allow the log reader to be re-created
-            k8LogReader = null;
             intializeAndStartLogObservation();
         }
     }
