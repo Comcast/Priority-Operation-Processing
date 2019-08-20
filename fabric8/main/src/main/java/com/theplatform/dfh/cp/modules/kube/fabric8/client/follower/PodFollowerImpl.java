@@ -32,7 +32,7 @@ import java.util.concurrent.TimeoutException;
 public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 {
     public static final int LATCH_TIMEOUT = 1000;
-    public static final int MAX_INACTIVITY_BEFORE_LOG_RESET = 10;
+    public static final int MAX_INACTIVITY_BEFORE_LOG_RESET = 20;
     private static Logger logger = LoggerFactory.getLogger(PodFollowerImpl.class);
 
     private PodPushClientFactoryImpl podPushClientFactory = new PodPushClientFactoryImpl();
