@@ -144,12 +144,12 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         logger.debug("Proxy=[" + proxyHost + ":" + proxyPort + "]");
 
         IDMHTTPUrlConnectionFactory connectionFactory = new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
-                proxyHost,
-            proxyPort,
             identityUrl,
             user,
             encryptedPass,
-            null
+            null,
+            proxyHost,
+            proxyPort
         ));
         connectionFactory.setCid(environmentRetriever.getField(HandlerField.CID.name(), null));
 
