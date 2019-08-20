@@ -36,7 +36,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private LogLineAccumulator logLineAccumulator;
     private FinalPodPhaseInfo finalPodPhaseInfo;
     private Watch watch;
-    private int resetCounter = 0;
+    private int podCompleteResetCounter = 0;
     private ConnectionTracker connectionTracker;
     private List<PodEventListener> eventListeners = new ArrayList<>();
 
@@ -236,19 +236,19 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
             logger.warn("[{}]resetLogging called without a k8LogReader configured.", podName);
         }
 
-        this.resetCounter++;
-        if(resetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP
-            && logLineAccumulator.isAllLogDataRequired()
-            && finalPodPhaseInfo != null)
+        if(logLineAccumulator.isAllLogDataRequired() && finalPodPhaseInfo != null)
         {
-            logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
-            logLineAccumulator.forceCompletion();
+            this.podCompleteResetCounter++;
+            if(podCompleteResetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
+            {
+                logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
+                logLineAccumulator.forceCompletion();
+                // never re-init the log observation
+                return;
+            }
         }
-        else
-        {
-            // allow the log reader to be re-created
-            intializeAndStartLogObservation();
-        }
+        // allow the log reader to be re-created
+        intializeAndStartLogObservation();
     }
 
     public void setPodResource(PodResourceFacade podResource)
