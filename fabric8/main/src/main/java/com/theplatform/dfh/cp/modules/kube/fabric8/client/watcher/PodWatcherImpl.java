@@ -260,6 +260,11 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
                 // never re-init the log observation
                 return;
             }
+            else
+            {
+                logger
+                    .info("[{}]Resetting log on completed pod. {} resets / {} reset max)", podName, podCompleteResetCounter, MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP);
+            }
         }
         // allow the log reader to be re-created
         intializeAndStartLogObservation();
