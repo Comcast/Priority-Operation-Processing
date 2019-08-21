@@ -39,11 +39,5 @@ public class TestLogKuberentesLauncher extends KubernetesLauncher
         {
             return null;
         }
-
-        @Override
-        public PodPushClient getClient(KubeConfig kubeConfig, ConnectionTracker connectionTracker)
-        {
-            return null;
-        }
     }
 }
