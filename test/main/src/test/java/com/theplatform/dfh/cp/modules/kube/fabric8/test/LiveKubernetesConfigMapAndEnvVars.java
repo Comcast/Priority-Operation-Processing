@@ -27,8 +27,6 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
     @Test
     public void testEnvVars() throws Exception
     {
-        PodPushClient podPushClient = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
-
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setImageName("ubuntu:14.04");
         podConfig.setArguments(new String[] { "printenv" });
@@ -46,11 +44,13 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         LogLineAccumulator logLineAccumulator = new LogLineAccumulatorImpl();
         executionConfig.setLogLineAccumulator(logLineAccumulator);
 
+        PodPushClient podPushClient = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
+
         try
         {
             CountDownLatch podSched = new CountDownLatch(1);
             CountDownLatch podFinished = new CountDownLatch(1);
-            PodWatcher podWatcher = podPushClient.start(podConfig, executionConfig, podSched, podFinished, null);
+            PodWatcher podWatcher = podPushClient.start(podConfig, executionConfig, podSched, podFinished);
 
             boolean isFinished;
             do
@@ -87,8 +87,6 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
     @Test
     public void testProperties() throws Exception
     {
-        PodPushClient client = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
-
         PodConfig podConfig = new PodConfig().applyDefaults();
         podConfig.setImageName(IMAGE_NAME);
         podConfig.setArguments(new String[] { "cat", "/config/external.properties" });
@@ -110,11 +108,13 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         executionConfig.setLogLineAccumulator(logLineAccumulator);
         executionConfig.setCpuRequestModulator(new HiLowCpuRequestModulator());
 
+        PodPushClient client = new PodPushClientFactoryImpl().getClient(configFactory.getDefaultKubeConfig());
+
         try
         {
             CountDownLatch podSched = new CountDownLatch(1);
             CountDownLatch podFinished = new CountDownLatch(1);
-            PodWatcher podWatcher = client.start(podConfig, executionConfig, podSched, podFinished, null);
+            PodWatcher podWatcher = client.start(podConfig, executionConfig, podSched, podFinished);
 
             boolean isFinished;
             do

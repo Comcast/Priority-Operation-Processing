@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultLogLineObserverFactory.getLogLineObserver;
@@ -115,6 +117,45 @@ public class LiveKubernetesTest extends KubeClientTestBase
         }
     }
 
+    @Test(enabled = true)
+    public void testLotsOfLogs()
+    {
+        Map<String, String> envVars = new HashMap<>();
+        //final int runTime =  2 * 60 * 1000;
+        // This is a way to force at least 2 logwatch resets to take place
+        final int runTime =  30000;
+        final int delayTime = 0;
+        envVars.put("DEFAULT_EXEC_TIME", String.valueOf(runTime));
+        envVars.put("DEFAULT_PRINT_DELAY", String.valueOf(delayTime));
+        PodConfig podConfig = configFactory.getDefaultPodConfig()
+            .setImageName("docker-proto.repo.theplatform.com/printalot:1.0.0")
+            .setNamePrefix("dfhk8clienttest")
+            .setEnvVars(envVars)
+            .setEndOfLogIdentifier("DfhComplete")
+        ;
+
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
+        executionConfig.setCpuRequestModulator(DefaultRequestModulatorFactory.getSimpleCpuRequestModulator(podConfig));
+
+        podConfig.setReapCompletedPods(false);
+        KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
+        loadCertsFromEnvironment(kubeConfig);
+        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
+        LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
+
+        logLineObserver.addConsumer(new Consumer<String>()
+        {
+            @Override
+            public void accept(String s)
+            {
+                logger.trace(s);
+            }
+        });
+
+        FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
+        Assert.assertEquals(PodPhase.SUCCEEDED, lastPhase.phase);
+    }
+
     @Test
     public void testErrorMidExecution()
     {
@@ -165,12 +206,13 @@ public class LiveKubernetesTest extends KubeClientTestBase
             public void run()
             {
                 PodConfig podConfig = TestPodConfigType.longerExecutionPod.createPodConfig(configFactory);
+                KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
                 // set a reasonalby short wait time for the testing purposes
                 podConfig.setPodScheduledTimeoutMs(20000L);
                 ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
                 executionConfig.setCpuRequestModulator(hiLowCpuRequestModulator);
 
-                PodFollower<PodPushClient> follower = new PodFollowerImpl<>(configFactory.getDefaultKubeConfig(), podConfig, executionConfig);
+                PodFollower<PodPushClient> follower = new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig);
 
                 FinalPodPhaseInfo finalPhase = null;
                 try
@@ -184,7 +226,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
                 }
                 finally
                 {
-                    Pod pod = getPod(follower, executionConfig.getName());
+                    Pod pod = getPod(follower, kubeConfig.getNameSpace(), executionConfig.getName());
                     Assert.assertTrue(pod == null);
                     Assert.assertTrue(finalPhase.phase.equals(PodPhase.SUCCEEDED));
                 }
@@ -208,6 +250,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
     public void testUnschedulable()
     {
         PodConfig podConfig = TestPodConfigType.quickPod.createPodConfig(configFactory);
+        KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
 
         CpuRequestModulator cpuRequestModulator = new CpuRequestModulator()
         {
@@ -246,7 +289,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
         }
         finally
         {
-            Pod pod = getPod(follower, executionConfig.getName());
+            Pod pod = getPod(follower, kubeConfig.getNameSpace(), executionConfig.getName());
             Assert.assertTrue(pod == null);
         }
     }
@@ -270,12 +313,12 @@ public class LiveKubernetesTest extends KubeClientTestBase
 
         FinalPodPhaseInfo lastPhase = follower.startAndFollowPod(logLineObserver);
 
-        Pod pod = getPod(follower, lastPhase.name);
+        Pod pod = getPod(follower, kubeConfig.getNameSpace(), lastPhase.name);
         Assert.assertNotNull(pod);
 
         Assert.assertTrue(follower.getPodPushClient().deletePod(lastPhase.name));
 
-        pod = getPod(follower, lastPhase.name);
+        pod = getPod(follower, kubeConfig.getNameSpace(), lastPhase.name);
         Assert.assertNull(pod);
     }
 
@@ -332,8 +375,8 @@ public class LiveKubernetesTest extends KubeClientTestBase
         return content;
     }
 
-    public Pod getPod(PodFollower follower, String podName)
+    public Pod getPod(PodFollower follower, String namespace, String podName)
     {
-        return ((PodPushClientImpl) follower.getPodPushClient()).getPodResource(podName).get();
+        return ((PodPushClientImpl) follower.getPodPushClient()).getKubernetesHttpClients().getRequestClient().getPodResource(namespace, podName).get();
     }
 }

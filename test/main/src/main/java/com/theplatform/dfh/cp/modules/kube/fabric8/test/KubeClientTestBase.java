@@ -4,12 +4,16 @@ import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.ConfigFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultConfigFactory;
+import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultLogLineObserverFactory;
 import com.theplatform.test.modules.resourcereader.ResourceReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 
 /**
@@ -18,6 +22,7 @@ import java.util.Properties;
  */
 public class KubeClientTestBase
 {
+    private static Logger logger = LoggerFactory.getLogger(KubeClientTestBase.class);
     final ResourceReader resourceReader;
     final ConfigFactory configFactory;
 
@@ -82,5 +87,29 @@ public class KubeClientTestBase
                             "debug" });
                 }
             }
+    }
+
+    protected void loadCertsFromEnvironment(KubeConfig kubeConfig)
+    {
+        String oauthCertPath = System.getenv("oauthCertPath");
+        if(oauthCertPath != null)
+            kubeConfig.setCaCertData(readFileIntoString(oauthCertPath));
+
+        String oauthTokenPath = System.getenv("oauthTokenPath");
+        if(oauthTokenPath != null)
+            kubeConfig.setOauthToken(readFileIntoString(oauthTokenPath));
+    }
+
+    private String readFileIntoString(String filePath)
+    {
+        try
+        {
+            return new String(Files.readAllBytes(new File(filePath).toPath()));
+        }
+        catch(Exception e)
+        {
+            logger.error("Failed to read file: " + filePath, e);
+        }
+        return null;
     }
 }

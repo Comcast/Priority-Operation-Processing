@@ -4,8 +4,6 @@ import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.modulator.HiLowCpuRequestModulator;
@@ -22,13 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * User: kimberly.todd
- * Date: 8/24/18
- */
 public class PodNameTest extends KubeClientTestBase
 {
-    private static Logger logger = LoggerFactory.getLogger(OAuthTest.class);
+    private static Logger logger = LoggerFactory.getLogger(PodNameTest.class);
 
     @Test
     public void testPodName_ExternalId_CanBeSeen() throws Exception
@@ -48,7 +42,8 @@ public class PodNameTest extends KubeClientTestBase
         PodFollower podFollower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
         podFollower.startAndFollowPod(podFollower.getDefaultLogLineObserver(executionConfig));
 
-        PodResource<Pod, DoneablePod> p = podFollower.getPodPushClient().getKubernetesClient().getPodResource(kubeConfig.getNameSpace(), executionConfig.getName());
+        PodResource<Pod, DoneablePod> p = podFollower.getPodPushClient().getKubernetesHttpClients().getRequestClient()
+            .getPodResource(kubeConfig.getNameSpace(), executionConfig.getName());
         Thread.sleep(10000);
 
         try

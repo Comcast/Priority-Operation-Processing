@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class AnnotationEditingTest extends KubeClientTestBase
 {
 
@@ -31,7 +30,7 @@ public class AnnotationEditingTest extends KubeClientTestBase
         PodFollower podFollower = new PodFollowerImpl(configFactory.getDefaultKubeConfig(), podConfig, executionConfig);
         podFollower.startAndFollowPod(podFollower.getDefaultLogLineObserver(executionConfig));
 
-        KubernetesClientFacade fabric8Client = podFollower.getPodPushClient().getKubernetesClient();
+        KubernetesClientFacade fabric8Client = podFollower.getPodPushClient().getKubernetesHttpClients().getRequestClient();
         PodAnnotationClient podAnnotationClient = new PodAnnotationClient(fabric8Client, executionConfig.getName());
 
         // Round 1, ensure that old annotations don't get blown away
