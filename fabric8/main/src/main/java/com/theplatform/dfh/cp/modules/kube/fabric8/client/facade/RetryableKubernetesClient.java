@@ -32,6 +32,11 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     private DefaultKubernetesClient kubernetesClient;
     private ConnectionTracker connectionTracker;
 
+    public RetryableKubernetesClient(DefaultKubernetesClient kubernetesClient)
+    {
+        this(kubernetesClient, new ConnectionTracker());
+    }
+
     public RetryableKubernetesClient(DefaultKubernetesClient kubernetesClient, ConnectionTracker connectionTracker)
     {
         super(DEFAULT_ATTEMPTS, DEFAULT_DELAY_SECONDS, retryableExceptions);
