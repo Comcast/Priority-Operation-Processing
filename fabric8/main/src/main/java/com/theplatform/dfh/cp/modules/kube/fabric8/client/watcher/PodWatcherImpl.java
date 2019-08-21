@@ -1,7 +1,10 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacadeFactory;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryablePodResourceFacadeFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.K8LogReader;
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import io.fabric8.kubernetes.api.model.Pod;
@@ -31,13 +34,14 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private CountDownLatch finishedLatch;
     private CountDownLatch scheduledLatch;
     private String podName;
-    private PodResourceFacade podResource;
+    private String kubeNamespace;
+    private PodResourceFacadeFactory podResourceFacadeFactory = new RetryablePodResourceFacadeFactory();
+    private KubernetesClientFacade logKubernetesClientFacade;
     private K8LogReader k8LogReader;
     private LogLineAccumulator logLineAccumulator;
     private FinalPodPhaseInfo finalPodPhaseInfo;
     private Watch watch;
     private int podCompleteResetCounter = 0;
-    private ConnectionTracker connectionTracker;
     private List<PodEventListener> eventListeners = new ArrayList<>();
 
     public void setFinishedLatch(CountDownLatch finishedLatch)
@@ -75,11 +79,6 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     public void setPodName(String podName)
     {
         this.podName = podName;
-    }
-
-    public void setConnectionTracker(ConnectionTracker connectionTracker)
-    {
-        this.connectionTracker = connectionTracker;
     }
 
     @Override
@@ -180,22 +179,23 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private synchronized void intializeAndStartLogObservation()
     {
         if(k8LogReader == null)
-            k8LogReader = new K8LogReader(podName, logLineAccumulator, connectionTracker);
+            k8LogReader = new K8LogReader(podName, logLineAccumulator, logKubernetesClientFacade.getConnectionTracker());
 
-        Pod pod = podResource.get();
+        PodResourceFacade podResourceFacade = podResourceFacadeFactory.create(logKubernetesClientFacade, kubeNamespace, podName);
+        Pod pod = podResourceFacade.get();
         if (pod == null)
         {
             throw new PodException("The pod " + podName + " can't be followed for logging.");
         }
         logger.debug("Pod {} has phase {}", podName, pod.getStatus().getPhase());
-        LogWatch logWatch = podResource.watchLog();
+        LogWatch logWatch = podResourceFacade.watchLog();
         k8LogReader.observeRuntimeLog(logWatch);
 
     }
 
     private void extractLogsForFastFail()
     {
-        String log = podResource.getLog();
+        String log = podResourceFacadeFactory.create(logKubernetesClientFacade, kubeNamespace, podName).getLog();
         if (log != null)
         {
             Arrays.stream(log.split("\n")).forEach(logLineAccumulator::appendLine);
@@ -279,9 +279,22 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
         }
     }
 
-    public void setPodResource(PodResourceFacade podResource)
+    public PodWatcherImpl setLogKubernetesClientFacade(KubernetesClientFacade logKubernetesClientFacade)
     {
-        this.podResource = podResource;
+        this.logKubernetesClientFacade = logKubernetesClientFacade;
+        return this;
+    }
+
+    public PodWatcherImpl setKubeNamespace(String kubeNamespace)
+    {
+        this.kubeNamespace = kubeNamespace;
+        return this;
+    }
+
+    public PodWatcherImpl setPodResourceFacadeFactory(PodResourceFacadeFactory podResourceFacadeFactory)
+    {
+        this.podResourceFacadeFactory = podResourceFacadeFactory;
+        return this;
     }
 
     public void setWatch(Watch watch)

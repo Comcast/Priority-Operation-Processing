@@ -1,7 +1,9 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher;
 
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacadeFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorTest;
 import io.fabric8.kubernetes.api.model.*;
@@ -16,6 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,15 +61,20 @@ public class PodWatcherImplTest
         impl.setScheduledLatch(sched);
         impl.setFinishedLatch(fin);
         impl.setLogLineAccumulator(accumulator);
-        PodResourceFacade podClient = mock(PodResourceFacade.class);
-        impl.setPodResource(podClient);
+
+        KubernetesClientFacade logKubernetesFacade = mock(KubernetesClientFacade.class);
+        impl.setLogKubernetesClientFacade(logKubernetesFacade);
+        PodResourceFacade podResourceFacade = mock(PodResourceFacade.class);
         impl.setWatch(mock(Watch.class));
+        PodResourceFacadeFactory mockPodResourceFacadeFactory = mock(PodResourceFacadeFactory.class);
+        doReturn(podResourceFacade).when(mockPodResourceFacadeFactory).create(any(), any(), any());
+        impl.setPodResourceFacadeFactory(mockPodResourceFacadeFactory);
 
         LogWatch logWatch = mock(LogWatch.class);
-        when(podClient.watchLog()).thenReturn(logWatch);
+        when(podResourceFacade.watchLog()).thenReturn(logWatch);
         Pod pod1 = new Pod();
         pod1.setStatus(new PodStatus());
-        when(podClient.get()).thenReturn(pod1);
+        when(podResourceFacade.get()).thenReturn(pod1);
 
         when(logWatch.getOutput()).thenReturn(new ByteArrayInputStream(new byte[] {}));
 

@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.client;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.client.KubernetesHttpClients;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
@@ -20,17 +21,16 @@ public interface PodPushClient
 
     void setKubeConfig(KubeConfig kubeConfig);
 
-    void setKubernetesClient(KubernetesClientFacade kubernetesClient);
+    KubernetesHttpClients getKubernetesHttpClients();
 
-    KubernetesClientFacade getKubernetesClient();
+    void setKubernetesHttpClients(KubernetesHttpClients kubernetesHttpClients);
 
     void close();
 
     boolean deletePod(String podName);
 
     PodWatcher start(PodConfig podConfig, ExecutionConfig executionConfig,
-        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
-        ConnectionTracker connectionTracker);
+        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure);
 
     void startWithoutWatcher(PodConfig podConfig, ExecutionConfig executionConfig);
 

@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client.facade;
 
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
@@ -7,8 +8,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.PodResource;
 import net.jodah.failsafe.Failsafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,12 +28,15 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
         KubernetesClientException.class
     );
 
+    private String name;
     private DefaultKubernetesClient kubernetesClient;
+    private ConnectionTracker connectionTracker;
 
-    public RetryableKubernetesClient(DefaultKubernetesClient kubernetesClient)
+    public RetryableKubernetesClient(DefaultKubernetesClient kubernetesClient, ConnectionTracker connectionTracker)
     {
         super(DEFAULT_ATTEMPTS, DEFAULT_DELAY_SECONDS, retryableExceptions);
         this.kubernetesClient = kubernetesClient;
+        this.connectionTracker = connectionTracker;
     }
 
     @Override
@@ -62,9 +64,9 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     }
 
     @Override
-    public PodResource<Pod, DoneablePod> getPodResource(String nameSpace, String fullName)
+    public PodResource<Pod, DoneablePod> getPodResource(String nameSpace, String podName)
     {
-        return kubernetesClient.pods().inNamespace(nameSpace).withName(fullName);
+        return kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
     }
 
     @Override
@@ -77,5 +79,23 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     public KubernetesClient getInternalClient()
     {
         return kubernetesClient;
+    }
+
+    @Override
+    public ConnectionTracker getConnectionTracker()
+    {
+        return connectionTracker;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    @Override
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

@@ -12,7 +12,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientF
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineObserverImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.SimpleLogLineSubscriber;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodEventListener;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
@@ -43,7 +42,6 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     
     private PodConfig podConfig;
     private ExecutionConfig executionConfig;
-    private ConnectionTracker connectionTracker = new ConnectionTracker();
     private List<PodEventListener> eventListeners = new ArrayList<>();
     private int logActivityResetCounter = 0;
 
@@ -51,8 +49,9 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     {
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
-        podPushClient = podPushClientFactory.getClient(kubeConfig, connectionTracker.setPodName(executionConfig.getName()));
-        podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesClient(), executionConfig.getName());
+        podPushClient = podPushClientFactory.getClient(kubeConfig);
+        podPushClient.getKubernetesHttpClients().updatePodName(executionConfig.getName());
+        podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesHttpClients().getRequestClient(), executionConfig.getName());
     }
 
     public PodFollowerImpl addEventListener(PodEventListener listener)
@@ -88,7 +87,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
                 "], service account [" + podConfig.getServiceAccountName() + "]");
 
             podWatcher = podPushClient
-                .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure, connectionTracker);
+                .start(podConfig, executionConfig, podScheduled, podFinishedSuccessOrFailure);
 
             podWatcher.addEventListeners(eventListeners);
             // CHECK POD: SCHEDULED
@@ -99,7 +98,7 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         }
         catch (Exception e)
         {
-            logger.error("Exception occured for podName {}", podName, e);
+            logger.error("Exception occurred for podName {}", podName, e);
             throw new PodException(e);
         }
         finally

@@ -1,16 +1,16 @@
 package com.theplatform.dfh.cp.modules.kube.fabric8.client;
 
-import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.KubernetesClientFacade;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.client.KubernetesHttpClients;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacadeFactory;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryablePodResourceFacadeFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.logging.LogLineAccumulatorImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.ConnectionTracker;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryablePodResource;
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
@@ -33,8 +33,10 @@ public class PodPushClientImpl implements PodPushClient
     public static final String UNDEFINED_NODE_NAME = "Node for pod not defined";
     private static Logger logger = LoggerFactory.getLogger(PodPushClientImpl.class);
 
+    private PodWatcherFactory podWatcherFactory = new PodWatcherFactory();
+    private PodResourceFacadeFactory podResourceFacadeFactory = new RetryablePodResourceFacadeFactory();
     private KubeConfig kubeConfig;
-    private KubernetesClientFacade kubernetesClient;
+    private KubernetesHttpClients kubernetesHttpClients;
 
     @Override
     public KubeConfig getKubeConfig()
@@ -48,23 +50,22 @@ public class PodPushClientImpl implements PodPushClient
         this.kubeConfig = kubeConfig;
     }
 
-
     @Override
-    public void setKubernetesClient(KubernetesClientFacade kubernetesClient)
+    public KubernetesHttpClients getKubernetesHttpClients()
     {
-        this.kubernetesClient = kubernetesClient;
+        return kubernetesHttpClients;
     }
 
     @Override
-    public KubernetesClientFacade getKubernetesClient()
+    public void setKubernetesHttpClients(KubernetesHttpClients kubernetesHttpClients)
     {
-        return kubernetesClient;
+        this.kubernetesHttpClients = kubernetesHttpClients;
     }
 
-
+    @Override
     public void close()
     {
-        kubernetesClient.close();
+        kubernetesHttpClients.close();
     }
 
     /**
@@ -74,9 +75,9 @@ public class PodPushClientImpl implements PodPushClient
      * @param podScheduled Always set this count to 1. Countdown is called when pod has been scheduled.
      * @param podFinishedSuccessOrFailure Always set this count to 1. Countdown is called when pod has completed
      */
+    @Override
     public PodWatcher start(PodConfig podConfig, ExecutionConfig executionConfig,
-        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
-        ConnectionTracker connectionTracker)
+        CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure)
     {
         if (podConfig == null || executionConfig == null)
         {
@@ -99,16 +100,17 @@ public class PodPushClientImpl implements PodPushClient
             executionConfig.getLogLineAccumulator().setCompletionIdentifier(podConfig.getEndOfLogIdentifier());
         }
 
-        RetryablePodResource podResource = new RetryablePodResource(getPodResource(podName));
-
-        PodWatcherImpl podWatcherImpl = getPodWatcher(
+        // log watching (PodWatcherImpl establishes this) via log watch client
+        PodWatcherImpl podWatcherImpl = podWatcherFactory.createPodWatcher(
+            kubernetesHttpClients.getLogWatchClient(),
             podScheduled,
             podFinishedSuccessOrFailure,
+            kubeConfig.getNameSpace(),
             podName,
-            podResource,
-            executionConfig.getLogLineAccumulator(),
-            connectionTracker);
-        Watch watch = initializePodWatcher(podResource, podWatcherImpl);
+            executionConfig.getLogLineAccumulator()
+        );
+        // pod watching (PodWatcherImpl.eventReceived) via pod watch client
+        Watch watch = initializePodWatcher(podName, podWatcherImpl);
         podWatcherImpl.setWatch(watch);
         logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
         return podWatcherImpl;
@@ -130,19 +132,6 @@ public class PodPushClientImpl implements PodPushClient
         logPodSpecs(startPod(podToCreate), START_POD_TEMPLATE);
     }
 
-    private PodWatcherImpl getPodWatcher(CountDownLatch podScheduled, CountDownLatch podFinishedSuccessOrFailure,
-        String fullName, PodResourceFacade podResource, LogLineAccumulator logLineAccumulator, ConnectionTracker connectionTracker)
-    {
-        PodWatcherImpl podWatcherImpl = new PodWatcherImpl();
-        podWatcherImpl.setPodName(fullName);
-        podWatcherImpl.setScheduledLatch(podScheduled);
-        podWatcherImpl.setFinishedLatch(podFinishedSuccessOrFailure);
-        podWatcherImpl.setPodResource(podResource);
-        podWatcherImpl.setLogLineAccumulator(logLineAccumulator);
-        podWatcherImpl.setConnectionTracker(connectionTracker);
-        return podWatcherImpl;
-    }
-
     private Pod startPod(Pod podToCreate)
     {
         PodSpec podSpec = podToCreate.getSpec();
@@ -161,7 +150,7 @@ public class PodPushClientImpl implements PodPushClient
             logger.warn("No node selector set");
         }
 
-        return kubernetesClient.startPod(podToCreate);
+        return kubernetesHttpClients.getRequestClient().startPod(podToCreate);
     }
 
     private void logPodSpecs(Pod pod, String logTemplate)
@@ -175,32 +164,40 @@ public class PodPushClientImpl implements PodPushClient
 
     public void editPodAnnotations(String podName, Map<String, String> annotations)
     {
-        kubernetesClient.updatePodAnnotations(podName, annotations);
+        kubernetesHttpClients.getRequestClient().updatePodAnnotations(podName, annotations);
     }
 
-    private Watch initializePodWatcher(PodResourceFacade podResource, PodWatcherImpl podWatcherImpl)
+    private Watch initializePodWatcher(String podName, PodWatcherImpl podWatcherImpl)
     {
-        return podResource.watch(podWatcherImpl);
+        PodResourceFacade podResourceFacade = podResourceFacadeFactory.create(kubernetesHttpClients.getPodWatchClient(), kubeConfig.getNameSpace(), podName);
+        return podResourceFacade.watch(podWatcherImpl);
     }
 
-    public PodResource<Pod, DoneablePod> getPodResource(String fullName)
+    public PodPushClientImpl setPodResourceFacadeFactory(PodResourceFacadeFactory podResourceFacadeFactory)
     {
-        return kubernetesClient.getPodResource(kubeConfig.getNameSpace(), fullName);
+        this.podResourceFacadeFactory = podResourceFacadeFactory;
+        return this;
     }
 
     public boolean deletePod(String podName)
     {
         try
         {
-            logPodSpecs(getPodResource(podName).get(), DELETE_POD_TEMPLATE);
-            getPodResource(podName).delete();
+            PodResource<Pod, DoneablePod> podResource = kubernetesHttpClients.getRequestClient().getPodResource(kubeConfig.getNameSpace(), podName);
+            logPodSpecs(podResource.get(), DELETE_POD_TEMPLATE);
+            podResource.delete();
             return true;
         }
         catch (Exception e)
         {
-            logger.warn("Pod with pod name {} could not be deleted", podName);
-            logger.warn("Pod Deletion Error {}: Error Message: {}", podName, e);
+            logger.warn("Pod Deletion Error {}", podName, e);
             return false;
         }
+    }
+
+    public PodPushClientImpl setPodWatcherFactory(PodWatcherFactory podWatcherFactory)
+    {
+        this.podWatcherFactory = podWatcherFactory;
+        return this;
     }
 }

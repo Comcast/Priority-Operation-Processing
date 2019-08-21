@@ -28,7 +28,7 @@ public class PodPushClientImplTest
     {
         PodPushClient podPushClient = new PodPushClientImpl();
 
-        podPushClient.start(podConfig, executionConfig, new CountDownLatch(1), new CountDownLatch(1), null);
+        podPushClient.start(podConfig, executionConfig, new CountDownLatch(1), new CountDownLatch(1));
     }
 
 }

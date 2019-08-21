@@ -16,8 +16,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.GeneralSecurityException;
 
-import static io.fabric8.kubernetes.client.utils.Utils.isNotNullOrEmpty;
-
 /**
  * Factory for creating custom OkHttpClient objects with a shared ConnectionPool and a connection tracker. This is a wrapper for HttpClientUtils.createHttpClient
  *
@@ -27,12 +25,12 @@ public class HttpClientFactory
 {
     private static ConnectionPool sharedConnectionPool = new ConnectionPool();
 
-    public static OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker)
+    public OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker)
     {
         return createHttpClient(config, connectionTracker, true);
     }
 
-    public static OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker, boolean useSharedConnectionPool)
+    public OkHttpClient createHttpClient(final Config config, final ConnectionTracker connectionTracker, boolean useSharedConnectionPool)
     {
         // HACK explanation: We use the HttpClientUtils.createHttpClient to create a client and then generate a builder from that client so we can
         // set the connectionPool and wrap the SSLSocketFactory
