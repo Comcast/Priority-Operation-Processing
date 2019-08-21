@@ -17,11 +17,18 @@ public class ConnectionTracker
 
     private List<Socket> sockets = new LinkedList<>();
 
+    private String name;
     private String podName = "unknown";
 
     public ConnectionTracker setPodName(String podName)
     {
         this.podName = podName;
+        return this;
+    }
+
+    public ConnectionTracker setName(String name)
+    {
+        this.name = name;
         return this;
     }
 
@@ -42,12 +49,12 @@ public class ConnectionTracker
         {
             try
             {
-                logger.debug("Attempting to update socket timeout {} -> {} for pod: {}", socket.getSoTimeout(), timeout, podName);
+                logger.debug("[{}]Attempting to update socket timeout {} -> {} for pod: {} [{}]", name, socket.getSoTimeout(), timeout, podName, socket.toString());
                 socket.setSoTimeout(timeout);
             }
             catch (SocketException e)
             {
-                logger.error(String.format("Failed to update socket timeout to: %1$s for pod: %2$s", timeout, podName), e);
+                logger.error(String.format("[{}]Failed to update socket timeout to: %1$s for pod: %2$s", name, timeout, podName), e);
             }
         });
     }
