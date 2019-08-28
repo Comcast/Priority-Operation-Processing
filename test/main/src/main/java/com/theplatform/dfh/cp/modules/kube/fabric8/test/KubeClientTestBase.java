@@ -86,6 +86,18 @@ public class KubeClientTestBase
                             "-i", "/var/tmp/shortInsideContainer.mp4", "/var/tmp/shortInsideContainer.out.mp4", "-y", "-loglevel",
                             "debug" });
                 }
+            },
+        printPod
+            {
+                @Override
+                public PodConfig createPodConfig(ConfigFactory configFactory)
+                {
+                    return configFactory.getDefaultPodConfig()
+                        .setImageName("docker-proto.repo.theplatform.com/printalot:1.0.0")
+                        .setNamePrefix("dfh-print-test")
+                        .setEndOfLogIdentifier("DfhComplete")
+                        ;
+                }
             }
     }
 

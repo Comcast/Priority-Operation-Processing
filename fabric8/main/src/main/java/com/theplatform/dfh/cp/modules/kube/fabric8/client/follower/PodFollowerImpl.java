@@ -18,6 +18,7 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeoutException;
 public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 {
     public static final int LATCH_TIMEOUT = 1000;
-    public static final int MAX_INACTIVITY_BEFORE_LOG_RESET = 20;
+    public static final int MAX_INACTIVITY_BEFORE_LOG_RESET = 10;
     private static Logger logger = LoggerFactory.getLogger(PodFollowerImpl.class);
 
     private PodPushClientFactoryImpl podPushClientFactory = new PodPushClientFactoryImpl();
@@ -39,7 +40,8 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 
     private PodAnnotationClient podAnnotationClient;
     private Map<String, String> podAnnotations;
-    
+
+    private KubeConfig kubeConfig;
     private PodConfig podConfig;
     private ExecutionConfig executionConfig;
     private List<PodEventListener> eventListeners = new ArrayList<>();
@@ -47,8 +49,20 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
 
     public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
     {
+        this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
+        podPushClient = podPushClientFactory.getClient(kubeConfig);
+        podPushClient.getKubernetesHttpClients().updatePodName(executionConfig.getName());
+        podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesHttpClients().getRequestClient(), executionConfig.getName());
+    }
+
+    public PodFollowerImpl(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, PodPushClientFactoryImpl podPushClientFactory)
+    {
+        this.kubeConfig = kubeConfig;
+        this.podConfig = podConfig;
+        this.executionConfig = executionConfig;
+        this.podPushClientFactory = podPushClientFactory;
         podPushClient = podPushClientFactory.getClient(kubeConfig);
         podPushClient.getKubernetesHttpClients().updatePodName(executionConfig.getName());
         podAnnotationClient = new PodAnnotationClient(podPushClient.getKubernetesHttpClients().getRequestClient(), executionConfig.getName());
@@ -185,20 +199,16 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         throws InterruptedException, TimeoutException
     {
         boolean isFinished = false;
-        ResetableTimeout resetableProductivityTimeout = new ResetableTimeout(
-            podConfig.getPodStdoutTimeout());
         do
         {
             isFinished = runTillFinished(
-                logLineObserver, executionConfig.getName(), podFinishedSuccessOrFailure, executionConfig.getLogLineAccumulator(),
-                resetableProductivityTimeout, podWatcher);
+                logLineObserver, executionConfig.getName(), podFinishedSuccessOrFailure, executionConfig.getLogLineAccumulator(), podWatcher);
         }
         while (!isFinished);
     }
 
     private boolean runTillFinished(LogLineObserver logLineObserver, String podName,
-        CountDownLatch podFinishedSuccessOrFailure, LogLineAccumulator logLineAccumulator,
-        ResetableTimeout resetableProductivityTimeout, PodWatcher podWatcher) throws InterruptedException, TimeoutException
+        CountDownLatch podFinishedSuccessOrFailure, LogLineAccumulator logLineAccumulator, PodWatcher podWatcher) throws InterruptedException, TimeoutException
     {
         boolean isFinished;
         isFinished = podFinishedSuccessOrFailure.await(LATCH_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -207,7 +217,8 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         int size = linesProduced.size();
         if (size > 0)
         {
-            resetableProductivityTimeout.reset();
+            // incoming logs != new logs (this is because a log watch will pickup all the old logs when reconnected)
+            // the checkLogTimeout below uses the PodStdoutTimeout to check for log issues just before a log reset is triggered
             logger.debug("Lines produced for [{}] : {}", podName, size);
             logLineObserver.send(linesProduced);
             logActivityResetCounter = 0;
@@ -218,19 +229,49 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
         }
 
         logThisPodsLogs(linesProduced, podName);
-        int inactivityCounter = resetableProductivityTimeout.getInactivityCounter();
-        if(inactivityCounter > 0)
+        if(logActivityResetCounter > 0)
         {
-            logger.info("[{}]Overall log inactivity counter: {} - Next reset ({}/{})", podName, inactivityCounter, logActivityResetCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
+            logger.info("[{}]Log inactivity detected - Next reset ({}/{})", podName, logActivityResetCounter, MAX_INACTIVITY_BEFORE_LOG_RESET);
         }
-        resetableProductivityTimeout.timeout(podName);
         if(logActivityResetCounter >= MAX_INACTIVITY_BEFORE_LOG_RESET)
         {
+            // before resetting the log connection check if the overall log timeout has been exceeded
+            if(checkLogTimeout(podConfig.getPodStdoutTimeout(), kubeConfig.getNameSpace(), podName))
+            {
+                // logs have timed out completely
+                throw new TimeoutException(
+                    String.format("[%1$s]Stdout log tail indicates no log activity for over %2$sms", podName, podConfig.getPodStdoutTimeout()));
+            }
             logger.warn("[{}]Noticing inactivity on logging system. Resetting log connection.", podName);
             logActivityResetCounter = 0;
             podWatcher.resetLogging();
         }
         return isFinished;
+    }
+
+    /**
+     * Checks if the stdout logs have not changed on the pod within the specified timeout
+     * @return true if the log has timed out, false otherwise
+     */
+    protected boolean checkLogTimeout(Long timeout, String namespace, String podName)
+    {
+        if(timeout == null) return false;
+
+        Long tailTimestamp = podPushClient.getKubernetesHttpClients().getRequestClient().getLastLogLineTimestamp(namespace, podName);
+        Long now = Instant.now().toEpochMilli();
+        if(tailTimestamp != null)
+        {
+            if (timeout < now - tailTimestamp)
+            {
+                logger.error("[{}]Pod has timed out. tailTimestamp/Now: {}/{}", podName, tailTimestamp, now);
+                return true;
+            }
+            else
+            {
+                logger.error("[{}]No log activity on pod detected. Will timeout after approximately: {}ms", podName, timeout - (now - tailTimestamp));
+            }
+        }
+        return false;
     }
 
     protected void logThisPodsLogs(List<String> linesProduced, String finalPodName)
@@ -247,10 +288,9 @@ public class PodFollowerImpl<C extends PodPushClient> implements PodFollower<C>
     @Override
     public LogLineObserver getDefaultLogLineObserver(ExecutionConfig imageExecutionDetails)
     {
-        LogLineObserver logLineObserver = new LogLineObserverImpl(
+        return new LogLineObserverImpl(
             new SimpleLogLineSubscriber().setPodName(imageExecutionDetails.getName())
         );
-        return logLineObserver;
     }
 
     public PodPushClient getPodPushClient()

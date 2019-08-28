@@ -29,7 +29,8 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
 {
     private static Logger logger = LoggerFactory.getLogger(PodWatcherImpl.class);
 
-    public static final int MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP = 2;
+    public static final int MAX_LOGGING_RESETS_AFTER_EXIT_WITH_IDENTIFIER = 2;
+    public static final int MAX_LOGGING_RESETS_AFTER_EXIT_WITHOUT_IDENTIFIER = 1;
 
     private CountDownLatch finishedLatch;
     private CountDownLatch scheduledLatch;
@@ -41,6 +42,7 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     private LogLineAccumulator logLineAccumulator;
     private FinalPodPhaseInfo finalPodPhaseInfo;
     private Watch watch;
+    private boolean resetLoggingAllowed = true;
     private int podCompleteResetCounter = 0;
     private List<PodEventListener> eventListeners = new ArrayList<>();
 
@@ -225,6 +227,12 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
     @Override
     public void resetLogging()
     {
+        if(!resetLoggingAllowed)
+        {
+            logger.warn("[{}]resetLogging is not allowed.", podName);
+            return;
+        }
+
         logger.warn("[{}]Log watch is being reset", podName);
         if(k8LogReader != null)
         {
@@ -237,46 +245,31 @@ public class PodWatcherImpl implements Watcher<Pod>, PodWatcher
             logger.warn("[{}]resetLogging called without a k8LogReader configured.", podName);
         }
 
-        // TODO: if this becomes any more complex just make this a base class and create two implementations
-        if(logLineAccumulator.isAllLogDataRequired())
-        {
-            processLogResetOnPodWithCompletionIdentifier();
-        }
-        else
-        {
-            processLogResetOnPodWithoutCompletionIdentifier();
-        }
+        processLogResetOnPod(logLineAccumulator.isAllLogDataRequired()
+                             ? MAX_LOGGING_RESETS_AFTER_EXIT_WITH_IDENTIFIER
+                             : MAX_LOGGING_RESETS_AFTER_EXIT_WITHOUT_IDENTIFIER);
     }
 
-    protected void processLogResetOnPodWithCompletionIdentifier()
+    protected void processLogResetOnPod(int maxLogResets)
     {
         if(finalPodPhaseInfo != null)
         {
             podCompleteResetCounter++;
-            if(podCompleteResetCounter > MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP)
+            if(podCompleteResetCounter > maxLogResets)
             {
-                logger.warn("[{}]Waited too long. Truncating our wait for log data.", podName);
+                logger.error("[{}]Waited too long. Truncating our wait for log data.", podName);
                 logLineAccumulator.forceCompletion();
-                // never re-init the log observation
+                resetLoggingAllowed = false;
                 return;
             }
             else
             {
                 logger
-                    .info("[{}]Resetting log on completed pod. {} resets / {} reset max)", podName, podCompleteResetCounter, MAX_LOGGING_RESETS_BEFORE_WE_CHECK_FOR_INFINITE_LOOP);
+                    .info("[{}]Resetting log on completed pod. {} resets / {} reset max)", podName, podCompleteResetCounter, maxLogResets);
             }
         }
         // allow the log reader to be re-created
         intializeAndStartLogObservation();
-    }
-
-    protected void processLogResetOnPodWithoutCompletionIdentifier()
-    {
-        if(finalPodPhaseInfo == null)
-        {
-            // allow the log reader to be re-created ONLY if the pod is not complete
-            intializeAndStartLogObservation();
-        }
     }
 
     public PodWatcherImpl setLogKubernetesClientFacade(KubernetesClientFacade logKubernetesClientFacade)

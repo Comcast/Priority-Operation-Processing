@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.modules.kube.client.config.*;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClientImpl;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodNotScheduledException;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
@@ -13,6 +14,7 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseI
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
 import com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultRequestModulatorFactory;
 import io.fabric8.kubernetes.api.model.Pod;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -25,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultLogLineObserverFactory.getLogLineObserver;
@@ -117,7 +120,55 @@ public class LiveKubernetesTest extends KubeClientTestBase
         }
     }
 
-    @Test(enabled = true)
+    @Test
+    public void testLogTimeout()
+    {
+        Map<String, String> envVars = new HashMap<>();
+        //final int runTime =  2 * 60 * 1000;
+        // This is a way to force at least 2 logwatch resets to take place
+        final int runTime =  20000;
+        final int delayTime = 30000;
+        final long timeout = 10000L;
+        envVars.put("DEFAULT_EXEC_TIME", String.valueOf(runTime));
+        envVars.put("DEFAULT_PRINT_DELAY", String.valueOf(delayTime));
+        PodConfig podConfig = TestPodConfigType.printPod.createPodConfig(configFactory)
+            .setEnvVars(envVars)
+            .setPodStdoutTimeout(timeout)
+            ;
+
+        ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
+        executionConfig.setCpuRequestModulator(DefaultRequestModulatorFactory.getSimpleCpuRequestModulator(podConfig));
+
+        KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
+        loadCertsFromEnvironment(kubeConfig);
+        PodFollowerImpl follower = new PodFollowerImpl(kubeConfig, podConfig, executionConfig);
+        LogLineObserver logLineObserver = getLogLineObserver(executionConfig, follower);
+
+        try
+        {
+            follower.startAndFollowPod(logLineObserver);
+            Assert.fail("Test should have timed out!");
+        }
+        catch(PodException e)
+        {
+            Assert.assertNotNull(e.getCause());
+            Assert.assertEquals(e.getCause().getClass(), TimeoutException.class);
+            Assert.assertTrue(StringUtils.containsIgnoreCase(e.getCause().getMessage(), "log tail indicates no log activity"));
+        }
+        finally
+        {
+            try
+            {
+                follower.getPodPushClient().deletePod(executionConfig.getName());
+            }
+            catch (Exception e)
+            {
+                logger.error("Failed to clean up pod: {}", executionConfig.getName());
+            }
+        }
+    }
+
+    @Test(enabled = false)
     public void testLotsOfLogs()
     {
         Map<String, String> envVars = new HashMap<>();
