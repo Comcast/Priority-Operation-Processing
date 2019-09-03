@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- #################################################### -->
+<!-- SYSLOG is intentionally removed for local execution -->
+<!-- #################################################### -->
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="httpclient.wire.header" level="ERROR" />
+    <logger name="com.theplatform.web.marshalling" level="ERROR" />
+    <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
