@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,6 +92,6 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
                 .setReapCompletedPods(true)
                 .setPullAlways(true)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
-                .setConfigMapDetails(configMapDetails);
+                .setConfigMapSettings(Collections.singletonList(configMapDetails));
     }
 }
