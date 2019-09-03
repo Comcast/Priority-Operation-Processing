@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,14 +42,16 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setPullAlways(true) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.2")
                 .setNamePrefix("dfh-exec")
-                .setConfigMapDetails(new ConfigMapDetails()
-                    .setConfigMapName("lab-main-t-aor-fhexec-t02")
-                    .setVolumeName("config-volume")
-                    .setVolumeMountPath("/app/config")
-                    .setMapKeyPaths(
-                        Arrays.asList(
-                            new KeyPathPair("external-properties", "external.properties"),
-                            new KeyPathPair("registry-json", "registry.json")
+                .setConfigMapSettings(Collections.singletonList(
+                    new ConfigMapDetails()
+                        .setConfigMapName("lab-main-t-aor-fhexec-t02")
+                        .setVolumeName("config-volume")
+                        .setVolumeMountPath("/app/config")
+                        .setMapKeyPaths(
+                            Arrays.asList(
+                                new KeyPathPair("external-properties", "external.properties"),
+                                new KeyPathPair("registry-json", "registry.json")
+                            )
                         )
                     )
                 )
