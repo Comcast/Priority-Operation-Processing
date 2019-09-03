@@ -6,13 +6,15 @@
     "podScheduledTimeoutMs": 600000,
     "reapCompletedPods": true,
     "pullAlways": true,
-    "configMapDetails": {
-      "volumeName":"config-volume-ex",
-      "volumeMountPath":"/configex",
-      "mapKeyPaths":[
-        { "key": "X", "path": "Y"}
-      ]
-    }
+    "configMapSettings": [
+      {
+        "volumeName":"config-volume-ex",
+        "volumeMountPath":"/configex",
+        "mapKeyPaths":[
+          { "key": "X", "path": "Y"}
+        ]
+      }
+    ]
   },
 
   "analysis": {

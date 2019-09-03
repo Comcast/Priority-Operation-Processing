@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
+import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.testng.Assert;
@@ -60,20 +61,21 @@ public class PodConfigRegistryClientTest {
         Assert.assertEquals(pConfig.getReapCompletedPods(), baseJsonPodConfig.getReapCompletedPods());
         Assert.assertEquals(pConfig.getPullAlways(), baseJsonPodConfig.getPullAlways());
         Assert.assertEquals(pConfig.getEndOfLogIdentifier(), BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING);
-        Assert.assertNotNull(pConfig.getConfigMapDetails());
-        Assert.assertEquals(pConfig.getConfigMapDetails().getVolumeName(), VOLUME_NAME);
-        Assert.assertEquals(pConfig.getConfigMapDetails().getVolumeMountPath(), VOLUME_MOUNT_PATH);
+        Assert.assertNotNull(pConfig.getConfigMapSettings());
+        Assert.assertEquals(pConfig.getConfigMapSettings().size(), 1);
+        ConfigMapDetails configMapDetails = pConfig.getConfigMapSettings().get(0);
+        Assert.assertEquals(configMapDetails.getVolumeName(), VOLUME_NAME);
+        Assert.assertEquals(configMapDetails.getVolumeMountPath(), VOLUME_MOUNT_PATH);
 
         // validate the json registry values we overlay
         Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fhsamp:1.0.0");
         Assert.assertEquals(pConfig.getNamePrefix(), "dfh-samp");
 
         // validate final overlay from the sample entry
-        Assert.assertNotNull(pConfig.getConfigMapDetails());
-        Assert.assertNotNull(pConfig.getConfigMapDetails().getMapKeyPaths());
-        Assert.assertEquals(pConfig.getConfigMapDetails().getMapKeyPaths().size(), 2);
-        verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(0), KeyPathZero);
-        verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(1), KeyPathOne);
+        Assert.assertNotNull(configMapDetails.getMapKeyPaths());
+        Assert.assertEquals(configMapDetails.getMapKeyPaths().size(), 2);
+        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(0), KeyPathZero);
+        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(1), KeyPathOne);
     }
 
     @DataProvider Object[][] configMapDetails()
@@ -96,15 +98,17 @@ public class PodConfigRegistryClientTest {
 
         PodConfig pConfig = podConfigRegistryClient.getPodConfig(type);
 
-        Assert.assertEquals(pConfig.getConfigMapDetails().getVolumeName(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_NAME);
-        Assert.assertEquals(pConfig.getConfigMapDetails().getVolumeMountPath(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_MOUNT_PATH);
+        Assert.assertNotNull(pConfig.getConfigMapSettings());
+        Assert.assertEquals(pConfig.getConfigMapSettings().size(), 1);
+        ConfigMapDetails configMapDetails = pConfig.getConfigMapSettings().get(0);
+        Assert.assertEquals(configMapDetails.getVolumeName(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_NAME);
+        Assert.assertEquals(configMapDetails.getVolumeMountPath(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_MOUNT_PATH);
 
         // validate the nested fields are set
-        Assert.assertNotNull(pConfig.getConfigMapDetails());
-        Assert.assertNotNull(pConfig.getConfigMapDetails().getMapKeyPaths());
-        Assert.assertEquals(pConfig.getConfigMapDetails().getMapKeyPaths().size(), 2);
-        verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(0), KeyPathZero);
-        verifyKeyPathMatches(pConfig.getConfigMapDetails().getMapKeyPaths().get(1), KeyPathOne);
+        Assert.assertNotNull(configMapDetails.getMapKeyPaths());
+        Assert.assertEquals(configMapDetails.getMapKeyPaths().size(), 2);
+        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(0), KeyPathZero);
+        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(1), KeyPathOne);
     }
 
     // cheapo comparison method
@@ -129,11 +133,17 @@ public class PodConfigRegistryClientTest {
     {
         final int MAP_KEY_PATHS_SIZE = 2;
         PodConfig podConfig = podConfigRegistryClient.getPodConfig("sample");
-        Assert.assertEquals(podConfig.getConfigMapDetails().getMapKeyPaths().size(), MAP_KEY_PATHS_SIZE, "This test requires the ConfigMapDetails.MapKeyPaths size to be " + MAP_KEY_PATHS_SIZE);
-        podConfig.getConfigMapDetails().getMapKeyPaths().add(new KeyPathPair("key", "path"));
+        Assert.assertNotNull(podConfig.getConfigMapSettings());
+        Assert.assertEquals(podConfig.getConfigMapSettings().size(), 1);
+        ConfigMapDetails configMapDetails = podConfig.getConfigMapSettings().get(0);
+        Assert.assertEquals(configMapDetails.getMapKeyPaths().size(), MAP_KEY_PATHS_SIZE, "This test requires the ConfigMapDetails.MapKeyPaths size to be " + MAP_KEY_PATHS_SIZE);
+        configMapDetails.getMapKeyPaths().add(new KeyPathPair("key", "path"));
 
         PodConfig clonedConfig = podConfigRegistryClient.getPodConfig("sample");
-        Assert.assertEquals(clonedConfig.getConfigMapDetails().getMapKeyPaths().size(), MAP_KEY_PATHS_SIZE, "Cloned configuration is using the same references as the original!");
+        Assert.assertNotNull(clonedConfig.getConfigMapSettings());
+        Assert.assertEquals(clonedConfig.getConfigMapSettings().size(), 1);
+        ConfigMapDetails clonedConfigmapDetails = clonedConfig.getConfigMapSettings().get(0);
+        Assert.assertEquals(clonedConfigmapDetails.getMapKeyPaths().size(), MAP_KEY_PATHS_SIZE, "Cloned configuration is using the same references as the original!");
     }
 
     @Test
@@ -142,14 +152,16 @@ public class PodConfigRegistryClientTest {
         JsonPodConfigRegistryClient client = createJsonRegistryClient(POD_REGISTRY_FILE_WITH_BASE_CONFIG_MAP_DETAILS);
         PodConfig podConfig = client.getPodConfig("analysis");
 
-        Assert.assertEquals(podConfig.getConfigMapDetails().getVolumeName(), "config-volume-ex");
-        Assert.assertEquals(podConfig.getConfigMapDetails().getVolumeMountPath(), "/configex");
+        Assert.assertNotNull(podConfig.getConfigMapSettings());
+        Assert.assertEquals(podConfig.getConfigMapSettings().size(), 1);
+        ConfigMapDetails configMapDetails = podConfig.getConfigMapSettings().get(0);
+        Assert.assertEquals(configMapDetails.getVolumeName(), "config-volume-ex");
+        Assert.assertEquals(configMapDetails.getVolumeMountPath(), "/configex");
 
         // validate the nested fields are set
-        Assert.assertNotNull(podConfig.getConfigMapDetails());
-        Assert.assertNotNull(podConfig.getConfigMapDetails().getMapKeyPaths());
-        Assert.assertEquals(podConfig.getConfigMapDetails().getMapKeyPaths().size(), 1);
-        verifyKeyPathMatches(podConfig.getConfigMapDetails().getMapKeyPaths().get(0),
+        Assert.assertNotNull(configMapDetails.getMapKeyPaths());
+        Assert.assertEquals(configMapDetails.getMapKeyPaths().size(), 1);
+        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(0),
             new KeyPathPair("X", "Y"));
     }
 

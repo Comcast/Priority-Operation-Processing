@@ -19,6 +19,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
 
     private static final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+    public static final String CONFIG_MAP_NAME_NODE = "configMapName";
     public static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
     public static final String DEFAULT_CONFIG_MAP_JSON = "defaultConfigMap.json";
     public static final String BASE_POD_CONFIG_KEY = "basePodConfig";
@@ -42,7 +43,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
 
         corePodConfig.setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
-                .setConfigMapDetails(configMapDetails);
+                .setConfigMapSettings(Collections.singletonList(configMapDetails));
 
         CORE_POD_CONFIG_NODE = objectMapper.valueToTree(corePodConfig);
     }
@@ -133,13 +134,14 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
                 }
 
                 JsonNode handlerNode = node.get(handlerType);
-                String configMapName = handlerNode.get("configMapName").textValue();
+                // NOTE: This is the one dynamic field that is changed in the ConfigMapDetails nested within the PodConfig (convenience)
+                String configMapName = retrieveNodeText(handlerNode, CONFIG_MAP_NAME_NODE, null);
                 JsonNode podConfigNode = handlerNode.get("podConfig");
 
                 PodConfig combinedConfig = combineConfig(CORE_POD_CONFIG_NODE, basePodConfigNode, podConfigNode);
-                // the configmap is set here after all the combine actions
-                // TODO: this may be problematic later if we wish to use multiple configmaps
-                combinedConfig.getConfigMapDetails().setConfigMapName(configMapName);
+                // set the configMap name on the first entry if there is one and a config map name was specified
+                if(configMapName != null && combinedConfig.getConfigMapSettings() != null && combinedConfig.getConfigMapSettings().size() > 0)
+                    combinedConfig.getConfigMapSettings().get(0).setConfigMapName(configMapName);
 
                 podConfigMap.put(handlerType, combinedConfig);
             }
@@ -149,6 +151,12 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
         catch(IOException ex) {
             throw new PodConfigRegistryClientException("There was a problem trying to read from registry JSON file: " + this.path, ex);
         }
+    }
+
+    protected String retrieveNodeText(JsonNode node, String nodeName, String defaultValue)
+    {
+        JsonNode retrievedNode = node.get(nodeName);
+        return retrievedNode.isMissingNode() ? defaultValue : retrievedNode.textValue();
     }
 
     /**
