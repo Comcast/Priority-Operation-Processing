@@ -6,10 +6,6 @@ import java.util.List;
  *
  */
 public class ConfigMapDetails {
-    // 	The key value on a fabric8 KeyToPath when setting up a configmap for the pod
-    private String mapKey;
-    // The map value on a fabric8 KeyToPath when setting up a configmap for the pod
-    private String mapPath;
     // The name of the fabric8 ConfigMapVolumeSource
     private String configMapName;
     // The volume name when setting up the config map
@@ -27,28 +23,6 @@ public class ConfigMapDetails {
     public ConfigMapDetails setMapKeyPaths(List<KeyPathPair> mapKeyPaths)
     {
         this.mapKeyPaths = mapKeyPaths;
-        return this;
-    }
-
-    public String getMapKey()
-    {
-        return mapKey;
-    }
-
-    public ConfigMapDetails setMapKey(String mapKey)
-    {
-        this.mapKey = mapKey;
-        return this;
-    }
-
-    public String getMapPath()
-    {
-        return mapPath;
-    }
-
-    public ConfigMapDetails setMapPath(String mapPath)
-    {
-        this.mapPath = mapPath;
         return this;
     }
 

@@ -80,11 +80,7 @@ public class Fabric8Helper
         labels.put(EXTERNAL_ID, executionConfig.getExternalId());
         labels.put(EXTERNAL_GROUP_ID, executionConfig.getExternalGroupId());
 
-        NFSVolumeSource nfsVolumeSource = podConfig.getNfsDetails() == null
-                                          ? null 
-                                          : new NFSVolumeSource(
-            podConfig.getNfsDetails().getNfsServerPath(), podConfig.getNfsDetails().getNfsReadOnly(), podConfig.getNfsDetails().getNfsServer());
-
+        List<ConfigMapDetails> configMapSettings = podConfig.getConfigMapSettings() != null ? podConfig.getConfigMapSettings() : new ArrayList<>();
 
         final PodSpecFluent.ContainersNested<PodFluent.SpecNested<PodBuilder>> containerSpec = new PodBuilder()
             .withApiVersion(KUBE_API_VERSION)
@@ -130,31 +126,41 @@ public class Fabric8Helper
             containerSpec.addNewVolumeMount().withName(EMPTY_DIR_LOG_NAME).withMountPath(APP_DUMPS).endVolumeMount();
         }
 
-        if (podConfig.hasConfigMap())
-        {
-            containerSpec.addNewVolumeMount().withName(podConfig.getConfigMapDetails().getVolumeName())
-                .withMountPath(podConfig.getConfigMapDetails().getVolumeMountPath()).endVolumeMount();
-        }
+        configMapSettings.forEach(configMapDetails ->
+            containerSpec.addNewVolumeMount()
+                .withName(configMapDetails.getVolumeName())
+                .withMountPath(configMapDetails.getVolumeMountPath())
+                .endVolumeMount()
+        );
 
         if (podConfig.getPullAlways())
         {
             containerSpec.withImagePullPolicy("Always");
         }
 
-        List<String> volumeNames = new ArrayList<>();
-
-        if (podConfig.getNfsDetails() != null && podConfig.getNfsDetails().getNfsMountPaths() != null)
+        // map of nfsdetails to all the different volume names for each volumePath specified
+        Map<NfsDetails, List<String>> nfsDetailsVolumeMap = new HashMap<>();
+        // add the nfs settings for the individual containers
+        if (podConfig.getNfsSettings() != null)
         {
-            for (String volumePath : podConfig.getNfsDetails().getNfsMountPaths())
-            {
-                String volumeName = generateUUID();
-                volumeNames.add(volumeName);
-                containerSpec
-                    .addNewVolumeMount()
-                    .withName(volumeName)
-                    .withMountPath(volumePath)
-                    .endVolumeMount();
-            }
+            podConfig.getNfsSettings().forEach(nfsDetails -> {
+
+                if(nfsDetails.getNfsMountPaths() != null)
+                {
+                    List<String> volumeNames = new LinkedList<>();
+                    for (String volumePath : nfsDetails.getNfsMountPaths())
+                    {
+                        String volumeName = generateUUID();
+                        volumeNames.add(volumeName);
+                        containerSpec
+                            .addNewVolumeMount()
+                            .withName(volumeName)
+                            .withMountPath(volumePath)
+                            .endVolumeMount();
+                    }
+                    nfsDetailsVolumeMap.put(nfsDetails, volumeNames);
+                }
+            });
         }
 
         if (executionConfig.getCpuRequestModulator() == null)
@@ -201,23 +207,26 @@ public class Fabric8Helper
             containerSpec
                 .endContainer()
                 .withVolumes();
-        for (String v : volumeNames)
+
+        nfsDetailsVolumeMap.entrySet().forEach(kvp ->
         {
-            podSpec
-                .addNewVolume()
-                .withName(v)
-                .withNfs(nfsVolumeSource)
-                .endVolume();
-        }
+            NfsDetails nfsDetails = kvp.getKey();
+            NFSVolumeSource nfsVolumeSource = new NFSVolumeSource(nfsDetails.getNfsServerPath(), nfsDetails.getNfsReadOnly(), nfsDetails.getNfsServer());
+            kvp.getValue().forEach(volumeName ->
+                podSpec
+                    .addNewVolume()
+                    .withName(volumeName)
+                    .withNfs(nfsVolumeSource)
+                    .endVolume()
+            );
+        });
 
         if (podConfig.hasServiceAccountName())
         {
             podSpec.withServiceAccount(podConfig.getServiceAccountName());
         }
 
-        if (podConfig.hasConfigMap())
-        {
-            ConfigMapDetails configMapDetails = podConfig.getConfigMapDetails();
+        configMapSettings.forEach(configMapDetails -> {
             ConfigMapVolumeSource source = new ConfigMapVolumeSource();
             List<KeyToPath> items = new LinkedList<>();
 
@@ -232,20 +241,12 @@ public class Fabric8Helper
                     items.add(keyToPath);
                 }
             }
-            else
-            {
-                // the old way of setting a singular volume-configMap-keyPath
-                KeyToPath keyToPath = new KeyToPath();
-                keyToPath.setKey(configMapDetails.getMapKey());
-                keyToPath.setPath(configMapDetails.getMapPath());
-                items.add(keyToPath);
-            }
 
             source.setItems(items);
             source.setName(configMapDetails.getConfigMapName());
             podSpec.addNewVolume().withName(configMapDetails.getVolumeName()).withConfigMap(source)
                     .endVolume();
-        }
+        });
 
         if (podConfig.getDefaultEmptyDirLogging())
         {

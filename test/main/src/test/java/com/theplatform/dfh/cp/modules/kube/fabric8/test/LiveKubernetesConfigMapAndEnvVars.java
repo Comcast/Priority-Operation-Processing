@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -92,12 +94,11 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         podConfig.setArguments(new String[] { "cat", "/config/external.properties" });
         podConfig.setNamePrefix("testprop");
 
-        podConfig.setConfigMapDetails(new ConfigMapDetails()
-            .setMapKey("external-properties")
-            .setMapPath("external.properties")
+        podConfig.setConfigMapSettings(Collections.singletonList(new ConfigMapDetails()
+            .setMapKeyPaths(Collections.singletonList(new KeyPathPair("external-properties", "external.properties")))
             .setConfigMapName(resourceReader.getValue("configMap"))
             .setVolumeName("config-volume")
-            .setVolumeMountPath("/config"));
+            .setVolumeMountPath("/config")));
 
         podConfig.setUseTaintedNodes(false);
         podConfig.setServiceAccountName("dfh-service");

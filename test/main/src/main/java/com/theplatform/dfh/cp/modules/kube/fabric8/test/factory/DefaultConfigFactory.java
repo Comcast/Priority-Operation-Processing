@@ -3,6 +3,9 @@ package com.theplatform.dfh.cp.modules.kube.fabric8.test.factory;
 import com.theplatform.dfh.cp.modules.kube.client.config.*;
 import com.theplatform.test.modules.resourcereader.ResourceReader;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class DefaultConfigFactory implements ConfigFactory
 {
     private final ResourceReader resourceReader;
@@ -35,7 +38,7 @@ public class DefaultConfigFactory implements ConfigFactory
         aliveCheckDetails.setAliveCheckLinking(false);
 
         PodConfig podConfig = new PodConfig().applyDefaults();
-        podConfig.setNfsDetails(nfsDetails);
+        podConfig.setNfsSettings(Collections.singletonList(nfsDetails));
         podConfig.setAliveCheckDetails(aliveCheckDetails);
         podConfig.setMemoryRequestCount("1000m");
         podConfig.setReapCompletedPods(true);

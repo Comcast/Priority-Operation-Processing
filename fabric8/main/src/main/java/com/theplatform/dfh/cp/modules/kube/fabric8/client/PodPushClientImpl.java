@@ -184,6 +184,11 @@ public class PodPushClientImpl implements PodPushClient
         try
         {
             PodResource<Pod, DoneablePod> podResource = kubernetesHttpClients.getRequestClient().getPodResource(kubeConfig.getNameSpace(), podName);
+            if(podResource.get() == null)
+            {
+                logger.warn("Attempted to delete missing pod [{}]", podName);
+                return true;
+            }
             logPodSpecs(podResource.get(), DELETE_POD_TEMPLATE);
             podResource.delete();
             return true;

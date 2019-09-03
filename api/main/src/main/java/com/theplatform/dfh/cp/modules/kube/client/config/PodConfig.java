@@ -81,9 +81,10 @@ public class PodConfig
     private List<Class<? extends Throwable>> nonRetryableExceptions;
     private List<Class<? extends Throwable>> retryableExceptions;
 
-    private ConfigMapDetails configMapDetails;
     private AliveCheckDetails aliveCheckDetails;
-    private NfsDetails nfsDetails;
+
+    private List<ConfigMapDetails> configMapSettings;
+    private List<NfsDetails> nfsSettings;
 
     private String logback;
 
@@ -361,22 +362,6 @@ public class PodConfig
         return this;
     }
 
-    public Boolean hasConfigMap()
-    {
-        return configMapDetails != null;
-    }
-
-    public ConfigMapDetails getConfigMapDetails()
-    {
-        return configMapDetails;
-    }
-
-    public PodConfig setConfigMapDetails(ConfigMapDetails configMapDetails)
-    {
-        this.configMapDetails = configMapDetails;
-        return this;
-    }
-
     public AliveCheckDetails getAliveCheckDetails()
     {
         return aliveCheckDetails;
@@ -388,14 +373,25 @@ public class PodConfig
         return this;
     }
 
-    public NfsDetails getNfsDetails()
+    public List<ConfigMapDetails> getConfigMapSettings()
     {
-        return nfsDetails;
+        return configMapSettings;
     }
 
-    public PodConfig setNfsDetails(NfsDetails nfsDetails)
+    public PodConfig setConfigMapSettings(List<ConfigMapDetails> configMapSettings)
     {
-        this.nfsDetails = nfsDetails;
+        this.configMapSettings = configMapSettings;
+        return this;
+    }
+
+    public List<NfsDetails> getNfsSettings()
+    {
+        return nfsSettings;
+    }
+
+    public PodConfig setNfsSettings(List<NfsDetails> nfsSettings)
+    {
+        this.nfsSettings = nfsSettings;
         return this;
     }
 

@@ -12,7 +12,7 @@ public class NfsDetails
     // The mounts to create in relation to the nfs
     private String[] nfsMountPaths;
     // Flag indicating if the nfs volume is to be readonly
-    private Boolean nfsReadOnly;                          // todo boolean or Boolean?
+    private Boolean nfsReadOnly;
 
     public String getNfsServer()
     {
