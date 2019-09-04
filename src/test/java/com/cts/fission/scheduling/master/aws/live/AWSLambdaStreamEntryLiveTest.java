@@ -33,7 +33,7 @@ public class AWSLambdaStreamEntryLiveTest
         envVars.put(AWSLambdaStreamEntry.ENV_IDENTITY_URL, "http://identity.auth.test.corp.theplatform.com/idm");
         envVars.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://g9solclg15.execute-api.us-west-2.amazonaws.com");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
-        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
+        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         EnvironmentFacade environmentFacade = new EnvironmentFacade()
         {
