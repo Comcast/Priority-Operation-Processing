@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Main entry point class for a CloudWatch Event trigger
@@ -41,7 +45,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     public static final String ENV_IDENTITY_URL = "IDENTITY_URL";
     public static final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
     public static final String ENV_RESOURCEPOOL_ENDPOINT_PATH = "RESOURCEPOOL_ENDPOINT_PATH";
-    public static final String ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME = "RESOURCEPOOL_SCHEDULER_LAMBDA_NAME";
+    public static final String ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST = "RESOURCEPOOL_LAMBDA_LAUNCH_LIST";
 
     private EnvironmentFacade environmentFacade = new EnvironmentFacade();
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
@@ -83,12 +87,15 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     protected void processAllResourcePools(SchedulerRequest request)
     {
         String endpointURL = getEnvironmentVar(ENV_ENDPOINT_URL);
-        String resourcePoolSchedulerLambda = getEnvironmentVar(ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME);
+        String rawLaunchLambdaList = getEnvironmentVar(ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST);
         String resourcePoolEndpointPath = getEnvironmentVar(ENV_RESOURCEPOOL_ENDPOINT_PATH);
 
         HttpObjectClient<ResourcePool> resourcePoolClient = objectClientFactory.createClient(
             environmentLookupUtils.getAPIEndpointURL(endpointURL, request.getStageId(), resourcePoolEndpointPath),
             ResourcePool.class);
+
+        List<String> lambdasToLaunch = Arrays.stream(StringUtils.split(rawLaunchLambdaList, ","))
+            .map(String::trim).collect(Collectors.toList());
 
         try
         {
@@ -99,22 +106,28 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
                 return;
             }
             response.getAll().forEach( resourcePool ->
-                {
-                    logger.info("Launching ResourcePool scheduling for: {}:{}", resourcePool.getId(), resourcePool.getTitle());
-                    AWSLambda awsLambda = awsLambdaFactory.create();
-                    InvokeRequest invokeRequest = new InvokeRequest();
-                    invokeRequest.setFunctionName(resourcePoolSchedulerLambda);
-                    // run as an event (headless)
-                    invokeRequest.setInvocationType(InvocationType.Event);
-                    invokeRequest.setPayload(createPayload(resourcePool.getId(), request.getStageId()));
-                    awsLambda.invoke(invokeRequest);
-                }
+                launchResourcePoolLambda(lambdasToLaunch, resourcePool, request)
             );
         }
         catch (Throwable t)
         {
             throw new RuntimeException("Error processing resource pools.", t);
         }
+    }
+
+    private void launchResourcePoolLambda(List<String> lambdasToLaunch, ResourcePool resourcePool, SchedulerRequest schedulerRequest)
+    {
+        lambdasToLaunch.forEach(lambdaName ->
+        {
+            logger.info("Launching Scheduled ResourcePool Lambda {} for: {}:{}", lambdaName, resourcePool.getId(), resourcePool.getTitle());
+            AWSLambda awsLambda = awsLambdaFactory.create();
+            InvokeRequest invokeRequest = new InvokeRequest();
+            invokeRequest.setFunctionName(String.format("%1$s:%2$s", lambdaName, schedulerRequest.getStageId()));
+            // run as an event (headless)
+            invokeRequest.setInvocationType(InvocationType.Event);
+            invokeRequest.setPayload(createPayload(resourcePool.getId(), schedulerRequest.getStageId()));
+            awsLambda.invoke(invokeRequest);
+        });
     }
 
     private String createPayload(String resourcePoolId, String stageId)

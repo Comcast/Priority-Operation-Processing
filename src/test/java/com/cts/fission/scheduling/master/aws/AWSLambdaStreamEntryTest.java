@@ -90,7 +90,7 @@ public class AWSLambdaStreamEntryTest
         return new Object[][]
             {
                 {AWSLambdaStreamEntry.ENV_ENDPOINT_URL},
-                {AWSLambdaStreamEntry.ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME},
+                {AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST},
                 {AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH},
             };
     }
@@ -166,7 +166,7 @@ public class AWSLambdaStreamEntryTest
         environmentMap.put(AWSLambdaStreamEntry.ENV_IDENTITY_URL, "http://identity.auth.test.corp.theplatform.com/idm");
         environmentMap.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://g9solclg15.execute-api.us-west-2.amazonaws.com");
         environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
-        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_SCHEDULER_LAMBDA_NAME, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
+        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         streamEntry.setEnvironmentLookupUtils(new EnvironmentLookupUtils()
         {
