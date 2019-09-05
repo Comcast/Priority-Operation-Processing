@@ -156,7 +156,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 
     private Timer.Context startTimer()
     {
-        return metricReporter != null ? metricReporter.getTimer(MetricLabel.duration).time() : null;
+        return metricReporter != null ? metricReporter.timerStart(MetricLabel.duration) : null;
     }
 
     private void endTimer(Timer.Context timer)
@@ -166,20 +166,34 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     }
     private void reportSuccess()
     {
-        if (metricReporter != null)
+        try
         {
-            Counter failedCounter = metricReporter.getCounter(MetricLabel.failed);
-            if(failedCounter.getCount() > 0)
-                failedCounter.dec();
+            if (metricReporter != null)
+            {
+                Counter failedCounter = metricReporter.getMetricRegistry().counter(MetricLabel.failed.name());
+                if(failedCounter.getCount() > 0)
+                    failedCounter.dec();
+            }
+        }
+        catch (Throwable e)
+        {
+            logger.error("Failure getting metric for reporting.", e);
         }
     }
 
     private void reportFailure()
     {
-        if (metricReporter != null)
+        try
         {
-            metricReporter.getMeter(MetricLabel.failed).mark();
-            metricReporter.getCounter(MetricLabel.failed).inc();
+            if (metricReporter != null)
+            {
+                metricReporter.mark(MetricLabel.failed);
+                metricReporter.countInc(MetricLabel.failureCount);
+            }
+        }
+        catch (Throwable e)
+        {
+            logger.error("Failure getting metric for reporting.", e);
         }
     }
     public PullerLaunchDataWrapper getLaunchDataWrapper()
