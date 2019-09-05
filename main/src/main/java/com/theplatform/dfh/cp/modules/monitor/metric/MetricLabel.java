@@ -4,5 +4,6 @@ public enum MetricLabel
 {
     duration,
     deleted,
-    failed
+    failed,
+    failureCount
 }
