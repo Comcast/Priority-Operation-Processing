@@ -18,7 +18,7 @@ public class MetricReporterTest
     @Test
     public void testFailedCounter()
     {
-        Counter counter = reporter.getCounter(MetricLabel.failed);
+        Counter counter = reporter.getMetricRegistry().counter(MetricLabel.failed.name());
         Assert.assertNotNull(counter);
         Assert.assertEquals(counter.getCount(), 0);
         counter.inc();

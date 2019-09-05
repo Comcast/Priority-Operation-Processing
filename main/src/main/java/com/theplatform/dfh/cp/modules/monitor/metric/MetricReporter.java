@@ -1,10 +1,14 @@
 package com.theplatform.dfh.cp.modules.monitor.metric;
 
 import com.codahale.metrics.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Receives a metric register and registers reporters using a factory class for abstraction.
@@ -14,6 +18,7 @@ public class MetricReporter
 {
     private MetricRegistry metricRegistry;
     private List<ScheduledReporter> reporters = new ArrayList<>();
+    private static Logger logger = LoggerFactory.getLogger(MetricReporter.class);
 
 
     public MetricReporter(MetricRegistry metricRegistry)
@@ -37,35 +42,54 @@ public class MetricReporter
         reporters.add(reporter);
         return this;
     }
-    public Counter getCounter(MetricLabel metricLabel)
+    public void countInc(MetricLabel metricLabel)
     {
-        if(metricLabel == null) return null;
-        return getCounter(metricLabel.name());
+        if(metricLabel == null) return;
+        try
+        {
+            getMetricRegistry().counter(metricLabel.name()).inc();
+        }
+        catch(Throwable e)
+        {
+            logger.error("Failure marking metric for reporting.", e);
+        }
     }
-    public Meter getMeter(MetricLabel metricLabel)
+    public void countDec(MetricLabel metricLabel)
     {
-        if(metricLabel == null) return null;
-        return getMeter(metricLabel.name());
+        if(metricLabel == null) return;
+        try
+        {
+            getMetricRegistry().counter(metricLabel.name()).inc();
+        }
+        catch(Throwable e)
+        {
+            logger.error("Failure marking metric for reporting.", e);
+        }
     }
-    public Counter getCounter(String metricLabel)
+    public void mark(MetricLabel metricLabel)
     {
-        if(metricLabel == null) return null;
-        return getMetricRegistry().counter(metricLabel);
+        if(metricLabel == null) return;
+        try
+        {
+            getMetricRegistry().meter(metricLabel.name()).mark();
+        }
+        catch(Throwable e)
+        {
+            logger.error("Failure marking metric for reporting.", e);
+        }
     }
-    public Meter getMeter(String metricLabel)
+    public Timer.Context timerStart(MetricLabel metricLabel)
     {
         if(metricLabel == null) return null;
-        return getMetricRegistry().meter(metricLabel);
-    }
-    public Timer getTimer(MetricLabel metricLabel)
-    {
-        if(metricLabel == null) return null;
-        return getTimer(metricLabel.name());
-    }
-    public Timer getTimer(String metricLabel)
-    {
-        if(metricLabel == null) return null;
-        return getMetricRegistry().timer(metricLabel);
+        try
+        {
+            return getMetricRegistry().timer(metricLabel.name()).time();
+        }
+        catch(Throwable e)
+        {
+            logger.error("Failure marking metric for reporting.", e);
+        }
+        return null;
     }
 
     //The reporters are currently a scheduled reporter. In some cases, we want to report now.
