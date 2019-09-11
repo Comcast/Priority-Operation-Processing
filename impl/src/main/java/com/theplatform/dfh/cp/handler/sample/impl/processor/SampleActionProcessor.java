@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.operation.BaseJsonOperationProcessor;
 import com.theplatform.dfh.cp.handler.reporter.progress.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Basic processor for running the sample action and requesting the output is parsed
  */
-public class SampleActionProcessor  extends AbstractBaseHandlerProcessor<LaunchDataWrapper, OperationContext>
+public class SampleActionProcessor  extends BaseJsonOperationProcessor<SampleInput, LaunchDataWrapper, OperationContext>
 {
     private static Logger logger = LoggerFactory.getLogger(SampleActionProcessor.class);
 
@@ -33,21 +34,18 @@ public class SampleActionProcessor  extends AbstractBaseHandlerProcessor<LaunchD
         this.actionMap = new ActionMap();
     }
 
-    /**
-     * Executes the necessary steps to perform the action
-     */
-    public void execute()
+    @Override
+    protected void execute(SampleInput sampleInput)
     {
         try
         {
             OperationProgressReporter reporter = operationContext.getOperationProgressReporter();
-            SampleInput handlerInput = jsonHelper.getObjectFromString(launchDataWrapper.getPayload(), SampleInput.class);
-            List<SampleAction> sampleActionList = handlerInput.getActions();
+            List<SampleAction> sampleActionList = sampleInput.getActions();
             // TODO: foreach exception handling check / test
             if(sampleActionList != null) sampleActionList.forEach(action -> performAction(action, reporter));
 
             // the result is always the payload indicated on the input
-            reporter.addSucceeded(handlerInput.getResultPayload());
+            reporter.addSucceeded(sampleInput.getResultPayload());
             // TODO: consider pushing this into the base context
         }
         catch(Exception e)
@@ -55,6 +53,12 @@ public class SampleActionProcessor  extends AbstractBaseHandlerProcessor<LaunchD
             // TODO: handlers should exit gracefully...
             throw new RuntimeException("Failed to load/execute payload.", e);
         }
+    }
+
+    @Override
+    public Class<SampleInput> getPayloadClassType()
+    {
+        return SampleInput.class;
     }
 
     public void performAction(SampleAction sampleAction, OperationProgressReporter reporter)
