@@ -69,9 +69,8 @@ public class Agenda extends EndpointDataObject
         return insightId;
     }
 
-    public Agenda setInsightId(String insightId)
+    public void setInsightId(String insightId)
     {
         this.insightId = insightId;
-        return this;
     }
 }
