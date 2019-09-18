@@ -85,4 +85,10 @@ public class PersistentAgenda extends Agenda
     {
         return super.getCid();
     }
+
+    @Override
+    public String getInsightId()
+    {
+        return super.getInsightId();
+    }
 }
