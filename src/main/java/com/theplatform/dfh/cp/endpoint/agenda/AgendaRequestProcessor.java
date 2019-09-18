@@ -112,7 +112,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
 
         // The Agenda id is generated up front for use on other object updates/creates
         agendaToPersist.setId(UUID.randomUUID().toString());
-
+        agendaToPersist.setInsightId(insight.getId());
         agendaToPersist.setParams(agendaToPersist.getParams() == null ? new ParamsMap() : agendaToPersist.getParams());
 
         String agendaProgressId = agendaToPersist.getProgressId();

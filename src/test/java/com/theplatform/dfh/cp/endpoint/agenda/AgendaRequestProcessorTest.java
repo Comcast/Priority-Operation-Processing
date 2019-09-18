@@ -38,6 +38,8 @@ import static org.mockito.Mockito.verify;
 
 public class AgendaRequestProcessorTest
 {
+    private static final String INSIGHT_ID = "theInsightId";
+
     private AgendaRequestProcessor agendaRequestProcessor;
     private ObjectPersister<Agenda> mockAgendaPersister;
     private ObjectPersister<ReadyAgenda> mockReadyAgendaPersister;
@@ -54,7 +56,9 @@ public class AgendaRequestProcessorTest
         mockOperationProgressClient = mock(ObjectClient.class);
         mockInsightSelector = mock(InsightSelector.class);
         agendaRequestProcessor = new AgendaRequestProcessor(mockAgendaPersister, mockReadyAgendaPersister, mockAgendaProgressClient, mockOperationProgressClient, mockInsightSelector);
-        Mockito.when(mockInsightSelector.select(Mockito.any())).thenReturn(new Insight());
+        Insight insight = new Insight();
+        insight.setId(INSIGHT_ID);
+        Mockito.when(mockInsightSelector.select(Mockito.any())).thenReturn(insight);
     }
 
     @Test
@@ -80,6 +84,8 @@ public class AgendaRequestProcessorTest
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
         Assert.assertFalse(response.isError());
+
+        Assert.assertEquals(agenda.getInsightId(), INSIGHT_ID);
 
         verify(mockOperationProgressClient, times(numOps)).persistObject(any());
         verify(mockReadyAgendaPersister, times(1)).persist(any());
