@@ -20,7 +20,7 @@ public class MonitoringOperationConductor extends OperationConductor
     @Override
     public void run()
     {
-        Timer.Context timerContext = metricReport.getTimer(MetricLabel.duration).time();
+        Timer.Context timerContext = metricReport.timerStart(MetricLabel.duration);
         try
         {
             super.run();
