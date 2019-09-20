@@ -35,12 +35,23 @@ public class MetricReporter
         return metricRegistry;
     }
 
-    public MetricReporter register(MetricReporterFactory reporterFactory)
+    public ScheduledReporter register(MetricReporterFactory reporterFactory)
     {
-        ScheduledReporter reporter = reporterFactory.register(metricRegistry);
-        reporter.start(reporterFactory.getReportIntervalInMilli(), TimeUnit.MILLISECONDS);
-        reporters.add(reporter);
-        return this;
+        try
+        {
+
+            ScheduledReporter reporter = reporterFactory.register(metricRegistry);
+            if (reporter == null)
+                return null;
+            reporter.start(reporterFactory.getReportIntervalInMilli(), TimeUnit.MILLISECONDS);
+            reporters.add(reporter);
+            return reporter;
+        }
+        catch(Throwable e)
+        {
+            logger.error("Unable to register reporter." , e);
+            return null;
+        }
     }
     public void countInc(MetricLabel metricLabel)
     {
