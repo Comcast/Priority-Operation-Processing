@@ -57,7 +57,7 @@ public class ConfigurationProperties
     private void load(Set<ConfigKey> keys, Properties properties)
     {
         Map<String, ConfigKey> configKeyStrings = keys == null ? new HashMap<>() : keys.stream()
-            .collect(Collectors.toMap(configKey -> configKey.getPropertyKey(), configKey -> configKey));
+            .collect(Collectors.toMap(configKey -> configKey.getPropertyKey().toLowerCase(), configKey -> configKey));
 
         Enumeration propertyStringKeys = properties == null ? null : properties.propertyNames();
 
@@ -70,7 +70,7 @@ public class ConfigurationProperties
                 String propertyName = property.toString();
                 String propertyValue = properties.getProperty(propertyName);
 
-                ConfigKey configKeyForProperty = configKeyStrings.remove(propertyName);
+                ConfigKey configKeyForProperty = configKeyStrings.remove(propertyName.toLowerCase());
                 //if configKeyForProperty is null, then it's something we don't have defined in our key class.
                 if(configKeyForProperty == null)
                 {

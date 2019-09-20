@@ -44,7 +44,22 @@ public class ConfigurationPropertiesTest
         Assert.assertTrue(configurationProperties.getKeys().contains(testConfigKey));
         Assert.assertFalse(configurationProperties.get(testConfigKey));
     }
+    @Test
+    public void testWrongCasing()
+    {
+        ConfigKey<Boolean> testConfigKey = new ConfigKey<>("alert.enabled", true, Boolean.class);
+        ConfigKeys configKeys = createConfigKeys(testConfigKey);
 
+        Properties properties = new Properties();
+        properties.put(testConfigKey.getPropertyKey().toUpperCase(), Boolean.FALSE.toString());
+
+        ConfigurationProperties configurationProperties = ConfigurationProperties.from(properties, configKeys);
+        Assert.assertNotNull(configurationProperties);
+        Assert.assertNotNull(configurationProperties.getKeys());
+        Assert.assertEquals(configurationProperties.getKeys().size(), 1);
+        Assert.assertTrue(configurationProperties.getKeys().contains(testConfigKey));
+        Assert.assertFalse(configurationProperties.get(testConfigKey));
+    }
     @DataProvider
     public Object[][] delimitedPropertyValuePropertyProvider()
     {
