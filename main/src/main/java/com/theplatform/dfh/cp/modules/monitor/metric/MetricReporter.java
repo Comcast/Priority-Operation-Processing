@@ -44,34 +44,48 @@ public class MetricReporter
     }
     public void countInc(MetricLabel metricLabel)
     {
+        countInc(metricLabel.name());
+    }
+    public void countInc(String metricLabel)
+    {
         if(metricLabel == null) return;
         try
         {
-            getMetricRegistry().counter(metricLabel.name()).inc();
+            getMetricRegistry().counter(metricLabel).inc();
         }
         catch(Throwable e)
         {
             logger.error("Failure marking metric for reporting.", e);
         }
     }
+
     public void countDec(MetricLabel metricLabel)
     {
+       countDec(metricLabel.name());
+    }
+    public void countDec(String metricLabel)
+    {
         if(metricLabel == null) return;
         try
         {
-            getMetricRegistry().counter(metricLabel.name()).inc();
+            getMetricRegistry().counter(metricLabel).inc();
         }
         catch(Throwable e)
         {
             logger.error("Failure marking metric for reporting.", e);
         }
     }
+
     public void mark(MetricLabel metricLabel)
+    {
+        mark(metricLabel.name());
+    }
+    public void mark(String metricLabel)
     {
         if(metricLabel == null) return;
         try
         {
-            getMetricRegistry().meter(metricLabel.name()).mark();
+            getMetricRegistry().meter(metricLabel).mark();
         }
         catch(Throwable e)
         {
@@ -80,10 +94,14 @@ public class MetricReporter
     }
     public Timer.Context timerStart(MetricLabel metricLabel)
     {
+        return timerStart(metricLabel.name());
+    }
+    public Timer.Context timerStart(String metricLabel)
+    {
         if(metricLabel == null) return null;
         try
         {
-            return getMetricRegistry().timer(metricLabel.name()).time();
+            return getMetricRegistry().timer(metricLabel).time();
         }
         catch(Throwable e)
         {
