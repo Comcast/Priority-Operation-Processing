@@ -118,4 +118,19 @@ public class MetricReporter
             reporter.report();
         }
     }
+
+    public void close()
+    {
+        for (ScheduledReporter reporter : reporters)
+        {
+            try
+            {
+                reporter.close();
+            }
+            catch (Throwable e)
+            {
+                logger.error("Unable to close reporter.", e);
+            }
+        }
+    }
 }
