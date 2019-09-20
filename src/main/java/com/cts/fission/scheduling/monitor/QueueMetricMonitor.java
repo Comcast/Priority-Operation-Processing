@@ -83,17 +83,17 @@ public class QueueMetricMonitor
 
     private void reportFailed(String insight)
     {
-        Counter counter = metricReporter.getCounter(METRIC_WAITING +"." +insight);
-        counter.inc();
+        final String waitMetric = METRIC_WAITING +"." +insight;
+        metricReporter.countInc(waitMetric);
         metricReporter.report();
         //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
         //know if/when we'll get a new instance of our lambda running.
-        counter.dec();
+        metricReporter.countDec(waitMetric);
     }
     private void reportWaiting(String insight, Integer count)
     {
         if(count == null) return;
-        Counter waitingCounter = metricReporter.getCounter(METRIC_WAITING +"." +insight);
+        Counter waitingCounter = metricReporter.getMetricRegistry().counter(METRIC_WAITING +"." +insight);
         for(int countIndex = 0; countIndex < count; countIndex ++)
             waitingCounter.inc();
         metricReporter.report();
