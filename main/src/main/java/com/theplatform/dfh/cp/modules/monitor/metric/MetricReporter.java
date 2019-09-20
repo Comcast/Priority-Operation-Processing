@@ -27,7 +27,7 @@ public class MetricReporter
     }
     public MetricReporter()
     {
-        this(null);
+        this(new MetricRegistry());
     }
 
     public MetricRegistry getMetricRegistry()
