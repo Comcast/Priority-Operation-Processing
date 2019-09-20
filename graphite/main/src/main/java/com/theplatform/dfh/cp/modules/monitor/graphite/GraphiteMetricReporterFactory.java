@@ -41,7 +41,7 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
 
         InetSocketAddress metricsServerLocation = new InetSocketAddress(endpoint, port);
         if(metricsServerLocation.getAddress() == null)
-            throw new RuntimeException(String.format("Unable to get socket address for host %s to report Graphite metrics.", endpoint));
+            throw new RuntimeException(String.format("Unable to get socket address for host %s port %d to report Graphite metrics.", endpoint, port));
         Graphite standardPusher = new Graphite(metricsServerLocation);
         GraphiteReporter reporter = GraphiteReporter.forRegistry(metricRegistry)
             .convertRatesTo(TimeUnit.MILLISECONDS)
