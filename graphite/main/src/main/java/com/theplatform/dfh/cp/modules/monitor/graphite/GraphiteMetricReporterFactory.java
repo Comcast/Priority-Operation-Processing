@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.ScheduledReporterWrapper;
 
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,8 @@ public class GraphiteMetricReporterFactory implements MetricReporterFactory
         final Integer port = metricsConfiguration.get(GraphiteConfigKeys.PORT);
 
         InetSocketAddress metricsServerLocation = new InetSocketAddress(endpoint, port);
+        if(metricsServerLocation.getAddress() == null)
+            throw new RuntimeException(String.format("Unable to get socket address for host %s to report Graphite metrics.", endpoint));
         Graphite standardPusher = new Graphite(metricsServerLocation);
         GraphiteReporter reporter = GraphiteReporter.forRegistry(metricRegistry)
             .convertRatesTo(TimeUnit.MILLISECONDS)
