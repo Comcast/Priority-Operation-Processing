@@ -11,6 +11,7 @@ import java.util.Collection;
 public class MonitoringOperationConductorFactory extends OperationConductorFactory
 {
     private MetricReporter metricReport;
+    private OperationConductorFactory operationConductorFactory = new OperationConductorFactory();
     public MonitoringOperationConductorFactory(ExecutorContext executorContext)
     {
         //register a logging reporter
@@ -20,6 +21,9 @@ public class MonitoringOperationConductorFactory extends OperationConductorFacto
     @Override
     public OperationConductor createOperationConductor(Collection<Operation> operations, ExecutorContext executorContext)
     {
+        if(metricReport == null)
+            return operationConductorFactory.createOperationConductor(operations, executorContext);
+
         MonitoringOperationConductor conductor = new MonitoringOperationConductor(metricReport, operations, executorContext);
         conductor.setOperationRunnerFactory(new MonitoringOperationRunnerFactory(metricReport));
         return conductor;
