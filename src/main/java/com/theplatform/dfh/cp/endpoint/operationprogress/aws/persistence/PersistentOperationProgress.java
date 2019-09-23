@@ -130,6 +130,12 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    public Double getPercentComplete()
+    {
+        return super.getPercentComplete();
+    }
+
+    @Override
     public String getCid()
     {
         return super.getCid();
