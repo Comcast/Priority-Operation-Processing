@@ -12,6 +12,7 @@ public class OperationProgress extends EndpointDataObject
     private String processingStateMessage;
     private String operation;
     private DiagnosticEvent[] diagnosticEvents;
+    private Double percentComplete;
     private int attemptCount;
     private Date attemptTime;
     private Date startedTime;
@@ -117,6 +118,17 @@ public class OperationProgress extends EndpointDataObject
     public void setDiagnosticEvents(DiagnosticEvent[] diagnosticEvents)
     {
         this.diagnosticEvents = diagnosticEvents;
+    }
+
+    public Double getPercentComplete()
+    {
+        return percentComplete;
+    }
+
+    public OperationProgress setPercentComplete(Double percentComplete)
+    {
+        this.percentComplete = percentComplete;
+        return this;
     }
 
     public ParamsMap getParams()
