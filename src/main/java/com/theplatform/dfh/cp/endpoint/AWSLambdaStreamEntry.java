@@ -5,6 +5,7 @@ import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.AgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agenda.service.aws.AgendaServiceLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.AgendaTemplateLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
@@ -45,6 +46,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
+        endpointHandlers.put("/dfh/idm/agendatemplate", new AgendaTemplateLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/agenda", new AgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/agenda/service", new AgendaServiceLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/progress/operation", new OperationProgressLambdaStreamEntry());

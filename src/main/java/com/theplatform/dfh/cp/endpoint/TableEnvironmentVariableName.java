@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint;
 public class TableEnvironmentVariableName
 {
     public static final String AGENDA = "DB_TABLE_AGENDA";
+    public static final String AGENDA_TEMPLATE = "DB_TABLE_AGENDA_TEMPLATE";
     public static final String AGENDA_PROGRESS = "DB_TABLE_AGENDA_PROGRESS";
     public static final String OPERATION_PROGRESS = "DB_TABLE_OPERATION_PROGRESS";
     public static final String TRANSFORM = "DB_TABLE_TRANSFORM";
