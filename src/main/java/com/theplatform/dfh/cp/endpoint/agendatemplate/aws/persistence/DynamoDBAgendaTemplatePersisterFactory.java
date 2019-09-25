@@ -6,7 +6,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 public class DynamoDBAgendaTemplatePersisterFactory extends DynamoDBConvertedPersisterFactory<AgendaTemplate>
 {
-    private static final TableIndexes tableIndexes = new TableIndexes();
+    private static final TableIndexes tableIndexes = new TableIndexes().withIndex("title_index", "title");
 
     public DynamoDBAgendaTemplatePersisterFactory()
     {
