@@ -114,4 +114,16 @@ public class PersistentTransform extends TransformRequest
     {
         return super.getCid();
     }
+
+    @Override
+    public String getAgendaTemplateId()
+    {
+        return super.getAgendaTemplateId();
+    }
+
+    @Override
+    public String getAgendaTemplateTitle()
+    {
+        return super.getAgendaTemplateTitle();
+    }
 }
