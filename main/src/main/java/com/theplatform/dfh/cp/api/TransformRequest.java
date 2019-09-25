@@ -27,6 +27,12 @@ public class TransformRequest extends EndpointDataObject
     private String linkId;
 
     /**
+     * Agenda template to use for mapping the transform request.
+     */
+    private String agendaTemplateTitle;
+    private String agendaTemplateId;
+
+    /**
      * Name value pairs for things like 'externalId'
      */
     private ParamsMap params = new ParamsMap();
@@ -111,5 +117,25 @@ public class TransformRequest extends EndpointDataObject
     public void setParam(String name, Object value)
     {
         params.put(name, value);
+    }
+
+    public String getAgendaTemplateTitle()
+    {
+        return agendaTemplateTitle;
+    }
+
+    public void setAgendaTemplateTitle(String agendaTemplateTitle)
+    {
+        this.agendaTemplateTitle = agendaTemplateTitle;
+    }
+
+    public String getAgendaTemplateId()
+    {
+        return agendaTemplateId;
+    }
+
+    public void setAgendaTemplateId(String agendaTemplateId)
+    {
+        this.agendaTemplateId = agendaTemplateId;
     }
 }
