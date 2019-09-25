@@ -47,6 +47,10 @@ var endpoints =
             {
                 name:"Transform",
                 path:"transform"
+            },
+            {
+                name:"AgendaTemplate",
+                path:"agendatemplate"
             }
         ];
 
