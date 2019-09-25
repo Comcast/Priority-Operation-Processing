@@ -49,7 +49,7 @@ var endpoints =
                 path:"transform"
             },
             {
-                name:"AgendaTemplate",
+                name:"Agenda Template",
                 path:"agendatemplate"
             }
         ];
