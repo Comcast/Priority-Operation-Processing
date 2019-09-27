@@ -47,13 +47,6 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
     @Override
     public BaseOperationExecutor createOperationExecutor(ExecutorContext executorContext, OperationWrapper operationWrapper)
     {
-        // This is a call to the local K8s API. We can't use
-        // any proxies. Make sure that we are not.
-        System.clearProperty("https.proxyHost");
-        System.clearProperty("https.proxyPort");
-        System.clearProperty("http.proxyHost");
-        System.clearProperty("http.proxyPort");
-
         Operation operation = operationWrapper.getOperation();
 
         logger.info("Creating kube config with no proxies");
@@ -96,12 +89,6 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
                 return podConfig.getCpuMaxRequestCount();
             }
         });
-
-        // Make sure we don't use proxies
-        System.clearProperty("https.proxyHost");
-        System.clearProperty("https.proxyPort");
-        System.clearProperty("http.proxyHost");
-        System.clearProperty("http.proxyPort");
 
         return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, launchDataWrapper);
     }
