@@ -26,5 +26,6 @@
       }
     ]
   },
-  "basicString":"a value"
+  "basicString":"a value",
+  "theNumber":42
 }

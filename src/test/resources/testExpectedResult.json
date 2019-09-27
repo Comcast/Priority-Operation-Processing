@@ -24,5 +24,10 @@
       "childitem" : "encode"
     }
   },
-  "stringref":"a value"
+  "stringref":"a value",
+  "numberRef":42,
+  "tokenNumber":"42",
+  "tokenString":"a value",
+  "compositeString":"xa valuey",
+  "agendaId":"456-789"
 }

@@ -78,7 +78,16 @@ public class JsonReferenceReplacer
     public ReferenceReplacementResult replaceReferences(JsonNode rootNode, Map<String, JsonNode> referenceMap)
     {
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
-        StringSubstitutor strSubstitutor = new StringSubstitutor(referenceMap);
+        Map<String, String> substitutorMap = new HashMap<>();
+        for(Map.Entry<String, JsonNode> kvp : referenceMap.entrySet())
+        {
+            if(kvp.getValue() != null && kvp.getValue().isValueNode())
+            {
+                substitutorMap.put(kvp.getKey(), kvp.getValue().asText());
+            }
+        }
+
+        StringSubstitutor strSubstitutor = new StringSubstitutor(substitutorMap);
         traverseNodeForTokenReplacement(rootNode, referenceMap, strSubstitutor, referenceReplacementResult);
         referenceReplacementResult.setResult(rootNode.toString());
         return referenceReplacementResult;
@@ -124,13 +133,10 @@ public class JsonReferenceReplacer
                     {
                         performTokenReplacement(
                             objNode,
-                            nodeId,
-                            parentNode,
                             arrayNodeReplacer.configureArrayIndex(arrayNode, idx),
                             parameterMap,
                             strSubstitutor,
-                            report,
-                            nodeEvaluationStack);
+                            report);
                     }
                     // this else section is completely unsafe and likely to cause bugs (no type check and the null nodeId!)
                     else
@@ -144,13 +150,10 @@ public class JsonReferenceReplacer
             {
                 performTokenReplacement(
                     node,
-                    nodeId,
-                    parentNode,
                     objectNodeReplacer.configureField(parentNode, nodeId),
                     parameterMap,
                     strSubstitutor,
-                    report,
-                    nodeEvaluationStack);
+                    report);
             }
             else if (node.isObject())
             {
@@ -171,10 +174,9 @@ public class JsonReferenceReplacer
      * @param parameterMap The map of parameters for replacement (used for whole object replacement)
      * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      * @param report The result object to add issues related to the replacement processing
-     * @param nodeEvaluationStack The stack of nodes to push any additional nodes for evaluation
      */
-    protected void performTokenReplacement(JsonNode node, String nodeId, JsonNode parentNode, JsonNodeReplacer jsonNodeReplacer,
-        Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor, ReferenceReplacementResult report, Stack<JsonNodeWrapper> nodeEvaluationStack)
+    protected void performTokenReplacement(JsonNode node, JsonNodeReplacer jsonNodeReplacer, Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor,
+        ReferenceReplacementResult report)
     {
         final String nodeValue = node.asText();
         if (nodeValue != null)
@@ -292,7 +294,7 @@ public class JsonReferenceReplacer
     /**
      * Wrapper for JsonNode providing parent and id information. JsonNode by default has neither.
      */
-    private static class JsonNodeWrapper
+    protected static class JsonNodeWrapper
     {
         private final JsonNode node;
         private final JsonNode parent;

@@ -15,5 +15,10 @@
       "childitem":"@@analysis.1.out::/operations/0/id"
     }
   },
-  "stringref":"@@basicString"
+  "stringref":"@@basicString",
+  "numberRef":"@@theNumber",
+  "tokenNumber":"${theNumber}",
+  "tokenString":"${basicString}",
+  "compositeString":"x${basicString}y",
+  "agendaId":"${agendaId}"
 }

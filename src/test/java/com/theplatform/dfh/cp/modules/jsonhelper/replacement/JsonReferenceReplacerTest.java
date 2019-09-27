@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.modules.jsonhelper.replacement;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -49,14 +50,19 @@ public class JsonReferenceReplacerTest extends JsonReplacementTestBase
     @Test
     public void testReplaceReferences() throws Exception
     {
+        final String AGENDA_ID = "456-789";
         JsonNode paramsNode = getJsonNodeFromFile("/testParams.json");
         JsonNode referencesNode = getJsonNodeFromFile("/testReferences.json");
         JsonNode expectedNode = getJsonNodeFromFile("/testExpectedResult.json");
 
+        JsonContext jsonContext = new JsonContext();
+        jsonContext.setContextMap(getParameterMap(paramsNode));
+        jsonContext.addData("agendaId", TextNode.valueOf(AGENDA_ID).toString());
+
         ReferenceReplacementResult result = jsonReferenceReplacer.replaceReferences
             (
                 referencesNode,
-                getParameterMap(paramsNode)
+                jsonContext.getContextMap()
             );
 
         //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultNode));
