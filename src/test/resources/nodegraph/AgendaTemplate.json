@@ -1,0 +1,39 @@
+{
+  "workflowTemplateId": "Sample Op One File",
+  "workflowTemplateVersion": "1.6",
+  "processor": "wishful/thinking/nodeGraph/NodeGraphProcessor:version1.2",
+  "templateParameters": {
+    "sourceFile": null,
+    "rawsData": null
+  },
+  "staticParameters": {
+    "accelerateEncodeProcessorVersion": "1.5"
+  },
+  "agenda": {
+    "operations": [{
+      "id":null,
+      "type": "SampleOp",
+      "version": null,
+      "payload": {
+        "inputs": {
+          "targets": [
+            {
+              "file": "@@sourceFile",
+              "rawsData": "@@rawsData",
+              "processorVersion": "${accelerateEncodeProcessorVersion}"
+            }
+          ]
+        },
+        "outputs": {
+          "renditions": [
+            {
+              "height": 0,
+              "width": 480,
+              "bitrate": 464000
+            }
+          ]
+        }
+      }
+    }]
+  }
+}

@@ -1,16 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.transformrequest;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.AgendaTemplate;
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.ObjectPersistResponse;
 import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
@@ -45,6 +43,7 @@ public class TransformRequestProcessorTest
     private ObjectPersister<TransformRequest> mockTransformRequestPersister;
     private ObjectClient<AgendaProgress> mockAgendaProgressClient;
     private ObjectClient<Agenda> mockAgendaClient;
+    private ObjectClient<AgendaTemplate> mockAgendaTemplateClient;
 
     @BeforeMethod
     public void setup()
@@ -52,10 +51,12 @@ public class TransformRequestProcessorTest
         mockTransformRequestPersister = mock(ObjectPersister.class);
         mockAgendaProgressClient = mock(ObjectClient.class);
         mockAgendaClient = mock(ObjectClient.class);
+        mockAgendaTemplateClient = mock(ObjectClient.class);
 
-        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, null, null);
+        transformRequestProcessor = new TransformRequestProcessor(mockTransformRequestPersister, null, null, null, null, null, null, null);
         transformRequestProcessor.setAgendaClient(mockAgendaClient);
         transformRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
+        transformRequestProcessor.setAgendaTemplateClient(mockAgendaTemplateClient);
     }
 
     @Test
