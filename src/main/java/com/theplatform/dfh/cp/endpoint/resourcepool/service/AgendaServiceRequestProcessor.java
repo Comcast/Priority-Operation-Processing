@@ -12,6 +12,7 @@ import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
@@ -58,7 +59,9 @@ public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaRes
         GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
         {
-            return new GetAgendaResponse(ErrorResponseFactory.badRequest("No insight id provided.  Cannot process getAgenda request.", serviceRequest.getCID()));
+            final String message = "No insight id provided.  Cannot process getAgenda request.";
+            logger.warn(message);
+            return new GetAgendaResponse(ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
         }
 
         logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
@@ -70,13 +73,17 @@ public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaRes
         }
         catch(PersistenceException e)
         {
-            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+            ErrorResponse errorResponse = ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID());
+            logger.warn(errorResponse.getServerStackTrace());
+            return new GetAgendaResponse(errorResponse);
         }
 
         if(insight == null)
         {
-            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(String.format("No insight found with id %s. Cannot process getAgenda request.",
-                getAgendaRequest.getInsightId()), serviceRequest.getCID()));
+            final String message = String.format("No insight found with id %s. Cannot process getAgenda request.",
+            getAgendaRequest.getInsightId());
+            logger.warn(message);
+            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
         }
         GetAgendaResponse response = isVisible(insight, serviceRequest);
         if(response != null)
