@@ -1,7 +1,5 @@
 package com.theplatform.dfh.endpoint.api.agenda.service;
 
-import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
-
 /**
  */
 public class GetAgendaRequest
