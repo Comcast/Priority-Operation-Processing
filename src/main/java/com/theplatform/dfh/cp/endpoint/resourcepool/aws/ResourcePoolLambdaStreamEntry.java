@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.facility.ResourcePoolRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.ResourcePoolRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.PersistentResourcePoolConverter;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;

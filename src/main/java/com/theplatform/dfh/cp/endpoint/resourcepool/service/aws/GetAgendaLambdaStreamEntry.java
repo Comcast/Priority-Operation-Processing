@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.agenda.service.AgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.service.AgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.*;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;

@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.facility.SchedulingAlgorithm;
-import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.OperationTypeMapper;
+import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationTypeMapper;
 import com.theplatform.dfh.object.api.UUIDGenerator;
 
 /**
