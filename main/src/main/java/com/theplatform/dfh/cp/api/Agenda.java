@@ -12,7 +12,7 @@ public class Agenda extends EndpointDataObject
     private String jobId; // todo remove
     private String linkId;
     private String progressId;
-    private String insightId;
+    private AgendaInsight agendaInsight;
 
     public List<Operation> getOperations()
     {
@@ -64,13 +64,13 @@ public class Agenda extends EndpointDataObject
         this.progressId = progressId;
     }
 
-    public String getInsightId()
+    public AgendaInsight getAgendaInsight()
     {
-        return insightId;
+        return agendaInsight;
     }
 
-    public void setInsightId(String insightId)
+    public void setAgendaInsight(AgendaInsight agendaInsight)
     {
-        this.insightId = insightId;
+        this.agendaInsight = agendaInsight;
     }
 }

@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.api.progress;
 
+import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.EndpointDataObject;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
@@ -23,6 +24,7 @@ public class AgendaProgress extends EndpointDataObject
     private Date completedTime;
     private Double percentComplete;
     private ParamsMap params;
+    private AgendaInsight agendaInsight;
 
     public AgendaProgress()
     {
@@ -143,6 +145,16 @@ public class AgendaProgress extends EndpointDataObject
     public void setPercentComplete(Double percentComplete)
     {
         this.percentComplete = percentComplete;
+    }
+
+    public AgendaInsight getAgendaInsight()
+    {
+        return agendaInsight;
+    }
+
+    public void setAgendaInsight(AgendaInsight agendaInsight)
+    {
+        this.agendaInsight = agendaInsight;
     }
 
     public ParamsMap getParams()
