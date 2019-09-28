@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.progress.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
@@ -74,6 +75,12 @@ public class PersistentAgendaProgress extends AgendaProgress
     public String getProcessingStateMessage()
     {
         return super.getProcessingStateMessage();
+    }
+
+    @Override
+    public AgendaInsight getAgendaInsight()
+    {
+        return super.getAgendaInsight();
     }
 
     @Override

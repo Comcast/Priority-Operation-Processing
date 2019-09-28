@@ -4,11 +4,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
-import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
 import java.util.Date;
@@ -87,8 +86,10 @@ public class PersistentAgenda extends Agenda
     }
 
     @Override
-    public String getInsightId()
+    @DynamoDBTypeConverted(converter = PersistentAgendaInsightConverter.class)
+    @DynamoDBAttribute(attributeName = "agendaInsight")
+    public AgendaInsight getAgendaInsight()
     {
-        return super.getInsightId();
+        return super.getAgendaInsight();
     }
 }

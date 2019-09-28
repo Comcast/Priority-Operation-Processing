@@ -1,69 +1,101 @@
 package com.theplatform.dfh.cp.endpoint.agenda.service.aws;
 
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
-import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.agenda.service.AgendaServiceRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.aws.*;
+import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
+import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
-import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
-import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
-import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
-import com.theplatform.dfh.modules.queue.aws.sqs.AmazonSQSClientFactoryImpl;
-import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
-import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
+import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AgendaServiceLambdaStreamEntry extends AbstractLambdaStreamEntry<GetAgendaResponse, LambdaRequest<GetAgendaRequest>>
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AgendaServiceLambdaStreamEntry extends AbstractLambdaStreamEntry
 {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String RESOURCE_PATH_FIELD_PATH = "/requestContext/resourcePath";
 
-    private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
-
-    private ItemQueueFactory<AgendaInfo> infoItemQueueFactory;
-    private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
-    private ObjectPersisterFactory<Insight> insightPersisterFactory;
-
-    @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<GetAgendaRequest> lambdaRequest)
-    {
-        String insightTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT);
-        //logger.info("TableName: {}", insightTableName);
-        ObjectPersister<Insight> insightPersister = insightPersisterFactory.getObjectPersister(insightTableName);
-        String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
-        ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
-
-        return new AgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister);
-    }
-
-    @Override
-    public LambdaRequest<GetAgendaRequest> getRequest(JsonNode node) throws BadRequestException
-    {
-        return new LambdaRequest<>(node, GetAgendaRequest.class);
-    }
+    private static final Map<String, JsonRequestStreamHandler> endpointHandlers = new HashMap<>();
 
     public AgendaServiceLambdaStreamEntry()
     {
-        this.infoItemQueueFactory = new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class);
-        this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
-        this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
     }
 
-    public ItemQueueFactory<AgendaInfo> getInfoItemQueueFactory()
+    static
     {
-        return infoItemQueueFactory;
+        endpointHandlers.put("/dfh/idm/agenda/service/getAgenda", new GetAgendaLambdaStreamEntry());
     }
 
-    public void setInfoItemQueueFactory(ItemQueueFactory<AgendaInfo> infoItemQueueFactory)
+    @Override
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        this.infoItemQueueFactory = infoItemQueueFactory;
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+
+        byte[] inputData = IOUtils.toByteArray(inputStream);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputData);
+        byteArrayInputStream.mark(Integer.MAX_VALUE);
+        JsonNode rootRequestNode = getObjectMapper().readTree(byteArrayInputStream);
+        byteArrayInputStream.reset();
+        setupLoggingMDC(rootRequestNode);
+
+        logObject("request: ", rootRequestNode);
+
+        JsonNode resourcePathNode = rootRequestNode.at(RESOURCE_PATH_FIELD_PATH);
+        if(resourcePathNode.isMissingNode())
+        {
+            logger.info("Resource path not found.");
+            writeResponse(outputStream, 401);
+            return;
+        }
+
+        String resourcePath = resourcePathNode.asText();
+
+        JsonRequestStreamHandler requestStreamHandler = endpointHandlers.get(resourcePath);
+        if(requestStreamHandler != null)
+        {
+            requestStreamHandler.handleRequest(rootRequestNode, outputStream, context);
+        }
+        else
+        {
+            logger.error("[{}] does not map to any endpoint handler.", resourcePath);
+            writeResponse(outputStream, 405);
+        }
     }
+
+    private void writeResponse(OutputStream outputStream, int httpStatusCode)
+    {
+        try
+        {
+            // TODO: write some kind of error object as the body?
+            getResponseWriter().writeResponse(outputStream, getObjectMapper(), httpStatusCode, null);
+        }
+        catch(IOException e)
+        {
+            logger.error("Failed to write response to OutputStream.", e);
+        }
+    }
+
+    @Override
+    public RequestProcessor getRequestProcessor(ServiceRequest lambdaRequest)
+    {
+        return null;
+    }
+
+    @Override
+    public LambdaRequest getRequest(JsonNode node) throws BadRequestException
+    {
+        return null;      //not used
+    }
+
+
 }
