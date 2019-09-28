@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.facility.aws.persistence;
+package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;

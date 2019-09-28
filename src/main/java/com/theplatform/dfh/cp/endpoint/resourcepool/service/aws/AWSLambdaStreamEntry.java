@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.agenda.service.aws;
+package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
@@ -20,20 +20,20 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AgendaServiceLambdaStreamEntry extends AbstractLambdaStreamEntry
+public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String RESOURCE_PATH_FIELD_PATH = "/requestContext/resourcePath";
 
     private static final Map<String, JsonRequestStreamHandler> endpointHandlers = new HashMap<>();
 
-    public AgendaServiceLambdaStreamEntry()
+    public AWSLambdaStreamEntry()
     {
     }
 
     static
     {
-        endpointHandlers.put("/dfh/idm/agenda/service/getAgenda", new GetAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
     }
 
     @Override

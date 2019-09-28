@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.facility.aws.persistence;
+package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import org.apache.commons.beanutils.BeanMap;

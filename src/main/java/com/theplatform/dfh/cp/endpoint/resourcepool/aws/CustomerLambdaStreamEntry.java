@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.facility.aws;
+package com.theplatform.dfh.cp.endpoint.resourcepool.aws;
 
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.facility.CustomerRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.PersistentCustomerConverter;
+import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.PersistentCustomerConverter;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;

@@ -12,8 +12,8 @@ import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPers
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.persistence.DynamoDBAgendaTemplatePersisterFactory;
 import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
-import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBCustomerPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.facility.aws.persistence.DynamoDBInsightPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCustomerPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.transformrequest.TransformRequestProcessor;
@@ -21,7 +21,6 @@ import com.theplatform.dfh.cp.endpoint.transformrequest.aws.persistence.DynamoDB
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
-import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBCompressedObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
