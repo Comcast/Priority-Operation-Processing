@@ -38,10 +38,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         super(pullerContext);
         this.agendaClientFactory = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig());
         launcherFactory = pullerContext.getLauncherFactory();
-
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
-        agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
-        pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
     }
 
     /**
@@ -74,6 +71,9 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
 
         try
         {
+            pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
+            agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
+
             GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
             GetAgendaResponse getAgendaResponse;
             try
