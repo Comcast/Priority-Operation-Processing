@@ -85,23 +85,23 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             catch (Exception e)
             {
                 logger.error("Failed to getAgenda: {}", e);
-                reportFailure();
+                failProcess();
                 return;
             }
 
             logger.debug("PullerProcessor: AgendaResponse[" + getAgendaResponse + "], agendas[" +
                                  (getAgendaResponse == null ? "null object" : getAgendaResponse.getAgendas()) + "]");
 
-            if (getAgendaResponse == null || getAgendaResponse.getAgendas() == null)
+            if (getAgendaResponse == null)
             {
                 logger.error("Failed to getAgenda"); // todo what should we do here?
-                reportFailure();
+                failProcess();
                 return;
             }
             else if (getAgendaResponse.isError())
             {
                 logger.error("Failed to getAgenda: {}", getAgendaResponse.getErrorResponse().toString());
-                reportFailure();
+                failProcess();
                 return;
             }
 
@@ -123,7 +123,6 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             }
             else
             {
-                logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", pullWaitSeconds);
                 pullWait();
             }
         }
@@ -149,8 +148,15 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         }
     }
 
+    private void failProcess() throws InterruptedException
+    {
+        reportFailure();
+        pullWait();
+    }
+
     private void pullWait() throws InterruptedException
     {
+        logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", pullWaitSeconds);
         Thread.sleep(pullWaitSeconds * 1000);
     }
 
