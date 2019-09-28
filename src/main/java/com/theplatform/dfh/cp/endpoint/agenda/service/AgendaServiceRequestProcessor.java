@@ -2,10 +2,13 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
@@ -31,16 +34,21 @@ public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaRes
 {
     private static final Logger logger = LoggerFactory.getLogger(AgendaServiceRequestProcessor.class);
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - insightid=%s agendarequestcount=%d";
+    private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
 
     private ObjectPersister<Insight> insightPersister;
+    private ObjectPersister<ResourcePool> resourcePoolPersister;
     private ObjectPersister<Agenda> agendaPersister;
     private ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory;
+    private VisibilityFilter<Insight, ServiceRequest<GetAgendaRequest>> insightVisibilityFilter = new CustomerVisibilityFilter<>();
+    private VisibilityFilter<ResourcePool, ServiceRequest<GetAgendaRequest>> resourcePoolVisibilityFilter = new CustomerVisibilityFilter<>();
 
     public AgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
-        ObjectPersister<Agenda> agendaPersister)
+        ObjectPersister<Agenda> agendaPersister, ObjectPersister<ResourcePool> resourcePoolPersister)
     {
         this.agendaInfoItemQueueFactory = agendaInfoItemQueueFactory;
         this.insightPersister = insightPersister;
+        this.resourcePoolPersister = resourcePoolPersister;
         this.agendaPersister = agendaPersister;
     }
 
@@ -70,6 +78,9 @@ public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaRes
             return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(String.format("No insight found with id %s. Cannot process getAgenda request.",
                 getAgendaRequest.getInsightId()), serviceRequest.getCID()));
         }
+        GetAgendaResponse response = isVisible(insight, serviceRequest);
+        if(response != null)
+            return response;
 
         try
         {
@@ -122,6 +133,28 @@ public class AgendaServiceRequestProcessor extends RequestProcessor<GetAgendaRes
         {
             return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
+    }
+
+    private GetAgendaResponse isVisible(Insight insight, ServiceRequest<GetAgendaRequest> serviceRequest)
+    {
+        //Look up the resource pool for visibility
+        ResourcePool resourcePool;
+        try
+        {
+            resourcePool = resourcePoolPersister.retrieve(insight.getResourcePoolId());
+            if(resourcePool == null)
+                return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(String.format("No resource pool found with insight id %s. Cannot process getAgenda request.",
+                    insight.getId()), serviceRequest.getCID()));
+        }
+        catch(PersistenceException e)
+        {
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+        }
+        if(!insightVisibilityFilter.isVisible(serviceRequest, insight) && !resourcePoolVisibilityFilter.isVisible(serviceRequest, resourcePool))
+        {
+            return new GetAgendaResponse((ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, insight.getCustomerId()), serviceRequest.getCID())));
+        }
+        return null;
     }
 
     public Agenda retrieveAgenda(String agendaId) throws PersistenceException

@@ -85,7 +85,7 @@ public class AgendaRequestProcessorTest
         DataObjectResponse<Agenda> response = agendaRequestProcessor.handlePOST(request);
         Assert.assertFalse(response.isError());
 
-        Assert.assertEquals(agenda.getInsightId(), INSIGHT_ID);
+        Assert.assertEquals(agenda.getAgendaInsight().getInsightId(), INSIGHT_ID);
 
         verify(mockOperationProgressClient, times(numOps)).persistObject(any());
         verify(mockReadyAgendaPersister, times(1)).persist(any());

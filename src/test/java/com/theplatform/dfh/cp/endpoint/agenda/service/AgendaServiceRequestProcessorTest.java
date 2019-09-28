@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
@@ -13,6 +14,8 @@ import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.api.QueueResult;
@@ -45,6 +48,7 @@ public class AgendaServiceRequestProcessorTest
 
     private ObjectPersister<Insight> mockInsightPersister;
     private ObjectPersister<Agenda> mockAgendaPersister;
+    private ObjectPersister<ResourcePool> mockResourcePoolPersister;
     private ItemQueueFactory<AgendaInfo> mockAgendaInfoItemQueueFactory;
     private ItemQueue<AgendaInfo> mockAgendaInfoItemQueue;
 
@@ -52,14 +56,16 @@ public class AgendaServiceRequestProcessorTest
     public void setup()
     {
         getAgendaRequest = new DefaultServiceRequest<>(new GetAgendaRequest("InsightId", 1));
-
+        AuthorizationResponse authorizedResponse = new AuthorizationResponse(null, null, null, DataVisibility.global);
+        getAgendaRequest.setAuthorizationResponse(authorizedResponse);
         mockInsightPersister = (ObjectPersister<Insight>)mock(ObjectPersister.class);
         mockAgendaPersister = (ObjectPersister<Agenda>)mock(ObjectPersister.class);
+        mockResourcePoolPersister = (ObjectPersister<ResourcePool>)mock(ObjectPersister.class);
         mockAgendaInfoItemQueueFactory = (ItemQueueFactory<AgendaInfo>)mock(ItemQueueFactory.class);
         mockAgendaInfoItemQueue = (ItemQueue<AgendaInfo>)mock(ItemQueue.class);
         doReturn(mockAgendaInfoItemQueue).when(mockAgendaInfoItemQueueFactory).createItemQueue(anyString());
 
-        processor = new AgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister);
+        processor = new AgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister, mockResourcePoolPersister);
     }
 
     @Test
@@ -88,6 +94,7 @@ public class AgendaServiceRequestProcessorTest
     public void testAgendaInfoPollError() throws PersistenceException
     {
         doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
+        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
         doReturn(createQueueResult(false, null, "bad times")).when(mockAgendaInfoItemQueue).poll(anyInt());
         GetAgendaResponse getAgendaResponse = processor.processPOST(getAgendaRequest);
         Assert.assertNull(getAgendaResponse.getAgendas());
@@ -100,6 +107,7 @@ public class AgendaServiceRequestProcessorTest
     public void testAgendaInfoPollEmpty() throws PersistenceException
     {
         doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
+        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
         doReturn(createQueueResult(true, null, null)).when(mockAgendaInfoItemQueue).poll(anyInt());
         GetAgendaResponse getAgendaResponse = processor.processPOST(getAgendaRequest);
         Assert.assertEquals(0, getAgendaResponse.getAgendas().size());
@@ -110,6 +118,7 @@ public class AgendaServiceRequestProcessorTest
     public void testAgendaInfoPollItem() throws PersistenceException
     {
         doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
+        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
         doReturn(createQueueResult(
             true,
             Collections.singletonList(new ReadyAgenda()),
@@ -125,6 +134,7 @@ public class AgendaServiceRequestProcessorTest
     public void testAgendaInfoPollItems() throws PersistenceException
     {
         doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
+        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
         doReturn(createQueueResult(
             true,
             Arrays.asList(new ReadyAgenda(), new ReadyAgenda()),
@@ -140,12 +150,14 @@ public class AgendaServiceRequestProcessorTest
     public void testAgendaDoesNotExist() throws PersistenceException
     {
         doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
+        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
         doReturn(createQueueResult(
             true,
             Arrays.asList(new ReadyAgenda(), new ReadyAgenda()),
             null))
             .when(mockAgendaInfoItemQueue).poll(anyInt());
         GetAgendaResponse getAgendaResponse = processor.processPOST(getAgendaRequest);
+        Assert.assertNotNull(getAgendaResponse.getAgendas());
         Assert.assertEquals(0, getAgendaResponse.getAgendas().size());
         verify(mockAgendaInfoItemQueueFactory, times(1)).createItemQueue(anyString());
     }

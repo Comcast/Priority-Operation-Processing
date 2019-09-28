@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
@@ -112,7 +113,10 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
 
         // The Agenda id is generated up front for use on other object updates/creates
         agendaToPersist.setId(UUID.randomUUID().toString());
-        agendaToPersist.setInsightId(insight.getId());
+        AgendaInsight agendaInsight = new AgendaInsight();
+        agendaInsight.setInsightId(insight.getId());
+        agendaInsight.setResourcePoolId(insight.getResourcePoolId());
+        agendaToPersist.setAgendaInsight(agendaInsight);
         agendaToPersist.setParams(agendaToPersist.getParams() == null ? new ParamsMap() : agendaToPersist.getParams());
 
         String agendaProgressId = agendaToPersist.getProgressId();
