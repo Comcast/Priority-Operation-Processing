@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.facility;
+package com.theplatform.dfh.cp.endpoint.resourcepool;
 
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;

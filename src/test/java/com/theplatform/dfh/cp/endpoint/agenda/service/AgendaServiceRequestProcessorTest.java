@@ -3,8 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.endpoint.resourcepool.service.AgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
@@ -38,7 +37,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class AgendaServiceRequestProcessorTest
 {

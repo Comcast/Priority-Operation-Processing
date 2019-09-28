@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.facility.insight.mapper;
+package com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper;
 
 import com.theplatform.dfh.cp.api.facility.InsightMapper;
 import org.slf4j.Logger;

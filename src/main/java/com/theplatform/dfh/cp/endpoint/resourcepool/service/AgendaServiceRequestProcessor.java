@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.agenda.service;
+package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;

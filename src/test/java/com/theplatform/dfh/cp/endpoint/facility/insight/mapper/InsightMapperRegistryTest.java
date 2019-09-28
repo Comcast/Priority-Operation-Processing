@@ -2,6 +2,9 @@ package com.theplatform.dfh.cp.endpoint.facility.insight.mapper;
 
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.InsightMapper;
+import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightMapperRegistry;
+import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationNameMapper;
+import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationTypeMapper;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;

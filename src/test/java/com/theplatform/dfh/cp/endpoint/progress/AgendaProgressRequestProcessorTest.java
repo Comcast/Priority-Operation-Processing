@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.endpoint.progress;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.endpoint.facility.insight.mapper.InsightSelector;
+import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
