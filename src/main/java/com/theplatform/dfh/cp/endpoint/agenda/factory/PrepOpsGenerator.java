@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.transformrequest.agenda.generator;
+package com.theplatform.dfh.cp.endpoint.agenda.factory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,7 @@ public class PrepOpsGenerator
     private JsonHelper jsonHelper = new JsonHelper();
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public Agenda generateAgenda(TransformRequest transformRequest, String progressId)
+    public Agenda generateAgenda(TransformRequest transformRequest)
     {
         final String LDAP_NAME = "ldap.1";
         final String ANALYSIS_NAME = "mediaInfo.1";
@@ -67,37 +67,9 @@ public class PrepOpsGenerator
         addOp(ops, "agendaPost.1", "agendaPost", httpRequestHandlerInput);
 
         Agenda agenda = new Agenda();
-        agenda.setCustomerId(transformRequest.getCustomerId());
-        // set the progress id on the agenda
-        agenda.setParams(new ParamsMap());
-        addParamsFromTransformRequest(agenda, transformRequest);
         agenda.setOperations(ops);
-        agenda.setJobId(transformRequest.getId());
-        agenda.setLinkId(transformRequest.getLinkId());
-        agenda.setCid(transformRequest.getCid());
-        agenda.setCustomerId(transformRequest.getCustomerId());
-        if(!StringUtils.isBlank(progressId)) agenda.setProgressId(progressId);
 
         return agenda;
-    }
-
-    /**
-     * Adds any params to the Agenda from the TransformRequest
-     * @param agenda The agenda to add any necessary params to
-     * @param transformRequest The TransformRequest to pull information from
-     */
-    protected void addParamsFromTransformRequest(Agenda agenda, TransformRequest transformRequest)
-    {
-
-        if(agenda.getParams() == null) agenda.setParams(new ParamsMap());
-
-        if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
-
-        ParamsMap transformParams = transformRequest.getParams();
-        if (transformParams != null && transformParams.containsKey(GeneralParamKey.doNotRun))
-            agenda.getParams().put(GeneralParamKey.doNotRun, transformParams.get(GeneralParamKey.doNotRun));
-
-        agenda.setCid(transformRequest.getCid());
     }
 
     protected void addOp(List<Operation> ops, String name, String type, Object payload)

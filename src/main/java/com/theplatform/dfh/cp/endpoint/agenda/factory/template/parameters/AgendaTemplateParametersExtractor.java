@@ -1,10 +1,13 @@
-package com.theplatform.dfh.cp.endpoint.agendatemplate.map.parameters;
+package com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Extracts and verifies the required parameters are provided
+ */
 public class AgendaTemplateParametersExtractor extends ParametersExtractor
 {
     private JsonNode requiredParameters;
@@ -20,7 +23,7 @@ public class AgendaTemplateParametersExtractor extends ParametersExtractor
             JsonNode parameterValue = inputParameters.get(templateParameterName);
             if(parameterValue == null)
             {
-                throw new MissingWorkflowParameterException(String.format("[%1$s] is a required parameter", templateParameterName));
+                throw new MissingTemplateParameterException(String.format("[%1$s] is a required parameter", templateParameterName));
             }
             putParameter(parameterMap, templateParameterName, parameterValue);
         }

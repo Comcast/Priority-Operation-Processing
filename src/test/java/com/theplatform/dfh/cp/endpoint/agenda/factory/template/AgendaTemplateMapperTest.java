@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.agendatemplate.map;
+package com.theplatform.dfh.cp.endpoint.agenda.factory.template;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;

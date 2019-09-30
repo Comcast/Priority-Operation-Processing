@@ -1,10 +1,13 @@
-package com.theplatform.dfh.cp.endpoint.agendatemplate.map.parameters;
+package com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Extracts the static parameters from the specified JsonNode
+ */
 public class StaticParametersExtractor extends ParametersExtractor
 {
     @Override
@@ -15,7 +18,6 @@ public class StaticParametersExtractor extends ParametersExtractor
         while(staticParametersIterator.hasNext())
         {
             Map.Entry<String, JsonNode> entry = staticParametersIterator.next();
-            // TODO: dupe check
             putParameter(parameterMap, entry.getKey(), entry.getValue());
         }
     }

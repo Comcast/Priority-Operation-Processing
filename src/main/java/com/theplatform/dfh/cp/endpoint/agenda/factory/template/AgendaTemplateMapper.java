@@ -1,12 +1,13 @@
-package com.theplatform.dfh.cp.endpoint.agendatemplate.map;
+package com.theplatform.dfh.cp.endpoint.agenda.factory.template;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.endpoint.agendatemplate.map.parameters.AgendaTemplateParametersExtractor;
-import com.theplatform.dfh.cp.endpoint.agendatemplate.map.parameters.StaticParametersExtractor;
+import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.AgendaTemplateParametersExtractor;
+import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.StaticParametersExtractor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
+import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +44,10 @@ public class AgendaTemplateMapper
         {
             return jsonHelper.getObjectMapper().treeToValue(agendaTemplateNode, Agenda.class);
         }
-        catch (Exception e){}
-        return null;
+        catch (Exception e)
+        {
+            throw new RuntimeServiceException(String.format("Failed to generate Agenda from template: [%1$s]", agendaTemplate.getTitle()), e, 500);
+        }
     }
 
     public AgendaTemplateMapper setJsonHelper(JsonHelper jsonHelper)

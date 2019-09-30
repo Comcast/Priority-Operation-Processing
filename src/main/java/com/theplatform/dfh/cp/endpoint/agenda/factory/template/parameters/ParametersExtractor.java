@@ -1,9 +1,12 @@
-package com.theplatform.dfh.cp.endpoint.agendatemplate.map.parameters;
+package com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Map;
 
+/**
+ * Base class for parameter extraction
+ */
 public abstract class ParametersExtractor
 {
     public abstract void updateParameterMap(Map<String, JsonNode> parameterMap, JsonNode sourceParameters);
