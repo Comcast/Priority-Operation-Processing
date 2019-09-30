@@ -96,7 +96,8 @@ public class DefaultAgendaFactory implements AgendaFactory
             Agenda generatedAgenda = agendaTemplateMapper
                 .map(agendaTemplate,
                     jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.transformRequest", transformRequest)));
-            logger.info("Generated Agenda: {}", jsonHelper.getJSONString(generatedAgenda));
+            //logger.info("Generated Agenda: {}", jsonHelper.getJSONString(generatedAgenda));
+            logger.info("TransformRequest: [{}] Agenda generated from template: [{}]:[{}]", transformRequest.getId(), agendaTemplate.getId(), agendaTemplate.getTitle());
             return generatedAgenda;
         }
         else
