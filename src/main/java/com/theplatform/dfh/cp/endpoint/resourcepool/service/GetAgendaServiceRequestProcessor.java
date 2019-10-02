@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.api.QueueResult;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Agenda service request processor
  */
-public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjectFeedServiceResponse<Agenda>, ServiceRequest<GetAgendaRequest>>
+public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgendaResponse, ServiceRequest<GetAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(GetAgendaServiceRequestProcessor.class);
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - insightid=%s agendarequestcount=%d";
@@ -50,14 +51,14 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjec
     }
 
     @Override
-    protected DataObjectFeedServiceResponse<Agenda> handlePOST(ServiceRequest<GetAgendaRequest> serviceRequest)
+    protected GetAgendaResponse handlePOST(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
         GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
         {
             final String message = "No insight id provided.  Cannot process getAgenda request.";
             logger.warn(message);
-            return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
         }
 
         logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
@@ -71,7 +72,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjec
         {
             ErrorResponse errorResponse = ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID());
             logger.warn(errorResponse.getServerStackTrace());
-            return new DataObjectFeedServiceResponse<>(errorResponse);
+            return new GetAgendaResponse(errorResponse);
         }
 
         if(insight == null)
@@ -79,9 +80,9 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjec
             final String message = String.format("No insight found with id %s. Cannot process getAgenda request.",
             getAgendaRequest.getInsightId());
             logger.warn(message);
-            return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
         }
-        DataObjectFeedServiceResponse<Agenda> response = isVisible(insight, serviceRequest);
+        GetAgendaResponse response = isVisible(insight, serviceRequest);
         if(response != null)
             return response;
 
@@ -121,24 +122,24 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjec
                         }
                     }
                 }
-                return new DataObjectFeedServiceResponse<>(agendaList);
+                return new GetAgendaResponse(agendaList);
             }
             else
             {
-                return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
+                return new GetAgendaResponse(ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
             }
         }
         catch(PersistenceException e)
         {
-            return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
         catch(BadRequestException e)
         {
-            return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
     }
 
-    private DataObjectFeedServiceResponse<Agenda> isVisible(Insight insight, ServiceRequest<GetAgendaRequest> serviceRequest)
+    private GetAgendaResponse isVisible(Insight insight, ServiceRequest<GetAgendaRequest> serviceRequest)
     {
         //Look up the resource pool for visibility
         ResourcePool resourcePool;
@@ -146,16 +147,16 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<DataObjec
         {
             resourcePool = resourcePoolPersister.retrieve(insight.getResourcePoolId());
             if(resourcePool == null)
-                return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.objectNotFound(String.format("No resource pool found with insight id %s. Cannot process getAgenda request.",
+                return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(String.format("No resource pool found with insight id %s. Cannot process getAgenda request.",
                     insight.getId()), serviceRequest.getCID()));
         }
         catch(PersistenceException e)
         {
-            return new DataObjectFeedServiceResponse<>(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
         if(!insightVisibilityFilter.isVisible(serviceRequest, insight) && !resourcePoolVisibilityFilter.isVisible(serviceRequest, resourcePool))
         {
-            return new DataObjectFeedServiceResponse<>((ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, insight.getCustomerId()), serviceRequest.getCID())));
+            return new GetAgendaResponse((ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, insight.getCustomerId()), serviceRequest.getCID())));
         }
         return null;
     }
