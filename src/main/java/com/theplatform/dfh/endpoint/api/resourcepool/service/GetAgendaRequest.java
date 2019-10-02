@@ -1,4 +1,4 @@
-package com.theplatform.dfh.endpoint.api.agenda.service;
+package com.theplatform.dfh.endpoint.api.resourcepool.service;
 
 /**
  */
