@@ -21,4 +21,14 @@ public class GetAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
     {
         super(dataObjects);
     }
+
+    public void setAgendas(Collection<Agenda> dataObjects)
+    {
+        super.setAll(dataObjects);
+    }
+
+    public Collection<Agenda> getAgendas()
+    {
+        return super.getAll();
+    }
 }
