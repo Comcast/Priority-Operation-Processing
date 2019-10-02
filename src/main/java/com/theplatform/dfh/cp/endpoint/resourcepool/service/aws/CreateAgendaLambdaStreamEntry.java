@@ -23,9 +23,9 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 
 /**
- * Main entry point class for the AWS getAgenda endpoint
+ * Main entry point class for the AWS createAgenda endpoint
  */
-public class GetAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataObjectFeedServiceResponse<Agenda>, LambdaRequest<GetAgendaRequest>>
+public class CreateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataObjectFeedServiceResponse<Agenda>, LambdaRequest<GetAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -55,7 +55,7 @@ public class GetAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataOb
         return new LambdaRequest<>(node, GetAgendaRequest.class);
     }
 
-    public GetAgendaLambdaStreamEntry()
+    public CreateAgendaLambdaStreamEntry()
     {
         this.infoItemQueueFactory = new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class);
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();

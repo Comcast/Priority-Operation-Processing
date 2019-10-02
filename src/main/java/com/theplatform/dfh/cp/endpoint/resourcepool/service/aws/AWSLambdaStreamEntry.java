@@ -33,7 +33,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
-        endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new CreateAgendaLambdaStreamEntry());
     }
 
     @Override
