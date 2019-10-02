@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.endpoint.validation;
 import com.theplatform.dfh.cp.endpoint.base.validation.DefaultRequestValidator;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import org.apache.commons.lang3.StringUtils;
 
 /**
