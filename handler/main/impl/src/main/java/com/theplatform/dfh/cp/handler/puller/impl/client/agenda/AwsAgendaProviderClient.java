@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,23 +12,23 @@ import org.slf4j.LoggerFactory;
  */
 public class AwsAgendaProviderClient implements AgendaClient
 {
-    private AgendaServiceClient agendaServiceClient;
+    private ResourcePoolServiceClient resourcePoolServiceClient;
     private static Logger logger = LoggerFactory.getLogger(AwsAgendaProviderClient.class);
 
     public AwsAgendaProviderClient(String agendaProviderUrl, HttpURLConnectionFactory httpURLConnectionFactory)
     {
-        agendaServiceClient = new AgendaServiceClient(httpURLConnectionFactory).setAgendaProviderUrl(agendaProviderUrl);
+        resourcePoolServiceClient = new ResourcePoolServiceClient(httpURLConnectionFactory).setAgendaProviderUrl(agendaProviderUrl);
     }
 
-    public AwsAgendaProviderClient(AgendaServiceClient agendaServiceClient)
+    public AwsAgendaProviderClient(ResourcePoolServiceClient ResourcePoolServiceClient)
     {
-        this.agendaServiceClient = agendaServiceClient;
+        this.resourcePoolServiceClient = ResourcePoolServiceClient;
     }
 
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         logger.debug("AwsAgendaProviderClient: Getting agenda");
-        GetAgendaResponse response = agendaServiceClient.getAgenda(getAgendaRequest);
+        GetAgendaResponse response = resourcePoolServiceClient.getAgenda(getAgendaRequest);
         logger.debug("AwsAgendaProviderClient: Got response: [" + (response == null ? "null" : response.toString()) +"]");
         return response;
     }
