@@ -1,7 +1,5 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.endpoint.api.DataObjectFeedServiceResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
@@ -21,7 +19,7 @@ public class ResourcePoolServiceClient extends FissionServiceClient
         this.agendaProviderUrl = agendaProviderUrl;
     }
 
-    public DataObjectFeedServiceResponse<Agenda> getAgenda(GetAgendaRequest getAgendaRequest)
+    public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         return new GenericFissionClient<>(agendaProviderUrl, getHttpUrlConnectionFactory(), GetAgendaResponse.class)
             .getObjectFromPOST(getAgendaRequest);
