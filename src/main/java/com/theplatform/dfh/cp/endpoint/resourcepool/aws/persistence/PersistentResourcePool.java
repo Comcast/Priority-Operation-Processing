@@ -33,8 +33,8 @@ public class PersistentResourcePool extends ResourcePool
 
     @Override
     @DynamoDBIgnore
-    public List<Insight> getInsights()
+    public List<String> getInsightIds()
     {
-        return super.getInsights();
+        return super.getInsightIds();
     }
 }
