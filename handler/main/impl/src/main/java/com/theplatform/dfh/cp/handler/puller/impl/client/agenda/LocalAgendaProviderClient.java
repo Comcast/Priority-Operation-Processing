@@ -2,8 +2,8 @@ package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class LocalAgendaProviderClient implements AgendaClient
         Agenda agenda = getAgenda();
         List<Agenda> agendaList = new ArrayList<>();
         agendaList.add(agenda);
-        getAgendaResponse.setAgendas(agendaList);
+        getAgendaResponse.setAll(agendaList);
         return getAgendaResponse;
     }
 }
