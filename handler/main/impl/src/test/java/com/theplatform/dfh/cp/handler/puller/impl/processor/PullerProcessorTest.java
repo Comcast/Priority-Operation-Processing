@@ -3,12 +3,11 @@ package com.theplatform.dfh.cp.handler.puller.impl.processor;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

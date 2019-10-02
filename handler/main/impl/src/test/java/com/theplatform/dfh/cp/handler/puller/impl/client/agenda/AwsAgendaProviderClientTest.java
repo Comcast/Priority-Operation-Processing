@@ -1,12 +1,11 @@
 package com.theplatform.dfh.cp.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AwsAgendaProviderClient;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,12 +24,12 @@ import static org.mockito.Mockito.when;
 public class AwsAgendaProviderClientTest
 {
     private JsonHelper jsonHelper = new JsonHelper();
-    private AgendaServiceClient agendaServiceClient;
+    private ResourcePoolServiceClient agendaServiceClient;
 
     @BeforeMethod
     public void setup()
     {
-        agendaServiceClient = mock(AgendaServiceClient.class);
+        agendaServiceClient = mock(ResourcePoolServiceClient.class);
     }
 
     @Test
