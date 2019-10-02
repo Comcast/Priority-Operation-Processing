@@ -10,7 +10,7 @@ public class ResourcePool implements IdentifiedObject
     private String id;
     private String title;
     private String customerId;
-    private List<Insight> insights = new ArrayList<>();
+    private List<String> insightIds = null;
 
     public String getId()
     {
@@ -42,24 +42,21 @@ public class ResourcePool implements IdentifiedObject
         this.customerId = customerId;
     }
 
-    public List<Insight> getInsights()
+    public void setInsightIds(List<String> insightIds)
     {
-        return insights;
+        this.insightIds = insightIds;
     }
 
-    public void setInsights(List<Insight> insights)
+    public List<String> getInsightIds()
     {
-        if(insights == null)
-            this.insights.clear();
-        this.insights = insights;
-        this.insights.stream().forEach(i -> i.setResourcePoolId(this.id));
+        return insightIds;
     }
-    public void addInsight(Insight insight)
+
+    public void addInsightId(String insightId)
     {
-        if(this.insights == null)
-            insights = new ArrayList<>();
-        this.insights.add(insight);
-        insight.setResourcePoolId(this.id);
+        if(insightIds == null)
+            insightIds = new ArrayList<>();
+        insightIds.add(insightId);
     }
 
 }

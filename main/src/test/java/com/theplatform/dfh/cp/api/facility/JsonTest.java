@@ -15,8 +15,8 @@ public class JsonTest
         ResourcePool job = (ResourcePool) JsonUtil.toObject(getStringFromResourceFile("ResourcePool.json"), ResourcePool.class);
         Assert.assertNotNull(job);
         Assert.assertEquals(job.getId(),"2u9490283912832109283091");
-        Assert.assertNotNull(job.getInsights());
-        Assert.assertEquals("9384932rfdiofjwoiejf",job.getInsights().get(0).getId());
+        Assert.assertNotNull(job.getInsightIds());
+        Assert.assertEquals("9384932rfdiofjwoiejf",job.getInsightIds().get(0));
     }
     @Test
     public void testResourcePoolToJson() throws Exception

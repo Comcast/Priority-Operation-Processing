@@ -6,7 +6,7 @@ public class DataGenerator
     {
         ResourcePool resourcePool = generateResourcePool();
         Insight insight = generateInsight();
-        resourcePool.addInsight(insight);
+        resourcePool.addInsightId(insight.getId());
         return resourcePool;
     }
     public static ResourcePool generateResourcePool()
