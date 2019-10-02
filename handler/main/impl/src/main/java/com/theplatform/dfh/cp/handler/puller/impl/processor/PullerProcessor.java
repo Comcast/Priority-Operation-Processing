@@ -11,8 +11,8 @@ import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
