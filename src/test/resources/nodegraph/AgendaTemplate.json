@@ -18,9 +18,9 @@
         "inputs": {
           "targets": [
             {
-              "file": "@@sourceFile",
-              "rawsData": "@@rawsData",
-              "processorVersion": "${accelerateEncodeProcessorVersion}"
+              "file": "@<sourceFile>",
+              "rawsData": "@<rawsData>",
+              "processorVersion": "@<accelerateEncodeProcessorVersion>"
             }
           ]
         },
