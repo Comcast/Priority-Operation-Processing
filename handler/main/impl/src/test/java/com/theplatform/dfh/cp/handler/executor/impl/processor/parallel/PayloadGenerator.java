@@ -6,7 +6,6 @@ import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContextFacto
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.field.retriever.environment.EnvironmentFieldRetriever;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
@@ -31,13 +30,17 @@ public class PayloadGenerator
     JsonHelper jsonHelper = new JsonHelper();
 
     @Test(enabled = false)
+    public void logGeneratedPayload()
+    {
+        logger.info(jsonHelper.getPrettyJSONString(generatePayload()));
+    }
+
     public String generatePayload()
     {
         addSampleOperation(40);
         addDependentOps(25);
         Agenda agenda = new Agenda();
         agenda.setOperations(operations);
-        logger.info(jsonHelper.getPrettyJSONString(agenda));
         return jsonHelper.getJSONString(agenda);
     }
 
@@ -110,7 +113,7 @@ public class PayloadGenerator
             operation.setName("Sample." + id);
             operation.setType("sample");
             operation.setId(Integer.toString(id));
-            operation.setPayload(getPayload(String.format("@@%1$s.out::/actionData", dependency.getName())));
+            operation.setPayload(getPayload(String.format("@<%1$s.out::/actionData>", dependency.getName())));
             operations.add(operation);
         });
     }
