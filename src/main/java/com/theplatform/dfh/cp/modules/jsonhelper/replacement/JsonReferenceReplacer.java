@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.modules.jsonhelper.replacement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringSubstitutor;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -15,13 +14,15 @@ import java.util.regex.Pattern;
  */
 public class JsonReferenceReplacer
 {
-    public static final String DEFAULT_REFERENCE_PREFIX = "@@";
+    public static final String DEFAULT_REFERENCE_PREFIX = "@<";
+    public static final String DEFAULT_REFERENCE_SUFFIX = ">";
     public static final String DEFAULT_REFERENCE_SEPARATOR = "::";
     public static final String JACKSON_PATH_SEPARATOR = "/";
-    public static final String REFERENCE_GROUP = "reference";
-    public static final String PATH_GROUP = "path";
+    public static final String REFERENCE_GROUP_NAME = "reference";
+    public static final String PATH_GROUP_NAME = "path";
 
     private final String CONTEXT_REFERENCE_PREFIX;
+    private final String CONTEXT_REFERENCE_SUFFIX;
     private final String CONTEXT_REFERENCE_SEPARATOR;
     private final Pattern referencePattern;
 
@@ -30,19 +31,21 @@ public class JsonReferenceReplacer
 
     public JsonReferenceReplacer()
     {
-        this(DEFAULT_REFERENCE_PREFIX, DEFAULT_REFERENCE_SEPARATOR);
+        this(DEFAULT_REFERENCE_PREFIX, DEFAULT_REFERENCE_SEPARATOR, DEFAULT_REFERENCE_SUFFIX);
     }
 
-    public JsonReferenceReplacer(String referencePrefix, String referenceSeparator)
+    public JsonReferenceReplacer(String referencePrefix, String referenceSeparator, String referenceSuffix)
     {
         CONTEXT_REFERENCE_PREFIX = referencePrefix;
         CONTEXT_REFERENCE_SEPARATOR = referenceSeparator;
+        CONTEXT_REFERENCE_SUFFIX = referenceSuffix;
         // the quote replacements escape any special characters (like $)
-        String pattern = String.format("%1$s(?<%2$s>.+?)(%3$s(?<%4$s>.+))?",
+        String pattern = String.format("(%1$s(?<%2$s>.+?)(%3$s(?<%4$s>.+?))?%5$s)",
             Matcher.quoteReplacement(CONTEXT_REFERENCE_PREFIX),
-            REFERENCE_GROUP,
+            REFERENCE_GROUP_NAME,
             Matcher.quoteReplacement(CONTEXT_REFERENCE_SEPARATOR),
-            PATH_GROUP);
+            PATH_GROUP_NAME,
+            Matcher.quoteReplacement(CONTEXT_REFERENCE_SUFFIX));
         referencePattern = Pattern.compile(pattern);
     }
 
@@ -64,10 +67,12 @@ public class JsonReferenceReplacer
      */
     public String generateReference(String referenceName, String jsonPtrExpr)
     {
-        return CONTEXT_REFERENCE_PREFIX + referenceName +
-            (jsonPtrExpr == null
+        return CONTEXT_REFERENCE_PREFIX
+            + referenceName
+            + (jsonPtrExpr == null
                ? ""
-               : CONTEXT_REFERENCE_SEPARATOR + jsonPtrExpr);
+               : CONTEXT_REFERENCE_SEPARATOR + jsonPtrExpr)
+            + CONTEXT_REFERENCE_SUFFIX;
     }
     /**
      * Replaces the references in the specified json structure
@@ -78,17 +83,8 @@ public class JsonReferenceReplacer
     public ReferenceReplacementResult replaceReferences(JsonNode rootNode, Map<String, JsonNode> referenceMap)
     {
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
-        Map<String, String> substitutorMap = new HashMap<>();
-        for(Map.Entry<String, JsonNode> kvp : referenceMap.entrySet())
-        {
-            if(kvp.getValue() != null && kvp.getValue().isValueNode())
-            {
-                substitutorMap.put(kvp.getKey(), kvp.getValue().asText());
-            }
-        }
 
-        StringSubstitutor strSubstitutor = new StringSubstitutor(substitutorMap);
-        traverseNodeForTokenReplacement(rootNode, referenceMap, strSubstitutor, referenceReplacementResult);
+        traverseNodeForTokenReplacement(rootNode, referenceMap, referenceReplacementResult);
         referenceReplacementResult.setResult(rootNode.toString());
         return referenceReplacementResult;
     }
@@ -98,10 +94,8 @@ public class JsonReferenceReplacer
      * Processes the specified node (and all child nodes for replacement). This is a non-recursive implementation
      * @param inputNode The node to evaluate
      * @param parameterMap The map of parameters for replacement (used for whole object replacement)
-     * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      */
-    private void traverseNodeForTokenReplacement(JsonNode inputNode, Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor,
-        ReferenceReplacementResult report)
+    private void traverseNodeForTokenReplacement(JsonNode inputNode, Map<String, JsonNode> parameterMap, ReferenceReplacementResult report)
     {
         // instead of recursion use a stack that is added to
         Stack<JsonNodeWrapper> nodeEvaluationStack = new Stack<>();
@@ -135,7 +129,6 @@ public class JsonReferenceReplacer
                             objNode,
                             arrayNodeReplacer.configureArrayIndex(arrayNode, idx),
                             parameterMap,
-                            strSubstitutor,
                             report);
                     }
                     // this else section is completely unsafe and likely to cause bugs (no type check and the null nodeId!)
@@ -152,7 +145,6 @@ public class JsonReferenceReplacer
                     node,
                     objectNodeReplacer.configureField(parentNode, nodeId),
                     parameterMap,
-                    strSubstitutor,
                     report);
             }
             else if (node.isObject())
@@ -172,51 +164,73 @@ public class JsonReferenceReplacer
      * @param node The node to possibly update
      * @param jsonNodeReplacer The replacer to use to perform the update
      * @param parameterMap The map of parameters for replacement (used for whole object replacement)
-     * @param strSubstitutor The string substitutor for replacement (used for string token replacement)
      * @param report The result object to add issues related to the replacement processing
      */
-    protected void performTokenReplacement(JsonNode node, JsonNodeReplacer jsonNodeReplacer, Map<String, JsonNode> parameterMap, StringSubstitutor strSubstitutor,
-        ReferenceReplacementResult report)
+    protected void performTokenReplacement(JsonNode node, JsonNodeReplacer jsonNodeReplacer, Map<String, JsonNode> parameterMap, ReferenceReplacementResult report)
     {
         final String nodeValue = node.asText();
         if (nodeValue != null)
         {
-            boolean replaced = false;
+            boolean fullNodeReplace = false;
             Matcher matcher = getMatcher(nodeValue);
+            // exact match (not building a composite string)
             if (matcher.matches())
             {
-                String referenceName = matcher.group(REFERENCE_GROUP);
-                String referencePath = matcher.group(PATH_GROUP);
+                String referenceName = matcher.group(REFERENCE_GROUP_NAME);
+                String referencePath = matcher.group(PATH_GROUP_NAME);
 
                 //logger.debug("Checking for token [{}] in node [{}]", translatedValue, nodeId);
                 JsonNode parameterValue = getParameterValue(parameterMap, referenceName, referencePath, report);
                 if (parameterValue != null)
                 {
+                    fullNodeReplace = true;
                     if(parameterValue.isObject() || parameterValue.isArray())
                     {
-                        replaced = true;
                         //logger.debug("Object Replace: {} => {}", nodeValue, parameterValue);
                         jsonNodeReplacer.updateValue(parameterValue);
-                        // TODO: consider supporting nested references (unlikely)
-                        // TODO: this would allow self-referencing and is quite risky
-                        //nodeEvaluationStack.push(new JsonNodeWrapper(parameterValue, nodeId, parentNode));
                     }
                     else if(parameterValue.isTextual() || parameterValue.isNumber())
                     {
-                        replaced = true;
                         //logger.debug("JSON Pointer String Replace: {} => {}", nodeValue, parameterValue);
                         jsonNodeReplacer.updateValue(parameterValue);
                     }
                 }
             }
-            // ${parameter} => string replacement
-            if (!replaced)
+            if(!fullNodeReplace)
             {
-                String result = strSubstitutor.replace(nodeValue);
-                if (!StringUtils.equals(result, nodeValue))
+                // look for any internal matches (composite string)
+                // reset the matcher (necessary because of the .matches call above)
+                matcher.reset();
+                Map<String, String> replacementValues = new HashMap<>();
+                while(matcher.find())
                 {
-                    //logger.debug("String Replace: {} => {}", nodeValue, result);
-                    jsonNodeReplacer.updateValue(result);
+                    String referenceName = matcher.group(REFERENCE_GROUP_NAME);
+                    String referencePath = matcher.group(PATH_GROUP_NAME);
+
+                    //logger.debug("Checking for token [{}] in node [{}]", translatedValue, nodeId);
+                    JsonNode parameterValue = getParameterValue(parameterMap, referenceName, referencePath, report);
+                    if (parameterValue != null)
+                    {
+                        if(!parameterValue.isValueNode())
+                        {
+                            report.addInvalidReference(String.format("%1$s cannot be used in composite string", referenceName));
+                        }
+                        else if(parameterValue.isValueNode())
+                        {
+                            // get the entire match so it can be replaced as necessary
+                            // NOTE: if the same item is added again it is harmless
+                            replacementValues.put(matcher.group(0), parameterValue.asText());
+                        }
+                    }
+                }
+                if(replacementValues.size() > 0)
+                {
+                    String newValue = nodeValue;
+                    for(Map.Entry<String,String> kvp : replacementValues.entrySet())
+                    {
+                        newValue = StringUtils.replace(newValue, kvp.getKey(), kvp.getValue());
+                    }
+                    jsonNodeReplacer.updateValue(newValue);
                 }
             }
         }
@@ -286,7 +300,7 @@ public class JsonReferenceReplacer
         Matcher matcher = getMatcher(reference);
         if (matcher.matches())
         {
-            return matcher.group(REFERENCE_GROUP);
+            return matcher.group(REFERENCE_GROUP_NAME);
         }
         return null;
     }

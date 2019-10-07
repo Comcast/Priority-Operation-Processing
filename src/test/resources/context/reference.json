@@ -1,8 +1,8 @@
 {
   "someitem":
   {
-    "field1":"@@encode.1",
-    "field2":"@@analysis.1",
-    "field3":["@@analysis.1", "someText", {"nested":"@@encode.1"}, 4]
+    "field1":"@<encode.1>",
+    "field2":"@<analysis.1>",
+    "field3":["@<analysis.1>", "someText", {"nested":"@<encode.1>"}, 4]
   }
 }
