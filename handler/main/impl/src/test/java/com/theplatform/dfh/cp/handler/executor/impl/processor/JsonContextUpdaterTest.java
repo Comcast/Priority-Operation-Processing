@@ -14,11 +14,11 @@ public class JsonContextUpdaterTest
     {
         return new Object[][]
             {
-                { "@@item.out", "item"},
-                { "@@item.out.out", "item.out"},
-                { "@@item.out::/", "item"},
-                { "@@item", "item"},
-                { "@@item.out::/.out", "item"},
+                { "@<item.out>", "item"},
+                { "@<item.out.out>", "item.out"},
+                { "@<item.out::/>", "item"},
+                { "@<item>", "item"},
+                { "@<item.out::/.out>", "item"},
             };
     }
 
