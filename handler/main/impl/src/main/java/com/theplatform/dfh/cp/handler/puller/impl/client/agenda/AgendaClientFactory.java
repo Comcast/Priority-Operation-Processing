@@ -25,6 +25,27 @@ public class AgendaClientFactory
         // local file as input, not calling the agenda service.
         if (pullerConfig.getLocalAgendaRelativePath() == null)
         {
+            // Verify if the proxy host/port is defined in the configuration. This
+            // is required when we need to access the agenda service in a different
+            // network zone, such as the green zone when running in RDEI
+            // Example proxyHost: 'greenproxy-po-vip.sys.comcast.net'
+            // Example proxyPort: '3128'
+            // Proxies are documented here:
+            //   https://wiki.sys.comcast.net/pages/viewpage.action?spaceKey=ContentOperations&title=Proxies
+            if (pullerConfig.getProxyHost() != null && pullerConfig.getProxyPort() != null)
+            {
+                logger.info("AgendaClientFactory: Using Proxy [" + pullerConfig.getProxyHost() +
+                                    ":" + pullerConfig.getProxyPort() + "]");
+                System.setProperty("https.proxyHost", pullerConfig.getProxyHost());
+                System.setProperty("https.proxyPort", pullerConfig.getProxyPort());
+                System.setProperty("http.proxyHost", pullerConfig.getProxyHost());
+                System.setProperty("http.proxyPort", pullerConfig.getProxyPort());
+            }
+            else
+            {
+                logger.info("AgendaClientFactory: Using AWS Agenda provider");
+            }
+
             logger.debug("AgendaClientFactory: URL: [" + pullerConfig.getIdentityUrl() +
                                 "], Username: [" + pullerConfig.getUsername());
 
