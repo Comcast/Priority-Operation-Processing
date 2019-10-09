@@ -65,14 +65,11 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
             readyAgendaPersister,
             new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, agendaRequestPersister, operationProgressPersister)),
             new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister)),
-            new InsightSelector(
-                new DataObjectRequestProcessorClient<>(new InsightRequestProcessor(insightPersister)),
-                new DataObjectRequestProcessorClient<>(new CustomerRequestProcessor(customerPersister))
-            )
+            new InsightSelector(insightPersister,customerPersister)
         );
     }
 
-    AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,
+    public AgendaRequestProcessor(ObjectPersister<Agenda> agendaRequestObjectPersister,
         ObjectPersister<ReadyAgenda> readyAgendaObjectPersister,
         ObjectClient<AgendaProgress> agendaProgressClient,
         ObjectClient<OperationProgress> operationProgressClient,
@@ -99,7 +96,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         Insight insight = null;
         try
         {
-            insight = insightSelector.select(agendaToPersist);
+            insight = getInsightSelector().select(agendaToPersist);
         } catch (ValidationException e)
         {
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), request.getCID()));
@@ -301,6 +298,31 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
     public RequestValidator<DataObjectRequest<Agenda>> getRequestValidator()
     {
         return new AgendaValidator();
+    }
+
+    public void setInsightSelector(InsightSelector insightSelector)
+    {
+        this.insightSelector = insightSelector;
+    }
+
+    public InsightSelector getInsightSelector()
+    {
+        return insightSelector;
+    }
+
+    public void setAgendaProgressClient(ObjectClient<AgendaProgress> agendaProgressClient)
+    {
+        this.agendaProgressClient = agendaProgressClient;
+    }
+
+    public void setOperationProgressClient(ObjectClient<OperationProgress> operationProgressClient)
+    {
+        this.operationProgressClient = operationProgressClient;
+    }
+
+    public void setReadyAgendaObjectPersister(ObjectPersister<ReadyAgenda> readyAgendaObjectPersister)
+    {
+        this.readyAgendaObjectPersister = readyAgendaObjectPersister;
     }
 
     private void deleteAgenda(String id)

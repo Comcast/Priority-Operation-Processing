@@ -4,41 +4,36 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.InsightMapper;
+import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.client.HttpObjectClient;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.CustomerIdAuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class InsightSelector
 {
-    private ObjectClient<Insight> insightClient;
-    private ObjectClient<Customer> customerClient;
+    private InsightRequestProcessor insightRequestProcessor;
+    private CustomerRequestProcessor customerRequestProcessor;
 
-    public InsightSelector(
-            HttpURLConnectionFactory httpURLConnectionFactory, String insightURL, String customerURL)
+    public InsightSelector(ObjectPersister<Insight> insightPersister,
+        ObjectPersister<Customer> customerPersister)
     {
-        this.insightClient =
-                new HttpObjectClient<>(insightURL, httpURLConnectionFactory, Insight.class);
-        this.customerClient =
-                new HttpObjectClient<>(customerURL, httpURLConnectionFactory, Customer.class);
+        this(new InsightRequestProcessor(insightPersister), new CustomerRequestProcessor(customerPersister));
     }
-
-    public InsightSelector(
-            ObjectClient<Insight> insightClient,
-            ObjectClient<Customer> customerClient)
+    public InsightSelector(InsightRequestProcessor insightRequestProcessor, CustomerRequestProcessor customerRequestProcessor)
     {
-        this.insightClient = insightClient;
-        this.customerClient = customerClient;
+        this.insightRequestProcessor = insightRequestProcessor;
+        this.customerRequestProcessor = customerRequestProcessor;
     }
-
     public Insight select(Agenda agenda)
     {
         // scan the agenda for certain details and return the insight
@@ -64,20 +59,33 @@ public class InsightSelector
     private List<Insight> lookupInsights(final String resourcePoolId, final String customerId)
     {
         if(resourcePoolId == null) return null;
-
-        ByResourcePoolId byResourcePoolId = new ByResourcePoolId(resourcePoolId);
-        DataObjectResponse<Insight> insightFeed = insightClient.getObjects(Collections.singletonList(byResourcePoolId));
+        DataObjectRequest<Insight> insightReq = generateInsightReq(customerId, resourcePoolId);
+        DataObjectResponse<Insight> insightFeed = insightRequestProcessor.processGET(insightReq);
         if(insightFeed == null || insightFeed.getAll() == null) return null;
-        List<Insight> allInsights = insightFeed.getAll();
-        return allInsights.stream().filter(i -> i.isVisible(customerId)).collect(Collectors.toList());
+        return insightFeed.getAll();
     }
 
     private Customer lookupCustomer(final String customerId)
     {
         if(customerId == null) return null;
-        DataObjectResponse<Customer> customerResponse = customerClient.getObject(customerId);
+        DataObjectRequest<Customer> customerReq = generateCustomerReq(customerId);
+        DataObjectResponse<Customer> customerResponse = customerRequestProcessor.processGET(customerReq);
         return customerResponse.getFirst();
     }
 
+    private DataObjectRequest<Customer> generateCustomerReq(String customerId)
+    {
+        DefaultDataObjectRequest<Customer> req = new DefaultDataObjectRequest<>();
+        req.setAuthorizationResponse(new CustomerIdAuthorizationResponse(customerId));
+        req.setId(customerId);
+        return req;
+    }
+    private DataObjectRequest<Insight> generateInsightReq(String customerId, String resourcePoolId)
+    {
+        DefaultDataObjectRequest<Insight> req = new DefaultDataObjectRequest<>();
+        req.setAuthorizationResponse(new CustomerIdAuthorizationResponse(customerId));
+        req.setQueries(Collections.singletonList(new ByResourcePoolId(resourcePoolId)));
+        return req;
+    }
 }
 
