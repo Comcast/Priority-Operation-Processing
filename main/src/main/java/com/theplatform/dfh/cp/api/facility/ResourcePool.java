@@ -1,26 +1,14 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.theplatform.dfh.cp.api.EndpointDataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourcePool implements IdentifiedObject
+public class ResourcePool extends EndpointDataObject
 {
-    private String id;
     private String title;
-    private String customerId;
     private List<String> insightIds = null;
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
 
     public String getTitle()
     {
@@ -30,16 +18,6 @@ public class ResourcePool implements IdentifiedObject
     public void setTitle(String title)
     {
         this.title = title;
-    }
-
-    public String getCustomerId()
-    {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId)
-    {
-        this.customerId = customerId;
     }
 
     public void setInsightIds(List<String> insightIds)

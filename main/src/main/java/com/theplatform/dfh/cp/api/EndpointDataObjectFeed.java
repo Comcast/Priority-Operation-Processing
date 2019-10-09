@@ -4,20 +4,20 @@ import java.util.Collection;
 
 public class EndpointDataObjectFeed<D extends EndpointDataObject>
 {
-    private Collection<EndpointDataObject> entries;
+    private Collection<D> entries;
     public EndpointDataObjectFeed(){}
 
-    public EndpointDataObjectFeed(Collection<EndpointDataObject> entries)
+    public EndpointDataObjectFeed(Collection<D> entries)
     {
         this.entries = entries;
     }
 
-    public Collection<EndpointDataObject> getEntries()
+    public Collection<D> getEntries()
     {
         return entries;
     }
 
-    public void setEntries(Collection<EndpointDataObject> entries)
+    public void setEntries(Collection<D> entries)
     {
         this.entries = entries;
     }
