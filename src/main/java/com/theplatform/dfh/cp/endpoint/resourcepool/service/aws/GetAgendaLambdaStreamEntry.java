@@ -43,10 +43,7 @@ public class GetAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataOb
         String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
         ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
 
-        String resourcePoolTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.RESOURCE_POOL);
-        ObjectPersister<ResourcePool> resourcePoolPersister = resourcePoolPersisterFactory.getObjectPersister(resourcePoolTableName);
-
-        return new GetAgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister, resourcePoolPersister);
+        return new GetAgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister);
     }
 
     @Override
