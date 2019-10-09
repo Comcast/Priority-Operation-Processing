@@ -39,7 +39,6 @@ public class CreateAgendaServiceRequestProcessorTest
     private ServiceRequest<CreateAgendaRequest> createAgendaRequest;
     private ObjectPersister mockInsightPersister = mock(ObjectPersister.class);
     private ObjectPersister mockAgendaPersister = mock(ObjectPersister.class);
-    private ObjectPersister mockResourcePoolPersister = mock(ObjectPersister.class);
     private CreateAgendaRequest mockRequest = Mockito.mock(CreateAgendaRequest.class);
     private static final String ID_RESOURCEPOOL = "ResourcePool ID";
     private static final String ID_RESOURCEPOOL2 = "ResourcePool ID";
@@ -86,7 +85,7 @@ public class CreateAgendaServiceRequestProcessorTest
 
         doReturn(new Agenda()).when(mockAgendaPersister).persist(anyObject());
 
-        processor = new CreateAgendaServiceRequestProcessor(mockResourcePoolPersister, mockInsightPersister, mockAgendaPersister, customerPersister, agendaProgressPersister,
+        processor = new CreateAgendaServiceRequestProcessor(mockInsightPersister, mockAgendaPersister, customerPersister, agendaProgressPersister,
             operationProgressPersister, readyAgendaPersister);
     }
 

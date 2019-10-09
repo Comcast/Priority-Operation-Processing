@@ -65,9 +65,8 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
     private ObjectPersister<OperationProgress> operationProgressPersister;
     private ObjectPersister<AgendaProgress> agendaProgressPersister;
     private ObjectPersister<ReadyAgenda> readyAgendaPersister;
-    private ObjectPersister<ResourcePool> resourcePoolPersister;
 
-    public CreateAgendaServiceRequestProcessor(ObjectPersister<ResourcePool> resourcePoolPersister, ObjectPersister<Insight> insightPersister,
+    public CreateAgendaServiceRequestProcessor(ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister,
         ObjectPersister<Customer> customerPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister)
@@ -78,7 +77,6 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         this.agendaProgressPersister = agendaProgressPersister;
         this.operationProgressPersister = operationProgressPersister;
         this.readyAgendaPersister = readyAgendaPersister;
-        this.resourcePoolPersister = resourcePoolPersister;
     }
 
     @Override
