@@ -1,15 +1,15 @@
 package com.theplatform.dfh.cp.endpoint.base.visibility;
 
+import com.theplatform.dfh.cp.api.AllowedCustomerEndpointDataObject;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
-import com.theplatform.dfh.object.api.IdentifiedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends ServiceRequest> extends VisibilityFilter<T, Req>
+public class AllowedCustomerVisibiltyFilter<T extends AllowedCustomerEndpointDataObject, Req extends ServiceRequest> extends VisibilityFilter<T, Req>
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -22,32 +22,30 @@ public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends Se
             return false;
         }
 
+        if(object.isGlobal())
+            return true;
+
+        if(object.getAllowedCustomerIds() == null || object.getAllowedCustomerIds().size() == 0)
+            return false;
+
         AuthorizationResponse authorizationResponse = req.getAuthorizationResponse();
         if(authorizationResponse == null)
         {
             if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized response available.");
             return false;
         }
-
-        //If the visibility is global, we are ok to see all data.
-        if(authorizationResponse.getVisibility() == DataVisibility.global)
-        {
-            if(logger.isDebugEnabled()) logger.debug("visibility = {}", DataVisibility.global);
-            return true;
-        }
-
         Set<String> authorizedCustomers = authorizationResponse.getAllowedCustomerIds();
-        if(authorizedCustomers == null || authorizedCustomers.size() == 0)
+        if(authorizedCustomers == null)
         {
             if(logger.isDebugEnabled()) logger.debug("visibility = false. No authorized accounts.");
             return false;
         }
-
-        boolean authorizedAccount = authorizedCustomers.stream().anyMatch(ac -> ac != null && ac.equals(object.getCustomerId()));
-         if(logger.isDebugEnabled())
+        Set<String> allowedCustomersOnObject = object.getAllowedCustomerIds();
+        boolean authorizedAccount = authorizedCustomers.stream().anyMatch(ac -> ac != null && allowedCustomersOnObject.contains(ac.toLowerCase()));
+        if(logger.isDebugEnabled())
             logger.debug("visibility = {}", authorizedAccount ? DataVisibility.authorized_account : "false. No authorized accounts available.");
+
 
         return authorizedAccount;
     }
-
 }
