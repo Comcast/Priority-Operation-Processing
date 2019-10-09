@@ -40,7 +40,6 @@ public class CreateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Cre
     private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
     private ObjectPersisterFactory<ReadyAgenda> readyAgendaPersisterFactory;
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
-    private ObjectPersisterFactory<ResourcePool> resourcePoolPersisterFactory;
 
     @Override
     public RequestProcessor getRequestProcessor(LambdaRequest<CreateAgendaRequest> lambdaRequest)
@@ -51,9 +50,6 @@ public class CreateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Cre
 
         String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
         ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
-
-        String resourcePoolTable = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.RESOURCE_POOL);
-        ObjectPersister<ResourcePool> resourcePoolPersister = resourcePoolPersisterFactory.getObjectPersister(resourcePoolTable);
 
         String customerTable = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.CUSTOMER);
         ObjectPersister<Customer> customerPersister = customerPersisterFactory.getObjectPersister(customerTable);
@@ -67,7 +63,7 @@ public class CreateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Cre
         String readyAgendaTable = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.READY_AGENDA);
         ObjectPersister<ReadyAgenda> readyAgendaPersister = readyAgendaPersisterFactory.getObjectPersister(readyAgendaTable);
 
-        return new CreateAgendaServiceRequestProcessor(resourcePoolPersister, insightPersister, agendaPersister, customerPersister,
+        return new CreateAgendaServiceRequestProcessor(insightPersister, agendaPersister, customerPersister,
             agendaProgressPersister, opProgressPersister, readyAgendaPersister);
     }
 
@@ -85,7 +81,6 @@ public class CreateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Cre
         this.operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
         this.readyAgendaPersisterFactory = new DynamoDbReadyAgendaPersisterFactory();
         this.customerPersisterFactory = new DynamoDBCustomerPersisterFactory();
-        this.resourcePoolPersisterFactory = new DynamoDBResourcePoolPersisterFactory();
     }
 }
 
