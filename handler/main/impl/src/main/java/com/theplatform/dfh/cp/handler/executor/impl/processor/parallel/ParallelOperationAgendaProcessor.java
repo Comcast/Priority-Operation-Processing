@@ -63,6 +63,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
 
         try
         {
+            operationContext.setAgendaId(handlerInput.getId());
             logger.debug("Adding progress");
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
             logger.debug("Running operation");

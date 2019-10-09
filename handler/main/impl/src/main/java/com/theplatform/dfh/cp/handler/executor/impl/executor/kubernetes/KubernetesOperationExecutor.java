@@ -171,6 +171,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         Map<String,String> envVars = executionConfig.getEnvVars();
         envVars.put(HandlerField.PAYLOAD.name(), payload);
 
+        setEnvVar(envVars, HandlerField.AGENDA_ID);
         setEnvVar(envVars, HandlerField.CID);
         setEnvVar(envVars, HandlerField.CUSTOMER_ID);
 

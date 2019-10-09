@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -45,7 +46,7 @@ public class OperationWrapperTest
     {
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.addInvalidReference("invalid");
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         operationWrapper.isReady(mockExecutorContext, new HashSet<>());
     }
 
@@ -54,7 +55,7 @@ public class OperationWrapperTest
     {
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.addMissingReference("missing");
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         Assert.assertFalse(operationWrapper.isReady(mockExecutorContext, new HashSet<>()));
         Assert.assertNull(operationWrapper.getInputPayload());
     }
@@ -65,7 +66,7 @@ public class OperationWrapperTest
         final String EXPECTED_RESULT = "expected";
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.setResult(EXPECTED_RESULT);
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         Assert.assertTrue(operationWrapper.isReady(mockExecutorContext, new HashSet<>()));
         Assert.assertEquals(operationWrapper.getInputPayload(), EXPECTED_RESULT);
     }
@@ -79,7 +80,7 @@ public class OperationWrapperTest
         final String EXPECTED_RESULT = "expected";
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.setResult(EXPECTED_RESULT);
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         Assert.assertFalse(operationWrapper.isReady(mockExecutorContext, new HashSet<>()));
     }
 
@@ -92,7 +93,7 @@ public class OperationWrapperTest
         final String EXPECTED_RESULT = "expected";
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.setResult(EXPECTED_RESULT);
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         Assert.assertTrue(operationWrapper.isReady(mockExecutorContext, dependencies));
         Assert.assertEquals(operationWrapper.getInputPayload(), EXPECTED_RESULT);
     }
@@ -105,7 +106,7 @@ public class OperationWrapperTest
         dependencySet.add(DEPENDENCY);
         ReferenceReplacementResult referenceReplacementResult = new ReferenceReplacementResult();
         referenceReplacementResult.addMissingReference(DEPENDENCY);
-        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any());
+        doReturn(referenceReplacementResult).when(mockJsonContext).processReferences(any(), anyList());
         doReturn(dependencySet).when(mockJsonContextReferenceParser).getOperationNames(any());
         operationWrapper.init(mockExecutorContext, mockJsonContextReferenceParser);
 

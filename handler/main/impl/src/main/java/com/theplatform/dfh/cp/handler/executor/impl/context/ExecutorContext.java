@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The context for this instance of the Executor
@@ -33,6 +34,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
     private List<ShutdownProcessor> shutdownProcessors;
+    private String agendaId;
 
     public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
@@ -123,5 +125,21 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public ProgressReporter getReporter()
     {
         return reporter;
+    }
+
+    public String getAgendaId()
+    {
+        return agendaId;
+    }
+
+    public ExecutorContext setAgendaId(String agendaId)
+    {
+        if(agendaId == null)
+        {
+            agendaId = UUID.randomUUID().toString();
+            logger.warn(String.format("Id was not set on the incoming Agenda. Generated Id: %1$s", agendaId));
+        }
+        this.agendaId = agendaId;
+        return this;
     }
 }

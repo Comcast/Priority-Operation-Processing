@@ -1,16 +1,22 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +34,7 @@ public class OperationWrapper
     // These diagnostic events are for problems with the launching and tracking of operations, not the operations themselves (handled in the handlers)
     private List<DiagnosticEvent> diagnosticEvents;
     private boolean success = false;
+    private Map<String, JsonNode> operationContextMap;
 
     public OperationWrapper(Operation operation)
     {
@@ -36,6 +43,10 @@ public class OperationWrapper
 
     public OperationWrapper init(ExecutorContext executorContext, JsonContextReferenceParser jsonContextReferenceParser)
     {
+        operationContextMap = new HashMap<>();
+        operationContextMap.put(AgendaToken.AGENDA_ID, new TextNode(executorContext.getAgendaId()));
+        operationContextMap.put(AgendaToken.OPERATION_NAME, new TextNode(operation.getName()));
+
         ReferenceReplacementResult referenceReplacementResult = evaluateReferences(executorContext);
         if(referenceReplacementResult.getMissingReferences() != null)
         {
@@ -73,7 +84,9 @@ public class OperationWrapper
      */
     private ReferenceReplacementResult evaluateReferences(ExecutorContext executorContext)
     {
-        ReferenceReplacementResult result = executorContext.getJsonContext().processReferences(operation.getPayload());
+        ReferenceReplacementResult result = executorContext.getJsonContext().processReferences(
+            operation.getPayload(),
+            Collections.singletonList(operationContextMap));
         Set<String> invalidReferences = result.getInvalidReferences();
         // TBD: this is BAD news (better exception and otherwise)
         if(invalidReferences != null && !invalidReferences.isEmpty())
