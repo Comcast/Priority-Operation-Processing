@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,9 +40,37 @@ public class JsonContext
         }
     }
 
+    /**
+     * Processes the references on the specified object using the internal data map to perform replacements
+     * @param object The object to map to json and perform the replacement on
+     * @return A result with details about the reference replacement
+     */
     public ReferenceReplacementResult processReferences(Object object)
     {
-        return jsonReferenceReplacer.replaceReferences(objectMapper.valueToTree(object), contextMap);
+        return processReferences(objectMapper.valueToTree(object), null);
+    }
+
+    /**
+     * Processes the references on the specified object using the internal data map to perform replacements
+     * @param object The object to map to json and perform the replacement on
+     * @param contextMaps Additional maps to combine with the internal data map to perform replacements
+     * @return A result with details about the reference replacement
+     */
+    public ReferenceReplacementResult processReferences(Object object, List<Map<String, JsonNode>> contextMaps)
+    {
+        Map<String, JsonNode> combinedMap;
+        if(contextMaps != null && contextMaps.size() > 0)
+        {
+            // create a new map with the combined references
+            combinedMap = new HashMap<>(contextMap);
+            contextMaps.forEach(combinedMap::putAll);
+        }
+        else
+        {
+            combinedMap = contextMap;
+        }
+
+        return jsonReferenceReplacer.replaceReferences(objectMapper.valueToTree(object), combinedMap);
     }
 
     protected Map<String, JsonNode> getContextMap()
