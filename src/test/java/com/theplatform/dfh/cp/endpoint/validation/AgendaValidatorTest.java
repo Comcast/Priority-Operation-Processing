@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import org.testng.annotations.BeforeMethod;
@@ -65,11 +66,20 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         validator.verifyUniqueOperationsName(Collections.singletonList(createOperation("")));
     }
 
-    @Test(enabled = false, expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid references found in operation.*")
+    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid references found in operation.*")
     public void testInvalidReferences()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
         agenda.setOperations(Collections.singletonList(createOperation("Op1", "Op2.out")));
+
+        validator.validatePOST(createRequest(agenda));
+    }
+
+    @Test
+    public void testFissionReference()
+    {
+        Agenda agenda = createAgenda(CUSTOMER_ID);
+        agenda.setOperations(Collections.singletonList(createOperation("Op1", AgendaToken.AGENDA_ID)));
 
         validator.validatePOST(createRequest(agenda));
     }
@@ -86,7 +96,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         validator.validatePOST(createRequest(agenda));
     }
 
-    @Test(enabled = false, expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
     public void testCircularReferenceSimple()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
@@ -121,7 +131,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
             };
     }
 
-    @Test(enabled = false, dataProvider = "circularReferenceProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    @Test(dataProvider = "circularReferenceProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
     public void testCircularReference(List<Operation> operations)
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
@@ -142,9 +152,8 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         Operation operation = createOperation(name);
         Map<String, String> payloadMap = new HashMap<>();
         Arrays.stream(references).forEach(ref ->
-        {
-            payloadMap.put(UUID.randomUUID().toString(), jsonReferenceReplacer.generateReference(ref, "/"));
-        });
+            payloadMap.put(UUID.randomUUID().toString(), jsonReferenceReplacer.generateReference(ref, "/"))
+        );
         operation.setPayload(payloadMap);
         return operation;
     }

@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.validation;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.operation.OperationReference;
+import com.theplatform.dfh.cp.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectRequest<Agenda>>
 {
     private List<String> validationIssues;
+    private JsonContext jsonContext = new JsonContext();
     private final int MAX_ISSUES = 10;
 
     @Override
@@ -60,8 +62,7 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
 
         verifyUniqueOperationsName(agenda.getOperations());
 
-        //validateReferences(agenda);
-        //checkForCircularReferences(agenda);
+        validateReferences(agenda);
     }
 
     protected void validateReferences(Agenda agenda)
@@ -79,15 +80,33 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
             // Can only check for missing. The invalid references check would require knowledge of the output payload format of every handler...
             if(result.getMissingReferences().size() > 0)
             {
-                validationIssues.add(String.format(
-                    "Invalid references found in operation [%1$s] payload: %2$s",
-                    op.getName(),
-                    String.join(",", result.getInvalidReferences())));
+                // filter out fission tokens (TODO: if there is a need for other token filters this should be made more generic)
+                Set<String> filteredMissingReferences = filterNonFissionReferences(result.getMissingReferences());
+                if(filteredMissingReferences.size() > 0)
+                {
+                    validationIssues.add(String.format(
+                        "Invalid references found in operation [%1$s] payload: %2$s",
+                        op.getName(),
+                        String.join(",", result.getMissingReferences())));
+                }
             }
         });
 
         if(validationIssues.size() == 0)
             checkForCircularReferences(agenda);
+    }
+
+    /**
+     * Filters out any references that are fission tokens
+     * @param references The references to filter
+     * @return New set containing the non fission references
+     */
+    private Set<String> filterNonFissionReferences(Set<String> references)
+    {
+        return references
+            .stream()
+            .filter(ref -> !ref.startsWith(jsonContext.getJsonReferenceReplacer().getPrefix() + AgendaToken.TOKEN_PREFIX))
+            .collect(Collectors.toSet());
     }
 
     protected void checkForCircularReferences(Agenda agenda)
@@ -116,7 +135,10 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
             {
                 String opName = operationsToCheck.pop();
                 // clone from the reference map
-                Set<String> references = new HashSet<>(referenceMap.get(opName));
+                Set<String> referenceData = referenceMap.get(opName);
+                // if there's no reference data the reference is not an operation in the Agenda
+                if(referenceData == null) continue;
+                Set<String> references = new HashSet<>(referenceData);
                 // due to the structure of references we only check for a loop that returns to the original operation
                 if(references.contains(op.getName()))
                 {
@@ -153,5 +175,11 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
     protected void setValidationIssues(List<String> validationIssues)
     {
         this.validationIssues = validationIssues;
+    }
+
+    public AgendaValidator setJsonContext(JsonContext jsonContext)
+    {
+        this.jsonContext = jsonContext;
+        return this;
     }
 }
