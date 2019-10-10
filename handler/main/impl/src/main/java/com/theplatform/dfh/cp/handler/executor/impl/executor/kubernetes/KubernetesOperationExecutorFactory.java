@@ -66,10 +66,10 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
                     String.format("Unknown operation type found: %1$s on operation: %2$s", operation.getType(), operation.getName()));
         }
 
-        return buildOperationExecutor(podConfig, operation, kubeConfig, executorContext.getLaunchDataWrapper());
+        return buildOperationExecutor(podConfig, operation, kubeConfig, executorContext);
     }
 
-    private BaseOperationExecutor buildOperationExecutor(PodConfig podConfig, Operation operation, KubeConfig kubeConfig, LaunchDataWrapper launchDataWrapper) {
+    private BaseOperationExecutor buildOperationExecutor(PodConfig podConfig, Operation operation, KubeConfig kubeConfig, ExecutorContext executorContext) {
         // cannot set the payload yet, it is processed and passed into the executor by whatever HandlerProcessor implementation
         // TODO: values should be settings from the properties file
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
@@ -90,7 +90,7 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
             }
         });
 
-        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, launchDataWrapper);
+        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, executorContext);
     }
 
     public KubernetesOperationExecutorFactory setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)

@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.field.api.HandlerField;
@@ -39,6 +40,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     public static final int MAX_POD_LOG_LINES = 1024;
     public static final int DEFAULT_FAIL_DIAGNOSTIC_LINE_LIMIT = 10;
 
+    private ExecutorContext executorContext;
     private KubeConfig kubeConfig;
     private PodConfig podConfig;
     private ExecutionConfig executionConfig;
@@ -46,14 +48,15 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     private JsonHelper jsonHelper;
     private OperationProgress defaultFailedOperationProgress;
 
-    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, LaunchDataWrapper launchDataWrapper)
+    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, ExecutorContext executorContext)
     {
-        super(operation, launchDataWrapper);
+        super(operation, executorContext.getLaunchDataWrapper());
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
         this.jsonHelper = new JsonHelper();
         this.follower = new PodFollowerImpl<>(this.kubeConfig, this.podConfig, this.executionConfig);
+        this.executorContext = executorContext;
         setIdenitifier(executionConfig.getName());
     }
 
@@ -171,7 +174,7 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         Map<String,String> envVars = executionConfig.getEnvVars();
         envVars.put(HandlerField.PAYLOAD.name(), payload);
 
-        setEnvVar(envVars, HandlerField.AGENDA_ID);
+        envVars.put(HandlerField.AGENDA_ID.name(), executorContext.getAgendaId());
         setEnvVar(envVars, HandlerField.CID);
         setEnvVar(envVars, HandlerField.CUSTOMER_ID);
 
