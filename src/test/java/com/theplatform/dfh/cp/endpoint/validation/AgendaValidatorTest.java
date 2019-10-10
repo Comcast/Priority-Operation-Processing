@@ -86,7 +86,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         validator.validatePOST(createRequest(agenda));
     }
 
-    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    @Test(enabled = false, expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
     public void testCircularReferenceSimple()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
@@ -121,7 +121,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
             };
     }
 
-    @Test(dataProvider = "circularReferenceProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
+    @Test(enabled = false, dataProvider = "circularReferenceProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*There is a circular reference.*")
     public void testCircularReference(List<Operation> operations)
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);

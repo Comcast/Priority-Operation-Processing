@@ -61,7 +61,7 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
         verifyUniqueOperationsName(agenda.getOperations());
 
         //validateReferences(agenda);
-        checkForCircularReferences(agenda);
+        //checkForCircularReferences(agenda);
     }
 
     protected void validateReferences(Agenda agenda)
