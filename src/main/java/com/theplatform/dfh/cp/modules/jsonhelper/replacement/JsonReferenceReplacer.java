@@ -49,6 +49,21 @@ public class JsonReferenceReplacer
         referencePattern = Pattern.compile(pattern);
     }
 
+    public String getPrefix()
+    {
+        return CONTEXT_REFERENCE_PREFIX;
+    }
+
+    public String getSuffix()
+    {
+        return CONTEXT_REFERENCE_SUFFIX;
+    }
+
+    public String getSeparator()
+    {
+        return CONTEXT_REFERENCE_SEPARATOR;
+    }
+
     /**
      * This is primarily a test method for pattern verification
      * @param input The input to match
