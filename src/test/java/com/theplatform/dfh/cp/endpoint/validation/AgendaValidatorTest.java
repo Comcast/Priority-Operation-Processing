@@ -65,7 +65,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         validator.verifyUniqueOperationsName(Collections.singletonList(createOperation("")));
     }
 
-    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid references found in operation.*")
+    @Test(enabled = false, expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Invalid references found in operation.*")
     public void testInvalidReferences()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
