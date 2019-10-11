@@ -18,9 +18,6 @@
 
     <properties>
         <application.version>1.0.2-SNAPSHOT</application.version>
-        <!-- You can override these in an environment variable! -->
-        <env.DOCKER_PROD>docker-lab.repo.theplatform.com</env.DOCKER_PROD>
-        <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
     </properties>
 
     <dependencies>
@@ -113,6 +110,10 @@
                     <name>!env.DOCKER_LAB</name>
                 </property>
             </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
+            </properties>
         </profile>
         <profile>
             <id>dockerProdDefault</id>
@@ -122,6 +123,10 @@
                     <name>!env.DOCKER_PROD</name>
                 </property>
             </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <env.DOCKER_PROD>docker-prod.repo.theplatform.com</env.DOCKER_PROD>
+            </properties>
         </profile>
     </profiles>
 </project>
