@@ -60,6 +60,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setNamePrefix("dfh-package")
         );
 
+        podConfigMap.put("delete",
+            makeDfhBasePod("lab-main-t-aor-fhdel-t01")
+                .setImageName("docker-lab.repo.theplatform.com/fhdel:1.0.0")
+                .setNamePrefix("dfh-delete")
+        );
+
         podConfigMap.put("telephone",
             makeDfhBasePod("lab-main-t-aor-fhtele-t01")
                 .setImageName("docker-proto.repo.theplatform.com/fhtele:1.0.0")
