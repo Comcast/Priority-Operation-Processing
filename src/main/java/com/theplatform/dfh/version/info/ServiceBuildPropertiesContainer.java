@@ -17,6 +17,16 @@ public class ServiceBuildPropertiesContainer
      */
     public static void logServiceBuildString(Logger logger)
     {
+        logServiceBuildString(logger, true);
+    }
+
+    /**
+     * Logs the service build properties to the specified logger. (will throw a runtime exception if not found)
+     * @param logger The logger to log to (info level)
+     * @param throwExceptionIfMissing Flag indicating to throw an exception if the build properties are not found (silently exits otherwise)
+     */
+    public static void logServiceBuildString(Logger logger, boolean throwExceptionIfMissing)
+    {
         BuildProperties buildProps = getBuildProperties();
         if(buildProps.isValid())
         {
@@ -24,7 +34,10 @@ public class ServiceBuildPropertiesContainer
         }
         else
         {
-            throw new RuntimeException("No service build properties found! Please configure this in the project pom.xml.");
+            if(throwExceptionIfMissing)
+            {
+                throw new RuntimeException("No service build properties found! Please configure this in the project pom.xml.");
+            }
         }
     }
 

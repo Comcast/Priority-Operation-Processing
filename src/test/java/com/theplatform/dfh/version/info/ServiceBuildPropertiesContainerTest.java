@@ -37,6 +37,13 @@ public class ServiceBuildPropertiesContainerTest
     }
 
     @Test
+    public void testLogServiceBuildStringInvalidAllowed()
+    {
+        doReturn(null).when(mockBuildPropertiesReader).getFirstServiceBuildProperties();
+        ServiceBuildPropertiesContainer.logServiceBuildString(mockLogger, false);
+    }
+
+    @Test
     public void testGetBuildProperties()
     {
         BuildProperties validProperties = new BuildProperties().setValid(true);
