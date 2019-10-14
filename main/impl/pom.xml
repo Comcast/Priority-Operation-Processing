@@ -152,6 +152,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.theplatform.plugins</groupId>
+                <artifactId>buildproperty-plugin</artifactId>
+                <configuration>
+                    <service>true</service>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>buildprops</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>plbuild-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <reporting>
