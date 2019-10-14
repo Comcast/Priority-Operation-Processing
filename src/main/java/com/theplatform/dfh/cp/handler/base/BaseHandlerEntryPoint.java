@@ -12,6 +12,7 @@ import com.theplatform.dfh.cp.handler.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,8 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
 
     public BaseHandlerEntryPoint(String[] args)
     {
+        // log the plbuild properties file (ignoring errors)
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
         // gather the inputs args, environment, properties
         launchDataWrapper = createLaunchDataWrapper(args);
         // Set the CID on the thread local ASAP
