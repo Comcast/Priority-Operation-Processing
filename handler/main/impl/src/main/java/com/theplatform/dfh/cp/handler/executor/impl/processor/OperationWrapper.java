@@ -44,8 +44,8 @@ public class OperationWrapper
     public OperationWrapper init(ExecutorContext executorContext, JsonContextReferenceParser jsonContextReferenceParser)
     {
         operationContextMap = new HashMap<>();
-        operationContextMap.put(AgendaToken.AGENDA_ID, new TextNode(executorContext.getAgendaId()));
-        operationContextMap.put(AgendaToken.OPERATION_NAME, new TextNode(operation.getName()));
+        operationContextMap.put(AgendaToken.AGENDA_ID.getToken(), new TextNode(executorContext.getAgendaId()));
+        operationContextMap.put(AgendaToken.OPERATION_NAME.getToken(), new TextNode(operation.getName()));
 
         ReferenceReplacementResult referenceReplacementResult = evaluateReferences(executorContext);
         if(referenceReplacementResult.getMissingReferences() != null)
