@@ -27,10 +27,28 @@ public class KubeConfigFactoryImpl implements KubeConfigFactory
     public KubeConfig createKubeConfig()
     {
         FieldRetriever propertiesRetriever = launchDataWrapper.getPropertyRetriever();
+        logger.info("Kubectl config values " + KubeConfigField.MASTER_URL.getFieldName() + ": " + propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName())
+                    + ", " + KubeConfigField.NAMESPACE.getFieldName() + ": " + propertiesRetriever.getField(KubeConfigField.NAMESPACE.getFieldName())
+                    + ", " + KubeConfigField.ZONE.getFieldName() + ": " + propertiesRetriever.getField(KubeConfigField.ZONE.getFieldName()));
 
         KubeConfig kubeConfig = new KubeConfig();
-        kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName()));
+        if (propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName()) == null ||
+                propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName()).length() == 0)
+        {
+            String serviceHost = System.getenv("KUBERNETES_SERVICE_HOST");
+            String servicePort = System.getenv("KUBERNETES_SERVICE_PORT");
+            String masterUrl = "https://" + serviceHost + ":" + servicePort;
+            kubeConfig.setMasterUrl(masterUrl);
+            logger.info("Master URL not defined, using environment variable: [" + masterUrl + "]");
+        }
+        else
+        {
+            kubeConfig.setMasterUrl(propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName()));
+            logger.info("Master URL defined, using: [" + (propertiesRetriever.getField(KubeConfigField.MASTER_URL.getFieldName())) + "]");
+        }
         kubeConfig.setNameSpace(propertiesRetriever.getField(KubeConfigField.NAMESPACE.getFieldName()));
+
+        kubeConfig.setZone(propertiesRetriever.getField(KubeConfigField.ZONE.getFieldName()));
 
         //NOTE: auth loading from args/env vars is for local only
         if(!loadAuthFromArgs(kubeConfig)
