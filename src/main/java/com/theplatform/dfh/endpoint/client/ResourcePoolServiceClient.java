@@ -3,10 +3,13 @@ package com.theplatform.dfh.endpoint.client;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResourcePoolServiceClient extends FissionServiceClient
 {
     private String agendaProviderUrl;
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ResourcePoolServiceClient(HttpURLConnectionFactory httpUrlConnectionFactory)
     {
@@ -21,6 +24,7 @@ public class ResourcePoolServiceClient extends FissionServiceClient
 
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
+        logger.info("Getting agenda with connection factory [" + getHttpUrlConnectionFactory().getClass() + "]");
         return new GenericFissionClient<>(agendaProviderUrl, getHttpUrlConnectionFactory(), GetAgendaResponse.class)
             .getObjectFromPOST(getAgendaRequest);
     }
