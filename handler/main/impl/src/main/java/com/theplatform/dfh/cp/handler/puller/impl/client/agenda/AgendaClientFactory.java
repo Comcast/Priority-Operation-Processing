@@ -8,6 +8,9 @@ import com.theplatform.module.authentication.client.EncryptedAuthenticationClien
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 public class AgendaClientFactory
 {
     private static Logger logger = LoggerFactory.getLogger(PullerApp.class);
@@ -25,6 +28,11 @@ public class AgendaClientFactory
         // local file as input, not calling the agenda service.
         if (pullerConfig.getLocalAgendaRelativePath() == null)
         {
+            logger.debug("AgendaClientFactory: URL: [" + pullerConfig.getIdentityUrl() +
+                                 "], Username: [" + pullerConfig.getUsername());
+
+            EncryptedAuthenticationClient authClient;
+
             // Verify if the proxy host/port is defined in the configuration. This
             // is required when we need to access the agenda service in a different
             // network zone, such as the green zone when running in RDEI
@@ -34,26 +42,30 @@ public class AgendaClientFactory
             //   https://wiki.sys.comcast.net/pages/viewpage.action?spaceKey=ContentOperations&title=Proxies
             if (pullerConfig.getProxyHost() != null && pullerConfig.getProxyPort() != null)
             {
-                logger.info("AgendaClientFactory: Using Proxy [" + pullerConfig.getProxyHost() +
+                logger.info("AgendaClientFactory: Using AWS Agenda provider with proxy [" + pullerConfig.getProxyHost() +
                                     ":" + pullerConfig.getProxyPort() + "]");
-                System.setProperty("https.proxyHost", pullerConfig.getProxyHost());
-                System.setProperty("https.proxyPort", pullerConfig.getProxyPort());
-                System.setProperty("http.proxyHost", pullerConfig.getProxyHost());
-                System.setProperty("http.proxyPort", pullerConfig.getProxyPort());
+                authClient =
+                        new EncryptedAuthenticationClient(pullerConfig.getIdentityUrl(),
+                                                          pullerConfig.getUsername(),
+                                                          pullerConfig.getEncryptedPassword(),
+                                                          null,
+                                                          pullerConfig.getProxyHost(),
+                                                          pullerConfig.getProxyPort());
             }
             else
             {
-                logger.info("AgendaClientFactory: Using AWS Agenda provider");
+                logger.info("AgendaClientFactory: Using AWS Agenda provider, no proxy");
+                authClient =
+                        new EncryptedAuthenticationClient(pullerConfig.getIdentityUrl(),
+                                                          pullerConfig.getUsername(),
+                                                          pullerConfig.getEncryptedPassword(),
+                                                          null);
             }
 
-            logger.debug("AgendaClientFactory: URL: [" + pullerConfig.getIdentityUrl() +
-                                "], Username: [" + pullerConfig.getUsername());
+            logger.debug("AgendaClientFactory: Identity URL: [" + pullerConfig.getIdentityUrl() +
+                                 "], Username: [" + pullerConfig.getUsername() +
+                                 "AgendaProviderURL: " + pullerConfig.getAgendaProviderUrl());
 
-            EncryptedAuthenticationClient authClient =
-                    new EncryptedAuthenticationClient(pullerConfig.getIdentityUrl(),
-                                                      pullerConfig.getUsername(),
-                                                      pullerConfig.getEncryptedPassword(),
-                                                      null);
 
             HttpURLConnectionFactory httpURLConnectionFactory =
                     new IDMHTTPUrlConnectionFactory(authClient);

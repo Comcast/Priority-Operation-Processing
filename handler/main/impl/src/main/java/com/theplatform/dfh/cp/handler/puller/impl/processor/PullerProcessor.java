@@ -79,7 +79,8 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             try
             {
                 logger.debug("PullerProcessor: Getting agenda. Request[" + getAgendaRequest + "]" +
-                                     ", InsightId: " + getAgendaRequest.getInsightId());
+                                     ", InsightId: " + getAgendaRequest.getInsightId() +
+                                     ", agendaClient: " + agendaClientFactory.getClient().getClass());
                 getAgendaResponse = agendaClientFactory.getClient().getAgenda(getAgendaRequest);
             }
             catch (Exception e)

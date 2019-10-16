@@ -28,6 +28,7 @@ public class AwsAgendaProviderClient implements AgendaClient
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         logger.debug("AwsAgendaProviderClient: Getting agenda");
+        logger.debug("AwsAgendaProviderClient " + resourcePoolServiceClient.getHttpUrlConnectionFactory());
         GetAgendaResponse response = resourcePoolServiceClient.getAgenda(getAgendaRequest);
         logger.debug("AwsAgendaProviderClient: Got response: [" + (response == null ? "null" : response.toString()) +"]");
         return response;
