@@ -79,7 +79,7 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
     public void testFissionReference()
     {
         Agenda agenda = createAgenda(CUSTOMER_ID);
-        agenda.setOperations(Collections.singletonList(createOperation("Op1", AgendaToken.AGENDA_ID)));
+        agenda.setOperations(Collections.singletonList(createOperation("Op1", AgendaToken.AGENDA_ID.getToken())));
 
         validator.validatePOST(createRequest(agenda));
     }
