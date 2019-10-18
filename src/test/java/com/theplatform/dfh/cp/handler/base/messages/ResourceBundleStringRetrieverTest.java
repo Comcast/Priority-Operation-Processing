@@ -1,6 +1,5 @@
-package com.theplatform.dfh.cp.handler.messages;
+package com.theplatform.dfh.cp.handler.base.messages;
 
-import com.theplatform.dfh.cp.handler.base.messages.ResourceBundleStringRetriever;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
