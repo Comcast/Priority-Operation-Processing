@@ -84,7 +84,7 @@ public class TableIndexes
         for(String field : fields)
         {
             List<TableIndex> tableIndexSet = fieldToIndexSetMap.get(field);
-            if(tableIndexSet == null) continue;
+            if(tableIndexSet == null || tableIndexSet.size() == 0) continue;
 
             // look for matching sort keys
             Optional<TableIndex> tableIndexSearch = tableIndexSet.stream()
