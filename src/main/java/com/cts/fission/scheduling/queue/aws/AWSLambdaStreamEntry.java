@@ -15,6 +15,8 @@ import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.cts.fission.scheduling.queue.monitor.QueueMonitor;
 import com.cts.fission.scheduling.queue.monitor.QueueMonitorFactory;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
+import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
@@ -24,6 +26,7 @@ import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBPersisterFactory;
+import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +69,8 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         this(
             new DynamoDBConvertedPersisterFactory<>("id", InsightScheduleInfo.class, new PersistentInsightScheduleInfoConverter(), null),
             new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class),
-            new DynamoDBPersisterFactory<>("id", ReadyAgenda.class, null)
+            new DynamoDBPersisterFactory<>("id", ReadyAgenda.class,
+                new TableIndexes().withIndex("insightId_customerId_index", ByCustomerId.fieldName(), ByInsightId.fieldName()))
         );
     }
 
