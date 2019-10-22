@@ -3,6 +3,8 @@ package com.cts.fission.scheduling.queue.aws;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.cts.fission.scheduling.queue.aws.persistence.PersistentInsightScheduleInfoConverter;
+import com.cts.fission.scheduling.queue.monitor.QueueMonitor;
+import com.cts.fission.scheduling.queue.monitor.QueueMonitorFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,8 +14,6 @@ import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
-import com.cts.fission.scheduling.queue.monitor.QueueMonitor;
-import com.cts.fission.scheduling.queue.monitor.QueueMonitorFactory;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
@@ -25,8 +25,8 @@ import com.theplatform.dfh.modules.queue.aws.sqs.AmazonSQSClientFactoryImpl;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
-import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
+import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgendaConverter;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +69,8 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         this(
             new DynamoDBConvertedPersisterFactory<>("id", InsightScheduleInfo.class, new PersistentInsightScheduleInfoConverter(), null),
             new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class),
-            new DynamoDBPersisterFactory<>("id", ReadyAgenda.class,
+            new DynamoDBConvertedPersisterFactory<>("id", ReadyAgenda.class,
+                new PersistentReadyAgendaConverter(),
                 new TableIndexes().withIndex("insightId_customerId_index", ByCustomerId.fieldName(), ByInsightId.fieldName()))
         );
     }

@@ -26,10 +26,16 @@
         <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
         <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
         <commons-http-client.version>3.1</commons-http-client.version>
+        <endpoint-impl-aws.version>1.0.0-SNAPSHOT</endpoint-impl-aws.version>
     </properties>
 
     <dependencies>
         <!-- DFH Dependencies -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-impl-aws</artifactId>
+            <version>${endpoint-impl-aws.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.cts.fission.scheduling</groupId>
             <artifactId>pl-fission-scheduling-queue-impl</artifactId>
