@@ -17,6 +17,7 @@ import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
+import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByInsightIdCustomerId;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
@@ -71,7 +72,9 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
             new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class),
             new DynamoDBConvertedPersisterFactory<>("id", ReadyAgenda.class,
                 new PersistentReadyAgendaConverter(),
-                new TableIndexes().withIndex("insightId_customerId_index", ByCustomerId.fieldName(), ByInsightId.fieldName()))
+                new TableIndexes()
+                    .withIndex("insightIdCustomerIdComposite_added_index", ByInsightIdCustomerId.fieldName())
+                    .withIndex("insightid_added_index", ByInsightId.fieldName()))
         );
     }
 
