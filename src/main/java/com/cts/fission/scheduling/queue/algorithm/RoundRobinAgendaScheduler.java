@@ -8,6 +8,7 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
+import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByInsightIdCustomerId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -151,11 +152,9 @@ public class RoundRobinAgendaScheduler implements AgendaScheduler
 
         // TODO: limiting this to the requestCount would be ideal
         // TODO: wish list - query all items by the insight with a limit to [requestCount] per customer id (and some overall limit if possible)
-        DataObjectFeed<ReadyAgenda> readyAgendaFeed = readyAgendaPersister.retrieve(Arrays.asList(
-            new ByCustomerId(customerId),
-            new ByInsightId(insight.getId())
-            )
-        );
+        // The index should be using the 'added' field as the sort key resulting in responses being from oldest to newest
+        DataObjectFeed<ReadyAgenda> readyAgendaFeed = readyAgendaPersister.retrieve(
+            Collections.singletonList(new ByInsightIdCustomerId(insight.getId(), customerId)));
         if(readyAgendaFeed.isError())
         {
             logger.warn(

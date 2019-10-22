@@ -123,21 +123,18 @@ public class RoundRobinAgendaSchedulerTest extends BaseAgendaSchedulerTest
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable
             {
                 List<Query> queries = (List<Query>)invocationOnMock.getArguments()[0];
-                if(queries.size() != 2) Assert.fail("Update the test! Wrong number of input queries.");
+                if(queries.size() != 1) Assert.fail("Update the test! Wrong number of input queries.");
 
                 if(invocationCount > 2) return createReadyAgendaFeed(new ArrayList<>(), 0);
                 invocationCount++;
 
-                // NOTE: the 2nd query is the insightId
-                switch(queries.get(0).getValue().toString())
-                {
-                    case EXPECTED_AGENDA_OWNER_ONE:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_ONE);
-                    case EXPECTED_AGENDA_OWNER_TWO:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_TWO);
-                    case EXPECTED_AGENDA_OWNER_THREE:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_THREE);
-                }
+                String queryValue = queries.get(0).getValue().toString();
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_ONE))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_ONE);
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_TWO))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_TWO);
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_THREE))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_THREE);
                 return null;
             }
         }).when(mockReadyAgendaPersister).retrieve(anyList());
@@ -187,25 +184,21 @@ public class RoundRobinAgendaSchedulerTest extends BaseAgendaSchedulerTest
         insightScheduleInfo.setPendingCustomerIds(Collections.singletonList(EXPECTED_AGENDA_OWNER_FOUR));
         doAnswer(new Answer()
         {
-            int invocationCount = 0;
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable
             {
                 List<Query> queries = (List<Query>)invocationOnMock.getArguments()[0];
-                if(queries.size() != 2) Assert.fail("Update the test! Wrong number of input queries.");
+                if(queries.size() != 1) Assert.fail("Update the test! Wrong number of input queries.");
 
-                // NOTE: the 2nd query is the insightId
-                switch(queries.get(0).getValue().toString())
-                {
-                    case EXPECTED_AGENDA_OWNER_ONE:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_ONE, AGENDA_OWNER_ONE_READY_COUNT);
-                    case EXPECTED_AGENDA_OWNER_TWO:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_TWO, AGENDA_OWNER_TWO_READY_COUNT);
-                    case EXPECTED_AGENDA_OWNER_THREE:
-                        return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_THREE, AGENDA_OWNER_THREE_READY_COUNT);
-                    case EXPECTED_AGENDA_OWNER_FOUR:
-                        return createReadyAgendaFeed();
-                }
+                String queryValue = queries.get(0).getValue().toString();
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_ONE))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_ONE, AGENDA_OWNER_ONE_READY_COUNT);
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_TWO))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_TWO, AGENDA_OWNER_TWO_READY_COUNT);
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_THREE))
+                    return createReadyAgendaFeed(EXPECTED_AGENDA_OWNER_THREE, AGENDA_OWNER_THREE_READY_COUNT);
+                if(StringUtils.equals(queryValue, insight.getId()+EXPECTED_AGENDA_OWNER_FOUR))
+                    return createReadyAgendaFeed();
                 return null;
             }
         }).when(mockReadyAgendaPersister).retrieve(anyList());
