@@ -39,7 +39,7 @@ public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjec
         if (dataObject == null)
             return null;
 
-        S persistentObject = (S) getNewIntance(persistentClazz);
+        S persistentObject = getNewIntance(persistentClazz);
         return copy(persistentObject, dataObject) ? persistentObject : null;
     }
 
@@ -48,7 +48,7 @@ public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjec
         if (persistentObject == null)
             return null;
 
-        T dataObject = (T) getNewIntance(dataClazz);
+        T dataObject = getNewIntance(dataClazz);
         return copy(dataObject, persistentObject) ? dataObject : null;
     }
 
@@ -66,14 +66,14 @@ public class DynamoDBPersistentObjectConverter<T, S>  implements PersistentObjec
         }
     }
 
-    Object getNewIntance(Class clazz)
+    <U> U getNewIntance(Class<U> clazz)
     {
         try
         {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e)
         {
-            logger.debug("");
+            logger.debug("Failed to create new instance.", e);
             return null;
         }
     }
