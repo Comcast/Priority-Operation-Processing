@@ -9,6 +9,9 @@ import java.util.Date;
 
 public class PersistentReadyAgenda extends ReadyAgenda
 {
+    // NOTE: This composite field is a storage only field for the sake of indexing
+    private String insightIdCustomerIdComposite;
+
     @Override
     @DynamoDBHashKey
     public String getId()
@@ -39,5 +42,15 @@ public class PersistentReadyAgenda extends ReadyAgenda
     public Date getAdded()
     {
         return super.getAdded();
+    }
+
+    public String getInsightIdCustomerIdComposite()
+    {
+        return insightIdCustomerIdComposite;
+    }
+
+    public void setInsightIdCustomerIdComposite(String insightIdCustomerIdComposite)
+    {
+        this.insightIdCustomerIdComposite = insightIdCustomerIdComposite;
     }
 }
