@@ -1,6 +1,8 @@
 package com.theplatform.dfh.scheduling.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 
 import java.util.Date;
@@ -33,6 +35,7 @@ public class PersistentReadyAgenda extends ReadyAgenda
     }
 
     @Override
+    @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getAdded()
     {
         return super.getAdded();
