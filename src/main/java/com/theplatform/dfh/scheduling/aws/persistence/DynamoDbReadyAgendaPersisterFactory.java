@@ -7,7 +7,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 public class DynamoDbReadyAgendaPersisterFactory extends DynamoDBConvertedPersisterFactory<ReadyAgenda>
 {
-    private static final TableIndexes tableIndexes = new TableIndexes().withIndex("customer_index", ByCustomerId.fieldName());
+    private static final TableIndexes tableIndexes = new TableIndexes().withIndex("customerId_index", ByCustomerId.fieldName());
 
     public DynamoDbReadyAgendaPersisterFactory()
     {
