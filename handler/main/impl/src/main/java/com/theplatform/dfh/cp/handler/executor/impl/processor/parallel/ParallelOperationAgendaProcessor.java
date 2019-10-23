@@ -67,6 +67,7 @@ public class ParallelOperationAgendaProcessor extends BaseAgendaProcessor
             logger.debug("Adding progress");
             agendaProgressReporter.addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
             logger.debug("Running operation");
+            agendaProgressReporter.setOperationTotalCount(handlerInput.getOperations().size());
             OperationConductor operationConductor = operationConductorFactory.createOperationConductor(handlerInput.getOperations(), operationContext);
             operationConductor.run();
             if(operationConductor.hasExecutionFailed())
