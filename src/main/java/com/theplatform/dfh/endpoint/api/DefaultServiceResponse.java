@@ -6,6 +6,8 @@ public class DefaultServiceResponse implements ServiceResponse<ErrorResponse>, S
 {
     public static final long serialVersionUID = 2007846549345987828L;
 
+    private String cid;
+
     private ErrorResponse errorResponse;
 
     public ErrorResponse getErrorResponse()
@@ -23,4 +25,14 @@ public class DefaultServiceResponse implements ServiceResponse<ErrorResponse>, S
         return errorResponse != null;
     }
 
+    @Override
+    public String getCID()
+    {
+        return cid;
+    }
+
+    public void setCid(String cid)
+    {
+        this.cid = cid;
+    }
 }

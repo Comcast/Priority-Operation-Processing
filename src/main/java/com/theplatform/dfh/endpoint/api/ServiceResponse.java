@@ -7,4 +7,6 @@ public interface ServiceResponse<T>
     void setErrorResponse(T errorResponse);
 
     boolean isError();
+
+    String getCID();
 }
