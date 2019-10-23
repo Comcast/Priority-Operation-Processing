@@ -34,7 +34,7 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
         this.progressReporter = reporter;
         this.launchDataWrapper = launchDataWrapper;
         PayloadTranslationResult<T> translationResult = new JsonPayloadTranslator<T>(jsonHelper)
-            .translatePayload(launchDataWrapper.getPayload(), getPayloadClassType());
+            .translatePayload(payload, getPayloadClassType());
         if(!translationResult.isSuccessful())
         {
             processLoadFailure(Collections.singletonList(translationResult.getDiagnosticEvent()));
