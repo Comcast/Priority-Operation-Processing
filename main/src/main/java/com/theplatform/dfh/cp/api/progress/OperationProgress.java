@@ -125,10 +125,9 @@ public class OperationProgress extends EndpointDataObject
         return percentComplete;
     }
 
-    public OperationProgress setPercentComplete(Double percentComplete)
+    public void setPercentComplete(Double percentComplete)
     {
         this.percentComplete = percentComplete;
-        return this;
     }
 
     public ParamsMap getParams()
