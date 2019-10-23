@@ -46,8 +46,9 @@ public class ResourcePoolServiceClient extends FissionServiceClient
         return this;
     }
 
-    public void setAgendaCreateUrl(String agendaCreateUrl)
+    public ResourcePoolServiceClient setAgendaCreateUrl(String agendaCreateUrl)
     {
         this.agendaCreateUrl = agendaCreateUrl;
+        return this;
     }
 }

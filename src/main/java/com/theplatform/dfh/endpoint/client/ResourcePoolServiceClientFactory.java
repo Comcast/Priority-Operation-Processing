@@ -4,13 +4,25 @@ import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class ResourcePoolServiceClientFactory
 {
+    private String agendaCreateUrl;
+    private String agendaProviderUrl;
+
     public ResourcePoolServiceClient create(HttpURLConnectionFactory httpUrlConnectionFactory)
     {
-        return new ResourcePoolServiceClient(httpUrlConnectionFactory);
+        return new ResourcePoolServiceClient(httpUrlConnectionFactory)
+            .setAgendaCreateUrl(agendaCreateUrl)
+            .setAgendaProviderUrl(agendaProviderUrl);
     }
 
-    public ResourcePoolServiceClient create(HttpURLConnectionFactory httpUrlConnectionFactory, String agendaProviderUrl)
+    public ResourcePoolServiceClientFactory setAgendaCreateUrl(String agendaCreateUrl)
     {
-        return new ResourcePoolServiceClient(httpUrlConnectionFactory, agendaProviderUrl);
+        this.agendaCreateUrl = agendaCreateUrl;
+        return this;
+    }
+
+    public ResourcePoolServiceClientFactory setAgendaProviderUrl(String agendaProviderUrl)
+    {
+        this.agendaProviderUrl = agendaProviderUrl;
+        return this;
     }
 }
