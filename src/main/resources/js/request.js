@@ -190,6 +190,7 @@ function writeAgendaProgressTable(response)
         item.operationProgress.forEach(function(opProgress, progressIndex){
             tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
         });
+        tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
         tableText += "</table></td>";
     });
     tableText += "</tr>";
