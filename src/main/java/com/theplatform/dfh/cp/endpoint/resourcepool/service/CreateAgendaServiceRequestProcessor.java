@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
@@ -87,7 +86,7 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         //look for visibility to that insight by customerID
         Collection<Agenda> agendasToCreate = getAgendaRequest.getAgendas();
         if(agendasToCreate == null || agendasToCreate.size() == 0)
-            return new CreateAgendaResponse();
+            return createCreateAgendaResponse(serviceRequest, null, null);
         List<Agenda> createdAgendas = new ArrayList<>();
         List<ErrorResponse> errorResponses = new ArrayList<>();
         for(Agenda agendaToCreate : agendasToCreate)
@@ -110,11 +109,18 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         }
         if(errorResponses.size() > 0)
         {
-            CreateAgendaResponse createAgendaResponse = new CreateAgendaResponse(ErrorResponseFactory.badRequest(errorResponsesToString(errorResponses), serviceRequest.getCID()));
-            createAgendaResponse.setAgendas(createdAgendas);
-            return createAgendaResponse;
+            return createCreateAgendaResponse(serviceRequest, createdAgendas,
+                ErrorResponseFactory.badRequest(errorResponsesToString(errorResponses), serviceRequest.getCID()));
         }
-        return new CreateAgendaResponse(createdAgendas);
+        return createCreateAgendaResponse(serviceRequest, createdAgendas, null);
+    }
+
+    private CreateAgendaResponse createCreateAgendaResponse(ServiceRequest<CreateAgendaRequest> serviceRequest, List<Agenda> createdAgendas, ErrorResponse errorResponse)
+    {
+        CreateAgendaResponse createAgendaResponse = new CreateAgendaResponse(createdAgendas);
+        createAgendaResponse.setErrorResponse(errorResponse);
+        createAgendaResponse.setCID(serviceRequest.getCID());
+        return createAgendaResponse;
     }
 
     private String errorResponsesToString(List<ErrorResponse> errorResponses)

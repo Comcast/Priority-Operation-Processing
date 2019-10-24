@@ -2,13 +2,11 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.*;
@@ -64,7 +62,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
         {
             final String message = "No insight id provided.  Cannot process getAgenda request.";
             logger.warn(message);
-            return new GetAgendaResponse(ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
+            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
         }
 
         logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
@@ -77,7 +75,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
             final String message = String.format("No insight found with id %s. Cannot process getAgenda request.",
             getAgendaRequest.getInsightId());
             logger.warn(message);
-            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
+            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
         }
         Insight insight = insightResponse.getFirst();
 
@@ -117,22 +115,31 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
                         }
                     }
                 }
-                return new GetAgendaResponse(agendaList);
+                return createGetAgendaResponse(serviceRequest, agendaList, null);
             }
             else
             {
-                return new GetAgendaResponse(ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
+                return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
             }
         }
         catch(PersistenceException e)
         {
-            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
         catch(BadRequestException e)
         {
-            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
+            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
     }
+
+    private GetAgendaResponse createGetAgendaResponse(ServiceRequest<GetAgendaRequest> serviceRequest, List<Agenda> retrievedAgendas, ErrorResponse errorResponse)
+    {
+        GetAgendaResponse getAgendaResponse = new GetAgendaResponse(retrievedAgendas);
+        getAgendaResponse.setErrorResponse(errorResponse);
+        getAgendaResponse.setCID(serviceRequest.getCID());
+        return getAgendaResponse;
+    }
+
     private DefaultDataObjectRequest<Insight> generateInsightReq(AuthorizationResponse authorizationResponse, String insightId)
     {
         DefaultDataObjectRequest<Insight> req = new DefaultDataObjectRequest<>();
