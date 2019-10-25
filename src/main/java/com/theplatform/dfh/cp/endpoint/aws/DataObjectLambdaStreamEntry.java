@@ -58,12 +58,6 @@ public abstract class DataObjectLambdaStreamEntry<T extends IdentifiedObject> ex
         return new LambdaDataObjectRequest<>(node, payloadClass);
     }
 
-    @Override
-    protected Object createResponseBodyObject(Object object, LambdaDataObjectRequest<T> request)
-    {
-        return object;
-    }
-
     /**
      * Gets the entry from the given json node defaulting if not found
      * @param rootRequestNode The root node to search in

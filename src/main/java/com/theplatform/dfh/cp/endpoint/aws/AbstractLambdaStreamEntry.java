@@ -51,6 +51,8 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         Req request = getRequest(inputStreamNode);
         RequestProcessor<Res, Req> requestProcessor = getRequestProcessor(request);
         ErrorResponse errorResponse = null;
+        Res responseObject = null;
+        // NOTE: this intermediate type is so we can mix Res with types like DefaultServiceResponse for errors
         Object responseBodyObject = null;
         int httpStatusCode = 200;
 
@@ -60,25 +62,26 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
             switch (httpMethod)
             {
                 case "GET":
-                    responseBodyObject = requestProcessor.processGET(request);
-                    if (responseBodyObject == null)
+                    responseObject = requestProcessor.processGET(request);
+                    if (responseObject == null)
                         httpStatusCode = 404;
                     break;
                 case "POST":
-                    responseBodyObject = requestProcessor.processPOST(request);
+                    responseObject = requestProcessor.processPOST(request);
                     break;
                 case "PUT":
-                    responseBodyObject = requestProcessor.processPUT(request);
+                    responseObject = requestProcessor.processPUT(request);
                     break;
                 case "DELETE":
-                    responseBodyObject = requestProcessor.processDELETE(request);
+                    responseObject = requestProcessor.processDELETE(request);
                     break;
                 default:
                     // todo: some bad response code
                     httpStatusCode = 405;
                     logger.warn("Unsupported method type.");
             }
-            responseBodyObject = createResponseBodyObject(responseBodyObject, request);
+            responseObject = createResponseBodyObject(responseObject, request);
+            responseBodyObject = responseObject;
         }
         catch (RuntimeServiceException e)
         {
@@ -124,13 +127,17 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
 
     /**
      * Creates the response body object to return
-     * @param object The object returned by the request processor (may be null)
+     * @param response The object returned by the request processor (may be null)
      * @param request The request object
      * @return The body object to respond with
      */
-    protected Object createResponseBodyObject(Object object, Req request)
+    protected Res createResponseBodyObject(Res response, Req request)
     {
-        return object;
+        if(request != null && response != null)
+        {
+            response.setCID(request.getCID());
+        }
+        return response;
     }
 
     /**
