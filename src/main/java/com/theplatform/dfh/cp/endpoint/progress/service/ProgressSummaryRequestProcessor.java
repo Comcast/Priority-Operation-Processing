@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
 import com.theplatform.dfh.cp.endpoint.validation.ProgressServiceValidator;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -50,27 +51,26 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
     }
 
     @Override
-    protected ProgressSummaryResponse handlePOST(ServiceRequest<ProgressSummaryRequest> progressSummaryRequest)
+    protected ProgressSummaryResponse handlePOST(ServiceRequest<ProgressSummaryRequest> serviceRequest)
     {
-        if(progressSummaryRequest == null)
+        if(serviceRequest == null)
         {
-            return new ProgressSummaryResponse(ErrorResponseFactory.badRequest("The request may not be null.", null));
+            return createProgressSummaryResponse(serviceRequest, null, ErrorResponseFactory.badRequest("The request may not be null.", null));
         }
-        if(StringUtils.isBlank(progressSummaryRequest.getPayload().getLinkId()))
+        if(StringUtils.isBlank(serviceRequest.getPayload().getLinkId()))
         {
-            return new ProgressSummaryResponse(ErrorResponseFactory.badRequest("The linkId must be specified in the request", progressSummaryRequest.getCID()));
+            return createProgressSummaryResponse(serviceRequest, null, ErrorResponseFactory.badRequest("The linkId must be specified in the request", serviceRequest.getCID()));
         }
 
-        DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(progressSummaryRequest.getPayload().getLinkId())));
+        DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(serviceRequest.getPayload().getLinkId())));
 
-        List<AgendaProgress> progressList = visibilityFilter.filterByVisible(progressSummaryRequest, feed.getAll());
-        ProgressSummaryResponse result = new ProgressSummaryResponse();
-        result.setProgressList(progressList);
+        List<AgendaProgress> progressList = visibilityFilter.filterByVisible(serviceRequest, feed.getAll());
+        ProgressSummaryResponse result = createProgressSummaryResponse(serviceRequest, progressList, null);
 
         if(didAnyOperationFail(progressList))
         {
             logger.info("Retrieved {} results from query: {} Failed operation detected.",
-                feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId());
+                feed.getAll().size(), serviceRequest.getPayload().getLinkId());
             result.setProcessingState(ProcessingState.COMPLETE);
         }
         else
@@ -79,10 +79,20 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
             long executing = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.EXECUTING).count();
 
             logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
-                feed.getAll().size(), progressSummaryRequest.getPayload().getLinkId(), waiting, executing);
+                feed.getAll().size(), serviceRequest.getPayload().getLinkId(), waiting, executing);
             result.setProcessingState(evaluateOverallState(progressList, waiting, executing));
         }
         return result;
+    }
+
+    private ProgressSummaryResponse createProgressSummaryResponse(ServiceRequest<ProgressSummaryRequest> serviceRequest,
+        List<AgendaProgress> progressList, ErrorResponse errorResponse)
+    {
+        ProgressSummaryResponse progressSummaryResponse = new ProgressSummaryResponse();
+        progressSummaryResponse.setErrorResponse(errorResponse);
+        progressSummaryResponse.setProgressList(progressList);
+        progressSummaryResponse.setCID(serviceRequest == null ? null : serviceRequest.getCID());
+        return progressSummaryResponse;
     }
 
     @Override
