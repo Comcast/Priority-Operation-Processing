@@ -55,17 +55,17 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
     {
         if(serviceRequest == null)
         {
-            return createProgressSummaryResponse(serviceRequest, null, ErrorResponseFactory.badRequest("The request may not be null.", null));
+            return createProgressSummaryResponse(null, ErrorResponseFactory.badRequest("The request may not be null.", null));
         }
         if(StringUtils.isBlank(serviceRequest.getPayload().getLinkId()))
         {
-            return createProgressSummaryResponse(serviceRequest, null, ErrorResponseFactory.badRequest("The linkId must be specified in the request", serviceRequest.getCID()));
+            return createProgressSummaryResponse(null, ErrorResponseFactory.badRequest("The linkId must be specified in the request", serviceRequest.getCID()));
         }
 
         DataObjectResponse<AgendaProgress> feed = agendaProgressClient.getObjects(Collections.singletonList(new ByLinkId(serviceRequest.getPayload().getLinkId())));
 
         List<AgendaProgress> progressList = visibilityFilter.filterByVisible(serviceRequest, feed.getAll());
-        ProgressSummaryResponse result = createProgressSummaryResponse(serviceRequest, progressList, null);
+        ProgressSummaryResponse result = createProgressSummaryResponse(progressList, null);
 
         if(didAnyOperationFail(progressList))
         {
@@ -85,13 +85,11 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
         return result;
     }
 
-    private ProgressSummaryResponse createProgressSummaryResponse(ServiceRequest<ProgressSummaryRequest> serviceRequest,
-        List<AgendaProgress> progressList, ErrorResponse errorResponse)
+    private ProgressSummaryResponse createProgressSummaryResponse(List<AgendaProgress> progressList, ErrorResponse errorResponse)
     {
         ProgressSummaryResponse progressSummaryResponse = new ProgressSummaryResponse();
         progressSummaryResponse.setErrorResponse(errorResponse);
         progressSummaryResponse.setProgressList(progressList);
-        progressSummaryResponse.setCID(serviceRequest == null ? null : serviceRequest.getCID());
         return progressSummaryResponse;
     }
 

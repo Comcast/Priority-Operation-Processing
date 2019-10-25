@@ -62,7 +62,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
         {
             final String message = "No insight id provided.  Cannot process getAgenda request.";
             logger.warn(message);
-            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.badRequest(message, serviceRequest.getCID()));
         }
 
         logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
@@ -75,7 +75,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
             final String message = String.format("No insight found with id %s. Cannot process getAgenda request.",
             getAgendaRequest.getInsightId());
             logger.warn(message);
-            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
         }
         Insight insight = insightResponse.getFirst();
 
@@ -115,29 +115,21 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
                         }
                     }
                 }
-                return createGetAgendaResponse(serviceRequest, agendaList, null);
+                return new GetAgendaResponse(agendaList);
             }
             else
             {
-                return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
+                return new GetAgendaResponse(ErrorResponseFactory.runtimeServiceException("Failed to poll queue for AgendaInfo.", serviceRequest.getCID()));
             }
         }
         catch(PersistenceException e)
         {
-            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, 400, serviceRequest.getCID()));
         }
         catch(BadRequestException e)
         {
-            return createGetAgendaResponse(serviceRequest, null, ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
+            return new GetAgendaResponse(ErrorResponseFactory.buildErrorResponse(e, e.getResponseCode(), serviceRequest.getCID()));
         }
-    }
-
-    private GetAgendaResponse createGetAgendaResponse(ServiceRequest<GetAgendaRequest> serviceRequest, List<Agenda> retrievedAgendas, ErrorResponse errorResponse)
-    {
-        GetAgendaResponse getAgendaResponse = new GetAgendaResponse(retrievedAgendas);
-        getAgendaResponse.setErrorResponse(errorResponse);
-        getAgendaResponse.setCID(serviceRequest.getCID());
-        return getAgendaResponse;
     }
 
     private DefaultDataObjectRequest<Insight> generateInsightReq(AuthorizationResponse authorizationResponse, String insightId)

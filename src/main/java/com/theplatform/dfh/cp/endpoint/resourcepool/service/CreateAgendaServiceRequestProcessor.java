@@ -119,7 +119,6 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
     {
         CreateAgendaResponse createAgendaResponse = new CreateAgendaResponse(createdAgendas);
         createAgendaResponse.setErrorResponse(errorResponse);
-        createAgendaResponse.setCID(serviceRequest.getCID());
         return createAgendaResponse;
     }
 
