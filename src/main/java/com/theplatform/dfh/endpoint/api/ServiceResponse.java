@@ -9,4 +9,6 @@ public interface ServiceResponse<T>
     boolean isError();
 
     String getCID();
+
+    void setCID(String cid);
 }
