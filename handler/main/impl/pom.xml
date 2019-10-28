@@ -65,12 +65,6 @@
             <version>${executor-handler-api.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-progress-base</artifactId>
-            <version>${reporter-progress-base.version}</version>
-        </dependency>
-
         <!-- Launcher modules -->
         <dependency>
             <groupId>com.theplatform.modules</groupId>

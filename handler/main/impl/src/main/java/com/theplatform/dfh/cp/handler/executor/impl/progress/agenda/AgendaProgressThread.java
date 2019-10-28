@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.handler.reporter.progress.base.BaseReporterThread;
+import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThread;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
