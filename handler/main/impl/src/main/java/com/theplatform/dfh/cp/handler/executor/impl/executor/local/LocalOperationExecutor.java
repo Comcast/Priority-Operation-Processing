@@ -6,7 +6,6 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecut
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

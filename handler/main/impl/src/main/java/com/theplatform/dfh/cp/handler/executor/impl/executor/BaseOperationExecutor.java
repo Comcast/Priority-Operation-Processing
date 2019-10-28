@@ -1,10 +1,8 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.OperationProgressProvider;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.OperationProgressProvider;
-
-import java.util.UUID;
 
 /**
  * Base for all types of operation executors

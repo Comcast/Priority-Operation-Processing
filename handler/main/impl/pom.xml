@@ -25,7 +25,7 @@
         <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
         <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.1-SNAPSHOT</logger-reporter.version>
-        <reporter-progress-agenda.version>1.0.2-SNAPSHOT</reporter-progress-agenda.version>
+        <reporter-progress-base.version>1.0.1-SNAPSHOT</reporter-progress-base.version>
         <dfh-http-idm.version>1.0.1-SNAPSHOT</dfh-http-idm.version>
         <dfh-http-util.version>1.0.0</dfh-http-util.version>
 
@@ -67,8 +67,8 @@
 
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-progress-agenda</artifactId>
-            <version>${reporter-progress-agenda.version}</version>
+            <artifactId>pl-dfh-cp-handler-reporter-progress-base</artifactId>
+            <version>${reporter-progress-base.version}</version>
         </dependency>
 
         <!-- Launcher modules -->

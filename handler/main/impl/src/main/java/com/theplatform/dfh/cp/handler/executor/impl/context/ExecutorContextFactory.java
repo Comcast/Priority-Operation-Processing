@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.HttpReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
@@ -14,7 +15,6 @@ import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.HttpReporter;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;

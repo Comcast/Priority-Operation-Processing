@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorExce
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
-import com.theplatform.dfh.cp.handler.reporter.progress.agenda.AgendaProgressReporter;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
