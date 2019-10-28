@@ -36,11 +36,6 @@
 
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-progress-operation</artifactId>
-            <version>${reporter-progress-operation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
             <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
             <version>${handler-kubernetes-support.version}</version>
         </dependency>
