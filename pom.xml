@@ -19,9 +19,16 @@
         <kubernetes-reporter.version>1.0.1-SNAPSHOT</kubernetes-reporter.version>
         <logger-reporter.version>1.0.1-SNAPSHOT</logger-reporter.version>
         <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
+        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-monitor</artifactId>

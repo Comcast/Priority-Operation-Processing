@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.context;
 
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
@@ -35,7 +36,7 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
         {
             case local:
             case docker:
-                return new LogReporter();
+                return new LogReporter<OperationProgress>();
             case kubernetes:
             default:
                 return createKubernetesReporter();
@@ -46,15 +47,15 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
      * Creates a Kubernetes specific reporter
      * @return
      */
-    protected ProgressReporterSet createKubernetesReporter()
+    protected ProgressReporterSet<OperationProgress> createKubernetesReporter()
     {
         // This is duplicated in the sample handler... undupe it!
-        ProgressReporterSet reporterSet = new ProgressReporterSet();
-        reporterSet.add(new LogReporter());
+        ProgressReporterSet<OperationProgress> reporterSet = new ProgressReporterSet();
+        reporterSet.add(new LogReporter<>());
 
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
 
-        reporterSet.add(new KubernetesReporter(
+        reporterSet.add(new KubernetesReporter<>(
             kubeConfig,
             launchDataWrapper.getEnvironmentRetriever().getField(Fabric8Helper.MY_POD_NAME))
         );
