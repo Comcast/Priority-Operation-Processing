@@ -1,19 +1,20 @@
 package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThreadConfig;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 
 public class AgendaProgressThreadConfig extends BaseReporterThreadConfig
 {
-    private ProgressReporter reporter;
+    private ProgressReporter<AgendaProgress> reporter;
     private boolean requireProgressId = true;
 
-    public ProgressReporter getReporter()
+    public ProgressReporter<AgendaProgress> getReporter()
     {
         return reporter;
     }
 
-    public AgendaProgressThreadConfig setReporter(ProgressReporter reporter)
+    public AgendaProgressThreadConfig setReporter(ProgressReporter<AgendaProgress> reporter)
     {
         this.reporter = reporter;
         return this;
