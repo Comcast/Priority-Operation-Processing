@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.HttpReporter;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.HttpAgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
@@ -96,7 +96,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         }
     }
 
-    protected HttpReporter createHttpReporter()
+    protected HttpAgendaProgressReporter createHttpReporter()
     {
         FieldRetriever propertyRetriever = launchDataWrapper.getPropertyRetriever();
         FieldRetriever environmentRetriever = launchDataWrapper.getEnvironmentRetriever();
@@ -122,7 +122,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         String proxyHost = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST);
         String proxyPort = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT);
-        return new HttpReporter()
+        return new HttpAgendaProgressReporter()
                 .setUrlRequestPerformer(new URLRequestPerformer()).setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(propertyRetriever, environmentRetriever))
                 .setReportingUrl(agendaProgressUrl)
                 .setConnectionTimeoutMilliseconds(progressConnectionTimeout)

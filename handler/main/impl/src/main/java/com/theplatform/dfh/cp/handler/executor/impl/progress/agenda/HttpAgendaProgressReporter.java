@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
@@ -15,7 +16,7 @@ import java.net.Proxy;
 /**
  * Http specific Reporter (special reporter for the AgendaProgress)
  */
-public class HttpReporter implements ProgressReporter
+public class HttpAgendaProgressReporter implements ProgressReporter<AgendaProgress>
 {
     private String reportingUrl;
     private String proxyHost;
@@ -28,12 +29,12 @@ public class HttpReporter implements ProgressReporter
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void reportProgress(Object object)
+    public void reportProgress(AgendaProgress agendaProgress)
     {
         try
         {
             logger.debug("Reporting progress");
-            byte[] data = jsonHelper.getJSONString(object).getBytes();
+            byte[] data = jsonHelper.getJSONString(agendaProgress).getBytes();
 
             logger.debug("Connection info: [" + reportingUrl + "] with proxy [" + proxyHost + ":" + proxyPort + "]");
 
@@ -61,7 +62,7 @@ public class HttpReporter implements ProgressReporter
     }
 
     @Override
-    public void reportProgress(Object object, Object resultPayload)
+    public void reportProgress(AgendaProgress agendaProgress, Object resultPayload)
     {
         throw new UnsupportedOperationException();
     }
@@ -71,7 +72,7 @@ public class HttpReporter implements ProgressReporter
         return connectionTimeoutMilliseconds;
     }
 
-    public HttpReporter setConnectionTimeoutMilliseconds(int connectionTimeoutMilliseconds)
+    public HttpAgendaProgressReporter setConnectionTimeoutMilliseconds(int connectionTimeoutMilliseconds)
     {
         this.connectionTimeoutMilliseconds = connectionTimeoutMilliseconds;
         return this;
@@ -92,7 +93,7 @@ public class HttpReporter implements ProgressReporter
         return httpURLConnectionFactory;
     }
 
-    public HttpReporter setHttpURLConnectionFactory(HttpURLConnectionFactory httpURLConnectionFactory)
+    public HttpAgendaProgressReporter setHttpURLConnectionFactory(HttpURLConnectionFactory httpURLConnectionFactory)
     {
         logger.debug("Setting connection factory to " + httpURLConnectionFactory.getClass());
         this.httpURLConnectionFactory = httpURLConnectionFactory;
@@ -104,7 +105,7 @@ public class HttpReporter implements ProgressReporter
         return urlRequestPerformer;
     }
 
-    public HttpReporter setUrlRequestPerformer(URLRequestPerformer urlRequestPerformer)
+    public HttpAgendaProgressReporter setUrlRequestPerformer(URLRequestPerformer urlRequestPerformer)
     {
         logger.debug("Setting request performer to " + urlRequestPerformer.getClass());
         this.urlRequestPerformer = urlRequestPerformer;
@@ -116,7 +117,7 @@ public class HttpReporter implements ProgressReporter
         return reportingUrl;
     }
 
-    public HttpReporter setReportingUrl(String reportingUrl)
+    public HttpAgendaProgressReporter setReportingUrl(String reportingUrl)
     {
         logger.debug("Setting reporting url to " + reportingUrl);
         this.reportingUrl = reportingUrl;
@@ -128,7 +129,7 @@ public class HttpReporter implements ProgressReporter
         return proxyHost;
     }
 
-    public HttpReporter setProxyHost(String proxy)
+    public HttpAgendaProgressReporter setProxyHost(String proxy)
     {
         this.proxyHost = proxy;
         return this;
@@ -139,7 +140,7 @@ public class HttpReporter implements ProgressReporter
         return proxyPort;
     }
 
-    public HttpReporter setProxyPort(String proxy)
+    public HttpAgendaProgressReporter setProxyPort(String proxy)
     {
         this.proxyPort = proxy;
         return this;
