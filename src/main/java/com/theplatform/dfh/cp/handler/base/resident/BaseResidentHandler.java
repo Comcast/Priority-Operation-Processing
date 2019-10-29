@@ -81,12 +81,12 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
         this.launchDataWrapper = launchDataWrapper;
     }
 
-    public ProgressReporter getProgressReporter()
+    public ProgressReporter<OperationProgress> getProgressReporter()
     {
         return progressReporter;
     }
 
-    public void setProgressReporter(ProgressReporter progressReporter)
+    public void setProgressReporter(ProgressReporter<OperationProgress> progressReporter)
     {
         this.progressReporter = progressReporter;
     }
