@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.base;
 
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 
@@ -8,5 +9,5 @@ import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
  */
 public interface ResidentHandler
 {
-    String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter reporter);
+    String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter<OperationProgress> reporter);
 }

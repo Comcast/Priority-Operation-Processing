@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.base.resident;
 
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.base.progress.OperationProgressFactory;
@@ -29,7 +30,7 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
     }
 
     @Override
-    public String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter reporter)
+    public String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter<OperationProgress> reporter)
     {
         this.progressReporter = reporter;
         this.launchDataWrapper = launchDataWrapper;
