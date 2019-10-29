@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.base.context;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.config.IntermediatePathComposer;
 import com.theplatform.dfh.cp.handler.base.progress.OperationProgressFactory;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporter;
@@ -22,7 +23,7 @@ public abstract class ProgressOperationContext<T extends LaunchDataWrapper> exte
      * @param reporter The underlying reporter to send updates via
      * @param launchDataWrapper The LaunchDataWrapper to associate with this context
      */
-    public ProgressOperationContext(ProgressReporter reporter, T launchDataWrapper)
+    public ProgressOperationContext(ProgressReporter<OperationProgress> reporter, T launchDataWrapper)
     {
         super(launchDataWrapper);
         operationProgressThread = new OperationProgressThread(

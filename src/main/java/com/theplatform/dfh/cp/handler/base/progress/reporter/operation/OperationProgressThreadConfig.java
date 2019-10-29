@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.base.progress.reporter.operation;
 
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThreadConfig;
 import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 
@@ -8,14 +9,14 @@ import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
  */
 public class OperationProgressThreadConfig extends BaseReporterThreadConfig
 {
-    private ProgressReporter reporter;
+    private ProgressReporter<OperationProgress> reporter;
 
-    public ProgressReporter getReporter()
+    public ProgressReporter<OperationProgress> getReporter()
     {
         return reporter;
     }
 
-    public OperationProgressThreadConfig setReporter(ProgressReporter reporter)
+    public OperationProgressThreadConfig setReporter(ProgressReporter<OperationProgress> reporter)
     {
         this.reporter = reporter;
         return this;
