@@ -27,7 +27,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
 {
     private static final Logger logger = LoggerFactory.getLogger(ResidentOperationExecutor.class);
     private ResidentHandler residentHandler;
-    private JsonReporter reporter;
+    private JsonReporter<OperationProgress> reporter;
     private JsonHelper jsonHelper;
     private String outputPayload;
     private Date startTime;
@@ -38,7 +38,7 @@ public class ResidentOperationExecutor extends BaseOperationExecutor
     {
         super(operation, launchDataWrapper);
         this.residentHandler = residentHandler;
-        this.reporter = new JsonReporter();
+        this.reporter = new JsonReporter<>();
         this.jsonHelper = new JsonHelper();
     }
 
