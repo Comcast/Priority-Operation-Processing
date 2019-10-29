@@ -30,13 +30,13 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
      * Returns a reporter based on the launch type
      * @return The reporter to use for the execution of this handler
      */
-    protected ProgressReporter createReporter()
+    protected ProgressReporter<OperationProgress> createReporter()
     {
         switch(getLaunchType())
         {
             case local:
             case docker:
-                return new LogReporter<OperationProgress>();
+                return new LogReporter<>();
             case kubernetes:
             default:
                 return createKubernetesReporter();
@@ -45,12 +45,11 @@ public abstract class KubernetesOperationContextFactory<T extends BaseOperationC
 
     /**
      * Creates a Kubernetes specific reporter
-     * @return
+     * @return Reporter set with both the log and kubernetes reporter
      */
     protected ProgressReporterSet<OperationProgress> createKubernetesReporter()
     {
-        // This is duplicated in the sample handler... undupe it!
-        ProgressReporterSet<OperationProgress> reporterSet = new ProgressReporterSet();
+        ProgressReporterSet<OperationProgress> reporterSet = new ProgressReporterSet<>();
         reporterSet.add(new LogReporter<>());
 
         KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
