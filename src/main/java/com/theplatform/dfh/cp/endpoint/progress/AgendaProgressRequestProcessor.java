@@ -33,7 +33,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaProgressPersister, ObjectPersister<Agenda> agendaPersister,
         ObjectPersister<OperationProgress> operationProgressPersister)
     {
-        super(agendaProgressPersister, new DataObjectValidator());
+        super(agendaProgressPersister, new DataObjectValidator<>());
         agendaProgressReporter = new AgendaProgressReporter(agendaPersister);
         agendaProgressReporter.setAgendaProgressPersister(agendaProgressPersister);
         operationProgressClient = new DataObjectRequestProcessorClient<>(new OperationProgressRequestProcessor(operationProgressPersister));
@@ -100,7 +100,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     @Override
     public DataObjectResponse<AgendaProgress> handleDELETE(DataObjectRequest<AgendaProgress> request)
     {
-        DataObjectResponse response = super.handleDELETE(request);
+        DataObjectResponse<AgendaProgress> response = super.handleDELETE(request);
 
         // todo this will result in SO many calls.  Is there a better way to do this?
         // delete operationProgress objects

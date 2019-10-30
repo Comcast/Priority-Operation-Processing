@@ -25,7 +25,11 @@ public class AgendaProgressReporter
 
     public void logCompletedAgenda(DataObjectResponse<AgendaProgress> response)
     {
-        AgendaProgress partialAgendaProgress = response.getFirst();
+        logCompletedAgenda(response.getFirst());
+    }
+
+    public void logCompletedAgenda(AgendaProgress partialAgendaProgress)
+    {
         if(partialAgendaProgress == null || partialAgendaProgress.getProcessingState() != ProcessingState.COMPLETE)
         {
             return;
