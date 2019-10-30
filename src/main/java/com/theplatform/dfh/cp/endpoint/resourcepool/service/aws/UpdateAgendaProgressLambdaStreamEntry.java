@@ -14,15 +14,15 @@ import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoD
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.service.UpdateAgendaProgressServiceRequestProcessor;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaResponse;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 
 /**
  * Main entry point class for the AWS updateAgendaProgress endpoint
  */
-public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamEntry<CreateAgendaResponse, LambdaRequest<CreateAgendaRequest>>
+public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamEntry<UpdateAgendaProgressResponse, LambdaRequest<UpdateAgendaProgressRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -31,7 +31,7 @@ public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamE
     private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<CreateAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<UpdateAgendaProgressRequest> lambdaRequest)
     {
         String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
         ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
@@ -46,9 +46,9 @@ public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamE
     }
 
     @Override
-    public LambdaRequest<CreateAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<UpdateAgendaProgressRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, CreateAgendaRequest.class);
+        return new LambdaRequest<>(node, UpdateAgendaProgressRequest.class);
     }
 
     public UpdateAgendaProgressLambdaStreamEntry()
