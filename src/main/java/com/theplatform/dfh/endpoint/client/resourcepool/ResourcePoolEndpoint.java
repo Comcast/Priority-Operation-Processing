@@ -1,0 +1,20 @@
+package com.theplatform.dfh.endpoint.client.resourcepool;
+
+public enum ResourcePoolEndpoint
+{
+    getAgenda("getAgenda"),
+    createAgenda("createAgenda"),
+    updateAgendaProgress("updateAgendaProgress");
+
+    private String path;
+
+    ResourcePoolEndpoint(String path)
+    {
+        this.path = path;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+}

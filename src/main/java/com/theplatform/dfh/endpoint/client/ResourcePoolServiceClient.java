@@ -1,54 +1,60 @@
 package com.theplatform.dfh.endpoint.client;
 
+import com.theplatform.dfh.endpoint.api.ServiceResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
+import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressResponse;
+import com.theplatform.dfh.endpoint.client.resourcepool.ResourcePoolEndpoint;
+import com.theplatform.dfh.endpoint.client.resourcepool.ResourcePoolServiceConfig;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResourcePoolServiceClient extends FissionServiceClient
 {
-    private String agendaProviderUrl;
-    private String agendaCreateUrl;
+    private ResourcePoolServiceConfig serviceClientConfig;
+    private static Logger logger = LoggerFactory.getLogger(ResourcePoolServiceClient.class);
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public ResourcePoolServiceClient(HttpURLConnectionFactory httpUrlConnectionFactory)
+    public ResourcePoolServiceClient(ResourcePoolServiceConfig serviceClientConfig, HttpURLConnectionFactory httpUrlConnectionFactory)
     {
         super(httpUrlConnectionFactory);
+        this.serviceClientConfig = serviceClientConfig;
     }
-
-    public ResourcePoolServiceClient(HttpURLConnectionFactory httpUrlConnectionFactory, String agendaProviderUrl)
+    public ResourcePoolServiceClient(String serviceBaseURL, HttpURLConnectionFactory httpUrlConnectionFactory)
     {
         super(httpUrlConnectionFactory);
-        this.agendaProviderUrl = agendaProviderUrl;
+        this.serviceClientConfig = new ResourcePoolServiceConfig(serviceBaseURL);
     }
 
-    public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
+    public GetAgendaResponse getAgenda(GetAgendaRequest request)
     {
-        logger.info("Getting agenda with connection factory [" + getHttpUrlConnectionFactory().getClass() + "]");
-        return new GenericFissionClient<>(agendaProviderUrl, getHttpUrlConnectionFactory(), GetAgendaResponse.class)
-            .getObjectFromPOST(getAgendaRequest);
+        return makeServiceCall(request, GetAgendaResponse.class, ResourcePoolEndpoint.getAgenda);
     }
 
-    public CreateAgendaResponse createAgenda(CreateAgendaRequest createAgendaRequest)
+    public CreateAgendaResponse createAgenda(CreateAgendaRequest request)
     {
-        logger.info("Creating agenda with connection factory [" + getHttpUrlConnectionFactory().getClass() + "]");
-        return new GenericFissionClient<>(agendaCreateUrl, getHttpUrlConnectionFactory(), CreateAgendaResponse.class)
-            .getObjectFromPOST(createAgendaRequest);
+        return makeServiceCall(request, CreateAgendaResponse.class, ResourcePoolEndpoint.createAgenda);
     }
 
-    public ResourcePoolServiceClient setAgendaProviderUrl(String agendaProviderUrl)
+    public UpdateAgendaProgressResponse updateAgendaProgress(UpdateAgendaProgressRequest request)
     {
-        this.agendaProviderUrl = agendaProviderUrl;
-        return this;
+        return makeServiceCall(request, UpdateAgendaProgressResponse.class, ResourcePoolEndpoint.updateAgendaProgress);
     }
 
-    public ResourcePoolServiceClient setAgendaCreateUrl(String agendaCreateUrl)
+    private <Req, Res extends ServiceResponse> Res makeServiceCall(Req request, Class<Res> responseClass, ResourcePoolEndpoint resourcePoolEndpoint)
     {
-        this.agendaCreateUrl = agendaCreateUrl;
-        return this;
+        if(logger.isDebugEnabled())
+            logger.debug("Calling " + resourcePoolEndpoint.name());
+        Res response = new GenericFissionClient<Res, Req>(
+                serviceClientConfig.getProviderUrl(resourcePoolEndpoint),
+                getHttpUrlConnectionFactory(),
+                responseClass)
+            .getObjectFromPOST(request);
+        if(logger.isDebugEnabled())
+            logger.debug("Got response: [" + (response == null ? "null" : response.toString()) +"]");
+        return response;
     }
 }
