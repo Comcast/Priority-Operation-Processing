@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
@@ -54,6 +55,8 @@ public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcesso
     {
         DefaultDataObjectRequest<AgendaProgress> agendaReq = new DefaultDataObjectRequest<>();
         agendaReq.setCid(serviceRequest.getCID());
+        // because this is an internally constructed request be sure the id is set
+        agendaReq.setId(agendaProgress.getId());
         agendaReq.setPayload(agendaProgress);
         agendaReq.setAuthorizationResponse(
             new AuthorizationResponse(null, null, Collections.singleton(agendaProgress.getCustomerId()), DataVisibility.authorized_account));
