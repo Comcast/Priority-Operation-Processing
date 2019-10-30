@@ -5,8 +5,6 @@ public abstract class HTTPClientConfig
     private String proxyHost;
     private String proxyPort;
 
-    public abstract String getProviderUrl();
-
     public String getProxyHost()
     {
         return proxyHost;
