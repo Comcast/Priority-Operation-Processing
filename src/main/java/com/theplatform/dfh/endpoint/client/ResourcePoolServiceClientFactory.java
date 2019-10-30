@@ -1,28 +1,17 @@
 package com.theplatform.dfh.endpoint.client;
 
+import com.theplatform.dfh.endpoint.client.resourcepool.ResourcePoolServiceConfig;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class ResourcePoolServiceClientFactory
 {
-    private String agendaCreateUrl;
-    private String agendaProviderUrl;
-
-    public ResourcePoolServiceClient create(HttpURLConnectionFactory httpUrlConnectionFactory)
+    public ResourcePoolServiceClient create(ResourcePoolServiceConfig resourcePoolServiceConfig, HttpURLConnectionFactory httpUrlConnectionFactory)
     {
-        return new ResourcePoolServiceClient(httpUrlConnectionFactory)
-            .setAgendaCreateUrl(agendaCreateUrl)
-            .setAgendaProviderUrl(agendaProviderUrl);
+        return new ResourcePoolServiceClient(resourcePoolServiceConfig, httpUrlConnectionFactory);
     }
 
-    public ResourcePoolServiceClientFactory setAgendaCreateUrl(String agendaCreateUrl)
+    public ResourcePoolServiceClient create(String serviceUrl, HttpURLConnectionFactory httpUrlConnectionFactory)
     {
-        this.agendaCreateUrl = agendaCreateUrl;
-        return this;
-    }
-
-    public ResourcePoolServiceClientFactory setAgendaProviderUrl(String agendaProviderUrl)
-    {
-        this.agendaProviderUrl = agendaProviderUrl;
-        return this;
+        return new ResourcePoolServiceClient(serviceUrl, httpUrlConnectionFactory);
     }
 }
