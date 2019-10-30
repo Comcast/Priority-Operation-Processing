@@ -23,7 +23,7 @@ import java.util.Map;
 public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final String RESOURCE_PATH_FIELD_PATH = "/requestContext/resourcePath";
+    private static final String RESOURCE_PATH_FIELD_PATH = "/requestContext/resourcePath";
 
     private static final Map<String, JsonRequestStreamHandler> endpointHandlers = new HashMap<>();
 
@@ -35,6 +35,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
     {
         endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
     }
 
     @Override
