@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -11,23 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Basic client for making calls to get Agenda objects.  Eventually this will
- * talk to the API Gateway to getWork, but for now it returns a static Agenda
+ * Local testing to use an Agenda stored in a json file.
  */
-public class LocalAgendaProviderClient implements AgendaClient
+public class LocalResourcePoolServiceClient extends ResourcePoolServiceClient
 {
-    private String payloadFileName;
     private JsonHelper jsonHelper = new JsonHelper();
+    // Do not flood the puller (it will keep retrieving as fast as possible)
+    private final int MAX_RESPONSES = 1;
+    private int agendaResponseCount = 0;
 
     private String work;
 
-    private LocalAgendaProviderClient()
+    public LocalResourcePoolServiceClient(String payloadFileName)
     {
-    }
-
-    public LocalAgendaProviderClient(String payloadFileName)
-    {
-        this.payloadFileName = payloadFileName;
+        super("UnusedValue", null);
         try
         {
             work = getStringFromResourceFile(payloadFileName);
@@ -47,10 +45,7 @@ public class LocalAgendaProviderClient implements AgendaClient
     {
         if (this.getClass().getResource(file) != null)
         {
-            return IOUtils.toString(
-                    this.getClass().getResource(file),
-                    "UTF-8"
-            );
+            return IOUtils.toString(this.getClass().getResource(file), "UTF-8");
         }
         else
         {
@@ -62,10 +57,13 @@ public class LocalAgendaProviderClient implements AgendaClient
     public GetAgendaResponse getAgenda(GetAgendaRequest getAgendaRequest)
     {
         GetAgendaResponse getAgendaResponse = new GetAgendaResponse();
-        Agenda agenda = getAgenda();
         List<Agenda> agendaList = new ArrayList<>();
-        agendaList.add(agenda);
+        if(agendaResponseCount < MAX_RESPONSES)
+        {
+            agendaList.add(getAgenda());
+        }
         getAgendaResponse.setAll(agendaList);
+        agendaResponseCount += agendaList.size();
         return getAgendaResponse;
     }
 }

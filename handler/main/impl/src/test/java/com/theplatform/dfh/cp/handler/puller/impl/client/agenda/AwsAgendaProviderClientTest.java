@@ -24,12 +24,12 @@ import static org.mockito.Mockito.when;
 public class AwsAgendaProviderClientTest
 {
     private JsonHelper jsonHelper = new JsonHelper();
-    private ResourcePoolServiceClient agendaServiceClient;
+    private ResourcePoolServiceClient resourcePoolServiceClient;
 
     @BeforeMethod
     public void setup()
     {
-        agendaServiceClient = mock(ResourcePoolServiceClient.class);
+        resourcePoolServiceClient = mock(ResourcePoolServiceClient.class);
     }
 
     @Test
@@ -39,43 +39,37 @@ public class AwsAgendaProviderClientTest
         agenda.setId(UUID.randomUUID().toString());
         GetAgendaResponse expectedResponse = new GetAgendaResponse(Arrays.asList(agenda));
 
-        when(agendaServiceClient.getAgenda(any())).thenReturn(expectedResponse);
-
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
+        when(resourcePoolServiceClient.getAgenda(any())).thenReturn(expectedResponse);
 
         GetAgendaRequest getAgendaRequest = new GetAgendaRequest("foo", 1);
-        GetAgendaResponse agendaResponse = awsClient.getAgenda(getAgendaRequest);
+        GetAgendaResponse agendaResponse = resourcePoolServiceClient.getAgenda(getAgendaRequest);
         String expectedAgenda =jsonHelper.getJSONString(expectedResponse);
         String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
         Assert.assertEquals(agendaResponseJson, expectedAgenda);
-        verify(agendaServiceClient, times(1)).getAgenda(getAgendaRequest);
+        verify(resourcePoolServiceClient, times(1)).getAgenda(getAgendaRequest);
     }
 
     @Test
     public void testGetAgendaReturnsNull()
     {
-        when(agendaServiceClient.getAgenda((any()))).thenReturn(null);
+        when(resourcePoolServiceClient.getAgenda((any()))).thenReturn(null);
 
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
-
-        GetAgendaResponse agendaResponse = awsClient.getAgenda(new GetAgendaRequest());
+        GetAgendaResponse agendaResponse = resourcePoolServiceClient.getAgenda(new GetAgendaRequest());
         Assert.assertNull(agendaResponse);
-        verify(agendaServiceClient, times(1)).getAgenda(any());
+        verify(resourcePoolServiceClient, times(1)).getAgenda(any());
     }
 
     @Test
     public void testGetAgendaResturnsError()
     {
         GetAgendaResponse response = new GetAgendaResponse(ErrorResponseFactory.objectNotFound("Could not find Insight.", "cid"));
-        when(agendaServiceClient.getAgenda(any())).thenReturn(response);
-
-        AwsAgendaProviderClient awsClient = new AwsAgendaProviderClient(agendaServiceClient);
+        when(resourcePoolServiceClient.getAgenda(any())).thenReturn(response);
 
         GetAgendaRequest getAgendaRequest = new GetAgendaRequest("foo", 1);
-        GetAgendaResponse agendaResponse = awsClient.getAgenda(getAgendaRequest);
+        GetAgendaResponse agendaResponse = resourcePoolServiceClient.getAgenda(getAgendaRequest);
         String expectedAgenda =jsonHelper.getJSONString(response);
         String agendaResponseJson = jsonHelper.getJSONString(agendaResponse);
         Assert.assertEquals(agendaResponseJson, expectedAgenda);
-        verify(agendaServiceClient, times(1)).getAgenda(getAgendaRequest);
+        verify(resourcePoolServiceClient, times(1)).getAgenda(getAgendaRequest);
     }
 }

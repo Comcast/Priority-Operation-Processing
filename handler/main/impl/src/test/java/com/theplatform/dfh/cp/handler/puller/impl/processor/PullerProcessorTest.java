@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClient;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.PullerResourcePoolServiceClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -45,9 +45,9 @@ public class PullerProcessorTest
             getAgendaResponse.setAgendas(Arrays.asList(agenda));
         }
 
-        AgendaClient clientMock = mock(AgendaClient.class);
+        ResourcePoolServiceClient clientMock = mock(ResourcePoolServiceClient.class);
         when(clientMock.getAgenda(any())).thenReturn(getAgendaResponse);
-        AgendaClientFactory clientFactoryMock = mock(AgendaClientFactory.class);
+        PullerResourcePoolServiceClientFactory clientFactoryMock = mock(PullerResourcePoolServiceClientFactory.class);
         when(clientFactoryMock.getClient()).thenReturn(clientMock);
 
         int pullWait = 0;
@@ -63,7 +63,7 @@ public class PullerProcessorTest
         doReturn(launcherMock).when(launcherFactoryMock).createLauncher(any());
 
         PullerProcessor pullerProcessor = new PullerProcessor(insightId);
-        pullerProcessor.setAgendaClientFactory(clientFactoryMock);
+        pullerProcessor.setResourcePoolServiceClientFactory(clientFactoryMock);
         pullerProcessor.setLauncherFactory(launcherFactoryMock);
         pullerProcessor.setLaunchDataWrapper(launchDataWrapper);
         pullerProcessor.performAgendaRequest();

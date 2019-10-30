@@ -4,7 +4,7 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
-import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.AgendaClientFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.PullerResourcePoolServiceClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +22,12 @@ import java.util.Collection;
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
  */
-public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchDataWrapper, PullerContext>
+public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDataWrapper, PullerContext>
 {
     private static Logger logger = LoggerFactory.getLogger(PullerProcessor.class);
 
-    private AgendaClientFactory agendaClientFactory;
+    private PullerResourcePoolServiceClientFactory resourcePoolServiceClientFactory;
+    private ResourcePoolServiceClient resourcePoolServiceClient;
     private LauncherFactory launcherFactory;
 
     private String insightId;
@@ -36,7 +38,7 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
     public PullerProcessor(PullerContext pullerContext)
     {
         super(pullerContext);
-        this.agendaClientFactory = new AgendaClientFactory(getLaunchDataWrapper().getPullerConfig());
+        this.resourcePoolServiceClientFactory = new PullerResourcePoolServiceClientFactory(getLaunchDataWrapper().getPullerConfig());
         launcherFactory = pullerContext.getLauncherFactory();
         insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
     }
@@ -74,14 +76,10 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
             pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
             agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
 
-            GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
             GetAgendaResponse getAgendaResponse;
             try
             {
-                logger.debug("PullerProcessor: Getting agenda. Request[" + getAgendaRequest + "]" +
-                                     ", InsightId: " + getAgendaRequest.getInsightId() +
-                                     ", agendaClient: " + agendaClientFactory.getClient().getClass());
-                getAgendaResponse = agendaClientFactory.getClient().getAgenda(getAgendaRequest);
+                getAgendaResponse = retrieveAgendas();
             }
             catch (Exception e)
             {
@@ -149,6 +147,19 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         }
     }
 
+    private GetAgendaResponse retrieveAgendas()
+    {
+        GetAgendaRequest getAgendaRequest = new GetAgendaRequest(insightId, agendaRequestCount);
+        logger.debug("PullerProcessor: Getting agenda. Request[" + getAgendaRequest + "]" +
+            ", InsightId: " + getAgendaRequest.getInsightId());
+        if(resourcePoolServiceClient == null)
+        {
+            // This does not need to be recreated repeatedly
+            resourcePoolServiceClient = resourcePoolServiceClientFactory.getClient();
+        }
+        return resourcePoolServiceClient.getAgenda(getAgendaRequest);
+    }
+
     private void failProcess() throws InterruptedException
     {
         reportFailure();
@@ -208,9 +219,9 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         return launchDataWrapper;
     }
 
-    public AgendaClientFactory getAgendaClientFactory()
+    public PullerResourcePoolServiceClientFactory getResourcePoolServiceClientFactory()
     {
-        return agendaClientFactory;
+        return resourcePoolServiceClientFactory;
     }
 
     public LauncherFactory getLauncherFactory()
@@ -224,9 +235,9 @@ public class PullerProcessor  extends AbstractBaseHandlerProcessor<PullerLaunchD
         return this;
     }
 
-    public PullerProcessor setAgendaClientFactory(AgendaClientFactory agendaClientFactory)
+    public PullerProcessor setResourcePoolServiceClientFactory(PullerResourcePoolServiceClientFactory resourcePoolServiceClientFactory)
     {
-        this.agendaClientFactory = agendaClientFactory;
+        this.resourcePoolServiceClientFactory = resourcePoolServiceClientFactory;
         return this;
     }
 
