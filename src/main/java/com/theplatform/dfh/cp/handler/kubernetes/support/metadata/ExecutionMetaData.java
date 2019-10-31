@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.metadata;
 
+import com.theplatform.dfh.cp.handler.base.field.api.args.MetaData;
 import com.theplatform.dfh.cp.handler.base.processor.HandlerMetadata;
-import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

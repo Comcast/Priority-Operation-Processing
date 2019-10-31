@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails;
 
 public class NfsDetailsFactoryImpl implements NfsDetailsFactory

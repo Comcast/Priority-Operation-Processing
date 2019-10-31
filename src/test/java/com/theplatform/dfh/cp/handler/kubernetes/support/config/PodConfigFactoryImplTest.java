@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;

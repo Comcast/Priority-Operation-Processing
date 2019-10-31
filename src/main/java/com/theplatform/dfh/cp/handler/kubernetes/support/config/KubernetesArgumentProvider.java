@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.config;
 
-import com.theplatform.dfh.cp.handler.field.retriever.argument.DefaultArgumentProvider;
+import com.theplatform.dfh.cp.handler.base.field.retriever.argument.DefaultArgumentProvider;
 import org.apache.commons.cli.Options;
 
 public class KubernetesArgumentProvider extends DefaultArgumentProvider
