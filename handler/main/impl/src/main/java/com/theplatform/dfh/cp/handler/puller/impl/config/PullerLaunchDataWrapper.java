@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.config;
 
-import com.theplatform.dfh.cp.handler.field.retriever.argument.ArgumentRetriever;
+import com.theplatform.dfh.cp.handler.base.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
 

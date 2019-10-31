@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.healthcheck;
 
-import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyProvider;
-import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyRetriever;
-import com.theplatform.dfh.cp.handler.kubernetes.monitor.AliveCheckPollerFactory;
-import com.theplatform.dfh.cp.handler.kubernetes.monitor.MetricReporterFactory;
+import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyProvider;
+import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
+import com.theplatform.dfh.cp.handler.kubernetes.support.monitor.AliveCheckPollerFactory;
+import com.theplatform.dfh.cp.handler.kubernetes.support.monitor.MetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.PropertyLoader;
 import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheck;
 import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckPoller;

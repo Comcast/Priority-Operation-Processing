@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.handler.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import org.apache.commons.lang3.StringUtils;

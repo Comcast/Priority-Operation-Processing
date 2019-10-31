@@ -1,4 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
@@ -33,7 +34,6 @@
         <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
         <dfh-monitor-graphite.version>1.0.0-SNAPSHOT</dfh-monitor-graphite.version>
         <bananas-monitor.version>1.0.0-SNAPSHOT</bananas-monitor.version>
-        <handler-kubernetes-monitor.version>1.0.0-SNAPSHOT</handler-kubernetes-monitor.version>
     </properties>
 
     <dependencies>
@@ -110,11 +110,6 @@
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-monitor-graphite</artifactId>
             <version>${dfh-monitor-graphite.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-kubernetes-monitor</artifactId>
-            <version>${handler-kubernetes-monitor.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
