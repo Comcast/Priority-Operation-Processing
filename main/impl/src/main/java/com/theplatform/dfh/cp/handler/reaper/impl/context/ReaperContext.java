@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.reaper.impl.context;
 
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

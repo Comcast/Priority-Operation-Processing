@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.reaper.impl.property;
 
-import com.theplatform.dfh.cp.handler.field.retriever.api.NamedField;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.NamedField;
 
 public enum ReaperProperty implements NamedField
 {
