@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThreadConfig;
-import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
+import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 
 public class AgendaProgressThreadConfig extends BaseReporterThreadConfig
 {

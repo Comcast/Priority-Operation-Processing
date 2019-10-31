@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.MonitoringOperationRunnerFactory;
-import com.theplatform.dfh.cp.handler.kubernetes.monitor.MetricReporterFactory;
+import com.theplatform.dfh.cp.handler.kubernetes.support.monitor.MetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 
 import java.util.Collection;

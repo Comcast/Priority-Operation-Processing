@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
+import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;

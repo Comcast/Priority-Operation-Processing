@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.shutdown;
 
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;

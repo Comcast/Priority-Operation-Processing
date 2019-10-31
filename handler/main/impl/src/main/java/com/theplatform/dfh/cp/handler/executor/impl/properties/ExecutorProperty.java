@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.properties;
 
-import com.theplatform.dfh.cp.handler.field.retriever.api.NamedField;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.NamedField;
 
 public enum ExecutorProperty implements NamedField
 {
