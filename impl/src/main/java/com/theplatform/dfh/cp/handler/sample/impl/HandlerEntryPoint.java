@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.handler.sample.impl;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContextFactory;
-import com.theplatform.dfh.cp.handler.field.retriever.DefaultLaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContextFactory;
 import com.theplatform.dfh.cp.handler.sample.impl.processor.SampleActionProcessor;

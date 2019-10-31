@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.handler.sample.impl.context;
 
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.reporter.LogReporter;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
-import com.theplatform.dfh.cp.handler.reporter.log.LogReporter;
 
 /**
  * Factory that creates a context object for this operation.
