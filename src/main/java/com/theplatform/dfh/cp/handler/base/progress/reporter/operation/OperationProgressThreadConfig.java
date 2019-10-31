@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.handler.base.progress.reporter.operation;
 
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThreadConfig;
-import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
+import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 
 /**
  * Configuration for the op reporter thread

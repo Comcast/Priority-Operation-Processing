@@ -1,9 +1,8 @@
 package com.theplatform.dfh.cp.handler.base.log;
 
-
-import com.theplatform.dfh.cp.handler.field.api.HandlerField;
-import com.theplatform.dfh.cp.handler.field.api.args.MetaData;
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.field.api.args.MetaData;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
 
 import java.util.HashMap;
 import java.util.Map;

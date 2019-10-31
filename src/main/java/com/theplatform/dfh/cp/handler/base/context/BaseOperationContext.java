@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.base.context;
 
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 
 public abstract class BaseOperationContext<T extends LaunchDataWrapper>
 {

@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.handler.base.config;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.validation.string.TokenStringValidatorFactory;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
 import org.apache.commons.lang3.StringUtils;
 
 /**

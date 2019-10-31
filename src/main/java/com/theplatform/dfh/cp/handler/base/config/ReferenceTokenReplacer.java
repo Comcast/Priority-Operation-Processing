@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.handler.base.config;
 
 import com.theplatform.dfh.cp.api.tokens.AgendaToken;
-import com.theplatform.dfh.cp.handler.field.api.HandlerField;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import org.apache.commons.lang3.StringUtils;
 

@@ -5,13 +5,13 @@ import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.base.progress.OperationProgressFactory;
+import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.theplatform.dfh.cp.handler.base.translator.JsonPayloadTranslator;
 import com.theplatform.dfh.cp.handler.base.translator.PayloadTranslationResult;
-import com.theplatform.dfh.cp.handler.field.api.HandlerField;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.api.FieldRetriever;
-import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
 import java.util.Collections;

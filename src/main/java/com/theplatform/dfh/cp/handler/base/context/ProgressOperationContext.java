@@ -4,13 +4,13 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.config.IntermediatePathComposer;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.progress.OperationProgressFactory;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporter;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporterImpl;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressThread;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressThreadConfig;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.reporter.api.ProgressReporter;
+import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 
 public abstract class ProgressOperationContext<T extends LaunchDataWrapper> extends BaseOperationContext<T>
 {

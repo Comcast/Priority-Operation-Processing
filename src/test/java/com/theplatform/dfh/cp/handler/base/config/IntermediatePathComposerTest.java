@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.handler.base.config;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
 import com.theplatform.dfh.cp.handler.base.validation.string.StringValidationException;
-import com.theplatform.dfh.cp.handler.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.field.retriever.properties.PropertyRetriever;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
