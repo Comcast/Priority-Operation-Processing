@@ -73,9 +73,34 @@ public class TransformRequestProcessorTest
         request.setDataObject(transformRequest);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        verify(mockAgendaProgressClient, times(2)).persistObject(any());
         TransformRequest responseObject = objectPersistResponse.getFirst();
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.execProgressId), EXEC_PROGRESS_ID);
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
+    }
+
+    @Test
+    public void testDoNotCreateExecProgress() throws PersistenceException
+    {
+        TransformRequest transformRequest = createTransformRequest();
+
+        setUpProgressMock();
+        setUpAgendaMock();
+
+        transformRequest.getParams().put("createExecProgress", false);
+
+        Mockito.when(mockTransformRequestPersister.persist(transformRequest)).thenReturn(transformRequest);
+
+        DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
+        request.setDataObject(transformRequest);
+        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        DataObjectResponse<TransformRequest> objectPersistResponse = transformRequestProcessor.handlePOST(request);
+        verify(mockAgendaProgressClient, times(1)).persistObject(any());
+        TransformRequest responseObject = objectPersistResponse.getFirst();
+
+        Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
+        Assert.assertFalse(responseObject.getParams().containsKey("doNotCreateExecProgress"));
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.agendaId), AGENDA_ID);
     }
 

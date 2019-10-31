@@ -31,6 +31,7 @@ import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +90,8 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();
         ObjectTracker<AgendaProgress> agendaProgressTracker = trackerManager.register(new EndpointObjectTracker<>(agendaProgressClient, AgendaProgress.class));
 
+        if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
+
         ////
         // persist the prep/exec progress
         ////
@@ -101,22 +104,23 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         }
         AgendaProgress prepAgendaProgress = prepAgendaProgressResponse.getFirst();
         agendaProgressTracker.registerObject(prepAgendaProgress.getId());
-
-        DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
-            transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
-        if (execAgendaProgressResponse.isError())
-        {
-            deleteTransformRequest(transformRequest.getId());
-            trackerManager.cleanUp();
-            return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
-        }
-        AgendaProgress execAgendaProgress = execAgendaProgressResponse.getFirst();
-        agendaProgressTracker.registerObject(execAgendaProgress.getId());
-
-        if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
-        //This information is used for prep agenda generation, maybe these don't belong on the transform request itself
         transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgress.getId());
-        transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgress.getId());
+
+        // HACK - NOTE: This is a temp hack so we don't create Exec progress when not needed. This needs to be revisited badly.
+        if(StringUtils.equalsIgnoreCase(transformRequest.getParams().getString("createExecProgress", Boolean.TRUE.toString()), Boolean.TRUE.toString()))
+        {
+            DataObjectResponse<AgendaProgress> execAgendaProgressResponse = createAgendaProgress(
+                transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
+            if (execAgendaProgressResponse.isError())
+            {
+                deleteTransformRequest(transformRequest.getId());
+                trackerManager.cleanUp();
+                return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
+            }
+            AgendaProgress execAgendaProgress = execAgendaProgressResponse.getFirst();
+            agendaProgressTracker.registerObject(execAgendaProgress.getId());
+            transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgress.getId());
+        }
 
         DataObjectResponse<Agenda> agendaResponse = createAgenda(transformRequest, prepAgendaProgressResponse.getFirst(), request.getCID());
         if (agendaResponse.isError())
