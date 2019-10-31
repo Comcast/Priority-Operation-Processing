@@ -11,6 +11,7 @@ public class ProgressSummaryResponse extends DefaultServiceResponse
 {
     private List<AgendaProgress> progressList;
     private ProcessingState processingState;
+    private Double processingPercent;
 
     public ProgressSummaryResponse()
     {
@@ -39,5 +40,16 @@ public class ProgressSummaryResponse extends DefaultServiceResponse
     public void setProcessingState(ProcessingState processingState)
     {
         this.processingState = processingState;
+    }
+
+    public Double getProcessingPercent()
+    {
+        return processingPercent;
+    }
+
+    public ProgressSummaryResponse setProcessingPercent(Double processingPercent)
+    {
+        this.processingPercent = processingPercent;
+        return this;
     }
 }
