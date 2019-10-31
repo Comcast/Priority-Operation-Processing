@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.any;
@@ -91,6 +92,36 @@ public class ProgressSummaryRequestProcessorTest
             new DefaultServiceRequest<>(new ProgressSummaryRequest().setLinkId("theLinkId"))
         );
         Assert.assertEquals(progressSummaryResponse.getProgressList().size(), 0);
+    }
+
+    @DataProvider
+    public Object[][] percentCompleteProvider()
+    {
+        return new Object[][]
+            {
+                {null, 0},
+                {createProgressListWithPercents((Double)null), 0},
+                {createProgressListWithPercents(null, 45d), 22.5d},
+                {createProgressListWithPercents(45d, null), 22.5d},
+                {createProgressListWithPercents(150d, 150d, 150d), 100},
+            };
+    }
+
+    @Test(dataProvider = "percentCompleteProvider")
+    public void testGetPercentComplete(List<AgendaProgress> progressList, final double EXPECTED_VALUE)
+    {
+        Assert.assertEquals(progressSummaryRequestProcessor.getPercentComplete(progressList), EXPECTED_VALUE);
+    }
+
+    private List<AgendaProgress> createProgressListWithPercents(Double... percents)
+    {
+        return Arrays.stream(percents).map(percentComplete ->
+            {
+               AgendaProgress agendaProgress = new AgendaProgress();
+               agendaProgress.setPercentComplete(percentComplete);
+               return agendaProgress;
+            }
+        ).collect(Collectors.toList());
     }
 
     private void setupAgendaProgress(ProcessingState[] states)

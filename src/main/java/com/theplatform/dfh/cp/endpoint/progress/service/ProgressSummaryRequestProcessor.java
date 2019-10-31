@@ -77,12 +77,21 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
         {
             long waiting = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.WAITING).count();
             long executing = progressList.stream().filter(ap -> ap.getProcessingState() == ProcessingState.EXECUTING).count();
+            result.setProcessingPercent(getPercentComplete(progressList));
 
             logger.info("Retrieved {} results from query: {} Waiting Count: {} Executing Count: {}",
                 feed.getAll().size(), serviceRequest.getPayload().getLinkId(), waiting, executing);
             result.setProcessingState(evaluateOverallState(progressList, waiting, executing));
         }
         return result;
+    }
+
+    protected double getPercentComplete(List<AgendaProgress> progressList)
+    {
+        if(progressList == null || progressList.size() == 0)
+            return 0d;
+        return Math.min(100,
+            progressList.stream().filter(ap -> ap.getPercentComplete() != null).mapToDouble(AgendaProgress::getPercentComplete).sum() / progressList.size());
     }
 
     private ProgressSummaryResponse createProgressSummaryResponse(List<AgendaProgress> progressList, ErrorResponse errorResponse)
