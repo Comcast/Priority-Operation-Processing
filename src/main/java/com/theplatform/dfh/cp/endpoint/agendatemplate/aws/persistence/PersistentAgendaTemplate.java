@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  */
@@ -88,5 +89,17 @@ public class PersistentAgendaTemplate extends AgendaTemplate
     public Agenda getAgenda()
     {
         return super.getAgenda();
+    }
+
+    @Override
+    public Set<String> getAllowedCustomerIds()
+    {
+        return super.getAllowedCustomerIds();
+    }
+
+    @Override
+    public boolean getIsGlobal()
+    {
+        return super.getIsGlobal();
     }
 }

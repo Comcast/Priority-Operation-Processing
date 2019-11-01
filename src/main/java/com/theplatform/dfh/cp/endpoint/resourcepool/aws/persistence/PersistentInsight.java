@@ -51,11 +51,6 @@ public class PersistentInsight extends Insight
     }
 
     @Override
-    public boolean getIsGlobal()
-    {
-        return super.getIsGlobal();
-    }
-    @Override
     public String getResourcePoolId()
     {
         return super.getResourcePoolId();
@@ -83,6 +78,12 @@ public class PersistentInsight extends Insight
     public Set<String> getAllowedCustomerIds()
     {
         return super.getAllowedCustomerIds();
+    }
+
+    @Override
+    public boolean getIsGlobal()
+    {
+        return super.getIsGlobal();
     }
 
     @Override
