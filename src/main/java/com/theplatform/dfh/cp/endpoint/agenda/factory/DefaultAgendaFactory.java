@@ -7,9 +7,6 @@ import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.AgendaTemplateMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,33 +14,31 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 
 /**
- * Generates an Agenda based on the template specified in the TransformRequest (defaulting to our Accelerate PrepOps generator)
+ * Generates an Agenda based on the template specified in the TransformRequest
  */
 public class DefaultAgendaFactory implements AgendaFactory
 {
     private static final Logger logger = LoggerFactory.getLogger(DefaultAgendaFactory.class);
 
-    private ObjectClient<AgendaTemplate> agendaTemplateClient;
-    private PrepOpsGenerator prepOpsGenerator;
     private AgendaTemplateMapper agendaTemplateMapper;
     private JsonHelper jsonHelper = new JsonHelper();
 
-    public DefaultAgendaFactory(ObjectClient<AgendaTemplate> agendaTemplateClient)
+    public DefaultAgendaFactory()
     {
-        this.agendaTemplateClient = agendaTemplateClient;
-        this.prepOpsGenerator = new PrepOpsGenerator();
         this.agendaTemplateMapper = new AgendaTemplateMapper();
     }
 
-    private DefaultAgendaFactory(){}
-
     @Override
-    public Agenda createAgenda(TransformRequest transformRequest, String progressId, String cid)
+    public Agenda createAgenda(AgendaTemplate agendaTemplate, TransformRequest transformRequest, String progressId, String cid)
     {
-        Agenda agenda = generateTemplatedAgenda(transformRequest);
+        Agenda agenda = null;
+        if(agendaTemplate != null)
+        {
+            agenda = generateTemplatedAgenda(agendaTemplate, transformRequest);
+        }
         if(agenda == null)
         {
-            agenda = prepOpsGenerator.generateAgenda(transformRequest);
+            return null;
         }
         agenda.setCustomerId(transformRequest.getCustomerId());
         // set the progress id on the agenda
@@ -76,47 +71,14 @@ public class DefaultAgendaFactory implements AgendaFactory
         agenda.setCid(transformRequest.getCid());
     }
 
-    protected Agenda generateTemplatedAgenda(TransformRequest transformRequest)
+    protected Agenda generateTemplatedAgenda(AgendaTemplate agendaTemplate, TransformRequest transformRequest)
     {
-        DataObjectResponse<AgendaTemplate> response = null;
-        if(transformRequest.getAgendaTemplateId() != null)
-            response = agendaTemplateClient.getObject(transformRequest.getAgendaTemplateId());
-        else if(transformRequest.getAgendaTemplateTitle() != null)
-            response = agendaTemplateClient.getObjects(Collections.singletonList(new ByTitle(transformRequest.getAgendaTemplateTitle())));
-
-        if(response == null)
-        {
-            logger.info("No agendaTemplateId or agendaTemplateTitle provided on TransformRequest.");
-            return null;
-        }
-
-        if(!response.isError() && response.getFirst() != null)
-        {
-            AgendaTemplate agendaTemplate = response.getFirst();
-            Agenda generatedAgenda = agendaTemplateMapper
-                .map(agendaTemplate,
-                    jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.transformRequest", transformRequest)));
-            //logger.info("Generated Agenda: {}", jsonHelper.getJSONString(generatedAgenda));
-            logger.info("TransformRequest: [{}] Agenda generated from template: [{}]:[{}]", transformRequest.getId(), agendaTemplate.getId(), agendaTemplate.getTitle());
-            return generatedAgenda;
-        }
-        else
-        {
-            logger.error("No AgendaTemplate could be found by id: [{}] or title: [{}]", transformRequest.getAgendaTemplateId(), transformRequest.getAgendaTemplateTitle());
-        }
-        return null;
-    }
-
-    public DefaultAgendaFactory setAgendaTemplateClient(ObjectClient<AgendaTemplate> agendaTemplateClient)
-    {
-        this.agendaTemplateClient = agendaTemplateClient;
-        return this;
-    }
-
-    public DefaultAgendaFactory setPrepOpsGenerator(PrepOpsGenerator prepOpsGenerator)
-    {
-        this.prepOpsGenerator = prepOpsGenerator;
-        return this;
+        Agenda generatedAgenda = agendaTemplateMapper
+            .map(agendaTemplate,
+                jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.transformRequest", transformRequest)));
+        //logger.info("Generated Agenda: {}", jsonHelper.getJSONString(generatedAgenda));
+        logger.info("TransformRequest: [{}] Agenda generated from template: [{}]:[{}]", transformRequest.getId(), agendaTemplate.getId(), agendaTemplate.getTitle());
+        return generatedAgenda;
     }
 
     public DefaultAgendaFactory setAgendaTemplateMapper(AgendaTemplateMapper agendaTemplateMapper)
