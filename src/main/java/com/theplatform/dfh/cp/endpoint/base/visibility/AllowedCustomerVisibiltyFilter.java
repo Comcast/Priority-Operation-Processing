@@ -22,9 +22,6 @@ public class AllowedCustomerVisibiltyFilter<T extends AllowedCustomerEndpointDat
             return false;
         }
 
-        if(object.isGlobal())
-            return true;
-
         if(object.getAllowedCustomerIds() == null || object.getAllowedCustomerIds().size() == 0)
             return false;
 

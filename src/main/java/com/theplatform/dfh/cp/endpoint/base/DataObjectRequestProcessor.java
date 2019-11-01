@@ -2,8 +2,9 @@ package com.theplatform.dfh.cp.endpoint.base;
 
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -22,7 +23,7 @@ import java.util.List;
 public class DataObjectRequestProcessor<T extends IdentifiedObject> extends RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>>
 {
     protected ObjectPersister<T> objectPersister;
-    private VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = new CustomerVisibilityFilter<>();
+    private VisibilityFilterMap<T,DataObjectRequest<T>> visibilityFilterMap = new VisibilityFilterMap<>();
     private static final String OBJECT_NOT_FOUND_EXCEPTION = "Unable to get object by id %1$s";
     private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
     private static final String UNABLE_TO_CREATE_EXCEPTION = "Unable to create object";
@@ -47,6 +48,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
         try
         {
+            VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.GET);
             if(request.getId() != null)
             {
                 T object = objectPersister.retrieve(request.getId());
@@ -88,6 +90,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     {
         T dataObject = request.getDataObject();
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
+        VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.POST);
 
         if(!visibilityFilter.isVisible(request, dataObject))
         {
@@ -128,7 +131,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         {
             // The object specified may not have the id set if the id is specified only in the url, set it now before moving on
             dataObjectToUpdate.setId(request.getId());
-
+            VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.PUT);
             //Get persisted object to verify visibility.
             T persistedDataObject = objectPersister.retrieve(dataObjectToUpdate.getId());
             if (persistedDataObject == null)
@@ -137,7 +140,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
                     new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND_EXCEPTION, request.getId())), request.getCID()));
                 return response;
             }
-            if (!visibilityFilter.isVisible(request, persistedDataObject))
+            if (! visibilityFilter.isVisible(request, persistedDataObject))
             {
                 return new DefaultDataObjectResponse<>(ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, persistedDataObject.getCustomerId()),
                     request.getCID()));
@@ -179,7 +182,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
                 T object = objectPersister.retrieve(request.getId());
                 if(object != null)
                 {
-                    if(!visibilityFilter.isVisible(request, object))
+                    if(! visibilityFilterMap.get(VisibilityMethod.DELETE).isVisible(request, object))
                         return new DefaultDataObjectResponse<>(
                             ErrorResponseFactory.unauthorized(
                                 String.format(AUTHORIZATION_EXCEPTION, object.getCustomerId()), request.getCID()));
@@ -197,10 +200,16 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         }
     }
 
-    public DataObjectRequestProcessor<T> setVisibilityFilter(
-        VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter)
+    public DataObjectRequestProcessor<T> setVisibilityFilterMap(
+        VisibilityFilterMap<T, DataObjectRequest<T>> map)
     {
-        this.visibilityFilter = visibilityFilter;
+        this.visibilityFilterMap = map;
+        return this;
+    }
+    public DataObjectRequestProcessor<T> setVisibilityFilter(VisibilityMethod method,
+        VisibilityFilter<T, DataObjectRequest<T>> filter)
+    {
+        this.visibilityFilterMap.put(method, filter);
         return this;
     }
 

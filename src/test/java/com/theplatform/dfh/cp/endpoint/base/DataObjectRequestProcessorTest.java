@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -46,7 +47,10 @@ public class DataObjectRequestProcessorTest
         mockObjectPersister = mock(ObjectPersister.class);
         mockVisibilityFilter = mock(VisibilityFilter.class);
         processor = new TestBaseProcessor(mockObjectPersister);
-        processor.setVisibilityFilter(mockVisibilityFilter);
+        VisibilityFilterMap map = new VisibilityFilterMap();
+        map.putForWrite(mockVisibilityFilter);
+        map.putForRead(mockVisibilityFilter);
+        processor.setVisibilityFilterMap(map);
         request = new DefaultDataObjectRequest<>();
     }
 

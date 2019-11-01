@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.base.persistence;
 
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessorUtil;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -11,9 +11,9 @@ import java.util.List;
 
 /**
  * Wrapper for object persistence so the time fields are updated on create/update.
- * @param <T> EndpointDataObject type
+ * @param <T> DefaultEndpointDataObject type
  */
-public class EndpointDataObjectPersister<T extends EndpointDataObject> implements ObjectPersister<T>
+public class EndpointDataObjectPersister<T extends DefaultEndpointDataObject> implements ObjectPersister<T>
 {
     private ObjectPersister<T> objectPersister;
 

@@ -9,6 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
+/**
+ * This is the default visibility filter.
+ * Visibility is allowed if one the following are true:
+ * - Calling user isGlobal (super or service user with * access)
+ * - Object.customerId is within the Authorized customer list (allowed accounts)
+ * @param <T> Data Object
+ * @param <Req> Incoming endpoint request
+ */
 public class CustomerVisibilityFilter<T extends IdentifiedObject, Req extends ServiceRequest> extends VisibilityFilter<T, Req>
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());

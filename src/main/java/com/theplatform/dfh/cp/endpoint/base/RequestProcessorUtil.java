@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ public class RequestProcessorUtil
      * Updates the added and updated time to now
      * @param endpointDataObject The object to update
      */
-    public static void applyAddedTime(EndpointDataObject endpointDataObject)
+    public static void applyAddedTime(DefaultEndpointDataObject endpointDataObject)
     {
         Date now = new Date();
         endpointDataObject.setAddedTime(now);
@@ -24,7 +24,7 @@ public class RequestProcessorUtil
      * Updates the updated time to now
      * @param endpointDataObject The object to update
      */
-    public static void applyUpdatedTime(EndpointDataObject endpointDataObject)
+    public static void applyUpdatedTime(DefaultEndpointDataObject endpointDataObject)
     {
         endpointDataObject.setUpdatedTime(new Date());
     }
