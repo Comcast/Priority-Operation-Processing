@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
-public class AgendaTemplate extends DefaultEndpointDataObject
+public class AgendaTemplate extends AllowedCustomerEndpointDataObject implements GlobalEndpointDataObject
 {
     private String title;
     private ParamsMap templateParameters;
@@ -10,7 +10,7 @@ public class AgendaTemplate extends DefaultEndpointDataObject
     private ParamsMap params;
     private Agenda agenda;
     private boolean defaultTemplate;
-    private boolean globalTemplate;
+    private boolean isGlobal = false;
 
     public String getTitle()
     {
@@ -62,14 +62,17 @@ public class AgendaTemplate extends DefaultEndpointDataObject
         this.defaultTemplate = defaultTemplate;
     }
 
-    public boolean isGlobalTemplate()
+    public boolean isGlobal()
     {
-        return globalTemplate;
+        return isGlobal;
     }
-
-    public void setGlobalTemplate(boolean globalTemplate)
+    public boolean getIsGlobal()
     {
-        this.globalTemplate = globalTemplate;
+        return isGlobal;
+    }
+    public void setIsGlobal(boolean global)
+    {
+        isGlobal = global;
     }
 
     public ParamsMap getParams()
