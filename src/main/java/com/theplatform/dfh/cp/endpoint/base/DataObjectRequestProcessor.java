@@ -43,7 +43,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
      * @return Response with the object, or an empty response if not found
      */
     @Override
-    protected DataObjectResponse<T> handleGET(DataObjectRequest<T> request)
+    public DataObjectResponse<T> handleGET(DataObjectRequest<T> request)
     {
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
         try
@@ -67,6 +67,8 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
             else
             {
                 DataObjectFeed<T> feed = objectPersister.retrieve(request.getQueries());
+                if(feed == null)
+                    feed = new DataObjectFeed<>();
                 List<T> filteredObjects = visibilityFilter.filterByVisible(request, feed.getAll());
                 response.setCount(feed.getCount());
                 response.addAll(filteredObjects);
@@ -86,7 +88,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
      * @return Response with the object
      */
     @Override
-    protected DataObjectResponse<T> handlePOST(DataObjectRequest<T> request)
+    public DataObjectResponse<T> handlePOST(DataObjectRequest<T> request)
     {
         T dataObject = request.getDataObject();
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
@@ -122,7 +124,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
      * @return Response with the object
      */
     @Override
-    protected DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
+    public DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
     {
         T dataObjectToUpdate = request.getDataObject();
         String updatingCustomerId = dataObjectToUpdate.getCustomerId();
@@ -173,7 +175,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
      * @return An empty response on success
      */
     @Override
-    protected DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
+    public DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
     {
         try
         {
