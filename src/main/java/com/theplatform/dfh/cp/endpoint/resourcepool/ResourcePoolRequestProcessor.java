@@ -33,7 +33,7 @@ public class ResourcePoolRequestProcessor extends DataObjectRequestProcessor<Res
     }
 
     @Override
-    protected DataObjectResponse<ResourcePool> handleGET(DataObjectRequest<ResourcePool> request)
+    public DataObjectResponse<ResourcePool> handleGET(DataObjectRequest<ResourcePool> request)
     {
         DataObjectResponse<ResourcePool> response = super.handleGET(request);
         addInsightIds(response);
