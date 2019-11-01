@@ -8,7 +8,7 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 
 /**
  * Usage example for CreateAgenda service call and looking up the insight....
- * On top of the Agenda.customerID --> Insight visibility we need to make sure our service caller's
+ * On top of the Agenda.customerID to Insight visibility we need to make sure our service caller's
  * authorized
  * accounts
  * match the Insight.customerID.
