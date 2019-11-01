@@ -3,23 +3,9 @@ package com.theplatform.dfh.cp.api;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class AllowedCustomerEndpointDataObject extends EndpointDataObject
+public class AllowedCustomerEndpointDataObject extends DefaultEndpointDataObject
 {
-    private boolean isGlobal = false;
     private Set<String> allowedCustomerIds;
-
-    public boolean isGlobal()
-    {
-        return isGlobal;
-    }
-    public boolean getIsGlobal()
-    {
-        return isGlobal;
-    }
-    public void setIsGlobal(boolean global)
-    {
-        isGlobal = global;
-    }
 
     public void addAllowedCustomer(String customerId)
     {

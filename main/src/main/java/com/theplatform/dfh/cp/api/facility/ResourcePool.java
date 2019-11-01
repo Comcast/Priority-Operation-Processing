@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourcePool extends EndpointDataObject
+public class ResourcePool extends DefaultEndpointDataObject
 {
     private String title;
     private List<String> insightIds = null;

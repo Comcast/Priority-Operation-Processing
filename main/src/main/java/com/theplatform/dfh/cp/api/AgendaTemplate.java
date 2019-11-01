@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.api;
 
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
-public class AgendaTemplate extends EndpointDataObject
+public class AgendaTemplate extends DefaultEndpointDataObject
 {
     private String title;
     private ParamsMap templateParameters;

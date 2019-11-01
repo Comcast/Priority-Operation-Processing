@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.api.progress;
 
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.Date;
 
-public class OperationProgress extends EndpointDataObject
+public class OperationProgress extends DefaultEndpointDataObject
 {
     private String agendaProgressId;
     private ProcessingState processingState;

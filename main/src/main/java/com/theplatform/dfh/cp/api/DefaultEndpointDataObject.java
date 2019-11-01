@@ -4,7 +4,7 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 
 import java.util.Date;
 
-public class EndpointDataObject implements IdentifiedObject
+public class DefaultEndpointDataObject implements EndpointDataObject, IdentifiedObject
 {
     private String id;
     private String cid;

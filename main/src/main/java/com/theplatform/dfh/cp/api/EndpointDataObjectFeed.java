@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.api;
 
 import java.util.Collection;
 
-public class EndpointDataObjectFeed<D extends EndpointDataObject>
+public class EndpointDataObjectFeed<D extends DefaultEndpointDataObject>
 {
     private Collection<D> entries;
     public EndpointDataObjectFeed(){}

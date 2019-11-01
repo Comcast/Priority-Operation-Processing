@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.api.progress;
 
 import com.theplatform.dfh.cp.api.AgendaInsight;
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  */
-public class AgendaProgress extends EndpointDataObject
+public class AgendaProgress extends DefaultEndpointDataObject
 {
     private String agendaId;
     private String linkId;

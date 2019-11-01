@@ -1,10 +1,11 @@
 package com.theplatform.dfh.cp.api.facility;
 
 import com.theplatform.dfh.cp.api.AllowedCustomerEndpointDataObject;
+import com.theplatform.dfh.cp.api.GlobalEndpointDataObject;
 
 import java.util.*;
 
-public class Insight extends AllowedCustomerEndpointDataObject
+public class Insight extends AllowedCustomerEndpointDataObject implements GlobalEndpointDataObject
 {
     private String resourcePoolId;
     private String queueName;
@@ -12,6 +13,7 @@ public class Insight extends AllowedCustomerEndpointDataObject
     private SchedulingAlgorithm schedulingAlgorithm;
     private Map<String, Set<String>> mappers;
     private String title;
+    private boolean isGlobal = false;
 
     public String getResourcePoolId()
     {
@@ -88,5 +90,18 @@ public class Insight extends AllowedCustomerEndpointDataObject
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public boolean isGlobal()
+    {
+        return isGlobal;
+    }
+    public boolean getIsGlobal()
+    {
+        return isGlobal;
+    }
+    public void setIsGlobal(boolean global)
+    {
+        isGlobal = global;
     }
 }

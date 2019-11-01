@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.List;
 
-public class Agenda extends EndpointDataObject
+public class Agenda extends DefaultEndpointDataObject
 {
     private List<Operation> operations;
     private ParamsMap params;

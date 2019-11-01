@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.api.facility;
 
-import com.theplatform.dfh.cp.api.EndpointDataObject;
+import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 
-public class Customer extends EndpointDataObject
+public class Customer extends DefaultEndpointDataObject
 {
     private String billingCode;
     private String title;

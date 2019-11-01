@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.List;
 
-public class TransformRequest extends EndpointDataObject
+public class TransformRequest extends DefaultEndpointDataObject
 {
     /**
      * Inputs: This includes URLs, creds,
