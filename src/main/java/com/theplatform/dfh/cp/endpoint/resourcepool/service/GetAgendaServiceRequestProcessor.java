@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
+import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
 import com.theplatform.dfh.endpoint.api.*;
@@ -50,7 +51,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
         this.agendaInfoItemQueueFactory = agendaInfoItemQueueFactory;
         this.insightRequestProcessor = new InsightRequestProcessor(insightPersister);
         //override the default visibility filter since it's too visible for the calling user
-        this.insightRequestProcessor.setVisibilityFilter(new CustomerVisibilityFilter<>());
+        this.insightRequestProcessor.setVisibilityFilterMap(new VisibilityFilterMap<>());
         this.agendaPersister = agendaPersister;
     }
 

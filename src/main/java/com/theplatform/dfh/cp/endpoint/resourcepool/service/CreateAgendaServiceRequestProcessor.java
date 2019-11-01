@@ -154,13 +154,7 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
     private AgendaRequestProcessor generateAgendaRequestProcessor(ServiceRequest serviceRequest)
     {
         //we need to set a different visibility policy for the insight request processor when a service request comes in.
-        InsightRequestProcessor insightRequestProcessor = new InsightRequestProcessor(insightPersister);
-        //get current visibilty filter
-        VisibilityFilter defaultFilter = insightRequestProcessor.getVisibilityFilter();
-        AllMatchVisibilityFilter allMatchVisibilityFilter = new AllMatchVisibilityFilter()
-            .withFilter(defaultFilter)
-            .withFilter(new ServiceCallerInsightVisibilityFilter(serviceRequest));
-        insightRequestProcessor.setVisibilityFilter(allMatchVisibilityFilter);
+        InsightRequestProcessor insightRequestProcessor = InsightRequestProcessor.getServiceInstance(insightPersister, serviceRequest);
 
         CustomerRequestProcessor customerRequestProcessor = new CustomerRequestProcessor(customerPersister);
         AgendaProgressRequestProcessor agendaProgressRequestProcessor =
@@ -174,44 +168,7 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         return agendaRequestProcessor;
     }
 
-    /**
-     * On top of the Agenda.customerID --> Insight visibility we need to make sure our service caller's authorized accounts
-     * match the Insight.customerID.
-     *  So, the following must be true:
-     *  *
-     *  * 1. The calling user has an authorized account a that matches the Insight.customerId
-     *  * 2. The Agenda the caller is trying to create maps to an Insight where the above is true
-     *  * 3. The Agenda can only map to an Insight if one of the following is true:
-     *  *     Agenda.customerId is in the Insight.allowedCustomerList
-     *  *     Insight.isGlobal is true
-     */
-    private static class ServiceCallerInsightVisibilityFilter extends VisibilityFilter<Insight, DataObjectRequest<Insight>>
-    {
-        private ServiceRequest serviceRequest;
-        private CustomerVisibilityFilter insightCustomerVisibilityFilter = new CustomerVisibilityFilter();
 
-        private ServiceCallerInsightVisibilityFilter(ServiceRequest serviceRequest)
-        {
-             this.serviceRequest = serviceRequest;
-        }
-
-        @Override
-        public boolean isVisible(DataObjectRequest<Insight> dataObjectRequest, Insight insight)
-        {
-            //The insight req processor already verified the agenda.customer to insight visibility.
-            //Now we need to verify the service caller customerID has access to the Insight.
-            DefaultDataObjectRequest<Insight> serviceCallerInsightReq = generateInsightReq(serviceRequest.getAuthorizationResponse(), insight.getId());
-            return insightCustomerVisibilityFilter.isVisible(serviceCallerInsightReq, insight);
-        }
-
-        private DefaultDataObjectRequest<Insight> generateInsightReq(AuthorizationResponse authorizationResponse, String insightId)
-        {
-            DefaultDataObjectRequest<Insight> req = new DefaultDataObjectRequest<>();
-            req.setAuthorizationResponse(authorizationResponse);
-            req.setId(insightId);
-            return req;
-        }
-    }
 
 }
 
