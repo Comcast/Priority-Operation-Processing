@@ -7,6 +7,7 @@ public class AgendaTemplate extends DefaultEndpointDataObject
     private String title;
     private ParamsMap templateParameters;
     private ParamsMap staticParameters;
+    private ParamsMap params;
     private Agenda agenda;
     private boolean defaultTemplate;
     private boolean globalTemplate;
@@ -69,5 +70,15 @@ public class AgendaTemplate extends DefaultEndpointDataObject
     public void setGlobalTemplate(boolean globalTemplate)
     {
         this.globalTemplate = globalTemplate;
+    }
+
+    public ParamsMap getParams()
+    {
+        return params;
+    }
+
+    public void setParams(ParamsMap params)
+    {
+        this.params = params;
     }
 }
