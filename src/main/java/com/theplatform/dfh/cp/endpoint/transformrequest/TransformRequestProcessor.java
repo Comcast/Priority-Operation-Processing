@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.AgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.DefaultAgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.AgendaTemplateRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
@@ -25,8 +26,10 @@ import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -51,7 +54,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
 
     private ObjectClient<AgendaProgress> agendaProgressClient;
     private ObjectClient<Agenda> agendaClient;
-    private ObjectClient<AgendaTemplate> agendaTemplateClient;
+    private DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient;
     private AgendaFactory agendaFactory;
 
     public TransformRequestProcessor(
@@ -67,7 +70,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
     {
         super(transformRequestObjectPersister, new TransformValidator());
         agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister));
-        agendaTemplateClient = new DataObjectRequestProcessorClient<>(new AgendaTemplateRequestProcessor(agendaTemplatePersister));
+        agendaTemplateClient = new AgendaTemplateRequestProcessor(agendaTemplatePersister);
         agendaClient = new DataObjectRequestProcessorClient<>(new AgendaRequestProcessor(
             agendaPersister,
             agendaProgressPersister,
@@ -96,7 +99,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
 
-        DataObjectResponse<AgendaTemplate> agendaTemplateResponse = retrieveAgendaTemplate(transformRequest, request.getCID());
+        DataObjectResponse<AgendaTemplate> agendaTemplateResponse = retrieveAgendaTemplate(request.getAuthorizationResponse(), transformRequest, request.getCID());
         if(agendaTemplateResponse.isError())
         {
             return new DefaultDataObjectResponse<>(agendaTemplateResponse.getErrorResponse());
@@ -179,12 +182,21 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         }
     }
 
-    protected DataObjectResponse<AgendaTemplate> retrieveAgendaTemplate(TransformRequest transformRequest, String cid)
+    protected DataObjectResponse<AgendaTemplate> retrieveAgendaTemplate(AuthorizationResponse authorizationResponse, TransformRequest transformRequest, String cid)
     {
         if(transformRequest.getAgendaTemplateId() != null)
-            return agendaTemplateClient.getObject(transformRequest.getAgendaTemplateId());
+        {
+            DataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>(null, transformRequest.getAgendaTemplateId(), null);
+            request.setAuthorizationResponse(authorizationResponse);
+            return agendaTemplateClient.handleGET(request);
+        }
         else if(transformRequest.getAgendaTemplateTitle() != null)
-            return agendaTemplateClient.getObjects(Collections.singletonList(new ByTitle(transformRequest.getAgendaTemplateTitle())));
+        {
+            DataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>(Collections.singletonList(new ByTitle(transformRequest.getAgendaTemplateTitle())), null,
+            null);
+            request.setAuthorizationResponse(authorizationResponse);
+            return agendaTemplateClient.handleGET(request);
+        }
         return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(new RuntimeException("Please specify an AgendaTemplate id or name."), 400, cid));
     }
 
@@ -268,7 +280,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         this.agendaClient = agendaClient;
     }
 
-    public void setAgendaTemplateClient(ObjectClient<AgendaTemplate> agendaTemplateClient)
+    public void setAgendaTemplateClient(DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient)
     {
         this.agendaTemplateClient = agendaTemplateClient;
     }
