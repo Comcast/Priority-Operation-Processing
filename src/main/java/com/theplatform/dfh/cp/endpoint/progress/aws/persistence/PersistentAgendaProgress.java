@@ -61,6 +61,12 @@ public class PersistentAgendaProgress extends AgendaProgress
     }
 
     @Override
+    public String getResourcePoolId()
+    {
+        return super.getResourcePoolId();
+    }
+
+    @Override
     public String getExternalId()
     {
         return super.getExternalId();
