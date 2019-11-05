@@ -5,5 +5,6 @@ public enum MetricLabel
     duration,
     deleted,
     failed,
-    failureCount
+    failureCount,
+    succeeded
 }
