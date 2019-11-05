@@ -185,17 +185,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
     }
     private void reportSuccess()
     {
-        try
-        {
-            if (metricReporter != null)
-            {
-                metricReporter.mark(MetricLabel.succeeded);
-            }
-        }
-        catch (Throwable e)
-        {
-            logger.error("Failure getting metric for reporting.", e);
-        }
+       //not going to report success for now.
     }
 
     private void reportFailure()
