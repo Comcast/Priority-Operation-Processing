@@ -4,7 +4,9 @@ import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 
 public abstract class BaseOperationContext<T extends LaunchDataWrapper>
 {
+
     private T launchDataWrapper;
+    private String cid;
 
     public BaseOperationContext(T launchDataWrapper)
     {
@@ -30,4 +32,14 @@ public abstract class BaseOperationContext<T extends LaunchDataWrapper>
      * @param e The exception to process
      */
     public abstract void processUnhandledException(String message, Exception e);
+
+    public String getCid()
+    {
+        return cid;
+    }
+
+    public void setCid(String cid)
+    {
+        this.cid = cid;
+    }
 }

@@ -70,7 +70,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
     public void execute()
     {
         // get the operation specific context for running the overall process
-        C operationContext = operationContextFactory.createOperationContext();
+        C operationContext = operationContextFactory.create();
         Map<String, Object>  execMetaData = new HashMap<>();
         try
         {

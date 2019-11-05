@@ -1,11 +1,17 @@
 package com.theplatform.dfh.cp.handler.base.context;
 
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.api.LaunchType;
 import com.theplatform.dfh.cp.handler.base.field.api.args.HandlerArgument;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.UUID;
 
 public abstract class BaseOperationContextFactory<T extends BaseOperationContext>
 {
+    private final static Logger logger = LoggerFactory.getLogger(BaseOperationContext.class);
     protected LaunchDataWrapper launchDataWrapper;
 
     public BaseOperationContextFactory(LaunchDataWrapper launchDataWrapper)
@@ -46,5 +52,25 @@ public abstract class BaseOperationContextFactory<T extends BaseOperationContext
         this.launchDataWrapper = launchDataWrapper;
     }
 
+    public T create()
+    {
+        T context = createOperationContext();
+        context.setCid(retrieveCID());
+        return context;
+    }
+
     public abstract T createOperationContext();
+
+    public String retrieveCID()
+    {
+        String cid = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.CID.name(), null);
+        if (cid == null)
+        {
+            cid = UUID.randomUUID().toString();
+            logger.warn(
+                String.format("%1$s was not set in the environment. Generated: %2$s",
+                    HandlerField.CID.name(), cid));
+        }
+        return cid;
+    }
 }
