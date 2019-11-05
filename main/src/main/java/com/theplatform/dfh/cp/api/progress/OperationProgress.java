@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class OperationProgress extends DefaultEndpointDataObject
 {
+    private String resourcePoolId;
     private String agendaProgressId;
     private ProcessingState processingState;
     private String processingStateMessage;
@@ -19,6 +20,16 @@ public class OperationProgress extends DefaultEndpointDataObject
     private Date completedTime;
     private String resultPayload;
     private ParamsMap params;
+
+    public String getResourcePoolId()
+    {
+        return resourcePoolId;
+    }
+
+    public void setResourcePoolId(String resourcePoolId)
+    {
+        this.resourcePoolId = resourcePoolId;
+    }
 
     public String getAgendaProgressId()
     {
