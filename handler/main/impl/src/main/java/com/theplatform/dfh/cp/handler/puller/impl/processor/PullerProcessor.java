@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.codahale.metrics.Counter;
+import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
@@ -188,9 +189,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
         {
             if (metricReporter != null)
             {
-                Counter failedCounter = metricReporter.getMetricRegistry().counter(MetricLabel.failed.name());
-                if(failedCounter.getCount() > 0)
-                    failedCounter.dec();
+                metricReporter.mark(MetricLabel.succeeded);
             }
         }
         catch (Throwable e)
@@ -206,7 +205,6 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
             if (metricReporter != null)
             {
                 metricReporter.mark(MetricLabel.failed);
-                metricReporter.countInc(MetricLabel.failureCount);
             }
         }
         catch (Throwable e)
