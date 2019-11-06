@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * Looks at the queue size for the resource pool and sends a waiting count metric if it's more than zero.
+ */
 public class QueueMetricMonitor
 {
     private final static Logger logger = LoggerFactory.getLogger(QueueMetricMonitor.class);
@@ -40,6 +43,11 @@ public class QueueMetricMonitor
         this.metricReporter = metricReporter == null ? new MetricReporter() : metricReporter;
     }
 
+    /**
+     * Read all insights for a resource pool, check their wait queue and report the waiting count.
+     * @param resourcePoolId Resource pool to monitor queue for metrics
+     * @throws Throwable Something bad happened while reporting.
+     */
     public void monitor(String resourcePoolId) throws Throwable
     {
         DataObjectResponse<Insight> insightObjectFeed =
@@ -83,24 +91,37 @@ public class QueueMetricMonitor
 
     private void reportFailed(String insight)
     {
-        final String waitMetric = METRIC_WAITING +"." +insight;
-        metricReporter.countInc(waitMetric);
-        metricReporter.report();
-        //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
-        //know if/when we'll get a new instance of our lambda running.
-        metricReporter.countDec(waitMetric);
+        final String waitMetric = METRIC_WAITING + "." + insight;
+        try
+        {
+            metricReporter.countInc(waitMetric);
+            metricReporter.report();
+        }
+        finally
+        {
+            //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
+            //know if/when we'll get a new instance of our lambda running.
+            metricReporter.countDec(waitMetric);
+        }
     }
     private void reportWaiting(String insight, Integer count)
     {
-        if(count == null) return;
-        Counter waitingCounter = metricReporter.getMetricRegistry().counter(METRIC_WAITING +"." +insight);
-        for(int countIndex = 0; countIndex < count; countIndex ++)
-            waitingCounter.inc();
-        metricReporter.report();
-
-        //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
-        //know if/when we'll get a new instance of our lambda running.
-        for(int countIndex = 0; countIndex < count; countIndex ++)
-            waitingCounter.dec();
+        if (count == null)
+            return;
+        Counter waitingCounter = metricReporter.getMetricRegistry().counter(METRIC_WAITING + "." + insight);
+        try
+        {
+            for (int countIndex = 0; countIndex < count; countIndex++)
+                waitingCounter.inc();
+            metricReporter.report();
+        }
+        finally
+        {
+            //after we report, I wish we could null it out. We can't wait for the timed reporting since we don't
+            //know if/when we'll get a new instance of our lambda running.
+            for (int countIndex = 0; countIndex < count; countIndex++)
+                waitingCounter.dec();
+        }
     }
+
 }
