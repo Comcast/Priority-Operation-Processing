@@ -38,12 +38,6 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
-    public String getResourcePoolId()
-    {
-        return super.getResourcePoolId();
-    }
-
-    @Override
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
     public ProcessingState getProcessingState()
     {
