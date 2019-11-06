@@ -14,7 +14,6 @@ public class AgendaProgress extends DefaultEndpointDataObject
 {
     private String agendaId;
     private String linkId;
-    private String resourcePoolId;
     private String externalId;
     private String title;
     private ProcessingState processingState;
@@ -56,16 +55,6 @@ public class AgendaProgress extends DefaultEndpointDataObject
     public void setLinkId(String linkId)
     {
         this.linkId = linkId;
-    }
-
-    public String getResourcePoolId()
-    {
-        return resourcePoolId;
-    }
-
-    public void setResourcePoolId(String resourcePoolId)
-    {
-        this.resourcePoolId = resourcePoolId;
     }
 
     public String getExternalId()
