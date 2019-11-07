@@ -125,6 +125,7 @@ public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcesso
     {
         AgendaProgress generatedProgress = new AgendaProgress();
         generatedProgress.setId(currentProgress.getId());
+        generatedProgress.setCustomerId(currentProgress.getCustomerId());
         generatedProgress.setPercentComplete(updatedProgress.getPercentComplete());
         generatedProgress.setDiagnosticEvents(updatedProgress.getDiagnosticEvents());
         generatedProgress.setOperationProgress(updatedProgress.getOperationProgress());
