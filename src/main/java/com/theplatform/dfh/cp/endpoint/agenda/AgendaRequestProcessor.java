@@ -136,6 +136,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
             agendaProgress.setId(agendaProgressId);
             agendaProgress.setParams(agendaToPersist.getParams());
             agendaProgress.setAgendaId(agendaToPersist.getId());
+            agendaProgress.setAgendaInsight(agendaToPersist.getAgendaInsight());
             // NOTE: on failure the AgendaProgress with have an invalid agendaId -- this is harmless
             DataObjectResponse<AgendaProgress> agendaProgressUpdateResponse = agendaProgressClient.updateObject(agendaProgress, agendaProgressId);
             if (agendaProgressUpdateResponse.isError())
@@ -235,6 +236,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         agendaProgress.setAgendaId(agenda.getId());
         agendaProgress.setParams(agenda.getParams());
         agendaProgress.setProcessingState(ProcessingState.WAITING);
+        agendaProgress.setAgendaInsight(agenda.getAgendaInsight());
         agendaProgress.setAddedTime(new Date());
 
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
