@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
@@ -12,6 +13,7 @@ import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.service.UpdateAgendaProgressServiceRequestProcessor;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
@@ -29,6 +31,7 @@ public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamE
     private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
     private ObjectPersisterFactory<AgendaProgress> agendaProgressPersisterFactory;
     private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
+    private ObjectPersisterFactory<Insight> insightPersisterFactory;
 
     @Override
     public RequestProcessor getRequestProcessor(LambdaRequest<UpdateAgendaProgressRequest> lambdaRequest)
@@ -42,7 +45,10 @@ public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamE
         String opProgressTable = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS);
         ObjectPersister<OperationProgress> opProgressPersister = operationProgressPersisterFactory.getObjectPersister(opProgressTable);
 
-        return new UpdateAgendaProgressServiceRequestProcessor(agendaProgressPersister, agendaPersister, opProgressPersister);
+        String insightTable = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT);
+        ObjectPersister<Insight> insightPersister = insightPersisterFactory.getObjectPersister(insightTable);
+
+        return new UpdateAgendaProgressServiceRequestProcessor(agendaProgressPersister, agendaPersister, opProgressPersister, insightPersister);
     }
 
     @Override
@@ -56,6 +62,7 @@ public class UpdateAgendaProgressLambdaStreamEntry extends AbstractLambdaStreamE
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
         this.operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
+        this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
     }
 }
 
