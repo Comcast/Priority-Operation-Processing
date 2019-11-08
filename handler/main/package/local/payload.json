@@ -23,44 +23,6 @@
           "actionData": "firstAction"
         }
       }
-    },
-    {
-      "id": "02",
-      "name": "sample.2",
-      "type": "sample",
-      "payload": {
-        "actions": [
-          {
-            "action": "log",
-            "paramsMap": {
-              "sleepMilliseconds": 2000,
-              "logMessage": "@@sample.1.out::/actionData"
-            }
-          }
-        ],
-        "resultPayload": {
-          "actionData": "secondAction"
-        }
-      }
-    },
-    {
-      "id": "03",
-      "name": "sample.3",
-      "type": "sample",
-      "payload": {
-        "actions": [
-          {
-            "action": "log",
-            "paramsMap": {
-              "sleepMilliseconds": 1000,
-              "logMessage": "@@sample.2.out::/actionData"
-            }
-          }
-        ],
-        "resultPayload": {
-          "actionData": "thirdAction"
-        }
-      }
     }
   ]
 }
