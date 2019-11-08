@@ -10,6 +10,7 @@ import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedObjectPersister;
 import com.theplatform.dfh.persistence.aws.dynamodb.LocalDynamoDBFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
+import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgenda;
 import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgendaConverter;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -37,7 +38,7 @@ public class DynamoDBLiveTest
     public void testInsightLive()
     {
         final String TABLE_NAME = "DFH-Insight-dev";
-        DynamoDBConvertedObjectPersister<Insight> persister = new DynamoDBConvertedObjectPersister<>(TABLE_NAME, "id",
+        DynamoDBConvertedObjectPersister<Insight, PersistentInsight> persister = new DynamoDBConvertedObjectPersister<>(TABLE_NAME, "id",
             dynamoDBFactory, Insight.class, new PersistentInsightConverter(), DynamoDBInsightPersisterFactory.tableIndexes);
 
         final String id = new UUIDGenerator().generate();
@@ -53,7 +54,7 @@ public class DynamoDBLiveTest
     public void testReadyAgendaLookup() throws Throwable
     {
         final String TABLE_NAME = "DFH-ReadyAgenda-dev";
-        DynamoDBConvertedObjectPersister<ReadyAgenda> persister = new DynamoDBConvertedObjectPersister<>(
+        DynamoDBConvertedObjectPersister<ReadyAgenda, PersistentReadyAgenda> persister = new DynamoDBConvertedObjectPersister<>(
             TABLE_NAME,
             "id",
             dynamoDBFactory,

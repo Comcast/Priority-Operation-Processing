@@ -5,7 +5,7 @@ import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
-public class DynamoDbReadyAgendaPersisterFactory extends DynamoDBConvertedPersisterFactory<ReadyAgenda>
+public class DynamoDbReadyAgendaPersisterFactory extends DynamoDBConvertedPersisterFactory<ReadyAgenda, PersistentReadyAgenda>
 {
     private static final TableIndexes tableIndexes = new TableIndexes().withIndex("customerId_index", ByCustomerId.fieldName());
 

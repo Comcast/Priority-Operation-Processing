@@ -5,7 +5,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.*;
 
 /**
  */
-public class DynamoDBOperationProgressPersisterFactory extends DynamoDBConvertedPersisterFactory<OperationProgress>
+public class DynamoDBOperationProgressPersisterFactory extends DynamoDBConvertedPersisterFactory<OperationProgress, PersistentOperationProgress>
 {
     private static final TableIndexes tableIndexes = new TableIndexes().withIndex("agendaprogressid_index", "agendaProgressId");
 

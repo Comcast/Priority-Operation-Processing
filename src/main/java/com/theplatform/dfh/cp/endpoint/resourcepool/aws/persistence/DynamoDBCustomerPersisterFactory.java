@@ -6,7 +6,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 /**
  */
-public class DynamoDBCustomerPersisterFactory extends DynamoDBConvertedPersisterFactory<Customer>
+public class DynamoDBCustomerPersisterFactory extends DynamoDBConvertedPersisterFactory<Customer, PersistentCustomer>
 {
     protected static final TableIndexes tableIndexes = new TableIndexes().withIndex("resourcepoolid_index", "resourcePoolId");
 

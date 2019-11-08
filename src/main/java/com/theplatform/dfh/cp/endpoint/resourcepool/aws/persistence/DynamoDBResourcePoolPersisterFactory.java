@@ -6,7 +6,7 @@ import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 
 /**
  */
-public class DynamoDBResourcePoolPersisterFactory extends DynamoDBConvertedPersisterFactory<ResourcePool>
+public class DynamoDBResourcePoolPersisterFactory extends DynamoDBConvertedPersisterFactory<ResourcePool, PersistentResourcePool>
 {
     protected static final TableIndexes tableIndexes = new TableIndexes();
 
