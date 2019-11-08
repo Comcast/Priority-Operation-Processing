@@ -14,7 +14,7 @@
     <name>Content Processing Handler Base</name>
 
     <properties>
-        <json-helper.version>1.0.1-SNAPSHOT</json-helper.version>
+        <json-helper.version>1.0.1</json-helper.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
