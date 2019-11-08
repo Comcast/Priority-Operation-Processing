@@ -47,9 +47,12 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         objectToUpdate.setUpdatedTime(new Date());
         response = super.handlePUT(request);
 
+        // HACK temp disabled while investigating error
+        /*
         agendaProgressReporter.logCompletedAgenda(response);
         if(response.isError())
             return response;
+        */
         //@todo tstair -- We post progress before agenda in POST but here we do it after????
         if(objectToUpdate.getOperationProgress() != null)
         {
