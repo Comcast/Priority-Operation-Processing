@@ -1,8 +1,10 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
-import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
+import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
 import com.theplatform.dfh.cp.handler.base.reporter.LogReporter;
 import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
@@ -10,15 +12,15 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes.Kubernet
 import com.theplatform.dfh.cp.handler.executor.impl.executor.local.LocalOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.HttpAgendaProgressReporter;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.ResourcePoolServiceAgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.idm.IDMHTTPClientConfig;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
-import com.theplatform.dfh.http.util.URLRequestPerformer;
-import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +44,12 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     public static final String AGENDA_PROGRESS_PROXY_PORT = "agenda.progress.proxy.port";
     public static final int DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT = 30000;
 
+    private ResourcePoolServiceClientFactory resourcePoolServiceClientFactory;
+
     public ExecutorContextFactory(LaunchDataWrapper launchDataWrapper)
     {
         super(launchDataWrapper);
+        this.resourcePoolServiceClientFactory = new ResourcePoolServiceClientFactory();
     }
 
     @Override
@@ -79,80 +84,77 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         operationExecutorFactory.setResidentOperationExecutorFactory(new ResidentOperationExecutorFactory());
 
-        return new ExecutorContext(createReporter(), launchDataWrapper, operationExecutorFactory, shutdownProcessors);
+        return new ExecutorContext(createAgendaReporter(), launchDataWrapper, operationExecutorFactory, shutdownProcessors);
     }
 
     @Override
-    public ProgressReporter createReporter()
+    public ProgressReporter<OperationProgress> createReporter()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProgressReporter<AgendaProgress> createAgendaReporter()
     {
         switch(getLaunchType())
         {
             case local:
             case docker:
-                return new LogReporter();
+                return new LogReporter<>();
             case kubernetes:
             default:
-                return createHttpReporter();
+                return createHttpAgendaReporter();
         }
     }
 
-    protected HttpAgendaProgressReporter createHttpReporter()
+    protected ProgressReporter<AgendaProgress> createHttpAgendaReporter()
     {
         FieldRetriever propertyRetriever = launchDataWrapper.getPropertyRetriever();
-        FieldRetriever environmentRetriever = launchDataWrapper.getEnvironmentRetriever();
 
-        int progressConnectionTimeout;
         String agendaProgressUrl = propertyRetriever.getField(AGENDA_PROGRESS_URL);
         logger.debug("AgendaProgressUrl: [" + agendaProgressUrl + "]");
-        String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
-        try
-        {
-            progressConnectionTimeout = Integer.parseInt(progressConnectionTimeoutString);
-        }
-        catch (NumberFormatException e)
-        {
-            progressConnectionTimeout = DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT;
-            logger.warn(String.format("Defaulting the invalid %1$s value.", AGENDA_PROGRESS_CONNECTION_TIMEOUT), e);
-        }
-
         if(StringUtils.isBlank(agendaProgressUrl))
         {
             throw new RuntimeException("Invalid AgendaProgress url specified.");
         }
-
-        String proxyHost = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST);
-        String proxyPort = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT);
-        return new HttpAgendaProgressReporter()
-                .setUrlRequestPerformer(new URLRequestPerformer()).setHttpURLConnectionFactory(createIDMHTTPUrlConnectionFactory(propertyRetriever, environmentRetriever))
-                .setReportingUrl(agendaProgressUrl)
-                .setConnectionTimeoutMilliseconds(progressConnectionTimeout)
-                .setProxyHost(proxyHost).setProxyPort(proxyPort);
+        return new ResourcePoolServiceAgendaProgressReporter(
+            resourcePoolServiceClientFactory.create(agendaProgressUrl, createIDMHTTPUrlConnectionFactory(propertyRetriever)));
     }
 
-    protected static IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever, FieldRetriever environmentRetriever)
+    protected int getProgressTimeout(PropertyRetriever propertyRetriever)
     {
-        String identityUrl = propertyRetriever.getField(IDM_URL_FIELD);
-        String user = propertyRetriever.getField(IDM_USER);
-        String encryptedPass = propertyRetriever.getField(IDM_ENCRYPTED_PASS);
-        if(identityUrl == null || user == null || encryptedPass == null)
+        String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));
+        try
+        {
+            return Integer.parseInt(progressConnectionTimeoutString);
+        }
+        catch (NumberFormatException e)
+        {
+            logger.warn(String.format("Defaulting the invalid %1$s value.", AGENDA_PROGRESS_CONNECTION_TIMEOUT), e);
+            return DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT;
+        }
+    }
+
+    protected IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever)
+    {
+        IDMHTTPClientConfig httpConfig = new IDMHTTPClientConfig();
+        httpConfig.setIdentityUrl(propertyRetriever.getField(IDM_URL_FIELD));
+        httpConfig.setUsername(propertyRetriever.getField(IDM_USER));
+        httpConfig.setEncryptedPassword(propertyRetriever.getField(IDM_ENCRYPTED_PASS));
+        if(httpConfig.getIdentityUrl() == null || httpConfig.getUsername() == null || httpConfig.getEncryptedPassword() == null)
         {
             throw new HttpRequestHandlerException("Invalid IDM credentials configured for token generation.");
         }
 
-        String proxyHost = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST);
-        String proxyPort = propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT);
-        logger.debug("Proxy=[" + proxyHost + ":" + proxyPort + "]");
+        httpConfig.setProxyHost(propertyRetriever.getField(AGENDA_PROGRESS_PROXY_HOST));
+        httpConfig.setProxyPort(propertyRetriever.getField(AGENDA_PROGRESS_PROXY_PORT));
+        logger.debug("Proxy=[" + httpConfig.getProxyHost() + ":" + httpConfig.getProxyPort() + "]");
 
-        IDMHTTPUrlConnectionFactory connectionFactory = new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
-            identityUrl,
-            user,
-            encryptedPass,
-            null,
-            proxyHost,
-            proxyPort
-        ));
-        connectionFactory.setCid(environmentRetriever.getField(HandlerField.CID.name(), null));
+        return new IDMHTTPUrlConnectionFactory(httpConfig)
+            .setCid(retrieveCID());
+    }
 
-        return connectionFactory;
+    public void setResourcePoolServiceClientFactory(ResourcePoolServiceClientFactory resourcePoolServiceClientFactory)
+    {
+        this.resourcePoolServiceClientFactory = resourcePoolServiceClientFactory;
     }
 }
