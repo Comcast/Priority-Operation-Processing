@@ -100,7 +100,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
 
         updateWithCondition(object.getId(), object);
 
-        return object;
+        return retrieve(object.getId());
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
@@ -110,10 +110,10 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         {
             List<T> responseObjects;
             // based on enum conversions this code will only work on very boring pojos
-            QueryExpression queryExpression = new QueryExpression(tableIndexes, queries);
+            QueryExpression<T> queryExpression = new QueryExpression<>(tableIndexes, queries);
             if(queryExpression.hasCount())
             {
-                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
+                DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
                     return responseFeed;
                 final int count = dynamoDBMapper.count(dataObjectClass, dynamoQueryExpression);
@@ -122,7 +122,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
             }
             else if(queryExpression.hasKey())
             {
-                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
+                DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
                     return responseFeed;
                 responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);

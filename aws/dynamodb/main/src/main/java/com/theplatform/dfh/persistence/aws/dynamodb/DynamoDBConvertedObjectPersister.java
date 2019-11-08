@@ -13,12 +13,12 @@ import java.util.List;
 
 /**
  */
-public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extends DynamoDBObjectPersister<T>
+public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject, S extends T> extends DynamoDBObjectPersister<T>
 {
-    private PersistentObjectConverter converter;
+    private PersistentObjectConverter<T, S> converter;
 
     public DynamoDBConvertedObjectPersister(String tableName,
-        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter converter, TableIndexes tableIndexes)
+        String persistenceKeyFieldName, AWSDynamoDBFactory AWSDynamoDBFactory, Class<T> dataObjectClass, PersistentObjectConverter<T, S> converter, TableIndexes tableIndexes)
     {
         super(tableName, persistenceKeyFieldName, AWSDynamoDBFactory, dataObjectClass, tableIndexes);
 
@@ -30,8 +30,8 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extend
     @Override
     public T retrieve(String identifier)
     {
-        Object persistentObject = getDynamoDBMapper().load(converter.getPersistentObjectClass(), identifier);
-        return (T) converter.getDataObject(persistentObject);
+        S persistentObject = getDynamoDBMapper().load(converter.getPersistentObjectClass(), identifier);
+        return converter.getDataObject(persistentObject);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extend
 
         Object persistentObject = converter.getPersistentObject(object);
         updateWithCondition(object.getId(), persistentObject);
-        return object;
+        return retrieve(object.getId());
     }
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
@@ -60,11 +60,11 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extend
         DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
         try
         {
-            List responseObjects;
-            QueryExpression queryExpression = new QueryExpression(getTableIndexes(), queries);
+            List<S> responseObjects;
+            QueryExpression<S> queryExpression = new QueryExpression<>(getTableIndexes(), queries);
             if(queryExpression.hasKey())
             {
-                DynamoDBQueryExpression dynamoQueryExpression = queryExpression.forQuery();
+                DynamoDBQueryExpression<S> dynamoQueryExpression = queryExpression.forQuery();
                 if(dynamoQueryExpression == null) return responseFeed;
 
                 responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
@@ -76,7 +76,7 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject> extend
                 responseObjects =  getDynamoDBMapper().scan(converter.getPersistentObjectClass(), dynamoScanExpression);
             }
 
-            responseObjects.forEach(po -> responseFeed.add((T)converter.getDataObject(po)));
+            responseObjects.forEach(po -> responseFeed.add(converter.getDataObject(po)));
         }
         catch(AmazonDynamoDBException e)
         {

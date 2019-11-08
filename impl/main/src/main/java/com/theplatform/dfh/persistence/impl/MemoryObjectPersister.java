@@ -46,7 +46,7 @@ public class MemoryObjectPersister<T extends IdentifiedObject> implements Object
     public T update(T object)
     {
         persist(object);
-        return object;
+        return retrieve(object.getId());
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.theplatform.dfh.object.api.UUIDGenerator;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
     }
 
     @Override
-    public DataObjectFeed<T> retrieve(List<Query> queries) throws PersistenceException
+    public DataObjectFeed<T> retrieve(List<Query> queries)
     {
         throw new NotImplementedException();
     }
@@ -136,15 +136,8 @@ public class DynamoDBCompressedObjectPersister<T extends IdentifiedObject> imple
         String objectJson = getJson(object);
         logger.debug("JSON: [{}]", objectJson);
         byte[] in;
-        try
-        {
-            in = objectJson.getBytes("UTF-8");
-            logger.debug("Inflated payload size {} in bytes, {} in kbytes", in.length, in.length/1024d);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e);
-        }
+        in = objectJson.getBytes(StandardCharsets.UTF_8);
+        logger.debug("Inflated payload size {} in bytes, {} in kbytes", in.length, in.length/1024d);
 
         byte[] defalatedPayload = zlibUtil.deflateMe(in);
         logger.debug("Deflated payload size {} in bytes, {} in kbytes", defalatedPayload.length, defalatedPayload.length/1024d);
