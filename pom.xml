@@ -20,7 +20,7 @@
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
+        <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
     </properties>
     
     <dependencies>
