@@ -16,7 +16,7 @@
     <properties>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <aws-lambda.version>1.1.0</aws-lambda.version>
-        <queue-api.version>1.0.0</queue-api.version>
+        <queue-api.version>1.0.1</queue-api.version>
         <queue-sqs-api.version>1.0.0</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
         <dfh-object-api.version>1.0.0</dfh-object-api.version>
