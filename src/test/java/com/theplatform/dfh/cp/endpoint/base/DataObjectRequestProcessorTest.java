@@ -124,7 +124,7 @@ public class DataObjectRequestProcessorTest
     {
         request.setDataObject(new SimpleObject());
         doReturn(false).when(mockVisibilityFilter).isVisible(any(), any());
-        DataObjectResponse<SimpleObject> response = processor.processPOST(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "UnauthorizedException");
     }
@@ -135,7 +135,7 @@ public class DataObjectRequestProcessorTest
         request.setDataObject(new SimpleObject());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doReturn(null).when(mockObjectPersister).persist(any());
-        DataObjectResponse<SimpleObject> response = processor.processPOST(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "RuntimeException");
     }
@@ -146,7 +146,7 @@ public class DataObjectRequestProcessorTest
         request.setDataObject(new SimpleObject());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doThrow(new PersistenceException("")).when(mockObjectPersister).persist(any());
-        DataObjectResponse<SimpleObject> response = processor.processPOST(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "BadRequestException");
     }
@@ -171,7 +171,7 @@ public class DataObjectRequestProcessorTest
         request.setDataObject(simpleObject);
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doReturn(simpleObject).when(mockObjectPersister).retrieve(anyString());
-        DataObjectResponse<SimpleObject> response = processor.processPUT(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePUT(request);
         // verify the id from the url is applied to the sample object
         Assert.assertEquals(simpleObject.getId(), URL_ID);
         Assert.assertFalse(response.isError());
@@ -185,7 +185,7 @@ public class DataObjectRequestProcessorTest
         request.setDataObject(simpleObject);
         doReturn(false).when(mockVisibilityFilter).isVisible(any(), any());
         doReturn(simpleObject).when(mockObjectPersister).retrieve(anyString());
-        DataObjectResponse<SimpleObject> response = processor.processPUT(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePUT(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "UnauthorizedException");
     }
@@ -203,7 +203,7 @@ public class DataObjectRequestProcessorTest
         request.setDataObject(updatedSimpleObject);
         doReturn(persistedSimpleObject).when(mockObjectPersister).retrieve(anyString());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
-        DataObjectResponse<SimpleObject> response = processor.processPUT(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePUT(request);
         Assert.assertFalse(response.isError());
         verify(mockVisibilityFilter, times(2)).isVisible(any(), any());
     }
@@ -232,7 +232,7 @@ public class DataObjectRequestProcessorTest
                 return returnValue;
             }
         }).when(mockVisibilityFilter).isVisible(any(), any());
-        DataObjectResponse<SimpleObject> response = processor.processPUT(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePUT(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "UnauthorizedException");
         verify(mockVisibilityFilter, times(2)).isVisible(any(), any());
@@ -247,7 +247,7 @@ public class DataObjectRequestProcessorTest
         doReturn(simpleObject).when(mockObjectPersister).retrieve(anyString());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doThrow(new PersistenceException("")).when(mockObjectPersister).update(any());
-        DataObjectResponse<SimpleObject> response = processor.processPUT(request);
+        DataObjectResponse<SimpleObject> response = processor.handlePUT(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "BadRequestException");
     }
@@ -257,7 +257,7 @@ public class DataObjectRequestProcessorTest
     {
         request.setId(URL_ID);
         doReturn(null).when(mockObjectPersister).retrieve(anyString());
-        DataObjectResponse<SimpleObject> response = processor.processDELETE(request);
+        DataObjectResponse<SimpleObject> response = processor.handleDELETE(request);
         Assert.assertFalse(response.isError());
     }
 
@@ -267,7 +267,7 @@ public class DataObjectRequestProcessorTest
         request.setId(URL_ID);
         doReturn(new SimpleObject()).when(mockObjectPersister).retrieve(anyString());
         doReturn(false).when(mockVisibilityFilter).isVisible(any(), any());
-        DataObjectResponse<SimpleObject> response = processor.processDELETE(request);
+        DataObjectResponse<SimpleObject> response = processor.handleDELETE(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "UnauthorizedException");
     }
@@ -278,7 +278,7 @@ public class DataObjectRequestProcessorTest
         request.setId(URL_ID);
         doReturn(new SimpleObject()).when(mockObjectPersister).retrieve(anyString());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
-        DataObjectResponse<SimpleObject> response = processor.processDELETE(request);
+        DataObjectResponse<SimpleObject> response = processor.handleDELETE(request);
         Assert.assertFalse(response.isError());
         verify(mockObjectPersister, times(1)).delete(anyString());
     }
@@ -290,7 +290,7 @@ public class DataObjectRequestProcessorTest
         doReturn(new SimpleObject()).when(mockObjectPersister).retrieve(anyString());
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doThrow(new PersistenceException("")).when(mockObjectPersister).delete(anyString());
-        DataObjectResponse<SimpleObject> response = processor.processDELETE(request);
+        DataObjectResponse<SimpleObject> response = processor.handleDELETE(request);
         Assert.assertTrue(response.isError());
         Assert.assertEquals(response.getErrorResponse().getTitle(), "BadRequestException");
     }

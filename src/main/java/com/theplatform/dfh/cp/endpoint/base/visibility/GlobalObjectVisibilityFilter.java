@@ -17,6 +17,7 @@ public class GlobalObjectVisibilityFilter <T extends GlobalEndpointDataObject, R
             if(logger.isDebugEnabled()) logger.debug("visibility = false. No request or data object");
             return false;
         }
+        if(logger.isDebugEnabled()) logger.debug("visibility check : object.isGlobal = {}", object.isGlobal());
 
         return object.isGlobal();
     }

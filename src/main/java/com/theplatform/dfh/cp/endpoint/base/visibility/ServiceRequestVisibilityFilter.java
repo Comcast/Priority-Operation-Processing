@@ -20,12 +20,12 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
  *  *     Agenda.customerId is in the Insight.allowedCustomerList
  *  *     Insight.isGlobal is true
  */
-public class ServiceCallerVisibilityFilter<T extends IdentifiedObject> extends VisibilityFilter<T, DataObjectRequest<T>>
+public class ServiceRequestVisibilityFilter<T extends IdentifiedObject> extends VisibilityFilter<T, DataObjectRequest<T>>
 {
     private ServiceRequest serviceRequest;
     private CustomerVisibilityFilter customerVisibilityFilter = new CustomerVisibilityFilter();
 
-    public ServiceCallerVisibilityFilter(ServiceRequest serviceRequest)
+    public ServiceRequestVisibilityFilter(ServiceRequest serviceRequest)
     {
         this.serviceRequest = serviceRequest;
     }

@@ -20,9 +20,10 @@ import java.util.List;
  * Basic implementation for request processing.
  * @param <T> The type of object to persist
  */
-public class DataObjectRequestProcessor<T extends IdentifiedObject> extends RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>>
+public class DataObjectRequestProcessor<T extends IdentifiedObject> implements RequestProcessor<DataObjectResponse<T>, DataObjectRequest<T>>
 {
     protected ObjectPersister<T> objectPersister;
+    private RequestValidator<DataObjectRequest<T>> requestValidator = new DataObjectValidator<>();
     private VisibilityFilterMap<T,DataObjectRequest<T>> visibilityFilterMap = new VisibilityFilterMap<>();
     private static final String OBJECT_NOT_FOUND_EXCEPTION = "Unable to get object by id %1$s";
     private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
@@ -45,6 +46,8 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     public DataObjectResponse<T> handleGET(DataObjectRequest<T> request)
     {
+        if(getRequestValidator() != null) getRequestValidator().validateGET(request);
+
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
         try
         {
@@ -90,6 +93,8 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     public DataObjectResponse<T> handlePOST(DataObjectRequest<T> request)
     {
+        if(getRequestValidator() != null) getRequestValidator().validatePOST(request);
+
         T dataObject = request.getDataObject();
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
         VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.POST);
@@ -126,6 +131,8 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     public DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
     {
+        if(getRequestValidator() != null) getRequestValidator().validatePUT(request);
+
         T dataObjectToUpdate = request.getDataObject();
         String updatingCustomerId = dataObjectToUpdate.getCustomerId();
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
@@ -177,6 +184,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
     @Override
     public DataObjectResponse<T> handleDELETE(DataObjectRequest<T> request)
     {
+        if(getRequestValidator() != null) getRequestValidator().validateDELETE(request);
         try
         {
             if(request.getId() != null)
@@ -202,6 +210,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         }
     }
 
+
     public DataObjectRequestProcessor<T> setVisibilityFilterMap(
         VisibilityFilterMap<T, DataObjectRequest<T>> map)
     {
@@ -215,10 +224,14 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> extends Requ
         return this;
     }
 
-    @Override
     public RequestValidator<DataObjectRequest<T>> getRequestValidator()
     {
-        return new DataObjectValidator<>();
+        return requestValidator;
+    }
+
+    public void setRequestValidator(RequestValidator<DataObjectRequest<T>> requestValidator)
+    {
+        this.requestValidator = requestValidator;
     }
 
     public ObjectPersister<T> getObjectPersister()
