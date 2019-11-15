@@ -8,8 +8,10 @@ import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.AgendaProgressBuilder;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
@@ -86,7 +88,8 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         if(getRequestValidator() != null) getRequestValidator().validatePOST(request);
 
         Agenda agendaToPersist = request.getDataObject();
-        String customerID = agendaToPersist.getCustomerId();
+        final String customerID = agendaToPersist.getCustomerId();
+
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();
         trackerManager.register(new EndpointObjectTracker<>(agendaProgressClient, AgendaProgress.class, customerID));
         trackerManager.register(new EndpointObjectTracker<>(operationProgressClient, OperationProgress.class, customerID));
@@ -116,36 +119,16 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         agendaToPersist.setAgendaInsight(agendaInsight);
         agendaToPersist.setParams(agendaToPersist.getParams() == null ? new ParamsMap() : agendaToPersist.getParams());
 
-        String agendaProgressId = agendaToPersist.getProgressId();
-        if (agendaProgressId == null)
+        DataObjectResponse<AgendaProgress> progressResponse =
+            agendaToPersist.getProgressId() == null ? postAgendaProgress(agendaToPersist, request.getCID()) : putAgendaProgress(agendaToPersist);
+        if (progressResponse.isError())
         {
-            DataObjectResponse<AgendaProgress> persistResponse = persistAgendaProgress(agendaToPersist, request.getCID());
-            if (persistResponse.isError())
-            {
-                trackerManager.cleanUp();
-                return new DefaultDataObjectResponse<>(persistResponse.getErrorResponse());
-            }
-            agendaProgressId = persistResponse.getFirst().getId();
-            trackerManager.track(persistResponse.getFirst());
-            agendaToPersist.setProgressId(agendaProgressId);
+            trackerManager.cleanUp();
+            return new DefaultDataObjectResponse<>(progressResponse.getErrorResponse());
         }
-        else
-        {
-            logger.info("Using existing progress: {} Updated associated agendaId: {}", agendaProgressId, agendaToPersist.getId());
-            AgendaProgress agendaProgress = new AgendaProgress();
-            agendaProgress.setId(agendaProgressId);
-            agendaProgress.setParams(agendaToPersist.getParams());
-            agendaProgress.setAgendaId(agendaToPersist.getId());
-            agendaProgress.setAgendaInsight(agendaToPersist.getAgendaInsight());
-            // NOTE: on failure the AgendaProgress with have an invalid agendaId -- this is harmless
-            DataObjectResponse<AgendaProgress> agendaProgressUpdateResponse =
-                agendaProgressClient.handlePUT(DefaultDataObjectRequest.customerAuthInstance(customerID,agendaProgress));
-            if (agendaProgressUpdateResponse.isError())
-            {
-                trackerManager.cleanUp();
-                return new DefaultDataObjectResponse<>(agendaProgressUpdateResponse.getErrorResponse());
-            }
-        }
+        final String agendaProgressId = progressResponse.getFirst().getId();
+        trackerManager.track(progressResponse.getFirst());
+        agendaToPersist.setProgressId(agendaProgressId);
 
         // always create new OperationProgress objects
         if (agendaToPersist.getOperations() != null)
@@ -222,35 +205,34 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         }
     }
 
-    private DataObjectResponse<AgendaProgress> persistAgendaProgress(Agenda agenda, String cid)
+    private DataObjectResponse<AgendaProgress> postAgendaProgress(Agenda agenda, String cid)
     {
         ////
         // persist the progress
         ////
-        AgendaProgress agendaProgressResponse;
-        AgendaProgress agendaProgress = new AgendaProgress();
-        agendaProgress.setCustomerId(agenda.getCustomerId());
-        agendaProgress.setLinkId(agenda.getLinkId());
-        agendaProgress.setCid(agenda.getCid());
-        agendaProgress.setAgendaId(agenda.getId());
-        agendaProgress.setParams(agenda.getParams());
-        agendaProgress.setProcessingState(ProcessingState.WAITING);
-        agendaProgress.setAgendaInsight(agenda.getAgendaInsight());
-        agendaProgress.setAddedTime(new Date());
-
+        AgendaProgress agendaProgress = new AgendaProgressBuilder()
+            .withAgendaFields(agenda)
+            .withProcessingState(ProcessingState.WAITING)
+            .build();
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
-        DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.handlePOST(DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(), agendaProgress));
-        if(dataObjectResponse.isError()) return dataObjectResponse;
-        agendaProgressResponse = dataObjectResponse.getFirst();
 
-        if(agendaProgressResponse == null)
-        {
-            dataObjectResponse.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new RuntimeException("AgendaProgress persistence failed."), 400, cid));
-            return dataObjectResponse;
-        }
+        //If the customer can create transform requests then they are allowed to create progress.
+        //If we don't use a service user authentication then we have to grant all customers write access to progress. No!
+        DataObjectRequest<AgendaProgress> request = DefaultDataObjectRequest.serviceUserAuthInstance(agendaProgress);
+        DataObjectResponse<AgendaProgress> dataObjectResponse = agendaProgressClient.handlePOST(request);
+        AbstractServiceRequestProcessor.addErrorForObjectNotFound(dataObjectResponse, AgendaProgress.class, null, cid);
 
-        logger.info("Generated new progress: {}", agendaProgressResponse.getId());
         return dataObjectResponse;
+    }
+
+    private DataObjectResponse<AgendaProgress> putAgendaProgress(Agenda agenda)
+    {
+        logger.info("Using existing progress: {} Updated associated agendaId: {}", agenda.getProgressId(), agenda.getId());
+        AgendaProgress agendaProgress = new AgendaProgressBuilder()
+            .withAgendaFields(agenda)
+            .build();
+        // NOTE: on failure the AgendaProgress with have an invalid agendaId -- this is harmless
+        return agendaProgressClient.handlePUT(DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(),agendaProgress));
     }
 
     private DataObjectResponse<OperationProgress> persistOperationProgresses(Agenda agenda, String agendaProgressId, String cid, ObjectTrackerManager trackerManager)
@@ -275,10 +257,13 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
                 params.putAll(operation.getParams());
                 operationProgress.setParams(params);
             }
-            
+
             try {
-                DataObjectResponse<OperationProgress> opProgressResponse =
-                    operationProgressClient.handlePOST(DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(), operationProgress));
+                //If the customer can create transform requests then they are allowed to create progress.
+                //If we don't use a service user authentication then we have to grant all customers write access to progress. No!
+                DataObjectRequest<OperationProgress> request = DefaultDataObjectRequest.serviceUserAuthInstance(operationProgress);
+                DataObjectResponse<OperationProgress> opProgressResponse = operationProgressClient.handlePOST(request);
+
                 if (opProgressResponse == null || opProgressResponse.isError())
                     return opProgressResponse;
                 OperationProgress created = opProgressResponse.getFirst();

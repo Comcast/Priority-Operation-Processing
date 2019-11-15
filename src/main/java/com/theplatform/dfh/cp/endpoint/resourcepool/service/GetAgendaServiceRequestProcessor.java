@@ -72,8 +72,8 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
         //We need to verify the calling user is Authorized for the Insight
         DataObjectResponse<Insight> insightResponse = insightRequestProcessor.handleGET(generateInsightReq(serviceRequest.getAuthorizationResponse(),
                 getAgendaRequest.getInsightId()));
-        ErrorResponse errorResponse = checkForRetrieveError(insightResponse, Insight.class, getAgendaRequest.getInsightId(), serviceRequest.getCID());
-        if(errorResponse != null) return new GetAgendaResponse(errorResponse);
+        addErrorForObjectNotFound(insightResponse, Insight.class, getAgendaRequest.getInsightId(), serviceRequest.getCID());
+        if(insightResponse.isError()) return new GetAgendaResponse(insightResponse.getErrorResponse());
         Insight insight = insightResponse.getFirst();
 
         try

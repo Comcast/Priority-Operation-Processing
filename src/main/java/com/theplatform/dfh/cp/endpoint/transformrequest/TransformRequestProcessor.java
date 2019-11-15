@@ -215,8 +215,9 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         DataObjectResponse<Agenda> prepAgendaResponse;
         try
         {
-            DefaultDataObjectRequest<Agenda> agendaRequest = new DefaultDataObjectRequest<>();
-            agendaRequest.setDataObject(agenda);
+            //If the customer can create transform requests then they are allowed to create agendas.
+            //If we don't use a service user authentication then we have to grant all customers write access to agenda. No!
+            DataObjectRequest<Agenda> agendaRequest = DefaultDataObjectRequest.serviceUserAuthInstance(agenda);
             prepAgendaResponse = agendaRequestProcessor.handlePOST(agendaRequest);
         }
         catch(Exception e)
@@ -244,9 +245,10 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest = new DefaultDataObjectRequest<>();
-            agendaProgressRequest.setDataObject(agendaProgress);
-            return agendaProgressRequestProcessor.handlePOST(agendaProgressRequest);
+            //If the customer can create transform requests then they are allowed to create progress.
+            //If we don't use a service user authentication then we have to grant all customers write access to progress. No!
+            DataObjectRequest<AgendaProgress> request = DefaultDataObjectRequest.serviceUserAuthInstance(agendaProgress);
+            return agendaProgressRequestProcessor.handlePOST(request);
         }
         catch(Exception e)
         {

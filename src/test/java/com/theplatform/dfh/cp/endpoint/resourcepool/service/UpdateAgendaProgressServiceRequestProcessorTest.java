@@ -26,20 +26,20 @@ public class UpdateAgendaProgressServiceRequestProcessorTest
 
         ErrorResponse errorResponse = ErrorResponseFactory.badRequest(MESSAGE, CID);
         DefaultDataObjectResponse<AgendaProgress> dataResponse = new DefaultDataObjectResponse<>(errorResponse);
-        ErrorResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
-        Assert.assertNotNull(response);
-        Assert.assertEquals(response.getDescription(), MESSAGE);
-        Assert.assertEquals(response.getCorrelationId(), CID);
+        UpdateAgendaProgressServiceRequestProcessor.addErrorForObjectNotFound(dataResponse, AgendaProgress.class, ID, CID);
+        Assert.assertNotNull(dataResponse.getErrorResponse());
+        Assert.assertEquals(dataResponse.getErrorResponse().getDescription(), MESSAGE);
+        Assert.assertEquals(dataResponse.getErrorResponse().getCorrelationId(), CID);
     }
 
     @Test
     public void testCheckForRetrieveErrorFoundNoEntries()
     {
         DefaultDataObjectResponse<AgendaProgress> dataResponse = new DefaultDataObjectResponse<>();
-        ErrorResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
-         Assert.assertNotNull(response);
-        Assert.assertTrue(response.getDescription().contains(ID));
-        Assert.assertTrue(response.getDescription().contains(AgendaProgress.class.getSimpleName()));
+       UpdateAgendaProgressServiceRequestProcessor.addErrorForObjectNotFound(dataResponse, AgendaProgress.class, ID, CID);
+         Assert.assertNotNull(dataResponse.getErrorResponse());
+        Assert.assertTrue(dataResponse.getErrorResponse().getDescription().contains(ID));
+        Assert.assertTrue(dataResponse.getErrorResponse().getDescription().contains(AgendaProgress.class.getSimpleName()));
     }
 
     @Test

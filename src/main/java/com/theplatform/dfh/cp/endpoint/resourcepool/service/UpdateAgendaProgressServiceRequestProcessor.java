@@ -55,13 +55,13 @@ public class UpdateAgendaProgressServiceRequestProcessor extends AbstractService
         ErrorResponse errorResponse;
         // Retrieve the AgendaProgress (this is a global visibility request)
         DataObjectResponse<AgendaProgress> agendaProgressResponse = retrieveAgendaProgress(updatedAgendaProgress);
-        errorResponse = checkForRetrieveError(agendaProgressResponse, AgendaProgress.class, updatedAgendaProgress.getId(), request.getCID());
-        if(errorResponse != null) return new UpdateAgendaProgressResponse(errorResponse);
+        addErrorForObjectNotFound(agendaProgressResponse, AgendaProgress.class, updatedAgendaProgress.getId(), request.getCID());
+        if(agendaProgressResponse.isError()) return new UpdateAgendaProgressResponse(agendaProgressResponse.getErrorResponse());
 
         // Retrieve the insight (confirms the caller can update this AgendaProgress)
         DataObjectResponse<Insight> insightResponse = retrieveInsight(request, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId());
-        errorResponse = checkForRetrieveError(insightResponse, Insight.class, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId(), request.getCID());
-        if(errorResponse != null) return new UpdateAgendaProgressResponse(errorResponse);
+        addErrorForObjectNotFound(insightResponse, Insight.class, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId(), request.getCID());
+        if(insightResponse.isError()) return new UpdateAgendaProgressResponse(insightResponse.getErrorResponse());
 
         AgendaProgressRequestProcessor agendaProgressRequestProcessor =
             new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
