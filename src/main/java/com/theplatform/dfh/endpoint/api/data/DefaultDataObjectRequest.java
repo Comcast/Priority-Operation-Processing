@@ -1,6 +1,7 @@
 package com.theplatform.dfh.endpoint.api.data;
 
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 
@@ -22,6 +23,15 @@ public class DefaultDataObjectRequest<T extends IdentifiedObject> extends Defaul
         setDataObject(dataObject);
     }
 
+    public static <T extends IdentifiedObject> DataObjectRequest<T> customerAuthInstance(String customerId, T payload)
+    {
+        DefaultDataObjectRequest<T> req = new DefaultDataObjectRequest<>();
+        req.setAuthorizationResponse(new CustomerIdAuthorizationResponse(customerId));
+        req.setDataObject(payload);
+        if(payload != null)
+            req.setId(payload.getId());
+        return req;
+    }
     public void setQueries(List<Query> queries)
     {
         this.queries = queries;

@@ -1,7 +1,4 @@
-package com.theplatform.dfh.endpoint.api.resourcepool.service;
-
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
+package com.theplatform.dfh.endpoint.api.auth;
 
 import java.util.Collections;
 
