@@ -1,10 +1,13 @@
 package com.theplatform.dfh.endpoint.api.data;
 
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 
+import java.util.Collections;
 import java.util.List;
 
 public class DefaultDataObjectRequest<T extends IdentifiedObject> extends DefaultServiceRequest<T> implements DataObjectRequest<T>
@@ -27,6 +30,15 @@ public class DefaultDataObjectRequest<T extends IdentifiedObject> extends Defaul
     {
         DefaultDataObjectRequest<T> req = new DefaultDataObjectRequest<>();
         req.setAuthorizationResponse(new CustomerIdAuthorizationResponse(customerId));
+        req.setDataObject(payload);
+        if(payload != null)
+            req.setId(payload.getId());
+        return req;
+    }
+    public static <T extends IdentifiedObject> DataObjectRequest<T> serviceUserAuthInstance(T payload)
+    {
+        DefaultDataObjectRequest<T> req = new DefaultDataObjectRequest<>();
+        req.setAuthorizationResponse(new AuthorizationResponse(null, null, Collections.singleton(payload.getCustomerId()), DataVisibility.global));
         req.setDataObject(payload);
         if(payload != null)
             req.setId(payload.getId());
