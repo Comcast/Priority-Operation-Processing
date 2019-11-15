@@ -60,7 +60,7 @@ public class InsightSelector
     {
         if(resourcePoolId == null) return null;
         DataObjectRequest<Insight> insightReq = generateInsightReq(customerId, resourcePoolId);
-        DataObjectResponse<Insight> insightFeed = insightRequestProcessor.processGET(insightReq);
+        DataObjectResponse<Insight> insightFeed = insightRequestProcessor.handleGET(insightReq);
         if(insightFeed == null || insightFeed.getAll() == null) return null;
         return insightFeed.getAll();
     }
@@ -69,7 +69,7 @@ public class InsightSelector
     {
         if(customerId == null) return null;
         DataObjectRequest<Customer> customerReq = generateCustomerReq(customerId);
-        DataObjectResponse<Customer> customerResponse = customerRequestProcessor.processGET(customerReq);
+        DataObjectResponse<Customer> customerResponse = customerRequestProcessor.handleGET(customerReq);
         return customerResponse.getFirst();
     }
 

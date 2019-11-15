@@ -26,24 +26,20 @@ public class UpdateAgendaProgressServiceRequestProcessorTest
 
         ErrorResponse errorResponse = ErrorResponseFactory.badRequest(MESSAGE, CID);
         DefaultDataObjectResponse<AgendaProgress> dataResponse = new DefaultDataObjectResponse<>(errorResponse);
-        UpdateAgendaProgressResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
+        ErrorResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
         Assert.assertNotNull(response);
-        Assert.assertTrue(response.isError());
-        Assert.assertNotNull(response.getErrorResponse());
-        Assert.assertEquals(response.getErrorResponse().getDescription(), MESSAGE);
-        Assert.assertEquals(response.getErrorResponse().getCorrelationId(), CID);
+        Assert.assertEquals(response.getDescription(), MESSAGE);
+        Assert.assertEquals(response.getCorrelationId(), CID);
     }
 
     @Test
     public void testCheckForRetrieveErrorFoundNoEntries()
     {
         DefaultDataObjectResponse<AgendaProgress> dataResponse = new DefaultDataObjectResponse<>();
-        UpdateAgendaProgressResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
-        Assert.assertNotNull(response);
-        Assert.assertTrue(response.isError());
-        Assert.assertNotNull(response.getErrorResponse());
-        Assert.assertTrue(response.getErrorResponse().getDescription().contains(ID));
-        Assert.assertTrue(response.getErrorResponse().getDescription().contains(AgendaProgress.class.getSimpleName()));
+        ErrorResponse response = UpdateAgendaProgressServiceRequestProcessor.checkForRetrieveError(dataResponse, AgendaProgress.class, ID, CID);
+         Assert.assertNotNull(response);
+        Assert.assertTrue(response.getDescription().contains(ID));
+        Assert.assertTrue(response.getDescription().contains(AgendaProgress.class.getSimpleName()));
     }
 
     @Test

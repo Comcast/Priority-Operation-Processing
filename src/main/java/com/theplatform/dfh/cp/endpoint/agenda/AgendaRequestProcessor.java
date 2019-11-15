@@ -82,6 +82,9 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
     @Override
     public DataObjectResponse<Agenda> handlePOST(DataObjectRequest<Agenda> request)
     {
+        //we call super below, but no point if we fail validation, so let's validate here.
+        if(getRequestValidator() != null) getRequestValidator().validatePOST(request);
+
         Agenda agendaToPersist = request.getDataObject();
         String customerID = agendaToPersist.getCustomerId();
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();

@@ -87,7 +87,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         request.setDataObject(transformRequest);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
-        verify(mockAgendaProgressRequestProcessor, times(2)).processPOST(any());
+        verify(mockAgendaProgressRequestProcessor, times(2)).handlePOST(any());
         Assert.assertFalse(objectPersistResponse.isError());
         TransformRequest responseObject = objectPersistResponse.getFirst();
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
@@ -112,7 +112,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         request.setDataObject(transformRequest);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
-        verify(mockAgendaProgressRequestProcessor, times(1)).processPOST(any());
+        verify(mockAgendaProgressRequestProcessor, times(1)).handlePOST(any());
         TransformRequest responseObject = objectPersistResponse.getFirst();
 
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
@@ -130,7 +130,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         String cid = UUID.randomUUID().toString();
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.setErrorResponse(ErrorResponseFactory.unauthorized("Unauthorized request.", cid));
-        doReturn(agendaProgressResponse).when(mockAgendaProgressRequestProcessor).processPOST(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressRequestProcessor).handlePOST(any());
 
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
@@ -261,7 +261,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
                 dataObjectResponse.add(result);
                 return dataObjectResponse;
             }
-        }).when(mockAgendaProgressRequestProcessor).processPOST(any());
+        }).when(mockAgendaProgressRequestProcessor).handlePOST(any());
     }
 
     private void setupAgendaTemplateClientMock(AgendaTemplate idLookupResult, AgendaTemplate nameLookupResult)
@@ -302,6 +302,6 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
                 dataObjectResponse.add(response);
                 return dataObjectResponse;
             }
-        }).when(mockAgendaRequestProcessor).processPOST(any());
+        }).when(mockAgendaRequestProcessor).handlePOST(any());
     }
 }

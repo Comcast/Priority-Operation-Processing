@@ -76,18 +76,21 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
 
         agenda.getOperations().forEach(op ->
         {
-            ReferenceReplacementResult result = jsonContext.processReferences(op.getPayload());
-            // Can only check for missing. The invalid references check would require knowledge of the output payload format of every handler...
-            if(result.getMissingReferences().size() > 0)
+            if(op.getPayload() != null)
             {
-                // filter out fission tokens (TODO: if there is a need for other token filters this should be made more generic)
-                Set<String> filteredMissingReferences = filterNonFissionReferences(result.getMissingReferences());
-                if(filteredMissingReferences.size() > 0)
+                ReferenceReplacementResult result = jsonContext.processReferences(op.getPayload());
+                // Can only check for missing. The invalid references check would require knowledge of the output payload format of every handler...
+                if (result.getMissingReferences().size() > 0)
                 {
-                    validationIssues.add(String.format(
-                        "Invalid references found in operation [%1$s] payload: %2$s",
-                        op.getName(),
-                        String.join(",", result.getMissingReferences())));
+                    // filter out fission tokens (TODO: if there is a need for other token filters this should be made more generic)
+                    Set<String> filteredMissingReferences = filterNonFissionReferences(result.getMissingReferences());
+                    if (filteredMissingReferences.size() > 0)
+                    {
+                        validationIssues.add(String.format(
+                            "Invalid references found in operation [%1$s] payload: %2$s",
+                            op.getName(),
+                            String.join(",", result.getMissingReferences())));
+                    }
                 }
             }
         });
@@ -118,12 +121,15 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
 
         agenda.getOperations().forEach(op ->
         {
-            ReferenceReplacementResult result = jsonContext.processReferences(op.getPayload());
-            referenceMap.put(op.getName(), result.getMissingReferences() == null
-                                           ? new HashSet<>()
-                                           : result.getMissingReferences().stream().map(ref ->
-                                               replacer.getReferenceName(ref).replace(OperationReference.OUTPUT.getSuffix(), ""))
-                                               .collect(Collectors.toSet()));
+            if(op.getPayload() != null)
+            {
+                ReferenceReplacementResult result = jsonContext.processReferences(op.getPayload());
+                referenceMap.put(op.getName(), result.getMissingReferences() == null
+                                               ? new HashSet<>()
+                                               : result.getMissingReferences().stream().map(ref ->
+                    replacer.getReferenceName(ref).replace(OperationReference.OUTPUT.getSuffix(), ""))
+                                                   .collect(Collectors.toSet()));
+            }
         });
 
         agenda.getOperations().forEach(op ->

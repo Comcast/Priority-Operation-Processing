@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
@@ -54,6 +55,9 @@ public class CreateAgendaServiceRequestProcessorTest
         agenda.setCustomerId(OWNERID_AGENDA);
         agenda.setParams(new ParamsMap());
         agenda.getParams().put("operation", "x");
+        Operation op = new Operation();
+        op.setName("my op");
+        agenda.setOperations(Collections.singletonList(op));
 
         doReturn(Collections.singleton(agenda)).when(mockRequest).getAgendas();
         createAgendaRequest = new DefaultServiceRequest<>(mockRequest);
@@ -106,11 +110,14 @@ public class CreateAgendaServiceRequestProcessorTest
         doReturn(insightResp).when(mockInsightPersister).retrieve(anyList());
 
         //agenda on request has other resource pool
-        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.processPOST(createAgendaRequest);
+        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(createAgendaRequest);
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
-        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No available insights for processing agenda null]"));
+        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No " +
+            "available " +
+            "insights for processing " +
+            "agenda null]"), getAgendaResponse.getErrorResponse().getDescription());
     }
     @Test
     public void testGlobalInsightCallingUserIsVisibleToInsight() throws PersistenceException
@@ -126,7 +133,7 @@ public class CreateAgendaServiceRequestProcessorTest
         DataObjectFeed insightResp = new DataObjectFeed();
         insightResp.add(insight);
         doReturn(insightResp).when(mockInsightPersister).retrieve(anyList());
-        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.processPOST(createAgendaRequest);
+        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(createAgendaRequest);
         Assert.assertNull(getAgendaResponse.getErrorResponse());
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 1);
@@ -148,7 +155,7 @@ public class CreateAgendaServiceRequestProcessorTest
         doReturn(insightResp).when(mockInsightPersister).retrieve(anyList());
 
         //agenda on request has other resource pool
-        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.processPOST(createAgendaRequest);
+        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(createAgendaRequest);
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
@@ -168,7 +175,7 @@ public class CreateAgendaServiceRequestProcessorTest
         DataObjectFeed insightResp = new DataObjectFeed();
         insightResp.add(insight);
         doReturn(insightResp).when(mockInsightPersister).retrieve(anyList());
-        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.processPOST(createAgendaRequest);
+        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(createAgendaRequest);
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
@@ -189,7 +196,7 @@ public class CreateAgendaServiceRequestProcessorTest
         DataObjectFeed insightResp = new DataObjectFeed();
         insightResp.add(insight);
         doReturn(insightResp).when(mockInsightPersister).retrieve(anyList());
-        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.processPOST(createAgendaRequest);
+        DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(createAgendaRequest);
         Assert.assertNull(getAgendaResponse.getErrorResponse());
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 1);

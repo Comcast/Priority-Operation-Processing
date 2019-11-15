@@ -4,6 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
@@ -36,7 +37,7 @@ import java.util.List;
  * to the Insight. This is for owned Insights. global=true does not grant access for the calling user, nor does allowedCustomerIDs.
  * That is for customer specific visibility.
  */
-public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgendaResponse, ServiceRequest<GetAgendaRequest>>
+public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<GetAgendaResponse, ServiceRequest<GetAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(GetAgendaServiceRequestProcessor.class);
     private static final String AGENDA_REQUEST_TEMPLATE = "Agenda Request metadata - insightid=%s agendarequestcount=%d";
@@ -56,7 +57,7 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
     }
 
     @Override
-    protected GetAgendaResponse handlePOST(ServiceRequest<GetAgendaRequest> serviceRequest)
+    public GetAgendaResponse processPOST(ServiceRequest<GetAgendaRequest> serviceRequest)
     {
         GetAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         if (getAgendaRequest.getInsightId() == null)
@@ -69,15 +70,10 @@ public class GetAgendaServiceRequestProcessor extends RequestProcessor<GetAgenda
         logger.info(String.format(AGENDA_REQUEST_TEMPLATE, getAgendaRequest.getInsightId(), getAgendaRequest.getCount()));
 
         //We need to verify the calling user is Authorized for the Insight
-        DataObjectResponse<Insight> insightResponse = insightRequestProcessor.processGET(generateInsightReq(serviceRequest.getAuthorizationResponse(),
+        DataObjectResponse<Insight> insightResponse = insightRequestProcessor.handleGET(generateInsightReq(serviceRequest.getAuthorizationResponse(),
                 getAgendaRequest.getInsightId()));
-         if(insightResponse.getErrorResponse() != null || insightResponse.getFirst() == null)
-        {
-            final String message = String.format("No insight found with id %s. Cannot process getAgenda request.",
-            getAgendaRequest.getInsightId());
-            logger.warn(message);
-            return new GetAgendaResponse(ErrorResponseFactory.objectNotFound(message, serviceRequest.getCID()));
-        }
+        ErrorResponse errorResponse = checkForRetrieveError(insightResponse, Insight.class, getAgendaRequest.getInsightId(), serviceRequest.getCID());
+        if(errorResponse != null) return new GetAgendaResponse(errorResponse);
         Insight insight = insightResponse.getFirst();
 
         try

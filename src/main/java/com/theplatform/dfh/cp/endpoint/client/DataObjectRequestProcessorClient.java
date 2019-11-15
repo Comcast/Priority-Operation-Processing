@@ -36,7 +36,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setQueries(queries);
         request.setAuthorizationResponse(globalAuthorization);
-        return requestProcessor.processGET(request);
+        return requestProcessor.handleGET(request);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
         request.setAuthorizationResponse(globalAuthorization);
-        return requestProcessor.processGET(request);
+        return requestProcessor.handleGET(request);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(object);
         request.setAuthorizationResponse(globalAuthorization);
-        return requestProcessor.processPOST(request);
+        return requestProcessor.handlePOST(request);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         request.setDataObject(object);
         request.setId(id);
         request.setAuthorizationResponse(globalAuthorization);
-        return requestProcessor.processPUT(request);
+        return requestProcessor.handlePUT(request);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implem
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setId(id);
         request.setAuthorizationResponse(globalAuthorization);
-        return requestProcessor.processDELETE(request);
+        return requestProcessor.handleDELETE(request);
     }
 }

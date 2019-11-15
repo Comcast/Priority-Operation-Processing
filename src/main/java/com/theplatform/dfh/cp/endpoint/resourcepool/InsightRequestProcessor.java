@@ -6,9 +6,7 @@ import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.*;
 import com.theplatform.dfh.cp.endpoint.validation.InsightValidator;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 public class InsightRequestProcessor extends DataObjectRequestProcessor<Insight>
@@ -41,7 +39,7 @@ public class InsightRequestProcessor extends DataObjectRequestProcessor<Insight>
         //get current visibilty filter
         AllMatchVisibilityFilter allMatchVisibilityFilter = new AllMatchVisibilityFilter()
             .withFilter(globalObjectReadVisibilityFilter)
-            .withFilter(new ServiceCallerVisibilityFilter(serviceRequest));
+            .withFilter(new ServiceRequestVisibilityFilter(serviceRequest));
         processor.setVisibilityFilter(VisibilityMethod.GET, allMatchVisibilityFilter);
         return processor;
     }

@@ -217,7 +217,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         {
             DefaultDataObjectRequest<Agenda> agendaRequest = new DefaultDataObjectRequest<>();
             agendaRequest.setDataObject(agenda);
-            prepAgendaResponse = agendaRequestProcessor.processPOST(agendaRequest);
+            prepAgendaResponse = agendaRequestProcessor.handlePOST(agendaRequest);
         }
         catch(Exception e)
         {
@@ -246,7 +246,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         {
             DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest = new DefaultDataObjectRequest<>();
             agendaProgressRequest.setDataObject(agendaProgress);
-            return agendaProgressRequestProcessor.processPOST(agendaProgressRequest);
+            return agendaProgressRequestProcessor.handlePOST(agendaProgressRequest);
         }
         catch(Exception e)
         {

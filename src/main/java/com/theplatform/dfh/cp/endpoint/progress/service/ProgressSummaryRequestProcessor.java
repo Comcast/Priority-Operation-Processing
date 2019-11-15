@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
-public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSummaryResponse, ServiceRequest<ProgressSummaryRequest>>
+public class ProgressSummaryRequestProcessor extends AbstractServiceRequestProcessor<ProgressSummaryResponse, ServiceRequest<ProgressSummaryRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(ProgressSummaryRequestProcessor.class);
 
@@ -37,7 +38,7 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
 
     protected ProgressSummaryRequestProcessor()
     {
-
+        setRequestValidator(new ProgressServiceValidator());
     }
 
     public ProgressSummaryRequestProcessor(ObjectPersister<AgendaProgress> agendaProgressPersister,
@@ -48,10 +49,11 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
                 agendaPersister,
             operationProgressPersister
         ));
+        setRequestValidator(new ProgressServiceValidator());
     }
 
     @Override
-    protected ProgressSummaryResponse handlePOST(ServiceRequest<ProgressSummaryRequest> serviceRequest)
+    public ProgressSummaryResponse processPOST(ServiceRequest<ProgressSummaryRequest> serviceRequest)
     {
         if(serviceRequest == null)
         {
@@ -100,12 +102,6 @@ public class ProgressSummaryRequestProcessor extends RequestProcessor<ProgressSu
         progressSummaryResponse.setErrorResponse(errorResponse);
         progressSummaryResponse.setProgressList(progressList);
         return progressSummaryResponse;
-    }
-
-    @Override
-    public RequestValidator<ServiceRequest<ProgressSummaryRequest>> getRequestValidator()
-    {
-        return new ProgressServiceValidator();
     }
 
     private boolean didAnyOperationFail(List<AgendaProgress> progressList)

@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.AllMatchVisibilityFilter;
@@ -18,9 +19,7 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
@@ -54,7 +53,7 @@ import java.util.List;
  * We first try to create the Agenda using the Agenda.customerId visibility against the Insight
  * Then we verify the calling user has visibility to that Insight
  */
-public class CreateAgendaServiceRequestProcessor extends RequestProcessor<CreateAgendaResponse, ServiceRequest<CreateAgendaRequest>>
+public class CreateAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<CreateAgendaResponse, ServiceRequest<CreateAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(CreateAgendaServiceRequestProcessor.class);
 
@@ -79,7 +78,7 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
     }
 
     @Override
-    protected CreateAgendaResponse handlePOST(ServiceRequest<CreateAgendaRequest> serviceRequest)
+    public CreateAgendaResponse processPOST(ServiceRequest<CreateAgendaRequest> serviceRequest)
     {
         CreateAgendaRequest getAgendaRequest = serviceRequest.getPayload();
         //loop through each agenda and do the insight mapping. 
@@ -87,24 +86,33 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         Collection<Agenda> agendasToCreate = getAgendaRequest.getAgendas();
         if(agendasToCreate == null || agendasToCreate.size() == 0)
             return createCreateAgendaResponse(serviceRequest, null, null);
+
         List<Agenda> createdAgendas = new ArrayList<>();
         List<ErrorResponse> errorResponses = new ArrayList<>();
         for(Agenda agendaToCreate : agendasToCreate)
         {
             if(agendaToCreate == null) continue;
             //create an agenda req with the agenda.customerId for visibility
-            DefaultDataObjectRequest<Agenda> agendaReq = generateAgendaReq(serviceRequest, agendaToCreate);
+            DataObjectRequest<Agenda> agendaReqByCustomerId = DefaultDataObjectRequest.customerAuthInstance(agendaToCreate.getCustomerId(), agendaToCreate);
             //create agenda processor with a service level insight visibility
-            AgendaRequestProcessor serviceAgendaRequestProcessor = generateAgendaRequestProcessor(serviceRequest);
-            DataObjectResponse<Agenda> createdAgendaResponse = serviceAgendaRequestProcessor.handlePOST(agendaReq);
-            if(createdAgendaResponse == null) continue;
-            if(createdAgendaResponse.getErrorResponse() == null)
+            AgendaRequestProcessor agendaRequestProcessor = generateReqProcessorWithCallersVisibility(serviceRequest);
+            try
             {
-                createdAgendas.add(createdAgendaResponse.getFirst());
+                DataObjectResponse<Agenda> createdAgendaResponse = agendaRequestProcessor.handlePOST(agendaReqByCustomerId);
+                if (createdAgendaResponse == null)
+                    continue;
+                if (createdAgendaResponse.getErrorResponse() == null)
+                {
+                    createdAgendas.add(createdAgendaResponse.getFirst());
+                }
+                else
+                {
+                    errorResponses.add(createdAgendaResponse.getErrorResponse());
+                }
             }
-            else
+            catch (RuntimeServiceException e)
             {
-                errorResponses.add(createdAgendaResponse.getErrorResponse());
+                errorResponses.add(ErrorResponseFactory.runtimeServiceException(e, serviceRequest.getCID()));
             }
         }
         if(errorResponses.size() > 0)
@@ -137,21 +145,12 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         return null;
     }
 
-    private DefaultDataObjectRequest<Agenda> generateAgendaReq(ServiceRequest serviceRequest, Agenda agenda)
-    {
-        DefaultDataObjectRequest<Agenda> agendaReq = new DefaultDataObjectRequest<>();
-        agendaReq.setCid(serviceRequest.getCID());
-        agendaReq.setPayload(agenda);
-        agendaReq.setAuthorizationResponse(new AuthorizationResponse(null, null, Collections.singleton(agenda.getCustomerId()), DataVisibility.authorized_account));
-        return agendaReq;
-    }
-
     /**
      * Generate an Agenda Request Processor with added visibility checking for the calling user and the Agenda's Insight
      * @param serviceRequest The calling users service request
      * @return An agenda request processor
      */
-    private AgendaRequestProcessor generateAgendaRequestProcessor(ServiceRequest serviceRequest)
+    private AgendaRequestProcessor generateReqProcessorWithCallersVisibility(ServiceRequest serviceRequest)
     {
         //we need to set a different visibility policy for the insight request processor when a service request comes in.
         InsightRequestProcessor insightRequestProcessor = InsightRequestProcessor.getServiceInstance(insightPersister, serviceRequest);

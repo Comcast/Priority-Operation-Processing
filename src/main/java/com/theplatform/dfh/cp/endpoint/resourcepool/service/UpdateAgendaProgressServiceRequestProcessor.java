@@ -4,9 +4,12 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.validation.ProgressServiceValidator;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
@@ -24,7 +27,7 @@ import java.util.Collections;
 
 /**
  */
-public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcessor<UpdateAgendaProgressResponse, ServiceRequest<UpdateAgendaProgressRequest>>
+public class UpdateAgendaProgressServiceRequestProcessor extends AbstractServiceRequestProcessor<UpdateAgendaProgressResponse, ServiceRequest<UpdateAgendaProgressRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(UpdateAgendaProgressServiceRequestProcessor.class);
 
@@ -46,20 +49,19 @@ public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcesso
     }
 
     @Override
-    protected UpdateAgendaProgressResponse handlePOST(ServiceRequest<UpdateAgendaProgressRequest> request)
+    public UpdateAgendaProgressResponse processPOST(ServiceRequest<UpdateAgendaProgressRequest> request)
     {
         AgendaProgress updatedAgendaProgress = request.getPayload().getAgendaProgress();
-        UpdateAgendaProgressResponse response;
-
+        ErrorResponse errorResponse;
         // Retrieve the AgendaProgress (this is a global visibility request)
         DataObjectResponse<AgendaProgress> agendaProgressResponse = retrieveAgendaProgress(updatedAgendaProgress);
-        response = checkForRetrieveError(agendaProgressResponse, AgendaProgress.class, updatedAgendaProgress.getId(), request.getCID());
-        if(response != null) return response;
+        errorResponse = checkForRetrieveError(agendaProgressResponse, AgendaProgress.class, updatedAgendaProgress.getId(), request.getCID());
+        if(errorResponse != null) return new UpdateAgendaProgressResponse(errorResponse);
 
         // Retrieve the insight (confirms the caller can update this AgendaProgress)
         DataObjectResponse<Insight> insightResponse = retrieveInsight(request, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId());
-        response = checkForRetrieveError(insightResponse, Insight.class, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId(), request.getCID());
-        if(response != null) return response;
+        errorResponse = checkForRetrieveError(insightResponse, Insight.class, agendaProgressResponse.getFirst().getAgendaInsight().getInsightId(), request.getCID());
+        if(errorResponse != null) return new UpdateAgendaProgressResponse(errorResponse);
 
         AgendaProgressRequestProcessor agendaProgressRequestProcessor =
             new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
@@ -70,28 +72,13 @@ public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcesso
         return new UpdateAgendaProgressResponse(updateResponse.getErrorResponse());
     }
 
-    static <T extends IdentifiedObject> UpdateAgendaProgressResponse checkForRetrieveError(DataObjectResponse<T> serviceResponse, Class<T> retrieveClass, String id, String cid)
-    {
-        if(serviceResponse.isError())
-        {
-            return new UpdateAgendaProgressResponse(serviceResponse.getErrorResponse());
-        }
-        if(serviceResponse.getCount() == 0)
-        {
-            final String message = String.format("The %1$s specified was not found or is not visible: %2$s", retrieveClass.getSimpleName(), id);
-            logger.error(message);
-            return new UpdateAgendaProgressResponse(ErrorResponseFactory.badRequest(message, cid));
-        }
-        return null;
-    }
-
     private DataObjectResponse<Insight> retrieveInsight(ServiceRequest<UpdateAgendaProgressRequest> request, String insightId)
     {
         InsightRequestProcessor insightRequestProcessor = new InsightRequestProcessor(insightObjectPersister);
         DefaultDataObjectRequest<Insight> insightRequest = new DefaultDataObjectRequest<>();
         insightRequest.setId(insightId);
         insightRequest.setAuthorizationResponse(request.getAuthorizationResponse());
-        return insightRequestProcessor.processGET(insightRequest);
+        return insightRequestProcessor.handleGET(insightRequest);
     }
 
     private DataObjectResponse<AgendaProgress> retrieveAgendaProgress(AgendaProgress agendaProgress)
@@ -100,7 +87,7 @@ public class UpdateAgendaProgressServiceRequestProcessor extends RequestProcesso
         DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest = new DefaultDataObjectRequest<>();
         agendaProgressRequest.setId(agendaProgress.getId());
         agendaProgressRequest.setAuthorizationResponse(new AuthorizationResponse(null, null, null, DataVisibility.global));
-        return agendaProgressRequestProcessor.processGET(agendaProgressRequest);
+        return agendaProgressRequestProcessor.handleGET(agendaProgressRequest);
     }
 
     private DefaultDataObjectRequest<AgendaProgress> generateAgendaProgressRequest(ServiceRequest serviceRequest, AgendaProgress updatedProgress)

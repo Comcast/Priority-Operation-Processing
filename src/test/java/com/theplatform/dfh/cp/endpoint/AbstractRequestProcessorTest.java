@@ -37,7 +37,8 @@ public abstract class AbstractRequestProcessorTest<T extends IdentifiedObject>
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
-        DataObjectResponse<T> response = getRequestProcessor(getPersister()).handlePOST(request);
+        DataObjectRequestProcessor processor = getRequestProcessor(getPersister());
+        DataObjectResponse<T> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
         Assert.assertTrue(response.getErrorResponse().getTitle().contains("Unauthorized"));
     }
