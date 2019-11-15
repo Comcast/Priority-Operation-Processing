@@ -16,19 +16,18 @@ public abstract class AbstractServiceRequestProcessor<Res extends ServiceRespons
     protected RequestValidator<Req> getRequestValidator(){ return requestValidator; }
 
 
-    public static <T extends IdentifiedObject> ErrorResponse checkForRetrieveError(DataObjectResponse<T> serviceResponse, Class<T> retrieveClass, String id, String cid)
+    public static <T extends IdentifiedObject> void addErrorForObjectNotFound(DataObjectResponse<T> serviceResponse, Class<T> retrieveClass, String id, String cid)
     {
-        if(serviceResponse.isError())
+        if(!serviceResponse.isError())
         {
-            return serviceResponse.getErrorResponse();
+            if (serviceResponse.getCount() == 0)
+            {
+                final String message = String.format("The %1$s specified was not found or is not visible: %2$s", retrieveClass.getSimpleName(), id);
+                logger.error(message);
+                ErrorResponse errorResponse = ErrorResponseFactory.badRequest(message, cid);
+                serviceResponse.setErrorResponse(errorResponse);
+            }
         }
-        if(serviceResponse.getCount() == 0)
-        {
-            final String message = String.format("The %1$s specified was not found or is not visible: %2$s", retrieveClass.getSimpleName(), id);
-            logger.error(message);
-            return ErrorResponseFactory.badRequest(message, cid);
-        }
-        return null;
     }
 
     @Override
