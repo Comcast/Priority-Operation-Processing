@@ -162,8 +162,8 @@ public class CreateAgendaServiceRequestProcessor extends RequestProcessor<Create
         OperationProgressRequestProcessor operationProgressRequestProcessor = new OperationProgressRequestProcessor(operationProgressPersister);
         AgendaRequestProcessor agendaRequestProcessor = new AgendaRequestProcessor(agendaPersister,
             readyAgendaPersister,
-            new DataObjectRequestProcessorClient<>(agendaProgressRequestProcessor),
-            new DataObjectRequestProcessorClient<>(operationProgressRequestProcessor),
+            agendaProgressRequestProcessor,
+           operationProgressRequestProcessor,
             new InsightSelector(insightRequestProcessor, customerRequestProcessor));
         return agendaRequestProcessor;
     }

@@ -45,8 +45,8 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
     private static final String INSIGHT_ID = "theInsightId";
 
     private ObjectPersister<ReadyAgenda> mockReadyAgendaPersister;
-    private ObjectClient<AgendaProgress> mockAgendaProgressClient;
-    private ObjectClient<OperationProgress> mockOperationProgressClient;
+    private DataObjectRequestProcessor<AgendaProgress> mockAgendaProgressClient;
+    private DataObjectRequestProcessor<OperationProgress> mockOperationProgressClient;
     private InsightSelector mockInsightSelector;
 
     @BeforeMethod
@@ -54,8 +54,8 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
     {
         mockInsightSelector = mock(InsightSelector.class);
         mockReadyAgendaPersister = mock(ObjectPersister.class);
-        mockAgendaProgressClient = mock(ObjectClient.class);
-        mockOperationProgressClient = mock(ObjectClient.class);
+        mockAgendaProgressClient = mock(DataObjectRequestProcessor.class);
+        mockOperationProgressClient = mock(DataObjectRequestProcessor.class);
         Insight insight = new Insight();
         insight.setId(INSIGHT_ID);
         Mockito.when(mockInsightSelector.select(Mockito.any())).thenReturn(insight);
@@ -79,13 +79,13 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         agendaProgressResponse.setId(UUID.randomUUID().toString());
         DataObjectResponse<AgendaProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
         dataObjectResponse.add(agendaProgressResponse);
-        doReturn(dataObjectResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(dataObjectResponse).when(mockAgendaProgressClient).handlePOST(any());
 
         doReturn(new Agenda()).when(getPersister()).persist(any());
 
         DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
         opProgressResponse.add(new OperationProgress());
-        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).handlePOST(any());
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
@@ -95,7 +95,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
 
         Assert.assertEquals(agenda.getAgendaInsight().getInsightId(), INSIGHT_ID);
 
-        verify(mockOperationProgressClient, times(numOps)).persistObject(any());
+        verify(mockOperationProgressClient, times(numOps)).handlePOST(any());
         verify(mockReadyAgendaPersister, times(1)).persist(any());
     }
 
@@ -118,8 +118,8 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         Assert.assertNull(response.getFirst());
 
         // verify objects weren't created
-        verify(mockOperationProgressClient, times(0)).persistObject(any());
-        verify(mockAgendaProgressClient, times(0)).persistObject(any());
+        verify(mockOperationProgressClient, times(0)).handlePOST(any());
+        verify(mockAgendaProgressClient, times(0)).handlePOST(any());
         verify(getPersister(), times(0)).persist(any());
         verify(mockReadyAgendaPersister, times(0)).persist(any());
     }
@@ -130,7 +130,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         String cid = UUID.randomUUID().toString();
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.setErrorResponse(ErrorResponseFactory.unauthorized("Unauthorized request.", cid));
-        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).handlePOST(any());
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(getAgenda(1));
@@ -164,11 +164,11 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         agendaProgress.setId(UUID.randomUUID().toString());
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.add(agendaProgress);
-        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).handlePOST(any());
 
         DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
         opProgressResponse.setErrorResponse(ErrorResponseFactory.badRequest("Bad request", cid));
-        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).handlePOST(any());
 
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -178,7 +178,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         Assert.assertEquals(errorResponse.getTitle(), opProgressResponse.getErrorResponse().getTitle());
 
         // verify agendaProgress was cleaned up
-        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
+        verify(mockAgendaProgressClient, times(1)).handleDELETE(any());
 
         // verify objects weren't created
         verify(getPersister(), times(0)).persist(any());
@@ -201,15 +201,15 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         agendaProgress.setId(UUID.randomUUID().toString());
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.add(agendaProgress);
-        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).handlePOST(any());
 
         OperationProgress operationProgress = new OperationProgress();
         operationProgress.setId(UUID.randomUUID().toString());
         DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
         opProgressResponse.add(operationProgress);
-        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).handlePOST(any());
 
-        doReturn(new Agenda()).when(getPersister()).persist(any());
+        doReturn(agenda).when(getPersister()).persist(any());
 
         PersistenceException exception = new PersistenceException("Error persisting ReadyAgenda");
         doThrow(exception).when(mockReadyAgendaPersister).persist(any());
@@ -221,8 +221,8 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         Assert.assertEquals(errorResponse.getTitle(), "RuntimeException");
 
         // verify objects were cleaned up
-        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
-        verify(mockOperationProgressClient, times(1)).deleteObject(any());
+        verify(mockAgendaProgressClient, times(1)).handleDELETE(any());
+        verify(mockOperationProgressClient, times(1)).handleDELETE(any());
         verify(getPersister(), times(1)).delete(any());
     }
 
@@ -242,13 +242,13 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         agendaProgress.setId(UUID.randomUUID().toString());
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.add(agendaProgress);
-        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).handlePOST(any());
 
         OperationProgress operationProgress = new OperationProgress();
         operationProgress.setId(UUID.randomUUID().toString());
         DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
         opProgressResponse.add(operationProgress);
-        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).handlePOST(any());
 
         PersistenceException exception = new PersistenceException("Error persisting Agenda");
         doThrow(exception).when(getPersister()).persist(any());
@@ -260,8 +260,8 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         Assert.assertEquals(errorResponse.getTitle(), "BadRequestException");
 
         // verify objects were cleaned up
-        verify(mockAgendaProgressClient, times(1)).deleteObject(any());
-        verify(mockOperationProgressClient, times(1)).deleteObject(any());
+        verify(mockAgendaProgressClient, times(1)).handleDELETE(any());
+        verify(mockOperationProgressClient, times(1)).handleDELETE(any());
 
         // verify ReadyAgenda wasn't created
         verify(mockReadyAgendaPersister, times(0)).persist(any());
@@ -287,7 +287,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertFalse(response.isError());
 
-        verify(mockOperationProgressClient, times(numOps)).persistObject(any());
+        verify(mockOperationProgressClient, times(numOps)).handlePOST(any());
         verify(mockReadyAgendaPersister, times(0)).persist(any());
     }
 
@@ -312,13 +312,13 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         agendaProgressResponse.setId(UUID.randomUUID().toString());
         DataObjectResponse<AgendaProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
         dataObjectResponse.add(agendaProgressResponse);
-        doReturn(dataObjectResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(dataObjectResponse).when(mockAgendaProgressClient).handlePOST(any());
     }
     private void setUpOperationProgressMock()
     {
         DataObjectResponse<OperationProgress> opProgressResponse = new DefaultDataObjectResponse<>();
         opProgressResponse.add(new OperationProgress());
-        doReturn(opProgressResponse).when(mockOperationProgressClient).persistObject(any());
+        doReturn(opProgressResponse).when(mockOperationProgressClient).handlePOST(any());
     }
     @Override
     public Agenda getDataObject()
@@ -342,6 +342,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         }
 
         Agenda agenda = new Agenda();
+        agenda.setId(UUID.randomUUID().toString());
         agenda.setCustomerId(UUID.randomUUID().toString());
         agenda.setLinkId(UUID.randomUUID().toString());
         agenda.setJobId(UUID.randomUUID().toString());

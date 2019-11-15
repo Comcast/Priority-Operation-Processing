@@ -16,10 +16,8 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.Assert;
@@ -29,8 +27,6 @@ import org.testng.annotations.Test;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -46,8 +42,8 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
     private final String AGENDA_ID = "theAgendaId";
     private final String CUSTOMER_ID = "theCustomer";
 
-    private ObjectClient<AgendaProgress> mockAgendaProgressClient;
-    private ObjectClient<Agenda> mockAgendaClient;
+    private DataObjectRequestProcessor<AgendaProgress> mockAgendaProgressRequestProcessor;
+    private DataObjectRequestProcessor<Agenda> mockAgendaRequestProcessor;
     private DataObjectRequestProcessor<AgendaTemplate> mockAgendaTemplateClient;
     private AgendaFactory mockAgendaFactory;
     private AgendaTemplate idAgendaTemplate;
@@ -56,8 +52,8 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
     @BeforeMethod
     public void setup()
     {
-        mockAgendaProgressClient = mock(ObjectClient.class);
-        mockAgendaClient = mock(ObjectClient.class);
+        mockAgendaProgressRequestProcessor = mock(DataObjectRequestProcessor.class);
+        mockAgendaRequestProcessor = mock(DataObjectRequestProcessor.class);
         mockAgendaTemplateClient = mock(DataObjectRequestProcessor.class);
         mockAgendaFactory = mock(AgendaFactory.class);
         idAgendaTemplate = createAgendaTemplate();
@@ -69,8 +65,8 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
     public DataObjectRequestProcessor getRequestProcessor(ObjectPersister<TransformRequest> persister)
     {
         TransformRequestProcessor transformRequestProcessor = new TransformRequestProcessor(persister, null, null, null, null, null, null, null);
-        transformRequestProcessor.setAgendaClient(mockAgendaClient);
-        transformRequestProcessor.setAgendaProgressClient(mockAgendaProgressClient);
+        transformRequestProcessor.setAgendaRequestProcessor(mockAgendaRequestProcessor);
+        transformRequestProcessor.setAgendaProgressRequestProcessor(mockAgendaProgressRequestProcessor);
         transformRequestProcessor.setAgendaTemplateClient(mockAgendaTemplateClient);
         transformRequestProcessor.setAgendaFactory(mockAgendaFactory);
         return transformRequestProcessor;
@@ -91,7 +87,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         request.setDataObject(transformRequest);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
-        verify(mockAgendaProgressClient, times(2)).persistObject(any());
+        verify(mockAgendaProgressRequestProcessor, times(2)).processPOST(any());
         Assert.assertFalse(objectPersistResponse.isError());
         TransformRequest responseObject = objectPersistResponse.getFirst();
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
@@ -116,7 +112,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         request.setDataObject(transformRequest);
         request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
-        verify(mockAgendaProgressClient, times(1)).persistObject(any());
+        verify(mockAgendaProgressRequestProcessor, times(1)).processPOST(any());
         TransformRequest responseObject = objectPersistResponse.getFirst();
 
         Assert.assertEquals(responseObject.getParams().getString(GeneralParamKey.progressId), PROGRESS_ID);
@@ -134,7 +130,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         String cid = UUID.randomUUID().toString();
         DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
         agendaProgressResponse.setErrorResponse(ErrorResponseFactory.unauthorized("Unauthorized request.", cid));
-        doReturn(agendaProgressResponse).when(mockAgendaProgressClient).persistObject(any());
+        doReturn(agendaProgressResponse).when(mockAgendaProgressRequestProcessor).processPOST(any());
 
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
@@ -164,7 +160,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
 
         DataObjectResponse<Agenda> agendaResponse = new DefaultDataObjectResponse<>();
         agendaResponse.setErrorResponse(ErrorResponseFactory.badRequest("Bad request.", cid));
-        doReturn(agendaResponse).when(mockAgendaClient).persistObject(any());
+        doReturn(agendaResponse).when(mockAgendaRequestProcessor).handlePOST(any());
 
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
@@ -179,7 +175,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         Assert.assertEquals(errorResponse.getTitle(), "RuntimeException");
 
         verify(getPersister(), times(1)).delete(any());
-        verify(mockAgendaProgressClient, times(2)).deleteObject(any());
+        verify(mockAgendaProgressRequestProcessor, times(2)).handleDELETE(any());
     }
 
     @Test
@@ -265,7 +261,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
                 dataObjectResponse.add(result);
                 return dataObjectResponse;
             }
-        }).when(mockAgendaProgressClient).persistObject(any());
+        }).when(mockAgendaProgressRequestProcessor).processPOST(any());
     }
 
     private void setupAgendaTemplateClientMock(AgendaTemplate idLookupResult, AgendaTemplate nameLookupResult)
@@ -295,7 +291,8 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable
             {
-                Agenda agenda = (Agenda)invocationOnMock.getArguments()[0];
+                DataObjectRequest<Agenda> dataObjectRequest = (DataObjectRequest<Agenda>)invocationOnMock.getArguments()[0];
+                Agenda agenda = dataObjectRequest.getDataObject();
                 Agenda response =  new Agenda();
                 response.setId(AGENDA_ID);
                 ParamsMap paramsMap = new ParamsMap();
@@ -305,6 +302,6 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
                 dataObjectResponse.add(response);
                 return dataObjectResponse;
             }
-        }).when(mockAgendaClient).persistObject(any());
+        }).when(mockAgendaRequestProcessor).processPOST(any());
     }
 }

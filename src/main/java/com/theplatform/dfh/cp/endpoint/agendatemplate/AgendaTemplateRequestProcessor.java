@@ -7,6 +7,7 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**
  * AgendaTemplate specific RequestProcessor
+ * Agenda Templates can have global read access. This allows for a single template in a resource
  */
 public class AgendaTemplateRequestProcessor extends EndpointDataObjectRequestProcessor<AgendaTemplate>
 {

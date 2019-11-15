@@ -21,15 +21,17 @@ public class PersisterObjectTracker<T extends IdentifiedObject> extends ObjectTr
     @Override
     public void cleanUp()
     {
-        for (String id : getObjectIds())
+        for (T obj : getObjects())
         {
+            if(obj == null || obj.getId() == null) continue;
+
             try
             {
-                objectPersister.delete(id);
+                objectPersister.delete(obj.getId());
             }
             catch (PersistenceException e)
             {
-                logger.error("Failed to delete {} with id {}", getObjectClass().getSimpleName(), id, e);
+                logger.error("Failed to delete {} with id {}", getObjectClass().getSimpleName(), obj.getId(), e);
             }
         }
     }

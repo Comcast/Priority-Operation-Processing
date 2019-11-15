@@ -16,22 +16,22 @@ public abstract class ObjectTracker<T extends IdentifiedObject>
     private static final Logger logger = LoggerFactory.getLogger(EndpointObjectTracker.class);
 
     private Class<T> objectClass;
-    private List<String> objectIds;
+    private List<T> objects;
 
     public ObjectTracker(Class<T> clazz)
     {
         this.objectClass = clazz;
-        objectIds = new ArrayList<>();
+        objects = new ArrayList<>();
     }
 
-    public List<String> getObjectIds()
+    public List<T> getObjects()
     {
-        return objectIds;
+        return objects;
     }
 
-    public void registerObject(String id)
+    public void registerObject(T obj)
     {
-        objectIds.add(id);
+        objects.add(obj);
     }
 
     public Class<T> getObjectClass()

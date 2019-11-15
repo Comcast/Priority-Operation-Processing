@@ -19,7 +19,6 @@ import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
-import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
@@ -32,7 +31,6 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
@@ -52,8 +50,8 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
     public static final String CREATE_EXEC_PROGRESS_PARAM = "createExecProgress";
     private JsonHelper jsonHelper = new JsonHelper();
 
-    private ObjectClient<AgendaProgress> agendaProgressClient;
-    private ObjectClient<Agenda> agendaClient;
+    private DataObjectRequestProcessor<AgendaProgress> agendaProgressRequestProcessor;
+    private DataObjectRequestProcessor<Agenda> agendaRequestProcessor;
     private DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient;
     private AgendaFactory agendaFactory;
 
@@ -69,16 +67,16 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         )
     {
         super(transformRequestObjectPersister, new TransformValidator());
-        agendaProgressClient = new DataObjectRequestProcessorClient<>(new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister));
+        agendaProgressRequestProcessor = new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
         agendaTemplateClient = new AgendaTemplateRequestProcessor(agendaTemplatePersister);
-        agendaClient = new DataObjectRequestProcessorClient<>(new AgendaRequestProcessor(
+        agendaRequestProcessor = new AgendaRequestProcessor(
             agendaPersister,
             agendaProgressPersister,
             readyAgendaPersister,
             operationProgressPersister,
             insightPersister,
             customerPersister
-        ));
+        );
         agendaFactory = new DefaultAgendaFactory();
     }
 
@@ -95,7 +93,8 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         TransformRequest transformRequest = response.getFirst();
 
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();
-        ObjectTracker<AgendaProgress> agendaProgressTracker = trackerManager.register(new EndpointObjectTracker<>(agendaProgressClient, AgendaProgress.class));
+        ObjectTracker<AgendaProgress> agendaProgressTracker =
+            trackerManager.register(new EndpointObjectTracker<>(agendaProgressRequestProcessor, AgendaProgress.class, transformRequest.getCustomerId()));
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
 
@@ -122,7 +121,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             return new DefaultDataObjectResponse<>(prepAgendaProgressResponse.getErrorResponse());
         }
         AgendaProgress prepAgendaProgress = prepAgendaProgressResponse.getFirst();
-        agendaProgressTracker.registerObject(prepAgendaProgress.getId());
+        agendaProgressTracker.registerObject(prepAgendaProgress);
         transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgress.getId());
 
         // HACK - NOTE: This is a tempish hack so we don't create Exec progress when not needed. This needs to be revisited.
@@ -138,7 +137,7 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
                 return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
             }
             AgendaProgress execAgendaProgress = execAgendaProgressResponse.getFirst();
-            agendaProgressTracker.registerObject(execAgendaProgress.getId());
+            agendaProgressTracker.registerObject(execAgendaProgress);
             transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgress.getId());
         }
 
@@ -216,7 +215,9 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         DataObjectResponse<Agenda> prepAgendaResponse;
         try
         {
-            prepAgendaResponse = agendaClient.persistObject(agenda);
+            DefaultDataObjectRequest<Agenda> agendaRequest = new DefaultDataObjectRequest<>();
+            agendaRequest.setDataObject(agenda);
+            prepAgendaResponse = agendaRequestProcessor.processPOST(agendaRequest);
         }
         catch(Exception e)
         {
@@ -243,7 +244,9 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
         try
         {
-            return agendaProgressClient.persistObject(agendaProgress);
+            DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest = new DefaultDataObjectRequest<>();
+            agendaProgressRequest.setDataObject(agendaProgress);
+            return agendaProgressRequestProcessor.processPOST(agendaProgressRequest);
         }
         catch(Exception e)
         {
@@ -270,14 +273,15 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         this.jsonHelper = jsonHelper;
     }
 
-    public void setAgendaProgressClient(ObjectClient<AgendaProgress> agendaProgressClient)
+    public void setAgendaProgressRequestProcessor(
+        DataObjectRequestProcessor<AgendaProgress> agendaProgressRequestProcessor)
     {
-        this.agendaProgressClient = agendaProgressClient;
+        this.agendaProgressRequestProcessor = agendaProgressRequestProcessor;
     }
 
-    public void setAgendaClient(ObjectClient<Agenda> agendaClient)
+    public void setAgendaRequestProcessor(DataObjectRequestProcessor<Agenda> agendaRequestProcessor)
     {
-        this.agendaClient = agendaClient;
+        this.agendaRequestProcessor = agendaRequestProcessor;
     }
 
     public void setAgendaTemplateClient(DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient)
