@@ -4,12 +4,15 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaProgressReporter;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
+import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByAgendaProgressId;
@@ -75,26 +78,33 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         DataObjectResponse<AgendaProgress> response = super.handleGET(request);
         for (AgendaProgress agendaProgress : response.getAll())
         {
-            agendaProgress.setOperationProgress(getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId()));
+            DataObjectResponse<OperationProgress> opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
+            AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
+            if(opProgressResponse.isError())
+            {
+                response.setErrorResponse(opProgressResponse.getErrorResponse());
+                logger.error(opProgressResponse.getErrorResponse().getServerStackTrace());
+                return response;
+            }
+            agendaProgress.setOperationProgress(opProgressResponse.getAll().toArray(new OperationProgress[0]));
         }
         return response;
     }
 
-    private OperationProgress[] getOperationProgressObjects(String customerID, String agendaProgressId)
+    private DataObjectResponse<OperationProgress> getOperationProgressObjects(String customerID, String agendaProgressId)
     {
         ByAgendaProgressId byAgendaProgressId = new ByAgendaProgressId(agendaProgressId);
         try
         {
             DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(customerID, null);
             opProgressReq.setQueries(Collections.singletonList(byAgendaProgressId));
-            DataObjectResponse<OperationProgress> opProgresses = operationProgressClient.handleGET(opProgressReq);
-            return opProgresses.getAll().toArray(new OperationProgress[0]);
+            return operationProgressClient.handleGET(opProgressReq);
         }
         catch (ObjectClientException e)
         {
             logger.warn("Failed to retrieve OperationProgress objects. {}", e);
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.runtimeServiceException(e.getMessage(), null));
         }
-        return null;
     }
 
     @Override
@@ -105,13 +115,20 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
 
         // todo this will result in SO many calls.  Is there a better way to do this?
         // delete operationProgress objects
-        OperationProgress[] operationProgressObjects = getOperationProgressObjects(agendaProgress.getCustomerId(), request.getId());
-
-        if(operationProgressObjects != null)
+        DataObjectResponse<OperationProgress> opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
+        AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
+        if(opProgressResponse.isError())
         {
-            for (int i = 0; i < operationProgressObjects.length; i++)
+            response.setErrorResponse(opProgressResponse.getErrorResponse());
+            logger.error(opProgressResponse.getErrorResponse().getServerStackTrace());
+            return response;
+        }
+        OperationProgress[] operationProgresses = opProgressResponse.getAll().toArray(new OperationProgress[0]);
+        if(operationProgresses != null)
+        {
+            for (int i = 0; i < operationProgresses.length; i++)
             {
-                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(agendaProgress.getCustomerId(), operationProgressObjects[i]);
+                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(agendaProgress.getCustomerId(), operationProgresses[i]);
                 operationProgressClient.handleDELETE(opProgressReq);
             }
         }
