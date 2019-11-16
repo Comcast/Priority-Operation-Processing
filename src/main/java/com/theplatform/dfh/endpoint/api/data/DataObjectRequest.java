@@ -11,4 +11,5 @@ public interface DataObjectRequest<T extends IdentifiedObject> extends ServiceRe
     String getId();
     T getDataObject();
     List<Query> getQueries();
+    void setQueries(List<Query> queries);
 }

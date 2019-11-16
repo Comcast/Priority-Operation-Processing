@@ -38,7 +38,7 @@ public class DefaultDataObjectRequest<T extends IdentifiedObject> extends Defaul
     public static <T extends IdentifiedObject> DataObjectRequest<T> serviceUserAuthInstance(T payload)
     {
         DefaultDataObjectRequest<T> req = new DefaultDataObjectRequest<>();
-        req.setAuthorizationResponse(new AuthorizationResponse(null, null, Collections.singleton(payload.getCustomerId()), DataVisibility.global));
+        req.setAuthorizationResponse(new AuthorizationResponse(null, null, null, DataVisibility.global));
         req.setDataObject(payload);
         if(payload != null)
             req.setId(payload.getId());
