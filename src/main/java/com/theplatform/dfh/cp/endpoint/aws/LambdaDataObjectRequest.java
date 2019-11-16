@@ -94,4 +94,10 @@ public class LambdaDataObjectRequest<T extends IdentifiedObject> extends LambdaR
         }
         return value;
     }
+
+    @Override
+    public void setQueries(List<Query> queries)
+    {
+        dataObjectRequest.setQueries(queries);
+    }
 }
