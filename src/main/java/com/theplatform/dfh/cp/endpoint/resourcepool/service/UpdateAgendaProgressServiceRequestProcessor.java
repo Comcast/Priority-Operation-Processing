@@ -14,6 +14,7 @@ import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
@@ -65,10 +66,10 @@ public class UpdateAgendaProgressServiceRequestProcessor extends AbstractService
 
         AgendaProgressRequestProcessor agendaProgressRequestProcessor =
             new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
-        DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest =
-            generateAgendaProgressRequest(request, generateUpdatedAgendaProgress(agendaProgressResponse.getFirst(), request.getPayload().getAgendaProgress()));
+        AgendaProgress updatedProgress = generateUpdatedAgendaProgress(request.getCID(), agendaProgressResponse.getFirst(), request.getPayload().getAgendaProgress());
+        DataObjectRequest<AgendaProgress> agendaProgressReq = DefaultDataObjectRequest.customerAuthInstance(updatedProgress.getCustomerId(), updatedProgress);
         // NOTE: the put method is used to update an existing AgendaProgress
-        DataObjectResponse<AgendaProgress> updateResponse = agendaProgressRequestProcessor.handlePUT(agendaProgressRequest);
+        DataObjectResponse<AgendaProgress> updateResponse = agendaProgressRequestProcessor.handlePUT(agendaProgressReq);
         return new UpdateAgendaProgressResponse(updateResponse.getErrorResponse());
     }
 
@@ -84,22 +85,9 @@ public class UpdateAgendaProgressServiceRequestProcessor extends AbstractService
     private DataObjectResponse<AgendaProgress> retrieveAgendaProgress(AgendaProgress agendaProgress)
     {
         AgendaProgressRequestProcessor agendaProgressRequestProcessor = new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
-        DefaultDataObjectRequest<AgendaProgress> agendaProgressRequest = new DefaultDataObjectRequest<>();
-        agendaProgressRequest.setId(agendaProgress.getId());
-        agendaProgressRequest.setAuthorizationResponse(new AuthorizationResponse(null, null, null, DataVisibility.global));
-        return agendaProgressRequestProcessor.handleGET(agendaProgressRequest);
-    }
 
-    private DefaultDataObjectRequest<AgendaProgress> generateAgendaProgressRequest(ServiceRequest serviceRequest, AgendaProgress updatedProgress)
-    {
-        DefaultDataObjectRequest<AgendaProgress> agendaReq = new DefaultDataObjectRequest<>();
-        agendaReq.setCid(serviceRequest.getCID());
-        // because this is an internally constructed request the id must be set
-        agendaReq.setId(updatedProgress.getId());
-        agendaReq.setPayload(updatedProgress);
-        agendaReq.setAuthorizationResponse(
-            new AuthorizationResponse(null, null, Collections.singleton(updatedProgress.getCustomerId()), DataVisibility.authorized_account));
-        return agendaReq;
+        DataObjectRequest<AgendaProgress> agendaProgressRequest = DefaultDataObjectRequest.serviceUserAuthInstance(agendaProgress);
+        return agendaProgressRequestProcessor.handleGET(agendaProgressRequest);
     }
 
     /**
@@ -108,7 +96,7 @@ public class UpdateAgendaProgressServiceRequestProcessor extends AbstractService
      * @param updatedProgress The to-be-updated progress object
      * @return
      */
-    static AgendaProgress generateUpdatedAgendaProgress(AgendaProgress currentProgress, AgendaProgress updatedProgress)
+    static AgendaProgress generateUpdatedAgendaProgress(String cid, AgendaProgress currentProgress, AgendaProgress updatedProgress)
     {
         AgendaProgress generatedProgress = new AgendaProgress();
         generatedProgress.setId(currentProgress.getId());
@@ -120,6 +108,7 @@ public class UpdateAgendaProgressServiceRequestProcessor extends AbstractService
         generatedProgress.setProcessingState(updatedProgress.getProcessingState());
         generatedProgress.setStartedTime(updatedProgress.getStartedTime());
         generatedProgress.setCompletedTime(updatedProgress.getCompletedTime());
+        generatedProgress.setCid(cid);
         return generatedProgress;
     }
 }

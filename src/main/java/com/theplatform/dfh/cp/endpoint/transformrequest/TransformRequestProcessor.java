@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.AgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.DefaultAgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.AgendaTemplateRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
@@ -20,6 +21,7 @@ import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.cleanup.PersisterObjectTracker;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
@@ -93,20 +95,17 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         TransformRequest transformRequest = response.getFirst();
 
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();
-        ObjectTracker<AgendaProgress> agendaProgressTracker =
-            trackerManager.register(new EndpointObjectTracker<>(agendaProgressRequestProcessor, AgendaProgress.class, transformRequest.getCustomerId()));
+        trackerManager.register(new EndpointObjectTracker<>(agendaProgressRequestProcessor, AgendaProgress.class, transformRequest.getCustomerId()));
+        trackerManager.register(new PersisterObjectTracker<>(getObjectPersister(), TransformRequest.class));
+        trackerManager.track(transformRequest);
 
         if(transformRequest.getParams() == null) transformRequest.setParams(new ParamsMap());
 
         DataObjectResponse<AgendaTemplate> agendaTemplateResponse = retrieveAgendaTemplate(request.getAuthorizationResponse(), transformRequest, request.getCID());
+        AbstractServiceRequestProcessor.addErrorForObjectNotFound(agendaTemplateResponse, AgendaTemplate.class, transformRequest.getId(), request.getCID());
         if(agendaTemplateResponse.isError())
         {
             return new DefaultDataObjectResponse<>(agendaTemplateResponse.getErrorResponse());
-        }
-        if(agendaTemplateResponse.getCount() == 0)
-        {
-            return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(
-                new RuntimeException("The AgendaTemplate specified was not found or is not visible to your user."), 400, request.getCID()));
         }
         AgendaTemplate agendaTemplate = agendaTemplateResponse.getFirst();
 
@@ -117,11 +116,10 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
         if (prepAgendaProgressResponse.isError())
         {
-            deleteTransformRequest(transformRequest.getId());
             return new DefaultDataObjectResponse<>(prepAgendaProgressResponse.getErrorResponse());
         }
         AgendaProgress prepAgendaProgress = prepAgendaProgressResponse.getFirst();
-        agendaProgressTracker.registerObject(prepAgendaProgress);
+        trackerManager.track(prepAgendaProgress);
         transformRequest.getParams().put(GeneralParamKey.progressId, prepAgendaProgress.getId());
 
         // HACK - NOTE: This is a tempish hack so we don't create Exec progress when not needed. This needs to be revisited.
@@ -132,19 +130,17 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
                 transformRequest.getLinkId(), transformRequest.getExternalId(), transformRequest.getCustomerId(), transformRequest.getCid());
             if (execAgendaProgressResponse.isError())
             {
-                deleteTransformRequest(transformRequest.getId());
                 trackerManager.cleanUp();
                 return new DefaultDataObjectResponse<>(execAgendaProgressResponse.getErrorResponse());
             }
             AgendaProgress execAgendaProgress = execAgendaProgressResponse.getFirst();
-            agendaProgressTracker.registerObject(execAgendaProgress);
+            trackerManager.track(execAgendaProgress);
             transformRequest.getParams().put(GeneralParamKey.execProgressId, execAgendaProgress.getId());
         }
 
         DataObjectResponse<Agenda> agendaResponse = createAgenda(agendaTemplate, transformRequest, prepAgendaProgressResponse.getFirst(), request.getCID());
         if (agendaResponse.isError())
         {
-            deleteTransformRequest(transformRequest.getId());
             trackerManager.cleanUp();
             return new DefaultDataObjectResponse<>(agendaResponse.getErrorResponse());
         }
@@ -157,7 +153,6 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         }
         catch(PersistenceException e)
         {
-            deleteTransformRequest(transformRequest.getId());
             trackerManager.cleanUp();
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.buildErrorResponse(e, 500, request.getCID()));
         }
@@ -289,16 +284,5 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
     public void setAgendaTemplateClient(DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient)
     {
         this.agendaTemplateClient = agendaTemplateClient;
-    }
-
-    private void deleteTransformRequest(String id)
-    {
-        try
-        {
-            objectPersister.delete(id);
-        } catch (PersistenceException e)
-        {
-            logger.error("Failed to delete TransformRequest with id {}", id, e);
-        }
     }
 }

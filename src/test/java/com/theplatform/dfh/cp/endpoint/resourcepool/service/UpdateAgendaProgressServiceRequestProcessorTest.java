@@ -65,7 +65,7 @@ public class UpdateAgendaProgressServiceRequestProcessorTest
         updatedProgress.setStartedTime(STARTED);
         updatedProgress.setCompletedTime(COMPLETED);
 
-        AgendaProgress generatedProgress = UpdateAgendaProgressServiceRequestProcessor.generateUpdatedAgendaProgress(existingProgress, updatedProgress);
+        AgendaProgress generatedProgress = UpdateAgendaProgressServiceRequestProcessor.generateUpdatedAgendaProgress("cid", existingProgress, updatedProgress);
         Assert.assertEquals(generatedProgress.getId(), ID);
         Assert.assertEquals(generatedProgress.getPercentComplete(), PERCENT);
         Assert.assertEquals(generatedProgress.getDiagnosticEvents(), DIAGNOSTICS);

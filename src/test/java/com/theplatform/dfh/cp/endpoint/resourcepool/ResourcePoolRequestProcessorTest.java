@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -29,12 +30,12 @@ import static org.mockito.Mockito.verify;
 
 public class ResourcePoolRequestProcessorTest extends AbstractRequestProcessorTest<ResourcePool>
 {
-    private ObjectClient<Insight> mockInsightClient;
+    private InsightRequestProcessor mockInsightClient;
 
     @BeforeMethod
     public void setup()
     {
-        mockInsightClient = mock(ObjectClient.class);
+        mockInsightClient = mock(InsightRequestProcessor.class);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ResourcePoolRequestProcessorTest extends AbstractRequestProcessorTe
     {
         DataObjectResponse<ResourcePool> response = generateErrorResponse(ResourcePool.class);
         ((ResourcePoolRequestProcessor)getRequestProcessor(getPersister())).addInsightIds(response);
-        verify(mockInsightClient, times(0)).getObjects(anyList());
+        verify(mockInsightClient, times(0)).handleGET(any());
     }
 
     @DataProvider
@@ -84,7 +85,7 @@ public class ResourcePoolRequestProcessorTest extends AbstractRequestProcessorTe
             {
                 return generateResponse(insightsPerResourcePoolCount[callCount++], Insight.class);
             }
-        }).when(mockInsightClient).getObjects(anyList());
+        }).when(mockInsightClient).handleGET(any());
         ((ResourcePoolRequestProcessor)getRequestProcessor(getPersister())).addInsightIds(resourcePoolResponse);
         Assert.assertFalse(resourcePoolResponse.isError());
         Assert.assertEquals(resourcePoolResponse.getCount(), new Integer(insightsPerResourcePoolCount.length));
@@ -107,7 +108,7 @@ public class ResourcePoolRequestProcessorTest extends AbstractRequestProcessorTe
     {
         DataObjectResponse<ResourcePool> resourcePoolResponse = generateResponse(1, ResourcePool.class);
         DataObjectResponse<Insight> insightErrorResponse = generateErrorResponse(Insight.class);
-        doReturn(insightErrorResponse).when(mockInsightClient).getObjects(anyList());
+        doReturn(insightErrorResponse).when(mockInsightClient).handleGET(any());
         ((ResourcePoolRequestProcessor)getRequestProcessor(getPersister())).addInsightIds(resourcePoolResponse);
         Assert.assertTrue(resourcePoolResponse.isError());
     }

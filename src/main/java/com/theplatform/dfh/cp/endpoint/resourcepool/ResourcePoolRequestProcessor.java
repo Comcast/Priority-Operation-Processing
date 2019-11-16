@@ -3,12 +3,14 @@ package com.theplatform.dfh.cp.endpoint.resourcepool;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -20,15 +22,15 @@ import java.util.stream.Collectors;
 /**
  * Request processor for the Facility Endpoint
  */
-public class ResourcePoolRequestProcessor extends DataObjectRequestProcessor<ResourcePool>
+public class ResourcePoolRequestProcessor extends EndpointDataObjectRequestProcessor<ResourcePool>
 {
-    private ObjectClient<Insight> insightClient;
+    private InsightRequestProcessor insightClient;
 
     public ResourcePoolRequestProcessor(ObjectPersister<ResourcePool> resourcePoolObjectPersister,
         ObjectPersister<Insight> insightObjectPersister)
     {
         super(resourcePoolObjectPersister);
-        insightClient = new DataObjectRequestProcessorClient<>(new InsightRequestProcessor(insightObjectPersister));
+        insightClient = new InsightRequestProcessor(insightObjectPersister);
 
     }
 
@@ -50,7 +52,11 @@ public class ResourcePoolRequestProcessor extends DataObjectRequestProcessor<Res
         {
             for(ResourcePool resourcePool : response.getAll())
             {
-                DataObjectResponse<Insight> insightsResponse = insightClient.getObjects(Collections.singletonList(new ByResourcePoolId(resourcePool.getId())));
+                //Since the resource pool visibility has already taken place, then we know we can access it's insights.
+                DataObjectRequest<Insight> request = DefaultDataObjectRequest.serviceUserAuthInstance(null);
+                request.setQueries(Collections.singletonList(new ByResourcePoolId(resourcePool.getId())));
+
+                DataObjectResponse<Insight> insightsResponse = insightClient.handleGET(request);
                 if(!insightsResponse.isError())
                 {
                     if(insightsResponse.getCount() != null)
@@ -76,7 +82,7 @@ public class ResourcePoolRequestProcessor extends DataObjectRequestProcessor<Res
         }
     }
 
-    protected ResourcePoolRequestProcessor setInsightClient(ObjectClient<Insight> insightClient)
+    protected ResourcePoolRequestProcessor setInsightClient(InsightRequestProcessor insightClient)
     {
         this.insightClient = insightClient;
         return this;
