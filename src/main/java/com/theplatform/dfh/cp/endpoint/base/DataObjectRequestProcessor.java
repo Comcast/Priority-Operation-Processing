@@ -163,8 +163,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
             }
 
             // NOTE: the default update implementation is just a persist call
-            objectPersister.update(dataObjectToUpdate);
-            response.add(dataObjectToUpdate);
+            response.add(objectPersister.update(dataObjectToUpdate));
             return response;
         }
         catch(PersistenceException e)
@@ -187,6 +186,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
         if(getRequestValidator() != null) getRequestValidator().validateDELETE(request);
         try
         {
+            DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
             if(request.getId() != null)
             {
                 T object = objectPersister.retrieve(request.getId());
@@ -198,10 +198,10 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
                                 String.format(AUTHORIZATION_EXCEPTION, object.getCustomerId()), request.getCID()));
 
                     objectPersister.delete(request.getId());
-
+                    response.add(object);
                 }
             }
-            return new DefaultDataObjectResponse<>();
+            return response;
         }
         catch(PersistenceException e)
         {
