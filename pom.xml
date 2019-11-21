@@ -27,7 +27,7 @@
         <http-request-handler-api.version>1.0.2-SNAPSHOT</http-request-handler-api.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
-        <dfh-queue-api.version>1.0.0-SNAPSHOT</dfh-queue-api.version>
+        <dfh-queue-api.version>1.0.1</dfh-queue-api.version>
     </properties>
 
     <dependencies>
