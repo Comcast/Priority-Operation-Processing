@@ -30,7 +30,7 @@ public class URLRequestPerformer
             output.close();
         }
 
-        logger.info("performURLRequest: [" + connection.getRequestMethod() + "]");
+        logger.info("performURLRequest: {} {}", connection.getRequestMethod(), connection.getURL());
 
         InputStream is = connection.getInputStream();
 
