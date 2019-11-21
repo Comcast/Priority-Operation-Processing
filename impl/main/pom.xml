@@ -19,7 +19,7 @@
         <queue-api.version>1.0.1</queue-api.version>
         <queue-sqs-api.version>1.0.0</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <dfh-object-api.version>1.0.0</dfh-object-api.version>
+        <dfh-object-api.version>1.0.1</dfh-object-api.version>
     </properties>
     
     <dependencies>
