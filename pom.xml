@@ -20,7 +20,7 @@
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
         <scheduling-queue-impl.version>1.0.0-SNAPSHOT</scheduling-queue-impl.version>
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
-        <dfh-module-queue-aws-sqs.version>1.0.1</dfh-module-queue-aws-sqs.version>
+        <dfh-module-queue-aws-sqs.version>1.0.2</dfh-module-queue-aws-sqs.version>
         <dfh-persistence-aws-dynamodb.version>1.0.1-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
         <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
         <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
