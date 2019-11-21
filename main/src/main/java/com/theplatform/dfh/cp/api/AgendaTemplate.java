@@ -9,7 +9,7 @@ public class AgendaTemplate extends AllowedCustomerEndpointDataObject implements
     private ParamsMap staticParameters;
     private ParamsMap params;
     private Agenda agenda;
-    private Boolean defaultTemplate;
+    private Boolean isDefaultTemplate;
     private Boolean isGlobal;
 
     public String getTitle()
@@ -52,14 +52,14 @@ public class AgendaTemplate extends AllowedCustomerEndpointDataObject implements
         this.agenda = agenda;
     }
 
-    public Boolean isDefaultTemplate()
+    public Boolean getIsDefaultTemplate()
     {
-        return defaultTemplate;
+        return isDefaultTemplate;
     }
 
-    public void setDefaultTemplate(Boolean defaultTemplate)
+    public void setIsDefaultTemplate(Boolean defaultTemplate)
     {
-        this.defaultTemplate = defaultTemplate;
+        isDefaultTemplate = defaultTemplate;
     }
 
     public Boolean isGlobal()
