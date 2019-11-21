@@ -28,7 +28,7 @@ public class AgendaTemplateRequestProcessor extends EndpointDataObjectRequestPro
     protected AgendaTemplate defaultFieldsOnCreate(AgendaTemplate object)
     {
         if(object.getIsGlobal() == null) object.setIsGlobal(false);
-        if(object.isDefaultTemplate() == null) object.setDefaultTemplate(false);
+        if(object.getIsDefaultTemplate() == null) object.setIsDefaultTemplate(false);
         return object;
     }
 }
