@@ -95,7 +95,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     {
         if(getRequestValidator() != null) getRequestValidator().validatePOST(request);
 
-        T dataObject = request.getDataObject();
+        T dataObject = defaultFieldsOnCreate(request.getDataObject());
         DefaultDataObjectResponse<T> response = new DefaultDataObjectResponse<>();
         VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.POST);
 
@@ -210,6 +210,10 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
         }
     }
 
+    protected T defaultFieldsOnCreate(T object)
+    {
+        return object;
+    }
 
     public DataObjectRequestProcessor<T> setVisibilityFilterMap(
         VisibilityFilterMap<T, DataObjectRequest<T>> map)
