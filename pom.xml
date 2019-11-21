@@ -16,7 +16,6 @@
     <properties>
         <scheduling-api.version>1.0.0-SNAPSHOT</scheduling-api.version>
         <persistent-api.version>1.0.0-SNAPSHOT</persistent-api.version>
-        <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
         <scheduling-agenga-fairness.version>1.0.0-SNAPSHOT</scheduling-agenga-fairness.version>
         <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
@@ -38,11 +37,6 @@
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${persistent-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.modules.queue</groupId>
-            <artifactId>pl-dfh-modules-queue-api</artifactId>
-            <version>${queue-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.scheduling.api</groupId>
