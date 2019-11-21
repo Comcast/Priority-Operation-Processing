@@ -9,11 +9,11 @@ public class Insight extends AllowedCustomerEndpointDataObject implements Global
 {
     private String resourcePoolId;
     private String queueName;
-    private int queueSize;
+    private Integer queueSize;
     private SchedulingAlgorithm schedulingAlgorithm;
     private Map<String, Set<String>> mappers;
     private String title;
-    private boolean isGlobal = false;
+    private Boolean isGlobal;
 
     public String getResourcePoolId()
     {
@@ -54,12 +54,12 @@ public class Insight extends AllowedCustomerEndpointDataObject implements Global
         this.queueName = queueName;
     }
 
-    public int getQueueSize()
+    public Integer getQueueSize()
     {
         return queueSize;
     }
 
-    public void setQueueSize(int queueSize)
+    public void setQueueSize(Integer queueSize)
     {
         this.queueSize = queueSize;
     }
@@ -92,15 +92,15 @@ public class Insight extends AllowedCustomerEndpointDataObject implements Global
         this.title = title;
     }
 
-    public boolean isGlobal()
+    public Boolean isGlobal()
     {
         return isGlobal;
     }
-    public boolean getIsGlobal()
+    public Boolean getIsGlobal()
     {
         return isGlobal;
     }
-    public void setIsGlobal(boolean global)
+    public void setIsGlobal(Boolean global)
     {
         isGlobal = global;
     }

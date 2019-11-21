@@ -13,7 +13,7 @@ public class OperationProgress extends DefaultEndpointDataObject
     private String operation;
     private DiagnosticEvent[] diagnosticEvents;
     private Double percentComplete;
-    private int attemptCount;
+    private Integer attemptCount;
     private Date attemptTime;
     private Date startedTime;
     private Date completedTime;
@@ -60,12 +60,12 @@ public class OperationProgress extends DefaultEndpointDataObject
         this.operation = operation;
     }
 
-    public int getAttemptCount()
+    public Integer getAttemptCount()
     {
         return attemptCount;
     }
 
-    public void setAttemptCount(int attemptCount)
+    public void setAttemptCount(Integer attemptCount)
     {
         this.attemptCount = attemptCount;
     }

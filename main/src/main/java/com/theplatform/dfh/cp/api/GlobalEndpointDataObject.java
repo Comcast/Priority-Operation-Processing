@@ -4,7 +4,7 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 
 public interface GlobalEndpointDataObject extends IdentifiedObject
 {
-    public boolean isGlobal();
-    public boolean getIsGlobal();
-    public void setIsGlobal(boolean global);
+    Boolean isGlobal();
+    Boolean getIsGlobal();
+    void setIsGlobal(Boolean global);
 }
