@@ -16,7 +16,7 @@
     <properties>
         <persistence-api.version>1.0.1-SNAPSHOT</persistence-api.version>
         <persistence-impl.version>1.0.1-SNAPSHOT</persistence-impl.version>
-        <dfh-object-api.version>1.0.2-SNAPSHOT</dfh-object-api.version>
+        <dfh-object-api.version>1.0.1</dfh-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <dfh-compression.version>1.0.0</dfh-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>

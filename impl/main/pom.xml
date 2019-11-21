@@ -15,7 +15,7 @@
 
     <properties>
         <persistence-api.version>1.0.1-SNAPSHOT</persistence-api.version>
-        <dfh-object-api.version>1.0.2-SNAPSHOT</dfh-object-api.version>
+        <dfh-object-api.version>1.0.1</dfh-object-api.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
     </properties>
