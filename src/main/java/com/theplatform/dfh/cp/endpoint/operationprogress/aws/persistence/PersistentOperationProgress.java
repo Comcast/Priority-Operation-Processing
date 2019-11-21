@@ -71,7 +71,7 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
-    public int getAttemptCount()
+    public Integer getAttemptCount()
     {
         return super.getAttemptCount();
     }

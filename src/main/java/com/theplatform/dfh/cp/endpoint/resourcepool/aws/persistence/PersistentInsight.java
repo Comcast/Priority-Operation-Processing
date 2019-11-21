@@ -63,7 +63,7 @@ public class PersistentInsight extends Insight
     }
 
     @Override
-    public int getQueueSize()
+    public Integer getQueueSize()
     {
         return super.getQueueSize();
     }
@@ -81,7 +81,7 @@ public class PersistentInsight extends Insight
     }
 
     @Override
-    public boolean getIsGlobal()
+    public Boolean getIsGlobal()
     {
         return super.getIsGlobal();
     }
