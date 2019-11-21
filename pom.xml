@@ -10,13 +10,19 @@
     <groupId>com.theplatform.dfh.modules.http</groupId>
     <artifactId>pl-dfh-http-api</artifactId>
     <version>1.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>API for HTTP connectivity</name>
+
+    <properties>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.13</version>
+            <version>${slf4j-api.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-    <packaging>jar</packaging>
-    <name>API for HTTP connectivity</name>
 </project>
