@@ -24,4 +24,11 @@ public class AgendaTemplateRequestProcessor extends EndpointDataObjectRequestPro
         setVisibilityFilter(VisibilityMethod.GET, globalObjectReadVisibilityFilter);
     }
 
+    @Override
+    protected AgendaTemplate defaultFieldsOnCreate(AgendaTemplate object)
+    {
+        if(object.getIsGlobal() == null) object.setIsGlobal(false);
+        if(object.isDefaultTemplate() == null) object.setDefaultTemplate(false);
+        return object;
+    }
 }

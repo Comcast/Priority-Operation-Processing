@@ -26,12 +26,18 @@ public class InsightRequestProcessor extends EndpointDataObjectRequestProcessor<
     }
 
     @Override
+    protected Insight defaultFieldsOnCreate(Insight object)
+    {
+        if(object.isGlobal() == null) object.setIsGlobal(false);
+        if(object.getQueueSize() == null) object.setQueueSize(0);
+        return object;
+    }
+
+    @Override
     public RequestValidator<DataObjectRequest<Insight>> getRequestValidator()
     {
         return new InsightValidator();
     }
-
-
 
     public static InsightRequestProcessor getServiceInstance(ObjectPersister<Insight> insightObjectPersister, ServiceRequest<Insight> serviceRequest)
     {

@@ -13,4 +13,11 @@ public class OperationProgressRequestProcessor extends EndpointDataObjectRequest
     {
         super(operationProgressRequestObjectPersister);
     }
+
+    @Override
+    protected OperationProgress defaultFieldsOnCreate(OperationProgress object)
+    {
+        if(object.getAttemptCount() == null) object.setAttemptCount(0);
+        return object;
+    }
 }
