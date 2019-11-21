@@ -98,6 +98,12 @@ public class PersistentAgendaTemplate extends AgendaTemplate
     }
 
     @Override
+    public Boolean getIsDefaultTemplate()
+    {
+        return super.getIsDefaultTemplate();
+    }
+
+    @Override
     public Boolean getIsGlobal()
     {
         return super.getIsGlobal();
