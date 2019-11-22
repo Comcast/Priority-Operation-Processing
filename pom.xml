@@ -20,7 +20,7 @@
         <agenda-reclaimer.version>1.0.0-SNAPSHOT</agenda-reclaimer.version>
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
-        <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
+        <idm-http.version>1.0.1</idm-http.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
         <data-object-reaper-aws.version>1.0.0-SNAPSHOT</data-object-reaper-aws.version>
