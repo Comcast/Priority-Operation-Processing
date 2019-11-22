@@ -14,7 +14,7 @@
     <name>Scheduling Queue Monitor implementation</name>
 
     <properties>
-        <scheduling-api.version>1.0.0-SNAPSHOT</scheduling-api.version>
+        <scheduling-api.version>1.0.0</scheduling-api.version>
         <persistent-api.version>1.0.1-SNAPSHOT</persistent-api.version>
         <queue-api.version>1.0.1</queue-api.version>
         <scheduling-agenga-fairness.version>1.0.0-SNAPSHOT</scheduling-agenga-fairness.version>
