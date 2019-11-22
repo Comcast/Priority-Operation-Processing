@@ -23,7 +23,7 @@
         <dfh-module-queue-aws-sqs.version>1.0.2</dfh-module-queue-aws-sqs.version>
         <dfh-persistence-aws-dynamodb.version>1.0.1-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
         <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
-        <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
+        <idm-http.version>1.0.1</idm-http.version>
         <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-impl-aws.version>1.0.0-SNAPSHOT</endpoint-impl-aws.version>
