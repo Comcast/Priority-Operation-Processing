@@ -14,7 +14,7 @@
     <name>Agenda Reclaimer implementation</name>
 
     <properties>
-        <scheduling-api.version>1.0.0-SNAPSHOT</scheduling-api.version>
+        <scheduling-api.version>1.0.0</scheduling-api.version>
         <persistent-api.version>1.0.0-SNAPSHOT</persistent-api.version>
         <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
