@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.modules.http</groupId>
     <artifactId>pl-dfh-http-util</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <properties>
         <slf4j-api.version>1.7.25</slf4j-api.version>
     </properties>
