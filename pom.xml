@@ -21,7 +21,7 @@
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <dfh-persistence-aws-dynamodb.version>1.0.1-SNAPSHOT</dfh-persistence-aws-dynamodb.version>
         <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
-        <idm-http.version>1.0.0-SNAPSHOT</idm-http.version>
+        <idm-http.version>1.0.1</idm-http.version>
         <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
         <commons-http-client.version>3.1</commons-http-client.version>
     </properties>
