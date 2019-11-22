@@ -20,7 +20,7 @@
         <dfh-module-version-info.version>1.0.0-SNAPSHOT</dfh-module-version-info.version>
         <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
         <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
-        <dfh-producer-consumer-util>1.0.0-SNAPSHOT</dfh-producer-consumer-util>
+        <dfh-producer-consumer-util>1.0.1</dfh-producer-consumer-util>
         <dfh-dynamodb.version>1.0.1</dfh-dynamodb.version>
     </properties>
 
