@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh</groupId>
     <artifactId>pl-dfh-producer-consumer-util</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Producer Consumer Utilities</name>
 
