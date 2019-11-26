@@ -2,20 +2,20 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.theplatform.dfh.cp.handler</groupId>
     <artifactId>pl-dfh-cp-handler-base</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Base</name>
 
     <properties>
         <json-helper.version>1.0.1</json-helper.version>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
+        <cp-api.version>1.0.2</cp-api.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
