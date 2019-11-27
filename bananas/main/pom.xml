@@ -2,14 +2,14 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-monitor-bananas</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Alerting monitors using Bananas</name>
 
@@ -18,7 +18,7 @@
         <commons-lang3.version>3.1</commons-lang3.version>
         <apache-httpclient.version>4.5.2</apache-httpclient.version>
         <jackson-databind.version>2.9.6</jackson-databind.version>
-        <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
+        <dfh-monitor.version>1.0.0</dfh-monitor.version>
     </properties>
     
     <dependencies>

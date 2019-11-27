@@ -2,21 +2,21 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-monitor-graphite</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>graphite metrics</name>
 
     <properties>
         <commons-http.version>3.1</commons-http.version>
         <commons-lang3.version>3.1</commons-lang3.version>
-        <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
+        <dfh-monitor.version>1.0.0</dfh-monitor.version>
         <codahale-metrics.version>3.0.2</codahale-metrics.version>
     </properties>
     
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.theplatform.dfh.cp</groupId>
             <artifactId>pl-dfh-monitor</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
