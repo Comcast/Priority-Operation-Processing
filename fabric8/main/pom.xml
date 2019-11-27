@@ -2,19 +2,19 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Kubernetes Client Fabric8 Implementation</name>
 
     <properties>
-        <dfh-kube-client-api.version>1.0.2-SNAPSHOT</dfh-kube-client-api.version>
+        <dfh-kube-client-api.version>1.0.2</dfh-kube-client-api.version>
         <!-- WARNING: IF THIS VERSION IS UPDATED PLEASE UPDATE THE HttpClientFactory CLASS ACCORDINGLY -->
         <kubernetes-client.version>4.1.3</kubernetes-client.version>
         <rx-java.version>1.2.3</rx-java.version>

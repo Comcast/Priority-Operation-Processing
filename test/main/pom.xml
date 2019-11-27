@@ -3,19 +3,20 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-kube-client-fabric8-tests</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Kube Client Test</name>
 
     <properties>
-        <kubeclient-version>1.0.2-SNAPSHOT</kubeclient-version>
+        <kubeclient-version>1.0.2</kubeclient-version>
+        <jackson.version>2.10.0</jackson.version>
         <failsafe.version>2.0.1</failsafe.version>
         <skipITTests>true</skipITTests>
         <test-suite>testng.xml</test-suite>
