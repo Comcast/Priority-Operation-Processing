@@ -16,8 +16,7 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <cp-api.version>1.0.1-SNAPSHOT</cp-api.version>
-        <endpoint-agenda.version>1.0.0-SNAPSHOT</endpoint-agenda.version>
+        <cp-api.version>1.0.2</cp-api.version>
         <dfh-persistence-aws-dynamodb.version>1.0.1</dfh-persistence-aws-dynamodb.version>
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
         <cp-endpoint-base.version>1.0.0-SNAPSHOT</cp-endpoint-base.version>
