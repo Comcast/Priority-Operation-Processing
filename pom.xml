@@ -12,7 +12,7 @@
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-command-builder-fission</artifactId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
 
     <properties>
