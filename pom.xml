@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.reaper</groupId>
     <artifactId>pl-dfh-cp-data-object-reaper-aws</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Data object reaper AWS compatible zip package suitable for Lambda</name>
 
