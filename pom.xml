@@ -21,11 +21,10 @@
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
         <endpoint-base-aws.version>1.0.0-SNAPSHOT</endpoint-base-aws.version>
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
-        <dfh-scheduling-insight.version>1.0.0-SNAPSHOT</dfh-scheduling-insight.version>
         <endpoint-impl.version>1.0.0-SNAPSHOT</endpoint-impl.version>
         <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
-        <dfh-http-idm.version>1.0.0-SNAPSHOT</dfh-http-idm.version>
+        <cp-api.version>1.0.2</cp-api.version>
+        <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
 
