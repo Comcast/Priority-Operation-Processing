@@ -17,13 +17,13 @@
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
-        <agenda-reclaimer.version>1.0.0-SNAPSHOT</agenda-reclaimer.version>
+        <agenda-reclaimer.version>1.0.0</agenda-reclaimer.version>
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
-        <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
+        <dfh-aws-base-endpoint.version>1.0.0</dfh-aws-base-endpoint.version>
         <idm-http.version>1.0.1</idm-http.version>
         <commons-http-client.version>3.1</commons-http-client.version>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
-        <data-object-reaper-aws.version>1.0.0-SNAPSHOT</data-object-reaper-aws.version>
+        <cp-api.version>1.0.2</cp-api.version>
+        <data-object-reaper-aws.version>1.0.0</data-object-reaper-aws.version>
     </properties>
 
     <dependencies>
