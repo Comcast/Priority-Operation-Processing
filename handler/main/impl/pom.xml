@@ -14,15 +14,15 @@
     <name>Executor Handler Impl</name>
 
     <properties>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
+        <cp-api.version>1.0.2</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
-        <executor-handler-api.version>1.0.2-SNAPSHOT</executor-handler-api.version>
+        <executor-handler-api.version>1.0.2</executor-handler-api.version>
         <dfh-docker.version>1.0.1</dfh-docker.version>
         <jackson.version>2.9.8</jackson.version>
 
-        <handler-base.version>1.0.2-SNAPSHOT</handler-base.version>
+        <handler-base.version>1.0.2</handler-base.version>
         <dfh-fabric8-kube-client.version>1.0.2-SNAPSHOT</dfh-fabric8-kube-client.version>
-        <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
+        <handler-kubernetes-support.version>1.0.1</handler-kubernetes-support.version>
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
         <dfh-http-util.version>1.0.0</dfh-http-util.version>
 
@@ -31,8 +31,8 @@
         <ldap-filter.version>1.0.2-SNAPSHOT</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.2-SNAPSHOT</accelerate-filter-handler.version>
 
-        <dfh-monitor.version>1.0.0-SNAPSHOT</dfh-monitor.version>
-        <dfh-monitor-graphite.version>1.0.0-SNAPSHOT</dfh-monitor-graphite.version>
+        <dfh-monitor.version>1.0.0</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.0</dfh-monitor-graphite.version>
 
         <commons-collections4.version>4.3</commons-collections4.version>
     </properties>
