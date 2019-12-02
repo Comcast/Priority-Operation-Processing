@@ -14,17 +14,17 @@
     <name>Endpoint implementation</name>
 
     <properties>
-        <dfh-persistence-api.version>1.0.1-SNAPSHOT</dfh-persistence-api.version>
+        <dfh-persistence-api.version>1.0.1</dfh-persistence-api.version>
         <endpoint-base.version>1.0.0-SNAPSHOT</endpoint-base.version>
         <cp-scheduling-api.version>1.0.0</cp-scheduling-api.version>
-        <cp-json-helper.version>1.0.1-SNAPSHOT</cp-json-helper.version>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
-        <dfh-http-util.version>1.0.0-SNAPSHOT</dfh-http-util.version>
+        <cp-json-helper.version>1.0.1</cp-json-helper.version>
+        <cp-api.version>1.0.2</cp-api.version>
+        <dfh-http-util.version>1.0.1</dfh-http-util.version>
         <dfh-endpoint-client.version>1.0.2-SNAPSHOT</dfh-endpoint-client.version>
-        <mediainfo-handler-api.version>1.0.2-SNAPSHOT</mediainfo-handler-api.version>
-        <accelerate-filter-handler-api.version>1.0.1-SNAPSHOT</accelerate-filter-handler-api.version>
+        <mediainfo-handler-api.version>1.0.2</mediainfo-handler-api.version>
+        <accelerate-filter-handler-api.version>1.0.2-SNAPSHOT</accelerate-filter-handler-api.version>
         <ldap-filter.version>1.0.1-SNAPSHOT</ldap-filter.version>
-        <http-request-handler-api.version>1.0.2-SNAPSHOT</http-request-handler-api.version>
+        <http-request-handler-api.version>1.0.2</http-request-handler-api.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-api.version>1.0.2-SNAPSHOT</endpoint-api.version>
         <dfh-queue-api.version>1.0.1</dfh-queue-api.version>
