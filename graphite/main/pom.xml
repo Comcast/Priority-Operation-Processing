@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp</groupId>
     <artifactId>pl-dfh-monitor-graphite</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>graphite metrics</name>
 
