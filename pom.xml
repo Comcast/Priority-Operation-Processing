@@ -9,7 +9,7 @@
 
     <groupId>com.theplatform.dfh.cp.agenda.reclaim</groupId>
     <artifactId>pl-dfh-cp-agenda-reclaimer-aws</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Agenda Reclaimer AWS compatible zip package suitable for Lambda</name>
 
