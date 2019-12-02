@@ -1,6 +1,5 @@
 package com.cts.fission.scheduling.monitor;
 
-import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
@@ -20,7 +19,6 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -37,7 +35,6 @@ public class QueueMetricMonitorTest
     private ItemQueueFactory<ReadyAgenda> mockReadyAgendaQueueFactory = mock(ItemQueueFactory.class);
     private ItemQueue<ReadyAgenda> mockReadyAgendaQueue = mock(ItemQueue.class);
     private ObjectClient<Insight> mockInsightClient = mock(ObjectClient.class);
-    private ObjectPersister<InsightScheduleInfo> mockInsightSchedulingInfoPersister = mock(ObjectPersister.class);
     private ObjectPersister<ReadyAgenda> mockReadyAgendaPersister = mock(ObjectPersister.class);
 
     @BeforeMethod
@@ -64,7 +61,7 @@ public class QueueMetricMonitorTest
     {
         doReturn(new DefaultDataObjectResponse<>()).when(mockInsightClient).getObjects(anyList());
         queueMonitor.monitor(RESOURCE_POOL_ID);
-        verify(mockInsightSchedulingInfoPersister, times(0)).retrieve(anyString());
+        verify(mockInsightClient, times(0)).getObject(anyString());
     }
 
     @Test
