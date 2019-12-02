@@ -14,7 +14,7 @@
     <name>Scheduling Queue Monitor AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <cp-api.version>1.0.2-SNAPSHOT</cp-api.version>
+        <cp-api.version>1.0.2</cp-api.version>
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
@@ -22,9 +22,8 @@
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
         <dfh-module-queue-aws-sqs.version>1.0.2</dfh-module-queue-aws-sqs.version>
         <dfh-persistence-aws-dynamodb.version>1.0.1</dfh-persistence-aws-dynamodb.version>
-        <dfh-aws-base-endpoint.version>1.0.0-SNAPSHOT</dfh-aws-base-endpoint.version>
+        <dfh-aws-base-endpoint.version>1.0.0</dfh-aws-base-endpoint.version>
         <idm-http.version>1.0.1</idm-http.version>
-        <queue-api.version>1.0.0-SNAPSHOT</queue-api.version>
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-impl-aws.version>1.0.0-SNAPSHOT</endpoint-impl-aws.version>
     </properties>
