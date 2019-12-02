@@ -9,7 +9,7 @@
 
     <groupId>com.cts.fission.scheduling</groupId>
     <artifactId>pl-fission-scheduling-queue-impl</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Scheduling Queue Monitor implementation</name>
 
