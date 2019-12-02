@@ -25,7 +25,7 @@
         <commons-io.version>2.6</commons-io.version>
         <apache-httpclient.version>4.5.2</apache-httpclient.version>
         <commons-http-client.version>3.1</commons-http-client.version>
-        <endpoint-client.version>1.0.2-SNAPSHOT</endpoint-client.version>
+        <endpoint-client.version>1.0.2</endpoint-client.version>
 
         <handler-base.version>1.0.2</handler-base.version>
         <dfh-fabric8-kube-client.version>1.0.2</dfh-fabric8-kube-client.version>
