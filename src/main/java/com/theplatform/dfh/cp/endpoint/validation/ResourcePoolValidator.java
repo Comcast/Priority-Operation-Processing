@@ -25,6 +25,6 @@ public class ResourcePoolValidator extends DataObjectValidator<ResourcePool, Dat
     protected void validateCustomerId(ResourcePool resourcePool)
     {
         if(StringUtils.isBlank(resourcePool.getCustomerId()))
-            validationIssues.add("The customerId field must be specified on the Insight.");
+            validationIssues.add("The customerId field must be specified on the ResourcePool.");
     }
 }
