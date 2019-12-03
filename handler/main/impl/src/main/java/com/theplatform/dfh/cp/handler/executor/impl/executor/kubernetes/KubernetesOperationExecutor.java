@@ -95,7 +95,11 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
             }
             logger.debug("[{}] Getting operationProgress", executionConfig.getName());
             OperationProgress operationProgress = jsonHelper.getObjectFromString(progressJson, OperationProgress.class);
-            logger.debug("[{}] OperationProgress [{}]",  executionConfig.getName(), operationProgress.getOperation());
+            logger.debug("[{}] OperationProgress processingState={} processingStateMessage={} percentComplete={}",
+                executionConfig.getName(),
+                operationProgress.getProcessingState(),
+                operationProgress.getProcessingStateMessage(),
+                operationProgress.getPercentComplete());
             operationProgress.setOperation(operation.getName());
             operationProgress.setResultPayload(resultPayload);
             return operationProgress;
