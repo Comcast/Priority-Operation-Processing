@@ -40,9 +40,6 @@ public class AgendaValidator extends DataObjectValidator<Agenda, DataObjectReque
 
         Agenda agenda = request.getDataObject();
 
-        if(StringUtils.isBlank(agenda.getCustomerId()))
-            throw new ValidationException("The customer id must be specified on the agenda.");
-
         validateOperations(agenda);
 
         if(validationIssues.size() > 0)

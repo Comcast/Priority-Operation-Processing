@@ -4,7 +4,6 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.cp.endpoint.validation.ResourcePoolValidator;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
@@ -76,12 +75,6 @@ public class ResourcePoolRequestProcessor extends EndpointDataObjectRequestProce
                 }
             }
         }
-    }
-
-    @Override
-    public RequestValidator<DataObjectRequest<ResourcePool>> getRequestValidator()
-    {
-        return new ResourcePoolValidator();
     }
 
     protected ResourcePoolRequestProcessor setInsightClient(InsightRequestProcessor insightClient)

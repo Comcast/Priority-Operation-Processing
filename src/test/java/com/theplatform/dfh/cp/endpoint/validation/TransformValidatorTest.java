@@ -34,12 +34,6 @@ public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
         validator.validatePOST(createRequest(createTransform(CUSTOMER_ID)));
     }
 
-    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*The customer id must be specified on the transform.*")
-    public void testInvalidCustomer()
-    {
-        validator.validatePOST(createRequest(createTransform(null)));
-    }
-
     ///
     /// InputStreams
     ///

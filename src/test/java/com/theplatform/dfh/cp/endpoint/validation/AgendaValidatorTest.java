@@ -29,12 +29,6 @@ public class AgendaValidatorTest extends BaseValidatorTest<Agenda>
         validator = new AgendaValidator();
     }
 
-    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*The customer id must be specified on the agenda.*")
-    public void testInvalidCustomer()
-    {
-        validator.validatePOST(createRequest(createAgenda(null)));
-    }
-
     @DataProvider
     public Object[][] invalidOperationsProvider()
     {

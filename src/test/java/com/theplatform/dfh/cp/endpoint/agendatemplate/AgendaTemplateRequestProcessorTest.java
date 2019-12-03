@@ -114,6 +114,7 @@ public class AgendaTemplateRequestProcessorTest extends AbstractRequestProcessor
         }
 
         AgendaTemplate agendaTemp = new AgendaTemplate();
+        agendaTemp.setCustomerId("theCustomer");
         Agenda agenda = new Agenda();
         agenda.setOperations(ops);
         agendaTemp.setAgenda(agenda);

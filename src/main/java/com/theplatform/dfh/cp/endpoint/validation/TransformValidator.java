@@ -32,9 +32,6 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
 
         TransformRequest transform = request.getDataObject();
 
-        if(StringUtils.isBlank(transform.getCustomerId()))
-            throw new ValidationException("The customer id must be specified on the transform.");
-
         JsonNode rootTransformNode = jsonHelper.getObjectMapper().valueToTree(transform);
 
         validateReferences(transform, rootTransformNode);
