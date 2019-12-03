@@ -86,8 +86,9 @@ public class OperationConductor implements OnOperationCompleteListener
             logger.debug("Getting executor service");
             if(executorService == null)
             {
-                executorService = Executors.newFixedThreadPool(Integer.parseInt(executorContext.getLaunchDataWrapper().getPropertyRetriever().getField(THREAD_POOL_SIZE_SETTING,
-                    Integer.toString(DEFAULT_THREAD_POOL_SIZE))));
+                executorService = Executors.newFixedThreadPool(
+                    Integer.parseInt(executorContext.getLaunchDataWrapper().getPropertyRetriever().getField(THREAD_POOL_SIZE_SETTING, Integer.toString(DEFAULT_THREAD_POOL_SIZE))),
+                    new OperationRunnerThreadFactory("OpRunner-"));
             }
 
             logger.debug("Adding progress");
@@ -115,7 +116,8 @@ public class OperationConductor implements OnOperationCompleteListener
         {
             // TODO: log an error or something if these don't match
             logger.info("Original OpCount: {} Completed OpCount: {}", ORIGINAL_OP_COUNT, completedOperations.size());
-            executorService.shutdown();
+            List<Runnable> remainingTasks = executorService.shutdownNow();
+            logger.info("ExecutorService shutdownNow called. {} Runnables were waiting.", remainingTasks.size());
         }
     }
 
