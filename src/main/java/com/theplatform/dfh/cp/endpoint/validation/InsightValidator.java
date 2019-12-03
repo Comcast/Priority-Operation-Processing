@@ -19,8 +19,15 @@ public class InsightValidator extends DataObjectValidator<Insight, DataObjectReq
         validationIssues = new LinkedList<>();
         Insight insight = request.getDataObject();
 
+        validateCustomerId(insight);
         validateTitle(insight);
         processValidationIssues(validationIssues);
+    }
+
+    protected void validateCustomerId(Insight insight)
+    {
+        if(StringUtils.isBlank(insight.getCustomerId()))
+            validationIssues.add("The customerId field must be specified on the Insight.");
     }
 
     protected void validateTitle(Insight insight)

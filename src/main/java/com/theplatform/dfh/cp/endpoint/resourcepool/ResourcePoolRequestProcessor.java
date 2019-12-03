@@ -2,18 +2,14 @@ package com.theplatform.dfh.cp.endpoint.resourcepool;
 
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
-import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.theplatform.dfh.cp.endpoint.validation.ResourcePoolValidator;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 import java.util.Collections;
@@ -80,6 +76,12 @@ public class ResourcePoolRequestProcessor extends EndpointDataObjectRequestProce
                 }
             }
         }
+    }
+
+    @Override
+    public RequestValidator<DataObjectRequest<ResourcePool>> getRequestValidator()
+    {
+        return new ResourcePoolValidator();
     }
 
     protected ResourcePoolRequestProcessor setInsightClient(InsightRequestProcessor insightClient)
