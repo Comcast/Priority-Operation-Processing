@@ -13,12 +13,18 @@ public class DataObjectValidator<T extends IdentifiedObject, R extends DataObjec
     private static final String UNABLE_TO_PROCESS_NULL_EXCEPTION = "Unable to %1$s a null object";
     private static final String UNABLE_TO_PUT_WITHOUT_ID_EXCEPTION = "Unable to PUT an object without specifying an id";
     private static final String MISMATCHED_PUT_ID_EXCEPTION = "Mismatched Id in URL and on input object: URLId: %1$s and ObjectId: %2$s";
+    private static final String CUSTOMER_ID_NOT_SPECIFIED = "The customerId field must be specified.";
 
     @Override
     public void validatePOST(R request)
     {
         super.validatePOST(request);
         validateObjectRequest(request, "POST");
+
+        T object = request.getDataObject();
+
+        if(object.getCustomerId() == null || object.getCustomerId().trim().length() == 0)
+            throw new ValidationException(CUSTOMER_ID_NOT_SPECIFIED);
     }
 
     @Override

@@ -59,6 +59,15 @@ public class DataObjectValidatorTest
         validator.validatePUT(request);
     }
 
+    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*The customerId field must be specified.*")
+    public void testInvalidCustomer()
+    {
+        // This is a unified validator for all object types
+        DefaultDataObjectRequest<Agenda> request = createAgendaRequest("");
+        request.setDataObject(new Agenda());
+        validator.validatePOST(request);
+    }
+
     private DefaultDataObjectRequest<Agenda> createAgendaRequest(String id)
     {
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();

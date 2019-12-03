@@ -122,7 +122,7 @@ public class DataObjectRequestProcessorTest
     @Test
     public void testPOSTInvalidVisibility()
     {
-        request.setDataObject(new SimpleObject());
+        request.setDataObject(new SimpleObject("", "customerId"));
         doReturn(false).when(mockVisibilityFilter).isVisible(any(), any());
         DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -132,7 +132,7 @@ public class DataObjectRequestProcessorTest
     @Test
     public void testPOSTPersistNullResult() throws PersistenceException
     {
-        request.setDataObject(new SimpleObject());
+        request.setDataObject(new SimpleObject("", "customerId"));
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doReturn(null).when(mockObjectPersister).persist(any());
         DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
@@ -143,7 +143,7 @@ public class DataObjectRequestProcessorTest
     @Test
     public void testPOSTPersistenceException() throws PersistenceException
     {
-        request.setDataObject(new SimpleObject());
+        request.setDataObject(new SimpleObject("", "customerId"));
         doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
         doThrow(new PersistenceException("")).when(mockObjectPersister).persist(any());
         DataObjectResponse<SimpleObject> response = processor.handlePOST(request);
@@ -307,6 +307,16 @@ public class DataObjectRequestProcessorTest
     {
         private String id;
         private String customerId;
+
+        public SimpleObject()
+        {
+        }
+
+        public SimpleObject(String id, String customerId)
+        {
+            this.id = id;
+            this.customerId = customerId;
+        }
 
         @Override
         public String getId()
