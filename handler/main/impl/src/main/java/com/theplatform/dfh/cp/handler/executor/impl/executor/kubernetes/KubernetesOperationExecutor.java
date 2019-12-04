@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -46,15 +48,21 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     private PodFollower<PodPushClient> follower;
     private JsonHelper jsonHelper;
     private OperationProgress defaultFailedOperationProgress;
+    private AtomicBoolean isCompleteOperationProgressRetrieved = new AtomicBoolean(false);
 
     public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, ExecutorContext executorContext)
+    {
+        this(new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig), operation, kubeConfig, podConfig, executionConfig, executorContext);
+    }
+
+    public KubernetesOperationExecutor(PodFollower<PodPushClient> follower, Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, ExecutorContext executorContext)
     {
         super(operation, executorContext.getLaunchDataWrapper());
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
         this.jsonHelper = new JsonHelper();
-        this.follower = new PodFollowerImpl<>(this.kubeConfig, this.podConfig, this.executionConfig);
+        this.follower = follower;
         this.executorContext = executorContext;
         setIdenitifier(executionConfig.getName());
     }
@@ -102,6 +110,9 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
                 operationProgress.getPercentComplete());
             operationProgress.setOperation(operation.getName());
             operationProgress.setResultPayload(resultPayload);
+            if(operationProgress.getProcessingState() == ProcessingState.COMPLETE)
+                isCompleteOperationProgressRetrieved.set(true);
+
             return operationProgress;
         }
         catch(JsonHelperException je)
@@ -155,8 +166,20 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
         }
         catch (Exception e)
         {
-            errorMessage = ExecutorMessages.KUBERNETES_FOLLOW_ERROR.getMessage(executionConfig.getName());
-            exception = e;
+            if(e.getCause() != null
+                && e.getCause().getClass() == TimeoutException.class
+                && isCompleteOperationProgressRetrieved.get())
+            {
+                // Perfect storm detected -- This can occur when a pod does not exit after submitting the completed OperationProgress.
+                // This has been observed intermittently and is likely caused by background threads not exiting when the handler shuts down.
+                // We get both the completed OperationProgress (success or fail) and see the Completion string in the logs... we're fairly safe to exit.
+                logger.warn("[{}]{} operation completed but did not exit gracefully. The handler may have thread shutdown issues.", executionConfig.getName(), operation.getName());
+            }
+            else
+            {
+                errorMessage = ExecutorMessages.KUBERNETES_FOLLOW_ERROR.getMessage(executionConfig.getName());
+                exception = e;
+            }
         }
 
         if(errorMessage != null)
@@ -209,5 +232,10 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
                     strings)
             });
         return operationProgress;
+    }
+
+    protected void setIsCompleteOperationProgressRetrievedValue(boolean value)
+    {
+        isCompleteOperationProgressRetrieved.set(value);
     }
 }

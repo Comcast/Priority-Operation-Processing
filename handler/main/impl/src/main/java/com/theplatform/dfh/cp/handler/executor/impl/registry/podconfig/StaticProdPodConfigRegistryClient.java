@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
+import com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
 import java.util.Arrays;
@@ -32,13 +33,13 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
 
         podConfigMap.put("analysis",
                 makeDfhBasePod("prod-us-a-aor-fhami-p01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhami:1.0.1")
+                        .setImageName("docker-prod.repo.theplatform.com/fhami:1.0.1")
                         .setNamePrefix("dfh-analysis")
         );
 
         podConfigMap.put("encode",
                 makeDfhBasePod("prod-us-a-aor-fheff-p01")
-                        .setImageName("docker-lab.repo.theplatform.com/fheff:1.0.1")
+                        .setImageName("docker-prod.repo.theplatform.com/fheff:1.0.1")
                         .setNamePrefix("dfh-encode")
         );
 
@@ -56,8 +57,13 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
 
         podConfigMap.put("package",
                 makeDfhBasePod("prod-us-a-aor-fhpkm-p01")
-                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.2")
+                .setImageName("docker-prod.repo.theplatform.com/fhpkm:1.0.4")
                 .setNamePrefix("dfh-package")
+                .setNfsSettings(Collections.singletonList(new NfsDetails()
+                    .setNfsServer("fs-71d2e4da.efs.us-west-2.amazonaws.com")
+                    .setNfsServerPath("/")
+                    .setNfsReadOnly(false)
+                    .setNfsMountPaths(new String[] {"/media_symlib","/media_symarc"})))
         );
 
         podConfigMap.put("telephone",

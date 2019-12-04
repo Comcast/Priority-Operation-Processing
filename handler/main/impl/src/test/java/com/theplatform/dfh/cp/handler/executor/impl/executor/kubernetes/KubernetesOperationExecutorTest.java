@@ -1,18 +1,95 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
+import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.handler.base.field.retriever.DefaultLaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
+import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.exception.PodException;
+import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 public class KubernetesOperationExecutorTest
 {
+    private KubernetesOperationExecutor executor;
+    private Operation operation;
+    private KubeConfig kubeConfig;
+    private PodConfig podConfig;
+    private ExecutionConfig executionConfig;
+    private ExecutorContext mockExecutorContext;
+    private LaunchDataWrapper launchDataWrapper;
+    private LogLineObserver mockLogLineObserver;
+    private PodFollower<PodPushClient> mockPodFollower;
+
+    @BeforeMethod
+    public void setup()
+    {
+        launchDataWrapper = new DefaultLaunchDataWrapper(new String[] {});
+        operation = new Operation();
+        kubeConfig = new KubeConfig();
+        podConfig = new PodConfig();
+        executionConfig = new ExecutionConfig();
+        mockExecutorContext = mock(ExecutorContext.class);
+        doReturn(launchDataWrapper).when(mockExecutorContext).getLaunchDataWrapper();
+        mockLogLineObserver = mock(LogLineObserver.class);
+        mockPodFollower = mock(PodFollower.class);
+        doReturn(mockLogLineObserver).when(mockPodFollower).getDefaultLogLineObserver(any());
+
+        executor = new KubernetesOperationExecutor(mockPodFollower, operation, kubeConfig, podConfig, executionConfig, mockExecutorContext);
+    }
+
+    @DataProvider
+    public Object[][] testTimeoutExceptionProvider()
+    {
+        return new Object[][]
+            {
+                { true },
+                { false }
+            };
+    }
+
+    @Test(dataProvider = "testTimeoutExceptionProvider")
+    public void testTimeoutException(final boolean opComplete)
+    {
+        executor.setIsCompleteOperationProgressRetrievedValue(opComplete);
+        executor.setFollower(mockPodFollower);
+        PodException podException = new PodException(new TimeoutException());
+        doThrow(podException).when(mockPodFollower).startAndFollowPod(any());
+        boolean exceptionThrown = false;
+        try
+        {
+            executor.execute(null);
+        }
+        catch(Exception e)
+        {
+            exceptionThrown = true;
+        }
+        if(!exceptionThrown && !opComplete)
+            Assert.fail("If the op is NOT complete a timeout exception should have failed as usual.");
+        if(exceptionThrown && opComplete)
+            Assert.fail("If the op is complete a timeout exception should have no effect.");
+    }
+
     @DataProvider
     public Object[][] generateFailedOperationProgressProvider()
     {
