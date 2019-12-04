@@ -60,7 +60,11 @@
             <artifactId>aws-java-sdk-lambda</artifactId>
             <version>${aws.java.jdk}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-kms</artifactId>
+            <version>${aws.java.jdk}</version>
+        </dependency>
         <!-- DFH Dependencies -->
         <dependency>
             <groupId>com.theplatform.dfh.cp.endpoint</groupId>
@@ -74,11 +78,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
-            <version>${dfh-persistence-aws-dynamodb.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
