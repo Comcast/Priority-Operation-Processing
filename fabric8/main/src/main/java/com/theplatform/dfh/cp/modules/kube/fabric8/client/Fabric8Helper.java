@@ -18,6 +18,7 @@ import java.util.*;
  */
 public class Fabric8Helper
 {
+    public static final int DEFAULT_WATCH_RECONNECT_LIMIT = 10;
     public static final String EMPTY_DIR_LOG_NAME = "log";
     public static final String APP_DUMPS = "/app/dumps";
     public static final String EXTERNAL_ID = "EXTERNAL_ID";
@@ -65,6 +66,20 @@ public class Fabric8Helper
         if (kubeConfig.getOauthToken() != null)
         {
             configBuilder.withOauthToken(kubeConfig.getOauthToken());
+        }
+
+        if(kubeConfig.getWatchReconnectLimit() != null)
+        {
+            configBuilder.withWatchReconnectLimit(kubeConfig.getWatchReconnectLimit());
+        }
+        else
+        {
+            configBuilder.withWatchReconnectLimit(DEFAULT_WATCH_RECONNECT_LIMIT);
+        }
+
+        if(kubeConfig.getWatchReconnectInterval() != null)
+        {
+            configBuilder.withWatchReconnectInterval(kubeConfig.getWatchReconnectInterval());
         }
 
         configBuilder.withMaxConcurrentRequestsPerHost(MAX_CONCURRENT_REQUESTS_PER_HOST);

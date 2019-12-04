@@ -16,6 +16,9 @@ public class KubeConfig
 
     private String zone;
 
+    private Integer watchReconnectInterval;
+    private Integer watchReconnectLimit;
+
     public String getZone()
     {
         return zone;
@@ -101,5 +104,25 @@ public class KubeConfig
     {
         this.oauthToken = oauthToken;
         return this;
+    }
+
+    public Integer getWatchReconnectInterval()
+    {
+        return watchReconnectInterval;
+    }
+
+    public void setWatchReconnectInterval(Integer watchReconnectInterval)
+    {
+        this.watchReconnectInterval = watchReconnectInterval;
+    }
+
+    public Integer getWatchReconnectLimit()
+    {
+        return watchReconnectLimit;
+    }
+
+    public void setWatchReconnectLimit(Integer watchReconnectLimit)
+    {
+        this.watchReconnectLimit = watchReconnectLimit;
     }
 }
