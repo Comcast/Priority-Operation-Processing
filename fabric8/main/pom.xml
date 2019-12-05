@@ -14,7 +14,7 @@
     <name>Kubernetes Client Fabric8 Implementation</name>
 
     <properties>
-        <dfh-kube-client-api.version>1.0.3-SNAPSHOT</dfh-kube-client-api.version>
+        <dfh-kube-client-api.version>1.0.3</dfh-kube-client-api.version>
         <!-- WARNING: IF THIS VERSION IS UPDATED PLEASE UPDATE THE HttpClientFactory CLASS ACCORDINGLY -->
         <kubernetes-client.version>4.1.3</kubernetes-client.version>
         <rx-java.version>1.2.3</rx-java.version>
