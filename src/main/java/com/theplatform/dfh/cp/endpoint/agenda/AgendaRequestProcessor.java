@@ -163,6 +163,11 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
 
         return agendaPersistResponse;
     }
+    @Override
+    public DataObjectResponse<Agenda> handlePUT(DataObjectRequest<Agenda> request)
+    {
+        throw new BadRequestException("PUT is not implemented for this endpoint");
+    }
 
     @Override
     public DataObjectResponse<Agenda> handleDELETE(DataObjectRequest<Agenda> request)

@@ -26,6 +26,7 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
@@ -158,6 +159,13 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         }
 
         return response;
+    }
+
+
+    @Override
+    public DataObjectResponse<TransformRequest> handlePUT(DataObjectRequest<TransformRequest> request)
+    {
+        throw new BadRequestException("PUT is not implemented for this endpoint");
     }
 
     private void preProcessTransformRequest(TransformRequest request)
