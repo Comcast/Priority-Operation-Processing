@@ -13,4 +13,8 @@ public class OperationRunnerFactory
     {
         return new OperationRunner(operationWrapper, executorContext, onOperationCompleteListener);
     }
+
+    public void shutdown()
+    {
+    }
 }

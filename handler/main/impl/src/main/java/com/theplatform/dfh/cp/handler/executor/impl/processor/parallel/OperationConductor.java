@@ -116,6 +116,7 @@ public class OperationConductor implements OnOperationCompleteListener
         {
             // TODO: log an error or something if these don't match
             logger.info("Original OpCount: {} Completed OpCount: {}", ORIGINAL_OP_COUNT, completedOperations.size());
+            operationRunnerFactory.shutdown();
             List<Runnable> remainingTasks = executorService.shutdownNow();
             logger.info("ExecutorService shutdownNow called. {} Runnables were waiting.", remainingTasks.size());
         }

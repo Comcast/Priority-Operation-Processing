@@ -19,4 +19,11 @@ public class MonitoringOperationRunnerFactory extends OperationRunnerFactory
     {
         return new MonitoringOperationRunner(metricReport, operationWrapper, executorContext, onOperationCompleteListener);
     }
+
+    @Override
+    public void shutdown()
+    {
+        if(metricReport != null)
+            metricReport.close();
+    }
 }
