@@ -2,18 +2,14 @@ package com.cts.fission.scheduling.monitor;
 
 import com.codahale.metrics.Counter;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.query.ByCount;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.field.CountField;
-import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,23 +62,32 @@ public class QueueMetricMonitor
 
         for(Insight insight : insightObjectFeed.getAll())
         {
+            // simple space replace for
+            String insightTitle = getReportSafeInsightTitle(insight);
             try
             {
                 DataObjectFeed feed = readyAgendaPersister.retrieve(Arrays.asList(new ByInsightId(insight.getId())));
                 Integer waitingAgendaCount = feed.getAll() != null ? feed.getAll().size() : 0;
                 if(waitingAgendaCount != null && waitingAgendaCount > 0)
-                    reportWaiting(insight.getId(), waitingAgendaCount);
+                    reportWaiting(insightTitle, waitingAgendaCount);
 
-                logger.info("Insight: {} Waiting: {}", insight.getId(), waitingAgendaCount);
+                logger.info("Insight: {} Waiting: {}", insightTitle, waitingAgendaCount);
             }
             catch(Exception e)
             {
-                logger.error("Failed to process ResourcePool: {} Insight: {}", resourcePoolId, insight.getId(), e);
-                reportFailed(insight.getId());
+                logger.error("Failed to process ResourcePool: {} Insight: {}", resourcePoolId, insightTitle, e);
+                reportFailed(insightTitle);
             }
         }
         logger.info("Processed ResourcePool: {}", resourcePoolId);
     }
+
+    protected static String getReportSafeInsightTitle(Insight insight)
+    {
+        return insight.getTitle() == null
+            ? null
+            : insight.getTitle().replaceAll("\\s+" ,"_");
+   }
 
     public void setMetricReporter(MetricReporter metricReporter)
     {

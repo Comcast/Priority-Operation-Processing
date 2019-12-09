@@ -11,7 +11,9 @@ import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.api.QueueResult;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Collection;
@@ -94,6 +96,32 @@ public class QueueMetricMonitorTest
 
         queueMonitor.monitor(RESOURCE_POOL_ID);
         verify(mockReadyAgendaPersister, times(1)).retrieve(anyList());
+    }
+
+    @DataProvider
+    public Object[][] reportSafeInsightTitleProvider()
+    {
+        return new Object[][]
+            {
+                {createInsight("a"), "a"},
+                {createInsight("a a"), "a_a"},
+                {createInsight("a   a"), "a_a"},
+                {createInsight(" a   a "), "_a_a_"},
+                {createInsight(null), null}
+            };
+    }
+
+    @Test(dataProvider = "reportSafeInsightTitleProvider")
+    public void testGetReportSafeInsightTitle(Insight insight, final String EXPECTED_RESULT)
+    {
+        Assert.assertEquals(QueueMetricMonitor.getReportSafeInsightTitle(insight), EXPECTED_RESULT);
+    }
+
+    private Insight createInsight(String title)
+    {
+        Insight insight = new Insight();
+        insight.setTitle(title);
+        return insight;
     }
 
     private DataObjectResponse<Insight> getInsightFeed(int count)
