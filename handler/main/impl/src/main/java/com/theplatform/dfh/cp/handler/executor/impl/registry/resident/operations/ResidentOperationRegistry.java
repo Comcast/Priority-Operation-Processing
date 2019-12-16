@@ -6,6 +6,7 @@ import com.theplatform.dfh.cp.handler.filter.accelerate.impl.AccelerateFilterHan
 import com.theplatform.dfh.cp.handler.filter.ldap.impl.LDAPFilterHandler;
 import com.theplatform.dfh.cp.handler.util.http.impl.AgendaPostHandler;
 import com.theplatform.dfh.cp.handler.util.http.impl.CreateAgendaHandler;
+import com.theplatform.dfh.cp.handler.util.http.impl.IdmHttpRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public class ResidentOperationRegistry
         residentHandlerMap.put("agendaPost", CreateAgendaHandler.class);
         residentHandlerMap.put("ldap", LDAPFilterHandler.class);
         residentHandlerMap.put("accelerate", AccelerateFilterHandler.class);
+        residentHandlerMap.put("idmhttp", IdmHttpRequestHandler.class);
     }
 
     public ResidentHandler getHandler(String type)

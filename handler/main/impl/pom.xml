@@ -27,7 +27,7 @@
         <dfh-http-util.version>1.0.0</dfh-http-util.version>
 
         <!-- Resident Handlers-->
-        <http-request-util-handler.version>1.0.2</http-request-util-handler.version>
+        <http-request-util-handler.version>1.0.3-SNAPSHOT</http-request-util-handler.version>
         <ldap-filter.version>1.0.2</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.2</accelerate-filter-handler.version>
 
