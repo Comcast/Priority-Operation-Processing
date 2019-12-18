@@ -63,6 +63,7 @@ public class AgendaProgressTimeoutConsumer implements Consumer<String>
 
         AgendaProgress updatedAgendaProgress = new AgendaProgress();
         updatedAgendaProgress.setId(agendaProgressId);
+        updatedAgendaProgress.setCustomerId(agendaProgress.getCustomerId());
         updatedAgendaProgress.setProcessingState(ProcessingState.COMPLETE);
         updatedAgendaProgress.setProcessingStateMessage(CompleteStateMessage.FAILED.toString());
         DiagnosticEvent diagnosticEvent = new DiagnosticEvent("AgendaProgress timed out.");
