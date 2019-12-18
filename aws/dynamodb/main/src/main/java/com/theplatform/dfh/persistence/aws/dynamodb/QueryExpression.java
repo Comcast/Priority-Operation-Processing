@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.theplatform.dfh.persistence.api.field.CountField;
+import com.theplatform.dfh.persistence.api.field.FieldsField;
 import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
@@ -49,6 +50,7 @@ public class QueryExpression<T>
     private Query limitQuery;
     private Select selectQuery;
     private List<Query> filterQueries = new ArrayList<>();
+    private String filterAttributes;
 
     public QueryExpression(TableIndexes tableIndexes, List<Query> queries)
     {
@@ -73,6 +75,10 @@ public class QueryExpression<T>
             .withExpressionAttributeValues(awsQueryValueMap)
             .withConsistentRead(false);
 
+        if(filterAttributes != null)
+        {
+            expression.withProjectionExpression(filterAttributes);
+        }
         if(queryIndex != null)
         {
             expression.withIndexName(queryIndex.getName());
@@ -156,6 +162,10 @@ public class QueryExpression<T>
             if (LimitField.fieldName().equals(queryFieldName))
             {
                 limitQuery = query;
+            }
+            else if(FieldsField.fieldName().equals(queryFieldName))
+            {
+                filterAttributes = query.getStringValue();
             }
             else if(CountField.fieldName().equals(queryFieldName))
             {

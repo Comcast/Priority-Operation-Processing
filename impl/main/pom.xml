@@ -14,7 +14,7 @@
     <name>Persistence impl</name>
 
     <properties>
-        <persistence-api.version>1.0.1</persistence-api.version>
+        <persistence-api.version>1.0.2-SNAPSHOT</persistence-api.version>
         <dfh-object-api.version>1.0.1</dfh-object-api.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>

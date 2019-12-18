@@ -14,7 +14,7 @@
     <name>Persistence AWS DynamoDB</name>
 
     <properties>
-        <persistence-api.version>1.0.1</persistence-api.version>
+        <persistence-api.version>1.0.2-SNAPSHOT</persistence-api.version>
         <persistence-impl.version>1.0.1</persistence-impl.version>
         <dfh-object-api.version>1.0.1</dfh-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>

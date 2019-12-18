@@ -98,7 +98,10 @@ public class Query<T>
         if(value instanceof Boolean) return (Boolean) value;
         return Boolean.valueOf(value.toString());
     }
-
+    public String getStringValue()
+    {
+        return value.toString();
+    }
 
     @Override
     public int hashCode()
