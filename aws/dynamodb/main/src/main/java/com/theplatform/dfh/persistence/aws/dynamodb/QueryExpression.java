@@ -83,7 +83,7 @@ public class QueryExpression<T>
         {
             expression.withIndexName(queryIndex.getName());
         }
-        if(filterQueries != null && filterQueries.size() > 0)
+        if(hasQueries())
         {
             expression.withFilterExpression(String.join(AND_STATEMENT, generateConditions(filterQueries, awsQueryValueMap)));
         }
@@ -118,6 +118,10 @@ public class QueryExpression<T>
                 .withAttributeValueList(new AttributeValue().withS(query.getValue().toString()));
             expression.addFilterCondition(query.getField().name(), condition);
         }
+        if(filterAttributes != null)
+        {
+            expression.withProjectionExpression(filterAttributes);
+        }
         logger.info("DynamoDB scan with {}", filterQueries.stream()
             .map(query -> query.getField().name() + " == " + query.getValue())
             .collect(Collectors.joining(",")));
@@ -127,6 +131,10 @@ public class QueryExpression<T>
     public boolean hasKey()
     {
         return primaryKeyQueries.size() > 0;
+    }
+    public boolean hasQueries()
+    {
+        return filterQueries != null && filterQueries.size() > 0 || hasKey();
     }
     public boolean hasCount()
     {
