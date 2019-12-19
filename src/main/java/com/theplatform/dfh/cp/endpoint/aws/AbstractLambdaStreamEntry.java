@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,6 +36,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     static
     {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public abstract RequestProcessor getRequestProcessor(Req serviceRequest);
