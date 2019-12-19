@@ -14,7 +14,7 @@
     <name>Endpoint implementation</name>
 
     <properties>
-        <dfh-persistence-api.version>1.0.1</dfh-persistence-api.version>
+        <dfh-persistence-api.version>1.0.2-SNAPSHOT</dfh-persistence-api.version>
         <endpoint-base.version>1.0.1</endpoint-base.version>
         <cp-scheduling-api.version>1.0.0</cp-scheduling-api.version>
         <cp-json-helper.version>1.0.1</cp-json-helper.version>
