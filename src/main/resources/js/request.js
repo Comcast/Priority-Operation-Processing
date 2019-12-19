@@ -1,18 +1,20 @@
 var g_requestCid = regenerateCid();
 
-function getQueryURL(server, endpoint, querySelectedType, queryValue)
+function getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, fieldsValue)
 {
     var endpointURL = getEndpointURL(server, endpoint);
+    var byFieldsQuery = fieldsValue == "" ? fieldsValue : "&byfields=" +fieldsValue;
+    endpointURL = endpointURL +"?bylimit=" +limitValue +byFieldsQuery;
+
     if(querySelectedType == "byId")
     {
-        return queryValue == "" ? endpointURL : endpointURL +"/" +queryValue;
+        return queryValue == "" ? endpointURL : getEndpointURL(server, endpoint) +"/" +queryValue +"?bylimit=" +limitValue +"&byfields=" +fieldsValue;
     }
     else if(querySelectedType == "other")
     {
-        return queryValue == "" ? endpointURL : endpointURL +"?" +queryValue;
+        return queryValue == "" ? endpointURL : endpointURL +"&" +queryValue
     }
-
-    return queryValue == "" ? endpointURL : endpointURL +"?" +querySelectedType +"=" +queryValue;
+     return queryValue == "" ? endpointURL : endpointURL +"&" +querySelectedType +"=" +encodeURIComponent(queryValue)
 }
 
 function processRequest(e) {
@@ -53,10 +55,12 @@ function processRequest(e) {
 function processGETRequest(server, endpoint){
     var queryElement = document.getElementById("get_query_type");
     var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
-
+    var queryValue = getQueryValue("get_query_value")
+    var limitValue = getQueryValue("get_limit_value")
+    var fieldsValue = getQueryValue("get_fields_value")
     performRequest(
         "GET",
-        getQueryURL(server, endpoint, querySelectedType, getQueryValue("get_query_value")),
+        getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, fieldsValue),
         null,
         function(response) {
             if (endpoint.name === 'Agenda Progress' && $("#showProgressTable").is(":checked"))
@@ -88,7 +92,7 @@ function processPUTRequest(server, endpoint){
 }
 
 function processDELETERequest(server, endpoint){
-    performRequest("DELETE", getQueryURL(server, endpoint, "byId", getQueryValue("delete_query_value")), null, null);
+    performRequest("DELETE", getQueryURL(server, endpoint, "byId", getQueryValue("delete_query_value"), "", ""), null, null);
 }
 
 function performRequest(httpVerb, url, data, successFunction){
@@ -133,7 +137,7 @@ function regenerateCid(){
 function getQueryValue(fieldName){
     var queryValue = $("#"+fieldName).val();
 
-    return encodeURIComponent(queryValue);
+    return queryValue;
 }
 
 function verifyJson(json)
