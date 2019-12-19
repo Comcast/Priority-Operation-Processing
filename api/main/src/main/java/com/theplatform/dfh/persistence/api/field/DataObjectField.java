@@ -13,4 +13,10 @@ public class DataObjectField implements DataField
     {
         return fieldName;
     }
+
+    @Override
+    public boolean isMatch(String fieldName)
+    {
+        return fieldName != null && fieldName.equalsIgnoreCase(this.fieldName);
+    }
 }

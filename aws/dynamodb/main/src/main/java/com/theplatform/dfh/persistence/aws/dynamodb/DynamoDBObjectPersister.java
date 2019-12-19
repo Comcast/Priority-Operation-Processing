@@ -26,6 +26,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
 {
     protected static Logger logger = LoggerFactory.getLogger(DynamoDBObjectPersister.class);
 
+    private static final LimitField limitField = new LimitField();
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private final String persistenceKeyFieldName;
@@ -136,12 +137,13 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
             }
 
             if (logger.isDebugEnabled())
-                logger.debug("Total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
+                logger.debug("DynamoDB total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
 
             final Integer limit = getLimit(queries);
             if (limit != null && responseObjects != null)
             {
                 //DynamoDB just returns the pointers for the items, we need to restrict our return set.
+                logger.info("DynamoDB limiting return set to {}", limit);
                 responseFeed.addAll(responseObjects.stream().limit(limit).collect(Collectors.toList()));
             }
             else
@@ -151,7 +153,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         }
         catch(AmazonDynamoDBException e)
         {
-             throw new PersistenceException("Unable to run query", e);
+             throw new PersistenceException("DynamoDB unable to run query", e);
         }
 
         return responseFeed;
@@ -162,7 +164,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         {
             String queryFieldName = query.getField().name();
             //The first query that has an index is the index we use, the rest are filters off the data coming back.
-            if (LimitField.fieldName().equals(queryFieldName))
+            if (limitField.isMatch(queryFieldName))
             {
                 return query.getIntValue();
             }

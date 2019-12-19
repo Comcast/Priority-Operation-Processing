@@ -44,6 +44,9 @@ public class QueryExpression<T>
     private static final String KEY_CONDITION = "%s = %s";
     private static final String QUERY_VALUE = ":%s";
     private static final String AND_STATEMENT = " AND ";
+    private static final LimitField limitField = new LimitField();
+    private static final FieldsField fieldsField = new FieldsField();
+    private static final CountField countField = new CountField();
     private TableIndexes tableIndexes;
     private TableIndex queryIndex;
     private List<Query> primaryKeyQueries;
@@ -168,15 +171,15 @@ public class QueryExpression<T>
         {
             String queryFieldName = query.getField().name();
             //The first query that has an index is the index we use, the rest are filters off the data coming back.
-            if (LimitField.fieldName().equals(queryFieldName))
+            if (limitField.isMatch((queryFieldName)))
             {
                 limitQuery = query;
             }
-            else if(FieldsField.fieldName().equals(queryFieldName))
+            else if(fieldsField.isMatch(queryFieldName))
             {
                 filterAttributes = query.getStringValue();
             }
-            else if(CountField.fieldName().equals(queryFieldName))
+            else if(countField.isMatch(queryFieldName))
             {
                 selectQuery = Select.COUNT;
             }
