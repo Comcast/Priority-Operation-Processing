@@ -11,6 +11,7 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynamoDBObjectPersister<T extends IdentifiedObject> implements ObjectPersister<T>
 {
@@ -111,7 +113,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
             List<T> responseObjects;
             // based on enum conversions this code will only work on very boring pojos
             QueryExpression<T> queryExpression = new QueryExpression<>(tableIndexes, queries);
-            if(queryExpression.hasCount())
+            if (queryExpression.hasCount())
             {
                 DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
@@ -120,7 +122,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
                 responseFeed.setCount(count);
                 return responseFeed;
             }
-            else if(queryExpression.hasKey())
+            else if (queryExpression.hasKey())
             {
                 DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
@@ -130,12 +132,22 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
             else
             {
                 DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan();
-                responseObjects =  dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
+                responseObjects = dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
             }
 
-            if(logger.isDebugEnabled())
+            if (logger.isDebugEnabled())
                 logger.debug("Total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
-            responseFeed.addAll(responseObjects);
+
+            final Integer limit = getLimit(queries);
+            if (limit != null && responseObjects != null)
+            {
+                //DynamoDB just returns the pointers for the items, we need to restrict our return set.
+                responseFeed.addAll(responseObjects.stream().limit(limit).collect(Collectors.toList()));
+            }
+            else
+            {
+                responseFeed.addAll(responseObjects);
+            }
         }
         catch(AmazonDynamoDBException e)
         {
@@ -144,7 +156,19 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
 
         return responseFeed;
     }
-
+    private Integer getLimit(List<Query> queries)
+    {
+        for (Query query : queries)
+        {
+            String queryFieldName = query.getField().name();
+            //The first query that has an index is the index we use, the rest are filters off the data coming back.
+            if (LimitField.fieldName().equals(queryFieldName))
+            {
+                return query.getIntValue();
+            }
+        }
+        return null;
+    }
     protected Map<String, AttributeValue> getKey(String identifier)
     {
         Map<String, AttributeValue> key = new HashMap<>();
