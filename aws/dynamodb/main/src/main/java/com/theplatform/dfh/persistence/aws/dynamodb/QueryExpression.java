@@ -10,6 +10,7 @@ import com.theplatform.dfh.persistence.api.field.CountField;
 import com.theplatform.dfh.persistence.api.field.FieldsField;
 import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,7 +178,7 @@ public class QueryExpression<T>
             }
             else if(fieldsField.isMatch(queryFieldName))
             {
-                filterAttributes = query.getStringValue();
+                filterAttributes = StringUtils.isNotEmpty(query.getStringValue()) ? query.getStringValue() : null;
             }
             else if(countField.isMatch(queryFieldName))
             {

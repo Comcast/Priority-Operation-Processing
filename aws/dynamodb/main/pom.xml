@@ -20,6 +20,7 @@
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <dfh-compression.version>1.0.0</dfh-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
+        <apache.commons.lang3>3.9</apache.commons.lang3>
     </properties>
 
     <dependencies>
@@ -58,7 +59,11 @@
             <artifactId>commons-beanutils</artifactId>
             <version>${apache.commons.beanutils}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.lang3}</version>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
