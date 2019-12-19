@@ -15,7 +15,7 @@
 
     <properties>
         <scheduling-api.version>1.0.0</scheduling-api.version>
-        <persistent-api.version>1.0.1</persistent-api.version>
+        <persistent-api.version>1.0.2-SNAPSHOT</persistent-api.version>
         <endpoint-client.version>1.0.2</endpoint-client.version>
         <cp-api.version>1.0.2</cp-api.version>
         <producer-consumer-util.version>1.0.1</producer-consumer-util.version>
