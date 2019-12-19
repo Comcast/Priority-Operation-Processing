@@ -96,7 +96,8 @@ public class QueryExpression<T>
             expression.withSelect(selectQuery);
         }
 
-        logger.info("DynamoDB query with key condition {} and value map {}", expression.getKeyConditionExpression(), awsQueryValueMap.toString());
+        logger.info("DynamoDB query with key condition {}, value map {}, limit {}, fields {}", expression.getKeyConditionExpression(), awsQueryValueMap.toString(),
+            expression.getLimit(), expression.getProjectionExpression());
 
         return expression;
     }
@@ -122,9 +123,9 @@ public class QueryExpression<T>
         {
             expression.withProjectionExpression(filterAttributes);
         }
-        logger.info("DynamoDB scan with {}", filterQueries.stream()
-            .map(query -> query.getField().name() + " == " + query.getValue())
-            .collect(Collectors.joining(",")));
+        final String queries = filterQueries.stream().map(query -> query.getField().name() + " == " + query.getValue())
+            .collect(Collectors.joining(","));
+        logger.info("DynamoDB scan with queries {}, limit {}, fields {}", queries, expression.getLimit(), expression.getProjectionExpression());
         return expression;
     }
 
