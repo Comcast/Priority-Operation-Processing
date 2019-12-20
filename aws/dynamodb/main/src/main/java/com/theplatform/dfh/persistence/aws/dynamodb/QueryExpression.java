@@ -87,7 +87,7 @@ public class QueryExpression<T>
         {
             expression.withIndexName(queryIndex.getName());
         }
-        if(hasQueries())
+        if(filterQueries != null && filterQueries.size() > 0)
         {
             expression.withFilterExpression(String.join(AND_STATEMENT, generateConditions(filterQueries, awsQueryValueMap)));
         }
@@ -136,10 +136,6 @@ public class QueryExpression<T>
     public boolean hasKey()
     {
         return primaryKeyQueries.size() > 0;
-    }
-    public boolean hasQueries()
-    {
-        return filterQueries != null && filterQueries.size() > 0 || hasKey();
     }
     public boolean hasCount()
     {

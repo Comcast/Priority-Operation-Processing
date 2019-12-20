@@ -62,7 +62,7 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject, S exte
         {
             List<S> responseObjects;
             QueryExpression<S> queryExpression = new QueryExpression<>(getTableIndexes(), queries);
-            if(queryExpression.hasQueries())
+            if(queryExpression.hasKey())
             {
                 DynamoDBQueryExpression<S> dynamoQueryExpression = queryExpression.forQuery();
                 if(dynamoQueryExpression == null) return responseFeed;
