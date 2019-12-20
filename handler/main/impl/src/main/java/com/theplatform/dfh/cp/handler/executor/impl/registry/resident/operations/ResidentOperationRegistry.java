@@ -4,7 +4,6 @@ import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
 import com.theplatform.dfh.cp.handler.filter.accelerate.impl.AccelerateFilterHandler;
 import com.theplatform.dfh.cp.handler.filter.ldap.impl.LDAPFilterHandler;
-import com.theplatform.dfh.cp.handler.util.http.impl.AgendaPostHandler;
 import com.theplatform.dfh.cp.handler.util.http.impl.CreateAgendaHandler;
 import com.theplatform.dfh.cp.handler.util.http.impl.IdmHttpRequestHandler;
 import org.slf4j.Logger;
