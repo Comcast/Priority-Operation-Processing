@@ -139,7 +139,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
             if (logger.isDebugEnabled())
                 logger.debug("DynamoDB total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
 
-            final Integer limit = getLimit(queries);
+            final Integer limit = queryExpression.getLimit();
             if (limit != null && responseObjects != null)
             {
                 //DynamoDB just returns the pointers for the items, we need to restrict our return set.
@@ -158,19 +158,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
 
         return responseFeed;
     }
-    private Integer getLimit(List<Query> queries)
-    {
-        for (Query query : queries)
-        {
-            String queryFieldName = query.getField().name();
-            //The first query that has an index is the index we use, the rest are filters off the data coming back.
-            if (limitField.isMatch(queryFieldName))
-            {
-                return query.getIntValue();
-            }
-        }
-        return null;
-    }
+
     protected Map<String, AttributeValue> getKey(String identifier)
     {
         Map<String, AttributeValue> key = new HashMap<>();

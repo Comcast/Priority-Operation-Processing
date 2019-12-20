@@ -145,6 +145,7 @@ public class QueryExpression<T>
     {
         return this.selectQuery != null && selectQuery == Select.COUNT;
     }
+    public Integer getLimit() { return limitQuery != null ? limitQuery.getIntValue() : null; }
     private List<String> generateConditions(List<Query> queries, Map<String, AttributeValue> valueMap)
     {
         List<String> conditions = new LinkedList<>();
