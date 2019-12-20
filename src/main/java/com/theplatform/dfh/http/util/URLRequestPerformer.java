@@ -19,6 +19,7 @@ public class URLRequestPerformer
      * @return The result of the request
      * @throws IOException Thrown if there are any errors while performing the request
      */
+    @Deprecated
     public String performURLRequest(HttpURLConnection connection, byte[] data) throws IOException
     {
         // only write data if there is any
@@ -37,6 +38,46 @@ public class URLRequestPerformer
         String result = convert(is, StandardCharsets.UTF_8);
         is.close();
         return result;
+    }
+
+    /**
+     * Makes a request to the specified HttpURLConnection
+     * @param connection The connection to operate with
+     * @param data The data to write in the POST of the request (may be null)
+     * @return The result of the request (wrapped)
+     * @throws IOException Thrown if there are any errors while performing the request, other than a bad status code
+     */
+    public URLResponse performRequest(HttpURLConnection connection, byte[] data) throws IOException
+    {
+        // only write data if there is any
+        if(data != null)
+        {
+            connection.setDoOutput(true);
+            OutputStream output = connection.getOutputStream();
+            output.write(data);
+            output.close();
+        }
+
+        logger.info("performRequest: {} {}", connection.getRequestMethod(), connection.getURL());
+
+        URLResponse response = new URLResponse();
+
+        InputStream is;
+        try
+        {
+            is = connection.getInputStream();
+        }
+        catch(Exception ex)
+        {
+            is = connection.getErrorStream();
+            response.setError(true);
+            response.setException(ex);
+        }
+        response.setStatusCode(connection.getResponseCode());
+        response.setResponseBody(convert(is, StandardCharsets.UTF_8));
+        response.setHeaders(connection.getHeaderFields());
+        is.close();
+        return response;
     }
 
     /**
