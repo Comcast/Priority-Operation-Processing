@@ -140,10 +140,10 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
                 logger.debug("DynamoDB total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
 
             final Integer limit = queryExpression.getLimit();
+            logger.info("DynamoDB limiting return set to {}", limit);
             if (limit != null && responseObjects != null)
             {
                 //DynamoDB just returns the pointers for the items, we need to restrict our return set.
-                logger.info("DynamoDB limiting return set to {}", limit);
                 responseFeed.addAll(responseObjects.stream().limit(limit).collect(Collectors.toList()));
             }
             else
