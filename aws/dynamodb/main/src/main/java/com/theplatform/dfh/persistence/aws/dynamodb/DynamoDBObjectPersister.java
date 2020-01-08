@@ -13,6 +13,7 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.field.LimitField;
 import com.theplatform.dfh.persistence.api.query.Query;
+import com.theplatform.dfh.persistence.aws.dynamodb.retrieve.DynamoObjectRetrieverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
@@ -20,7 +21,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DynamoDBObjectPersister<T extends IdentifiedObject> implements ObjectPersister<T>
 {
@@ -34,6 +34,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     private final AWSDynamoDBFactory AWSDynamoDBFactory;
     private final Class<T> dataObjectClass;
     private IdGenerator idGenerator = new UUIDGenerator();
+    private DynamoObjectRetrieverFactory<T> dynamoObjectRetrieverFactory = new DynamoObjectRetrieverFactory<>();
 
     private DynamoDBMapper dynamoDBMapper;
     private TableIndexes tableIndexes;
@@ -108,7 +109,7 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
 
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
-        DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
+        DataObjectFeed<T> responseFeed = new DataObjectFeed<>();
         try
         {
             List<T> responseObjects;
@@ -123,33 +124,13 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
                 responseFeed.setCount(count);
                 return responseFeed;
             }
-            else if (queryExpression.hasKey())
-            {
-                DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
-                if (dynamoQueryExpression == null)
-                    return responseFeed;
-                responseObjects = dynamoDBMapper.query(dataObjectClass, dynamoQueryExpression);
-            }
-            else
-            {
-                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan();
-                responseObjects = dynamoDBMapper.scan(dataObjectClass, dynamoScanExpression);
-            }
-
+            responseObjects = dynamoObjectRetrieverFactory.createObjectRetriever(queryExpression, dataObjectClass, dynamoDBMapper)
+                .retrieveObjects();
             if (logger.isDebugEnabled())
                 logger.debug("DynamoDB total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
-
-            final Integer limit = queryExpression.getLimit();
-            logger.info("DynamoDB limiting return set to {}", limit);
-            if (limit != null && responseObjects != null)
-            {
-                //DynamoDB just returns the pointers for the items, we need to restrict our return set.
-                responseFeed.addAll(responseObjects.stream().limit(limit).collect(Collectors.toList()));
-            }
-            else
-            {
-                responseFeed.addAll(responseObjects);
-            }
+            if(responseObjects == null)
+                return responseFeed;
+            responseFeed.addAll(responseObjects);
         }
         catch(AmazonDynamoDBException e)
         {
@@ -251,5 +232,12 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     public void setIdGenerator(IdGenerator idGenerator)
     {
         this.idGenerator = idGenerator;
+    }
+
+
+
+    public void setDynamoObjectRetrieverFactory(DynamoObjectRetrieverFactory<T> dynamoObjectRetrieverFactory)
+    {
+        this.dynamoObjectRetrieverFactory = dynamoObjectRetrieverFactory;
     }
 }

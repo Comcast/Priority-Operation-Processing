@@ -91,10 +91,9 @@ public class QueryExpression<T>
         {
             expression.withFilterExpression(String.join(AND_STATEMENT, generateConditions(filterQueries, awsQueryValueMap)));
         }
-        if (limitQuery != null)
-        {
-            expression.withLimit(limitQuery.getIntValue());
-        }
+        /* // item limits are meaningless to DynamoDB expressions (at least in the current context)
+        if (limitQuery != null){}
+        */
         if(selectQuery != null)
         {
             expression.withSelect(selectQuery);
@@ -113,9 +112,6 @@ public class QueryExpression<T>
     public DynamoDBScanExpression forScan()
     {
         DynamoDBScanExpression expression = new DynamoDBScanExpression();
-        Integer limit = limitQuery != null ? limitQuery.getIntValue() : LimitField.defaultValue();
-        expression.withLimit(limit);
-
         for(Query query : filterQueries)
         {
             Condition condition = new Condition()
