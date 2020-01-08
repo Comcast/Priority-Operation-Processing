@@ -1,13 +1,11 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;
 import com.theplatform.dfh.persistence.api.query.Query;
+import com.theplatform.dfh.persistence.aws.dynamodb.retrieve.DynamoObjectRetrieverFactory;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ import java.util.List;
  */
 public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject, S extends T> extends DynamoDBObjectPersister<T>
 {
+    private DynamoObjectRetrieverFactory<S> storedObjectRetrieverFactory = new DynamoObjectRetrieverFactory<>();
     private PersistentObjectConverter<T, S> converter;
 
     public DynamoDBConvertedObjectPersister(String tableName,
@@ -55,34 +54,24 @@ public class DynamoDBConvertedObjectPersister<T extends IdentifiedObject, S exte
         return retrieve(object.getId());
     }
 
+    /**
+     * This is a custom override of the query functionality to support the concept of a persistent object vs. a client object
+     * @param queries The queries to attempt
+     * @return Data object feed of converted objects based on the results
+     * @throws PersistenceException Exception from the dynamo query
+     */
+    @Override
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
-        DataObjectFeed<T> responseFeed = new DataObjectFeed<T>();
-        try
-        {
-            List<S> responseObjects;
-            QueryExpression<S> queryExpression = new QueryExpression<>(getTableIndexes(), queries);
-            if(queryExpression.hasKey())
-            {
-                DynamoDBQueryExpression<S> dynamoQueryExpression = queryExpression.forQuery();
-                if(dynamoQueryExpression == null) return responseFeed;
-
-                responseObjects = getDynamoDBMapper().query(converter.getPersistentObjectClass(), dynamoQueryExpression);
-            }
-            else
-            {
-                DynamoDBScanExpression dynamoScanExpression = queryExpression.forScan();
-
-                responseObjects =  getDynamoDBMapper().scan(converter.getPersistentObjectClass(), dynamoScanExpression);
-            }
-
+        DataObjectFeed<T> responseFeed = new DataObjectFeed<>();
+        List<S> responseObjects = performQuery(storedObjectRetrieverFactory, converter.getPersistentObjectClass(), queries, responseFeed);
+        if(responseObjects != null)
             responseObjects.forEach(po -> responseFeed.add(converter.getDataObject(po)));
-        }
-        catch(AmazonDynamoDBException e)
-        {
-            throw new PersistenceException("Unable to run query", e);
-        }
-
         return responseFeed;
+    }
+
+    public void setStoredObjectRetrieverFactory(DynamoObjectRetrieverFactory<S> storedObjectRetrieverFactory)
+    {
+        this.storedObjectRetrieverFactory = storedObjectRetrieverFactory;
     }
 }

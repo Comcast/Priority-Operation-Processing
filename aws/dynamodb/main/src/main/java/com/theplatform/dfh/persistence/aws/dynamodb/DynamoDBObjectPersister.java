@@ -110,34 +110,49 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
     protected DataObjectFeed<T> query(List<Query> queries) throws PersistenceException
     {
         DataObjectFeed<T> responseFeed = new DataObjectFeed<>();
+        List<T> responseObjects = performQuery(getDynamoObjectRetrieverFactory(), getDataObjectClass(), queries, responseFeed);
+        if(responseObjects != null)
+            responseFeed.addAll(responseObjects);
+        return responseFeed;
+    }
+
+    /**
+     * Performs the query for the specified objects
+     * @param retrieverFactory The retriever factory to use to perform the query with
+     * @param objectClass The class of the dynamo persisted object
+     * @param queries The queries to perform
+     * @param dataObjectFeed The feed to populate the item count with (if applicable)
+     * @param <P> The type of object persisted in dynamo
+     * @return null or list of P objects
+     * @throws PersistenceException Exception from the dynamo query
+     */
+    protected <P extends IdentifiedObject> List<P> performQuery(
+        DynamoObjectRetrieverFactory<P> retrieverFactory, Class<P> objectClass, List<Query> queries, DataObjectFeed dataObjectFeed
+        ) throws PersistenceException
+    {
         try
         {
-            List<T> responseObjects;
-            // based on enum conversions this code will only work on very boring pojos
-            QueryExpression<T> queryExpression = new QueryExpression<>(tableIndexes, queries);
+            List<P> responseObjects = null;
+            QueryExpression<P> queryExpression = new QueryExpression<>(getTableIndexes(), queries);
             if (queryExpression.hasCount())
             {
-                DynamoDBQueryExpression<T> dynamoQueryExpression = queryExpression.forQuery();
+                DynamoDBQueryExpression<P> dynamoQueryExpression = queryExpression.forQuery();
                 if (dynamoQueryExpression == null)
-                    return responseFeed;
-                final int count = dynamoDBMapper.count(dataObjectClass, dynamoQueryExpression);
-                responseFeed.setCount(count);
-                return responseFeed;
+                    return responseObjects;
+                final int count = getDynamoDBMapper().count(objectClass, dynamoQueryExpression);
+                dataObjectFeed.setCount(count);
+                return responseObjects;
             }
-            responseObjects = dynamoObjectRetrieverFactory.createObjectRetriever(queryExpression, dataObjectClass, dynamoDBMapper)
+            responseObjects = retrieverFactory.createObjectRetriever(queryExpression, objectClass, getDynamoDBMapper())
                 .retrieveObjects();
             if (logger.isDebugEnabled())
                 logger.debug("DynamoDB total return object count {} ", responseObjects == null ? 0 : responseObjects.size());
-            if(responseObjects == null)
-                return responseFeed;
-            responseFeed.addAll(responseObjects);
+            return responseObjects;
         }
         catch(AmazonDynamoDBException e)
         {
-             throw new PersistenceException("DynamoDB unable to run query", e);
+            throw new PersistenceException("DynamoDB unable to run query", e);
         }
-
-        return responseFeed;
     }
 
     protected Map<String, AttributeValue> getKey(String identifier)
@@ -234,7 +249,10 @@ public class DynamoDBObjectPersister<T extends IdentifiedObject> implements Obje
         this.idGenerator = idGenerator;
     }
 
-
+    public DynamoObjectRetrieverFactory<T> getDynamoObjectRetrieverFactory()
+    {
+        return dynamoObjectRetrieverFactory;
+    }
 
     public void setDynamoObjectRetrieverFactory(DynamoObjectRetrieverFactory<T> dynamoObjectRetrieverFactory)
     {
