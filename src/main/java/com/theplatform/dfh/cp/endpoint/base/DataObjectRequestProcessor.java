@@ -9,6 +9,7 @@ import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.query.ById;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -54,28 +55,16 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
             VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.GET);
             if(request.getId() != null)
             {
-                T object = objectPersister.retrieve(request.getId());
-                if(object == null)
-                {
-                    response.setErrorResponse(ErrorResponseFactory.objectNotFound(String.format(OBJECT_NOT_FOUND_EXCEPTION, request.getId()), request.getCID()));
-                    return response;
-                }
-                if(!visibilityFilter.isVisible(request, object))
-                {
-                    response.setErrorResponse(ErrorResponseFactory.unauthorized(String.format(AUTHORIZATION_EXCEPTION, object.getCustomerId()), request.getCID()));
-                    return response;
-                }
-                response.add(object);
+                // if the id is specified
+                request.getQueries().add(new ById(request.getId()));
             }
-            else
-            {
-                DataObjectFeed<T> feed = objectPersister.retrieve(request.getQueries());
-                if(feed == null)
-                    feed = new DataObjectFeed<>();
-                List<T> filteredObjects = visibilityFilter.filterByVisible(request, feed.getAll());
-                response.setCount(feed.getCount());
-                response.addAll(filteredObjects);
-            }
+
+            DataObjectFeed<T> feed = objectPersister.retrieve(request.getQueries());
+            if(feed == null)
+                feed = new DataObjectFeed<>();
+            List<T> filteredObjects = visibilityFilter.filterByVisible(request, feed.getAll());
+            response.setCount(feed.getCount());
+            response.addAll(filteredObjects);
         }
         catch(PersistenceException e)
         {
