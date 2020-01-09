@@ -12,8 +12,6 @@ import java.util.List;
 
 public class DynamoQueryObjectRetriever<T extends IdentifiedObject> extends ObjectRetriever<T>
 {
-    private final int QUERY_PAGE_SIZE = 100;
-
     public DynamoQueryObjectRetriever(QueryExpression<T> queryExpression, Class<T> dataObjectClass, DynamoDBMapper dynamoDBMapper)
     {
         super(queryExpression, dataObjectClass, dynamoDBMapper);
@@ -29,9 +27,7 @@ public class DynamoQueryObjectRetriever<T extends IdentifiedObject> extends Obje
         // default the limit so a query doesn't get the entire table
         final int LIMIT = queryExpression.getLimit() == null ? LimitField.defaultValue() : queryExpression.getLimit();
 
-        // CRITICAL NOTE: DynamoDB does not have a clear concept of limited results.
-        // this is the maximum number of items to evaluate from the DynamoDB table (per scan call)
-        dynamoQueryExpression.setLimit(QUERY_PAGE_SIZE);
+        // Note: this uses the default query limit (as query limit has little to do with the actual resulting number of items)
 
         QueryResultPage<T> queryResultPage;
         do
