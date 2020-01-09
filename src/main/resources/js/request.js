@@ -3,18 +3,35 @@ var g_requestCid = regenerateCid();
 function getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, fieldsValue)
 {
     var endpointURL = getEndpointURL(server, endpoint);
-    var byFieldsQuery = fieldsValue == "" ? fieldsValue : "&byfields=" +fieldsValue;
-    endpointURL = endpointURL +"?bylimit=" +limitValue +byFieldsQuery;
+    var queryParams = new Array();
+    appendQueryParamToArray(queryParams, "byfields=", fieldsValue);
+    appendQueryParamToArray(queryParams, "bylimit=", limitValue);
 
     if(querySelectedType == "byId")
     {
-        return queryValue == "" ? endpointURL : getEndpointURL(server, endpoint) +"/" +queryValue +"?bylimit=" +limitValue +"&byfields=" +fieldsValue;
+        // Note: byId is an endpoint, not a query param
+        endpointURL = queryValue == "" ? endpointURL : endpointURL + "/" +queryValue;
     }
     else if(querySelectedType == "other")
     {
-        return queryValue == "" ? endpointURL : endpointURL +"&" +queryValue
+        appendQueryParamToArray(queryParams, "", queryValue);
     }
-     return queryValue == "" ? endpointURL : endpointURL +"&" +querySelectedType +"=" +encodeURIComponent(queryValue)
+    else
+    {
+        appendQueryParamToArray(queryParams, querySelectedType + "=", encodeURIComponent(queryValue));
+    }
+
+    if(queryParams.length > 0)
+        endpointURL = endpointURL + "?" + queryParams.join("&")
+
+    return endpointURL;
+
+}
+
+// basic util for appending non-empty valued queries (DO NOT include the & or ?)
+function appendQueryParamToArray(array, queryPrefix, queryValue) {
+    if(queryValue != "")
+        array.push(queryPrefix + queryValue);
 }
 
 function processRequest(e) {
