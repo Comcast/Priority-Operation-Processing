@@ -14,7 +14,9 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
+import com.theplatform.dfh.persistence.api.query.Query;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -53,13 +55,17 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
         try
         {
             VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.GET);
+            List<Query> queryList = new LinkedList<>();
+            if(request.getQueries() != null)
+                queryList.addAll(request.getQueries());
+
             if(request.getId() != null)
             {
                 // if the id is specified
-                request.getQueries().add(new ById(request.getId()));
+                queryList.add(new ById(request.getId()));
             }
 
-            DataObjectFeed<T> feed = objectPersister.retrieve(request.getQueries());
+            DataObjectFeed<T> feed = objectPersister.retrieve(queryList);
             if(feed == null)
                 feed = new DataObjectFeed<>();
             List<T> filteredObjects = visibilityFilter.filterByVisible(request, feed.getAll());

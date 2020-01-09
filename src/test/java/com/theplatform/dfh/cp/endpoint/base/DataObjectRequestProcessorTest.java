@@ -60,30 +60,34 @@ public class DataObjectRequestProcessorTest
         doReturn(null).when(mockObjectPersister).retrieve(anyList());
         request.setId(URL_ID);
         DataObjectResponse<SimpleObject> response = processor.handleGET(request);
-        Assert.assertTrue(response.isError());
-        Assert.assertEquals(response.getErrorResponse().getTitle(), "ObjectNotFoundException");
+        verify(mockObjectPersister, times(1)).retrieve(anyList());
+        Assert.assertEquals(response.getAll().size(), 0);
     }
 
     @Test
     public void testGETSingleIdInvalidVisibility() throws BadRequestException, PersistenceException
     {
-        doReturn(new SimpleObject()).when(mockObjectPersister).retrieve(anyString());
+        doReturn(new DataObjectFeed<>()).when(mockObjectPersister).retrieve(anyList());
         request.setId(URL_ID);
-        doReturn(false).when(mockVisibilityFilter).isVisible(any(), any());
+        doReturn(new ArrayList<>()).when(mockVisibilityFilter).filterByVisible(any(), any());
         DataObjectResponse<SimpleObject> response = processor.handleGET(request);
-        Assert.assertTrue(response.isError());
-        Assert.assertEquals(response.getErrorResponse().getTitle(), "UnauthorizedException");
+        verify(mockObjectPersister, times(1)).retrieve(anyList());
+        Assert.assertEquals(response.getAll().size(), 0);
     }
 
     @Test
     public void testGETSingleIdSuccess() throws BadRequestException, PersistenceException
     {
-        doReturn(new SimpleObject()).when(mockObjectPersister).retrieve(anyString());
+        DataObjectFeed<SimpleObject> testFeed = new DataObjectFeed<>();
+        SimpleObject testObject = new SimpleObject();
+        testFeed.add(testObject);
+        doReturn(testFeed).when(mockObjectPersister).retrieve(anyList());
         request.setId(URL_ID);
-        doReturn(true).when(mockVisibilityFilter).isVisible(any(), any());
+        doReturn(testFeed.getAll()).when(mockVisibilityFilter).filterByVisible(any(), any());
         DataObjectResponse<SimpleObject> response = processor.handleGET(request);
+        verify(mockObjectPersister, times(1)).retrieve(anyList());
         Assert.assertFalse(response.isError());
-        Assert.assertNotNull(response.getFirst());
+        Assert.assertEquals(response.getFirst(), testObject);
     }
 
     @Test
