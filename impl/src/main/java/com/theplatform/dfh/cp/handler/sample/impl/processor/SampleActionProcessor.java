@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.processor.BaseJsonOperationProcessor;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporter;
@@ -10,6 +11,7 @@ import com.theplatform.dfh.cp.handler.sample.impl.action.ActionMap;
 import com.theplatform.dfh.cp.handler.sample.impl.action.BaseAction;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
 import com.theplatform.dfh.cp.handler.sample.impl.exception.DfhSampleException;
+import com.theplatform.dfh.cp.handler.sample.impl.progress.SampleJobInfo;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Basic processor for running the sample action and requesting the output is parsed
  */
-public class SampleActionProcessor  extends BaseJsonOperationProcessor<SampleInput, LaunchDataWrapper, OperationContext>
+public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInput, LaunchDataWrapper, OperationContext>
 {
     private static Logger logger = LoggerFactory.getLogger(SampleActionProcessor.class);
 
@@ -36,6 +38,17 @@ public class SampleActionProcessor  extends BaseJsonOperationProcessor<SampleInp
     @Override
     protected void execute(SampleInput sampleInput)
     {
+        // load prior progress
+        SampleJobInfo sampleJobInfo = loadPriorProgress();
+        if(sampleJobInfo != null)
+        {
+            logger.info("Loaded prior progress: {}", jsonHelper.getJSONString(sampleJobInfo));
+        }
+        else
+        {
+            logger.info("No prior progress was loaded.");
+        }
+
         try
         {
             OperationProgressReporter reporter = operationContext.getOperationProgressReporter();
@@ -52,6 +65,21 @@ public class SampleActionProcessor  extends BaseJsonOperationProcessor<SampleInp
             // TODO: handlers should exit gracefully...
             throw new RuntimeException("Failed to load/execute payload.", e);
         }
+    }
+
+    protected SampleJobInfo loadPriorProgress()
+    {
+        OperationProgress lastProgress = operationContext.getLaunchDataWrapper().getLastOperationProgress();
+        if(lastProgress == null)
+        {
+            return null;
+        }
+        Object rawJobInfo = lastProgress.getParams().get(SampleJobInfo.PARAM_NAME);
+        if(rawJobInfo == null)
+        {
+            return null;
+        }
+        return jsonHelper.getObjectFromMap(jsonHelper.getMapFromObject(rawJobInfo), SampleJobInfo.class);
     }
 
     @Override

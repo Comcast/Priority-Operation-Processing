@@ -19,7 +19,7 @@
         <logging-extension.version>1.2.0</logging-extension.version>
         <jackson.version>2.9.8</jackson.version>
 
-        <handler-base.version>1.0.2-SNAPSHOT</handler-base.version>
+        <handler-base.version>1.0.3-SNAPSHOT</handler-base.version>
         <dfh-fabric8-kube-client.version>1.0.2-SNAPSHOT</dfh-fabric8-kube-client.version>
         <handler-kubernetes-support.version>1.0.1-SNAPSHOT</handler-kubernetes-support.version>
     </properties>
