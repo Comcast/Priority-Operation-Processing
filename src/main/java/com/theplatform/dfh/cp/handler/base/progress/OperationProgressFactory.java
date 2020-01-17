@@ -1,8 +1,10 @@
 package com.theplatform.dfh.cp.handler.base.progress;
 
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +45,11 @@ public class OperationProgressFactory
         switch (processingState)
         {
             case COMPLETE:
+                // on successful completion always just set to 100%
+                if(StringUtils.equals(processingStateMessage, CompleteStateMessage.SUCCEEDED.toString()))
+                {
+                    operationProgress.setPercentComplete(100d);
+                }
                 operationProgress.setCompletedTime(new Date());
                 break;
         }
