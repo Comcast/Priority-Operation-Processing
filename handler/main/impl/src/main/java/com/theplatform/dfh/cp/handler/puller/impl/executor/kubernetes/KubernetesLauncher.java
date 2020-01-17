@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.handler.puller.impl.limit.KubernetesInsightExecutionResourceChecker;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -14,7 +13,6 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodFollowerFac
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactory;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
