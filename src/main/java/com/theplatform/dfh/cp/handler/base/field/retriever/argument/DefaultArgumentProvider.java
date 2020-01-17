@@ -25,6 +25,7 @@ public class DefaultArgumentProvider extends ArgumentProvider
         addOption(options, HandlerArgument.EXTERNAL_LAUNCH_TYPE, true, "The type of launcher to use for external processes.");
         addOption(options, HandlerArgument.PROP_FILE, true, "The path to the properties file to use. (This overrides any other setting)");
         addOption(options, HandlerArgument.PAYLOAD_FILE, true, "The path to payload file to use. This overrides the environment variable.");
+        addOption(options, HandlerArgument.LAST_OPERATION_PROGRESS_FILE, true, "The path to an operation progress file to use. This overrides the environment variable.");
 
         return options;
     }

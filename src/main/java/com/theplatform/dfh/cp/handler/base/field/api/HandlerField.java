@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.base.field.api;
 public enum HandlerField
 {
     PAYLOAD,
+    LAST_PROGRESS,
     CID,
     OPERATION_NAME,
     AGENDA_ID,

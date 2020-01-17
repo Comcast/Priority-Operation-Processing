@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.base.field.retriever;
 
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.retriever.argument.ArgumentRetriever;
 import com.theplatform.dfh.cp.handler.base.field.retriever.environment.EnvironmentFieldRetriever;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
@@ -44,6 +45,8 @@ public abstract class LaunchDataWrapper
     }
 
     public abstract String getPayload();
+
+    public OperationProgress getLastOperationProgress() { return null; }
 
     // TODO: consider field accessors for getting the payload, launch type, and other extremely common fields (maybe a DefaultLaunchDataWrapper)
 }

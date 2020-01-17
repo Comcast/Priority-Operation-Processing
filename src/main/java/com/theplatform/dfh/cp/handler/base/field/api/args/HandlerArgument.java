@@ -5,7 +5,8 @@ public enum HandlerArgument implements CommandLineArgument
     LAUNCH_TYPE("launchType"),
     EXTERNAL_LAUNCH_TYPE("externalLaunchType"),
     PROP_FILE("propFile"),
-    PAYLOAD_FILE("payloadFile");
+    PAYLOAD_FILE("payloadFile"),
+    LAST_OPERATION_PROGRESS_FILE("lastOpProgressFile");
 
     private final String argumentName;
 
