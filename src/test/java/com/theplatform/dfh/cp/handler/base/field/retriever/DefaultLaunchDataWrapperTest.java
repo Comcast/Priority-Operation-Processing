@@ -20,6 +20,10 @@ import static org.mockito.Mockito.verify;
 
 public class DefaultLaunchDataWrapperTest
 {
+    private static final String JOB_PARAM_NAME = "jobInfo";
+    private static final String JOB_ID = "123456-987654";
+    private static final String OPERATION_PROGRESS_JSON = "{\"params\": {\"" + JOB_PARAM_NAME +"\": {\"jobId\": \"" + JOB_ID + "\"} } }";
+
     final String PAYLOAD_VALUE = "{}";
     private static final String TEST_FILE = "./src/test/resources/test.json";
     private DefaultLaunchDataWrapper launchDataWrapper;
@@ -74,12 +78,22 @@ public class DefaultLaunchDataWrapperTest
     @Test
     public void testGetLastOperationProgress()
     {
-
+        doReturn(OPERATION_PROGRESS_JSON).when(mockEnvironmentFieldRetriever).getField(HandlerField.LAST_PROGRESS.name());
+        // use a real one for testing string translate
+        launchDataWrapper.setJsonHelper(new JsonHelper());
+        OperationProgress lastOperationProgress = launchDataWrapper.getLastOperationProgress();
+        Assert.assertNotNull(lastOperationProgress);
+        Assert.assertNotNull(lastOperationProgress.getParams());
+        Assert.assertTrue(lastOperationProgress.getParams().containsKey(JOB_PARAM_NAME));
     }
 
     @Test
     public void testGetLastOperationProgressJsonError()
     {
+        doReturn(OPERATION_PROGRESS_JSON).when(mockEnvironmentFieldRetriever).getField(HandlerField.LAST_PROGRESS.name());
         doThrow(new JsonHelperException("")).when(mockJsonHelper).getObjectFromString(anyString(), any());
+        OperationProgress lastOperationProgress = launchDataWrapper.getLastOperationProgress();
+        verify(mockJsonHelper, times(1)).getObjectFromString(anyString(), any());
+        Assert.assertNull(lastOperationProgress);
     }
 }

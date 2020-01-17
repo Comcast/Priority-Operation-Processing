@@ -64,7 +64,7 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
 
         try
         {
-            jsonHelper.getObjectFromString(operationProgressJson, OperationProgress.class);
+            return jsonHelper.getObjectFromString(operationProgressJson, OperationProgress.class);
         }
         catch(JsonHelperException e)
         {
