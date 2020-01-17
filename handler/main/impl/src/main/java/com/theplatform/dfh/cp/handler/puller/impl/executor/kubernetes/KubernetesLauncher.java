@@ -1,7 +1,9 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
+import com.theplatform.dfh.cp.handler.puller.impl.limit.KubernetesInsightExecutionResourceChecker;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -16,7 +18,9 @@ import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerIm
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class KubernetesLauncher implements BaseLauncher
@@ -108,8 +112,23 @@ public class KubernetesLauncher implements BaseLauncher
         ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
         executionConfigurator.setEnvVars(agenda);
         podConfig.setReapCompletedPods(true);
+        appendLabels(podConfig, agenda);
         podPushClient.startWithoutWatcher(podConfig, executionConfig);
         followPod();
+    }
+
+    protected void appendLabels(PodConfig podConfig, Agenda agenda)
+    {
+        Map<String, String> labels = new HashMap<>();
+        AgendaInsight agendaInsight = agenda.getAgendaInsight();
+        if(agendaInsight != null &&
+            agendaInsight.getInsightId() != null
+            && agendaInsight.getResourcePoolId() != null)
+        {
+            labels.put(KubernetesFissionConstants.EXECEUTOR_INSIGHT_LABEL, agendaInsight.getInsightId());
+            labels.put(KubernetesFissionConstants.EXECEUTOR_RESOURCEPOOL_LABEL, agendaInsight.getResourcePoolId());
+        }
+        podConfig.setLabels(labels);
     }
 
     protected void logAgendaMetadata(Agenda agenda)
