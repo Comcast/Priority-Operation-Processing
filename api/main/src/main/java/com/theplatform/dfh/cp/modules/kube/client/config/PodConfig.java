@@ -88,6 +88,8 @@ public class PodConfig
 
     private String logback;
 
+    private Map<String, String> labels;
+
     public String getNamePrefix()
     {
         return namePrefix;
@@ -414,6 +416,16 @@ public class PodConfig
     {
         this.logback = logback;
         return this;
+    }
+
+    public Map<String, String> getLabels()
+    {
+        return labels;
+    }
+
+    public void setLabels(Map<String, String> labels)
+    {
+        this.labels = labels;
     }
 
     /**

@@ -94,6 +94,10 @@ public class Fabric8Helper
         labels.put(APP_KEY, label);
         labels.put(EXTERNAL_ID, executionConfig.getExternalId());
         labels.put(EXTERNAL_GROUP_ID, executionConfig.getExternalGroupId());
+        if(podConfig.getLabels() != null)
+        {
+            labels.putAll(podConfig.getLabels());
+        }
 
         List<ConfigMapDetails> configMapSettings = podConfig.getConfigMapSettings() != null ? podConfig.getConfigMapSettings() : new ArrayList<>();
 
