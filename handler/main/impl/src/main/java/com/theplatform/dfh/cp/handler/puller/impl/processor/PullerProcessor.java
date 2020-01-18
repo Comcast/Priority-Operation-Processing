@@ -1,7 +1,5 @@
 package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
@@ -9,6 +7,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.PullerResourcePo
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.LauncherFactory;
+import com.theplatform.dfh.cp.handler.puller.impl.limit.ResourceChecker;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
@@ -30,6 +29,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
     private PullerResourcePoolServiceClientFactory resourcePoolServiceClientFactory;
     private ResourcePoolServiceClient resourcePoolServiceClient;
     private LauncherFactory launcherFactory;
+    private ResourceChecker resourceChecker;
 
     private String insightId;
     private int agendaRequestCount = 1;
@@ -59,10 +59,32 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
      */
     public void execute()
     {
+        pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
+        agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
+
         while(true)
         {
-            performAgendaRequest();
+            if(areResourcesAvailable())
+            {
+                performAgendaRequest();
+            }
+            else
+            {
+                try
+                {
+                    pullWait(String.format("Resources not available for insight: %1$s", insightId));
+                }
+                catch (InterruptedException e)
+                {
+                    throw new RuntimeException("Thread interrupted.", e);
+                }
+            }
         }
+    }
+
+    protected boolean areResourcesAvailable()
+    {
+        return resourceChecker == null || resourceChecker.areResourcesAvailable();
     }
 
     /**
@@ -74,9 +96,6 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
 
         try
         {
-            pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
-            agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
-
             GetAgendaResponse getAgendaResponse;
             try
             {
@@ -84,7 +103,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
             }
             catch (Exception e)
             {
-                logger.error("Failed to getAgenda: {}", e);
+                logger.error("getAgenda call failed", e);
                 failProcess();
                 return;
             }
@@ -123,7 +142,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
             }
             else
             {
-                pullWait();
+                pullWait("Did not retrieve Agenda.");
             }
         }
         catch(InterruptedException e)
@@ -135,7 +154,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
             logger.error("performAgendaRequest failed to process. ", e);
             try
             {
-                pullWait();
+                pullWait("Agenda request failed.");
             }
             catch(InterruptedException ex)
             {
@@ -164,12 +183,12 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
     private void failProcess() throws InterruptedException
     {
         reportFailure();
-        pullWait();
+        pullWait("");
     }
 
-    private void pullWait() throws InterruptedException
+    private void pullWait(String logMessagePrefix) throws InterruptedException
     {
-        logger.info("Did not retrieve Agenda. Sleeping for {} seconds.", pullWaitSeconds);
+        logger.info("{} Sleeping for {} seconds.", logMessagePrefix, pullWaitSeconds);
         Thread.sleep(pullWaitSeconds * 1000);
     }
 
@@ -235,5 +254,21 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
         {
             this.metricReporter = metricReporter;
         }
+    }
+
+    public PullerProcessor setResourceChecker(ResourceChecker resourceChecker)
+    {
+        this.resourceChecker = resourceChecker;
+        return this;
+    }
+
+    public void setAgendaRequestCount(int agendaRequestCount)
+    {
+        this.agendaRequestCount = agendaRequestCount;
+    }
+
+    public void setPullWaitSeconds(int pullWaitSeconds)
+    {
+        this.pullWaitSeconds = pullWaitSeconds;
     }
 }

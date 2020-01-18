@@ -63,6 +63,7 @@ public class PullerProcessorTest
         doReturn(launcherMock).when(launcherFactoryMock).createLauncher(any());
 
         PullerProcessor pullerProcessor = new PullerProcessor(insightId);
+        pullerProcessor.setPullWaitSeconds(pullWait);
         pullerProcessor.setResourcePoolServiceClientFactory(clientFactoryMock);
         pullerProcessor.setLauncherFactory(launcherFactoryMock);
         pullerProcessor.setLaunchDataWrapper(launchDataWrapper);

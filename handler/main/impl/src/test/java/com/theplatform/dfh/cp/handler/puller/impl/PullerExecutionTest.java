@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.puller.impl;
 
-import com.theplatform.dfh.cp.handler.puller.impl.context.ExecutionContext;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

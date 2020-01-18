@@ -81,6 +81,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         {
             operationContext.init();
             PullerProcessor pullerProcessor = createHandlerProcessor(operationContext);
+            pullerProcessor.setResourceChecker(operationContext.getResourceCheckerFactory().getResourceChecker());
             pullerProcessor.setMetricReporter(metricReporter);
             pullerProcessor.execute();
         }
