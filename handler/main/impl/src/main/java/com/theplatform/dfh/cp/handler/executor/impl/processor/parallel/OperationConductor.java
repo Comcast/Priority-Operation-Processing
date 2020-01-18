@@ -1,7 +1,9 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
@@ -10,6 +12,9 @@ import com.theplatform.dfh.cp.handler.executor.impl.processor.JsonContextUpdater
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoader;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoaderFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +54,8 @@ public class OperationConductor implements OnOperationCompleteListener
     private OperationRunnerFactory operationRunnerFactory;
     private ExecutorService executorService;
     private JsonContextUpdater jsonContextUpdater;
-    private int operationFailureCount = 0;
+
+    private ProgressLoaderFactory progressLoaderFactory;
 
     /**
      * Ctor
@@ -67,6 +73,7 @@ public class OperationConductor implements OnOperationCompleteListener
         this.executorContext = executorContext;
         this.jsonContextUpdater = new JsonContextUpdater(executorContext);
         this.operationRunnerFactory = new OperationRunnerFactory();
+        this.progressLoaderFactory = new ProgressLoaderFactory();
 
         diagnosticEvents = new LinkedList<>();
 
@@ -83,6 +90,8 @@ public class OperationConductor implements OnOperationCompleteListener
 
         try
         {
+            loadPriorProgress();
+
             logger.debug("Getting executor service");
             if(executorService == null)
             {
@@ -120,6 +129,60 @@ public class OperationConductor implements OnOperationCompleteListener
             List<Runnable> remainingTasks = executorService.shutdownNow();
             logger.info("ExecutorService shutdownNow called. {} Runnables were waiting.", remainingTasks.size());
         }
+    }
+
+    /**
+     * Loads any existing progress into the OperationConductor
+     */
+    protected void loadPriorProgress()
+    {
+        ProgressLoader progressLoader = progressLoaderFactory.createProgressLoader(executorContext);
+        if(progressLoader == null)
+        {
+            return;
+        }
+
+        AgendaProgress agendaProgress = progressLoader.loadProgress(executorContext.getAgendaProgressId());
+
+        if(agendaProgress.getOperationProgress() == null)
+        {
+            return;
+        }
+
+        // TODO: Operation Wrapper map by operation name (instead of the gross filters below)
+
+        // Successful Ops
+        Arrays.stream(agendaProgress.getOperationProgress())
+            .filter(operationProgress -> operationProgress.getProcessingState() == ProcessingState.COMPLETE
+                && StringUtils.equalsIgnoreCase(operationProgress.getProcessingStateMessage(), CompleteStateMessage.SUCCEEDED.name())
+                && operationProgress.getOperation() != null)
+            .forEach(operationProgress ->
+            {
+                Optional<OperationWrapper> operationWrapper =
+                    pendingOperations.stream().filter(operation -> StringUtils.equals(operation.getOperation().getName(), operationProgress.getOperation())).findFirst();
+                if(operationWrapper.isPresent())
+                {
+                    OperationWrapper opWrapper = operationWrapper.get();
+                    opWrapper.setOutputPayload(operationProgress.getResultPayload());
+                    postProcessCompletedOperation(operationWrapper.get());
+                    pendingOperations.remove(operationWrapper.get());
+                }
+            });
+
+        // Incomplete / Failed Ops
+        Arrays.stream(agendaProgress.getOperationProgress())
+            .filter(operationProgress -> operationProgress.getProcessingState() != ProcessingState.COMPLETE
+                && operationProgress.getOperation() != null)
+            .forEach(operationProgress ->
+            {
+                Optional<OperationWrapper> operationWrapper =
+                    pendingOperations.stream().filter(operation -> StringUtils.equals(operation.getOperation().getName(), operationProgress.getOperation())).findFirst();
+                // send the wrapper the op progress to pass on to the handler
+                if(operationWrapper.isPresent())
+                {
+                    operationWrapper.get().setPriorExecutionOperationProgress(operationProgress);
+                }
+            });
     }
 
     /**
@@ -324,5 +387,10 @@ public class OperationConductor implements OnOperationCompleteListener
                     operationWrapper.getOperationExecutor().getIdenitifier())
             )
             .collect(Collectors.joining(delimiter));
+    }
+
+    public void setProgressLoaderFactory(ProgressLoaderFactory progressLoaderFactory)
+    {
+        this.progressLoaderFactory = progressLoaderFactory;
     }
 }

@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
@@ -63,6 +64,13 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
             logger.error("Could not retrieve PodConfig from Registry..");
             throw new AgendaExecutorException(
                     String.format("Unknown operation type found: %1$s on operation: %2$s", operation.getType(), operation.getName()));
+        }
+
+        if(operationWrapper.getPriorExecutionOperationProgress() != null)
+        {
+            logger.info("Found prior operationProgress for op: {}", operationWrapper.getOperation().getName());
+            podConfig.addEnvVars(HandlerField.LAST_PROGRESS.name(),
+                executorContext.getJsonHelper().getJSONString(operationWrapper.getPriorExecutionOperationProgress()));
         }
 
         return buildOperationExecutor(podConfig, operation, kubeConfig, executorContext);

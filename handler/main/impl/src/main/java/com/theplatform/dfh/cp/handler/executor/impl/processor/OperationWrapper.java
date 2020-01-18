@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
@@ -35,6 +36,7 @@ public class OperationWrapper
     private List<DiagnosticEvent> diagnosticEvents;
     private boolean success = false;
     private Map<String, JsonNode> operationContextMap;
+    private OperationProgress priorExecutionOperationProgress;
 
     public OperationWrapper(Operation operation)
     {
@@ -216,5 +218,15 @@ public class OperationWrapper
     {
         this.operationExecutor = operationExecutor;
         return this;
+    }
+
+    public OperationProgress getPriorExecutionOperationProgress()
+    {
+        return priorExecutionOperationProgress;
+    }
+
+    public void setPriorExecutionOperationProgress(OperationProgress priorExecutionOperationProgress)
+    {
+        this.priorExecutionOperationProgress = priorExecutionOperationProgress;
     }
 }

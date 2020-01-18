@@ -19,6 +19,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPClientConfig;
 import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
 import org.apache.commons.lang.StringUtils;
@@ -58,6 +59,8 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         OperationExecutorFactory operationExecutorFactory;
         List<ShutdownProcessor> shutdownProcessors = new LinkedList<>();
 
+        HttpURLConnectionFactory urlConnectionFactory = createIDMHTTPUrlConnectionFactory(launchDataWrapper.getPropertyRetriever());
+
         switch(getLaunchType())
         {
             case kubernetes:
@@ -84,7 +87,8 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         operationExecutorFactory.setResidentOperationExecutorFactory(new ResidentOperationExecutorFactory());
 
-        return new ExecutorContext(createAgendaReporter(), launchDataWrapper, operationExecutorFactory, shutdownProcessors);
+        return new ExecutorContext(createAgendaReporter(urlConnectionFactory), launchDataWrapper, operationExecutorFactory, shutdownProcessors)
+            .setUrlConnectionFactory(urlConnectionFactory);
     }
 
     @Override
@@ -93,7 +97,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         throw new UnsupportedOperationException();
     }
 
-    public ProgressReporter<AgendaProgress> createAgendaReporter()
+    public ProgressReporter<AgendaProgress> createAgendaReporter(HttpURLConnectionFactory httpURLConnectionFactory)
     {
         switch(getLaunchType())
         {
@@ -102,11 +106,11 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
                 return new LogReporter<>();
             case kubernetes:
             default:
-                return createHttpAgendaReporter();
+                return createHttpAgendaReporter(httpURLConnectionFactory);
         }
     }
 
-    protected ProgressReporter<AgendaProgress> createHttpAgendaReporter()
+    protected ProgressReporter<AgendaProgress> createHttpAgendaReporter(HttpURLConnectionFactory httpURLConnectionFactory)
     {
         FieldRetriever propertyRetriever = launchDataWrapper.getPropertyRetriever();
 
@@ -117,7 +121,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
             throw new RuntimeException("Invalid AgendaProgress url specified.");
         }
         return new ResourcePoolServiceAgendaProgressReporter(
-            resourcePoolServiceClientFactory.create(agendaProgressUrl, createIDMHTTPUrlConnectionFactory(propertyRetriever)));
+            resourcePoolServiceClientFactory.create(agendaProgressUrl, httpURLConnectionFactory));
     }
 
     protected int getProgressTimeout(PropertyRetriever propertyRetriever)

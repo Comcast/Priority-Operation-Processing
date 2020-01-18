@@ -13,7 +13,9 @@ import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgre
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThread;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThreadConfig;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +30,16 @@ import java.util.UUID;
 public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
 {
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
+    private HttpURLConnectionFactory urlConnectionFactory;
     private OperationExecutorFactory operationExecutorFactory;
+    private JsonHelper jsonHelper = new JsonHelper();
     private JsonContext jsonContext;
     private ProgressReporter reporter;
     private AgendaProgressReporter agendaProgressReporter;
     private AgendaProgressThread agendaProgressThread;
     private List<ShutdownProcessor> shutdownProcessors;
     private String agendaId;
+    private String agendaProgressId;
 
     public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
@@ -46,14 +51,14 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         this.shutdownProcessors.addAll(shutdownProcessors);
         this.jsonContext = new JsonContext();
         agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
-        String progressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
-        if(progressId == null)
+        agendaProgressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
+        if(agendaProgressId == null)
         {
             logger.warn("{} was unset, defaulting null", HandlerField.PROGRESS_ID.name());
         }
         agendaProgressReporter = new
             AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
-            progressId
+            agendaProgressId
         ));
     }
 
@@ -141,5 +146,36 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         }
         this.agendaId = agendaId;
         return this;
+    }
+
+    public String getAgendaProgressId()
+    {
+        return agendaProgressId;
+    }
+
+    public void setAgendaProgressId(String agendaProgressId)
+    {
+        this.agendaProgressId = agendaProgressId;
+    }
+
+    public HttpURLConnectionFactory getUrlConnectionFactory()
+    {
+        return urlConnectionFactory;
+    }
+
+    public ExecutorContext setUrlConnectionFactory(HttpURLConnectionFactory urlConnectionFactory)
+    {
+        this.urlConnectionFactory = urlConnectionFactory;
+        return this;
+    }
+
+    public JsonHelper getJsonHelper()
+    {
+        return jsonHelper;
+    }
+
+    public void setJsonHelper(JsonHelper jsonHelper)
+    {
+        this.jsonHelper = jsonHelper;
     }
 }
