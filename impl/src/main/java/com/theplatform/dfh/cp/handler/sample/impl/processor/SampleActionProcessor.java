@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.sample.impl.processor;
 
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.processor.BaseJsonOperationProcessor;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporter;
@@ -69,17 +68,7 @@ public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInpu
 
     protected SampleJobInfo loadPriorProgress()
     {
-        OperationProgress lastProgress = operationContext.getLaunchDataWrapper().getLastOperationProgress();
-        if(lastProgress == null)
-        {
-            return null;
-        }
-        Object rawJobInfo = lastProgress.getParams().get(SampleJobInfo.PARAM_NAME);
-        if(rawJobInfo == null)
-        {
-            return null;
-        }
-        return jsonHelper.getObjectFromMap(jsonHelper.getMapFromObject(rawJobInfo), SampleJobInfo.class);
+        return operationContext.getLaunchDataWrapper().getLastOperationProgressParam(SampleJobInfo.PARAM_NAME, SampleJobInfo.class);
     }
 
     @Override
