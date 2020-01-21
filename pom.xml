@@ -20,7 +20,7 @@
         <cp-json-helper.version>1.0.1</cp-json-helper.version>
         <cp-api.version>1.0.2</cp-api.version>
         <dfh-http-util.version>1.0.1</dfh-http-util.version>
-        <dfh-endpoint-client.version>1.0.2</dfh-endpoint-client.version>
+        <dfh-endpoint-client.version>1.0.3-SNAPSHOT</dfh-endpoint-client.version>
         <mediainfo-handler-api.version>1.0.2</mediainfo-handler-api.version>
         <accelerate-filter-handler-api.version>1.0.1</accelerate-filter-handler-api.version>
         <ldap-filter-api.version>1.0.1</ldap-filter-api.version>
