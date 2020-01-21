@@ -19,6 +19,7 @@
         <http-utils.version>1.0.0</http-utils.version>
         <http-api.version>1.0.1</http-api.version>
         <cp-api.version>1.0.2</cp-api.version>
+        <cp-persistence-api.version>1.0.2-SNAPSHOT</cp-persistence-api.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,12 @@
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
             <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${cp-persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
