@@ -25,6 +25,7 @@
         <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
         <cp-api.version>1.0.2</cp-api.version>
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
+        <persistence-api.version>1.0.2-SNAPSHOT</persistence-api.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
 
@@ -86,6 +87,11 @@
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${persistence-api.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
