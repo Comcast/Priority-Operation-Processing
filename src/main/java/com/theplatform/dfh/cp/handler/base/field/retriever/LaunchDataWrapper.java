@@ -48,5 +48,7 @@ public abstract class LaunchDataWrapper
 
     public OperationProgress getLastOperationProgress() { return null; }
 
+    public <T> T getLastOperationProgressParam(String paramName, Class<T> objectClass) { return null; }
+
     // TODO: consider field accessors for getting the payload, launch type, and other extremely common fields (maybe a DefaultLaunchDataWrapper)
 }

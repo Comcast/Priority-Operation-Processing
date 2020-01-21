@@ -57,7 +57,7 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
     @Override
     public OperationProgress getLastOperationProgress()
     {
-        String operationProgressJson = getStringFromFields(HandlerArgument.LAST_OPERATION_PROGRESS_FILE, HandlerField.LAST_PROGRESS);
+        String operationProgressJson = getStringFromFields(HandlerArgument.LAST_PROGRESS_FILE, HandlerField.LAST_PROGRESS);
 
         if(operationProgressJson == null)
             return null;
@@ -65,6 +65,29 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
         try
         {
             return jsonHelper.getObjectFromString(operationProgressJson, OperationProgress.class);
+        }
+        catch(JsonHelperException e)
+        {
+            logger.warn("Unable to read the last progress object. Defaulting to null.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T getLastOperationProgressParam(String paramName, Class<T> objectClass)
+    {
+        String operationProgressJson = getStringFromFields(HandlerArgument.LAST_PROGRESS_FILE, HandlerField.LAST_PROGRESS);
+
+        if(operationProgressJson == null)
+            return null;
+
+        try
+        {
+            OperationProgress operationProgress = jsonHelper.getObjectFromString(operationProgressJson, OperationProgress.class);
+            if(operationProgress == null || operationProgress.getParams() == null || !operationProgress.getParams().containsKey(paramName))
+                return null;
+
+            return jsonHelper.getObjectMapper().convertValue(operationProgress.getParams().get(paramName), objectClass);
         }
         catch(JsonHelperException e)
         {

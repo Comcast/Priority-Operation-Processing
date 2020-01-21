@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.base.field.retriever;
 
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.api.args.HandlerArgument;
@@ -8,7 +9,10 @@ import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -20,9 +24,10 @@ import static org.mockito.Mockito.verify;
 
 public class DefaultLaunchDataWrapperTest
 {
+    private static final JsonHelper jsonHelper = new JsonHelper();
     private static final String JOB_PARAM_NAME = "jobInfo";
     private static final String JOB_ID = "123456-987654";
-    private static final String OPERATION_PROGRESS_JSON = "{\"params\": {\"" + JOB_PARAM_NAME +"\": {\"jobId\": \"" + JOB_ID + "\"} } }";
+    private static final String OPERATION_PROGRESS_JSON = "{\"params\": {\"" + JOB_PARAM_NAME +"\": " + jsonHelper.getJSONString(new LastProgressObject(JOB_ID)) + " } }";
 
     final String PAYLOAD_VALUE = "{}";
     private static final String TEST_FILE = "./src/test/resources/test.json";
@@ -80,7 +85,7 @@ public class DefaultLaunchDataWrapperTest
     {
         doReturn(OPERATION_PROGRESS_JSON).when(mockEnvironmentFieldRetriever).getField(HandlerField.LAST_PROGRESS.name());
         // use a real one for testing string translate
-        launchDataWrapper.setJsonHelper(new JsonHelper());
+        launchDataWrapper.setJsonHelper(jsonHelper);
         OperationProgress lastOperationProgress = launchDataWrapper.getLastOperationProgress();
         Assert.assertNotNull(lastOperationProgress);
         Assert.assertNotNull(lastOperationProgress.getParams());
@@ -95,5 +100,68 @@ public class DefaultLaunchDataWrapperTest
         OperationProgress lastOperationProgress = launchDataWrapper.getLastOperationProgress();
         verify(mockJsonHelper, times(1)).getObjectFromString(anyString(), any());
         Assert.assertNull(lastOperationProgress);
+    }
+
+    @Test
+    public void testGetLastOperationProgressParam()
+    {
+        doReturn(OPERATION_PROGRESS_JSON).when(mockEnvironmentFieldRetriever).getField(HandlerField.LAST_PROGRESS.name());
+        // use a real one for testing string translate
+        launchDataWrapper.setJsonHelper(jsonHelper);
+        LastProgressObject lastProgressObject = launchDataWrapper.getLastOperationProgressParam(JOB_PARAM_NAME, LastProgressObject.class);
+        Assert.assertNotNull(lastProgressObject);
+        Assert.assertEquals(lastProgressObject.getJobId(), JOB_ID);
+    }
+
+    @DataProvider
+    public Object[][] lastOperationProgressParamMissingProvider()
+    {
+        return new Object[][]
+            {
+                {null},
+                {new OperationProgress()},
+                {createOperationProgress(null)}
+            };
+    }
+
+    @Test(dataProvider = "lastOperationProgressParamMissingProvider")
+    public void testGetLastOperationProgressParamMissing(OperationProgress operationProgress)
+    {
+        if(operationProgress != null)
+            doReturn(jsonHelper.getJSONString(operationProgress)).when(mockEnvironmentFieldRetriever).getField(HandlerField.LAST_PROGRESS.name());
+        Assert.assertNull(launchDataWrapper.getLastOperationProgressParam(JOB_PARAM_NAME, LastProgressObject.class));
+    }
+
+    private OperationProgress createOperationProgress(ParamsMap paramsMap)
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setParams(paramsMap);
+        return operationProgress;
+    }
+
+    public static class LastProgressObject
+    {
+        // this is intentionally different than the one in the test
+        public static final String JOB_ID = UUID.randomUUID().toString();
+        private String jobId = JOB_ID;
+
+        public LastProgressObject()
+        {
+        }
+
+        public LastProgressObject(String jobId)
+        {
+            this.jobId = jobId;
+        }
+
+        public String getJobId()
+        {
+            return jobId;
+        }
+
+        public void setJobId(String jobId)
+        {
+            this.jobId = jobId;
+        }
     }
 }
