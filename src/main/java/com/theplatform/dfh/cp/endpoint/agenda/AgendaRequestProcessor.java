@@ -107,7 +107,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         if(insight == null)
         {
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.objectNotFound(
-                String.format("No available insights for processing agenda %s", agendaToPersist.getId()),
+                "No available insights for processing agenda",
                 request.getCID()));
         }
 

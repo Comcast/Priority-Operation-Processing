@@ -114,10 +114,9 @@ public class CreateAgendaServiceRequestProcessorTest
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
-        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No " +
-            "available " +
-            "insights for processing " +
-            "agenda null]"), getAgendaResponse.getErrorResponse().getDescription());
+        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains(
+            "[ObjectNotFoundException : No available insights for processing agenda]"),
+            getAgendaResponse.getErrorResponse().getDescription());
     }
     @Test
     public void testGlobalInsightCallingUserIsVisibleToInsight() throws PersistenceException
@@ -159,7 +158,7 @@ public class CreateAgendaServiceRequestProcessorTest
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
-        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No available insights for processing agenda null]"));
+        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No available insights for processing agenda]"));
     }
     @Test
     public void testNonGlobalInsightCallingUserIsVisibleToInsightAgendaIsNot() throws PersistenceException
@@ -179,7 +178,7 @@ public class CreateAgendaServiceRequestProcessorTest
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 0);
         Assert.assertNotNull(getAgendaResponse.getErrorResponse(), getAgendaResponse.getErrorResponse().getDescription());
-        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No available insights for processing agenda null]"));
+        Assert.assertTrue(getAgendaResponse.getErrorResponse().getDescription().contains("[ObjectNotFoundException : No available insights for processing agenda]"));
     }
     @Test
     public void testNonGlobalInsightCallingUserIsVisibleToInsightAgendaIsInAllowedAccounts() throws PersistenceException
