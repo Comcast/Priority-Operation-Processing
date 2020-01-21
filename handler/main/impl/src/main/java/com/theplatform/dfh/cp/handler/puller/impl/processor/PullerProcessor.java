@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
@@ -29,7 +30,7 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
     private PullerResourcePoolServiceClientFactory resourcePoolServiceClientFactory;
     private ResourcePoolServiceClient resourcePoolServiceClient;
     private LauncherFactory launcherFactory;
-    private ResourceChecker resourceChecker;
+    private List<ResourceChecker> resourceCheckers;
 
     private String insightId;
     private int agendaRequestCount = 1;
@@ -84,7 +85,9 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
 
     protected boolean areResourcesAvailable()
     {
-        return resourceChecker == null || resourceChecker.areResourcesAvailable();
+        return resourceCheckers == null
+            || resourceCheckers.size() == 0
+            || resourceCheckers.stream().allMatch(ResourceChecker::areResourcesAvailable);
     }
 
     /**
@@ -256,10 +259,9 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
         }
     }
 
-    public PullerProcessor setResourceChecker(ResourceChecker resourceChecker)
+    public void setResourceCheckers(List<ResourceChecker> resourceCheckers)
     {
-        this.resourceChecker = resourceChecker;
-        return this;
+        this.resourceCheckers = resourceCheckers;
     }
 
     public void setAgendaRequestCount(int agendaRequestCount)

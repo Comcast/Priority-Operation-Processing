@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class KubernetesInsightExecutionResourceChecker implements ResourceChecker
 {
-    public static final String LIMIT_PROPERTY_NAME = "insight.execution.limit";
+    public static final String INSIGHT_EXECUTION_LIMIT_PROPERTY_NAME = "insight.execution.limit";
 
     private static final Set<String> EXECUTING_POD_STATUSES = new HashSet<>(Arrays.asList(
         PodPhase.PENDING.getLabel(), PodPhase.RUNNING.getLabel(), PodPhase.UNKNOWN.getLabel()
