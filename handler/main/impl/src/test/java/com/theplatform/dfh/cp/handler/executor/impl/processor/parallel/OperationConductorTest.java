@@ -1,13 +1,20 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.parallel;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressReporter;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoader;
+import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoaderFactory;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import org.apache.commons.lang3.StringUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.Assert;
@@ -15,7 +22,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,10 +43,14 @@ public class OperationConductorTest
     private AgendaProgressReporter mockAgendaProgressReporter;
     private JsonContext mockJsonContext;
     private ExecutorService mockExecutorService;
+    private ProgressLoaderFactory mockProgressLoaderFactory;
+    private ProgressLoader mockProgressLoader;
 
     @BeforeMethod
     public void setup()
     {
+        mockProgressLoader = mock(ProgressLoader.class);
+        mockProgressLoaderFactory = mock(ProgressLoaderFactory.class);
         mockAgendaProgressReporter = mock(AgendaProgressReporter.class);
         mockExecutorContext = mock(ExecutorContext.class);
         doReturn(mockAgendaProgressReporter).when(mockExecutorContext).getAgendaProgressReporter();
@@ -45,6 +61,7 @@ public class OperationConductorTest
         operationConductor = new OperationConductor(new ArrayList<>(), mockExecutorContext);
         operationConductor.setOperationRunnerFactory(mockOperationRunnerFactory);
         operationConductor.setExecutorService(mockExecutorService);
+        operationConductor.setProgressLoaderFactory(mockProgressLoaderFactory);
     }
 
     @Test
@@ -138,6 +155,104 @@ public class OperationConductorTest
         operationConductor.postProcessCompletedOperation(operationWrapper);
         Assert.assertEquals(operationConductor.getPendingOperations().size(), 0);
         Assert.assertTrue(operationConductor.hasExecutionFailed());
+    }
+
+    @Test
+    public void testLoadPriorProgressNoURL()
+    {
+        // NOTE: this might change if the executor doesn't request the progress from the API
+        operationConductor.loadPriorProgress();
+    }
+
+    @Test
+    public void testLoadPriorProgressNull()
+    {
+        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
+        doReturn(null).when(mockProgressLoader).loadProgress(anyString());
+        operationConductor.loadPriorProgress();
+    }
+
+    @Test
+    public void testLoadPriorProgressNoOpProgress()
+    {
+        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
+        doReturn(createAgendaProgress(null, null)).when(mockProgressLoader).loadProgress(anyString());
+        operationConductor.loadPriorProgress();
+    }
+
+    @Test
+    public void testLoadPriorProgressWithOpProgress()
+    {
+        final List<String> operationNames = Arrays.asList("test.1", "test.2");
+        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
+        doReturn(createAgendaProgress(operationNames, null)).when(mockProgressLoader).loadProgress(anyString());
+        operationConductor.setPendingOperations(createOperationWrappers(operationNames));
+        operationConductor.loadPriorProgress();
+        for (OperationWrapper operationWrapper : operationConductor.getPendingOperations())
+        {
+            Assert.assertEquals(operationWrapper.getOperation().getName(), operationWrapper.getPriorExecutionOperationProgress().getOperation());
+        }
+    }
+
+    @Test
+    public void testLoadPriorProgressWithOpProgressMix()
+    {
+        final List<String> operationNames = Arrays.asList("test.1", "test.2", "test.3");
+        final Set<String> suceededOperationNames = new HashSet<>(Arrays.asList("test.2"));
+        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
+        doReturn(createAgendaProgress(operationNames, suceededOperationNames)).when(mockProgressLoader).loadProgress(anyString());
+        operationConductor.setPendingOperations(createOperationWrappers(operationNames));
+        operationConductor.loadPriorProgress();
+        for(String opName : operationNames)
+        {
+            boolean succededOp = suceededOperationNames.contains(opName);
+
+            boolean foundPendingOp = operationConductor.getPendingOperations().stream()
+                .anyMatch(operationWrapper ->
+                    StringUtils.equals(operationWrapper.getOperation().getName(), opName));
+            boolean foundSucceededOp = operationConductor.getCompletedOperations().stream()
+                .anyMatch(operationWrapper ->
+                    StringUtils.equals(operationWrapper.getOperation().getName(), opName));
+
+            Assert.assertEquals(succededOp, foundSucceededOp, opName + (succededOp ? " should be in the succeeded set" : " should not be in the succeeded set"));
+            Assert.assertEquals(!succededOp, foundPendingOp, opName + (!succededOp ? " should be in the pending set" : " should not be in the pending set"));
+        }
+    }
+
+    protected List<OperationWrapper> createOperationWrappers(List<String> operationNames)
+    {
+        List<OperationWrapper> operationWrappers = new LinkedList<>();
+        if(operationNames != null)
+        {
+            return operationNames.stream().map(opName ->
+            {
+                Operation operation = new Operation();
+                operation.setName(opName);
+                OperationWrapper operationWrapper = new OperationWrapper(operation);
+                return operationWrapper;
+            }).collect(Collectors.toList());
+        }
+        return operationWrappers;
+    }
+
+    protected AgendaProgress createAgendaProgress(List<String> operationNames, Set<String> succededOperationNames)
+    {
+        AgendaProgress agendaProgress = new AgendaProgress();
+        if(operationNames != null)
+        {
+            agendaProgress.setOperationProgress(operationNames.stream().map(opName ->
+            {
+                OperationProgress opProgress = new OperationProgress();
+                opProgress.setOperation(opName);
+                if(succededOperationNames != null && succededOperationNames.contains(opName))
+                {
+                    opProgress.setProcessingState(ProcessingState.COMPLETE);
+                    opProgress.setProcessingStateMessage(CompleteStateMessage.SUCCEEDED.toString());
+                }
+                return opProgress;
+            }).collect(Collectors.toList()).toArray(new OperationProgress[0]));
+        }
+        return agendaProgress;
     }
 
     private Collection<String> addOperations(int count, boolean ready, Collection<OperationWrapper> listToAppend)

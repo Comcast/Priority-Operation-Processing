@@ -144,12 +144,15 @@ public class OperationConductor implements OnOperationCompleteListener
 
         AgendaProgress agendaProgress = progressLoader.loadProgress(executorContext.getAgendaProgressId());
 
-        if(agendaProgress.getOperationProgress() == null)
+        if(agendaProgress == null
+            || agendaProgress.getOperationProgress() == null
+            || pendingOperations.size() == 0)
         {
             return;
         }
 
-        // TODO: Operation Wrapper map by operation name (instead of the gross filters below)
+        Map<String, OperationWrapper> operationWrapperMap = new HashMap<>();
+        pendingOperations.forEach(opWrapper -> operationWrapperMap.put(opWrapper.getOperation().getName(), opWrapper));
 
         // Successful Ops
         Arrays.stream(agendaProgress.getOperationProgress())
@@ -158,14 +161,12 @@ public class OperationConductor implements OnOperationCompleteListener
                 && operationProgress.getOperation() != null)
             .forEach(operationProgress ->
             {
-                Optional<OperationWrapper> operationWrapper =
-                    pendingOperations.stream().filter(operation -> StringUtils.equals(operation.getOperation().getName(), operationProgress.getOperation())).findFirst();
-                if(operationWrapper.isPresent())
+                OperationWrapper operationWrapper = operationWrapperMap.get(operationProgress.getOperation());
+                if(operationWrapper != null)
                 {
-                    OperationWrapper opWrapper = operationWrapper.get();
-                    opWrapper.setOutputPayload(operationProgress.getResultPayload());
-                    postProcessCompletedOperation(operationWrapper.get());
-                    pendingOperations.remove(operationWrapper.get());
+                    operationWrapper.setSuccess(true);
+                    operationWrapper.setOutputPayload(operationProgress.getResultPayload());
+                    postProcessCompletedOperation(operationWrapper);
                 }
             });
 
@@ -175,12 +176,10 @@ public class OperationConductor implements OnOperationCompleteListener
                 && operationProgress.getOperation() != null)
             .forEach(operationProgress ->
             {
-                Optional<OperationWrapper> operationWrapper =
-                    pendingOperations.stream().filter(operation -> StringUtils.equals(operation.getOperation().getName(), operationProgress.getOperation())).findFirst();
-                // send the wrapper the op progress to pass on to the handler
-                if(operationWrapper.isPresent())
+                OperationWrapper operationWrapper = operationWrapperMap.get(operationProgress.getOperation());
+                if(operationWrapper != null)
                 {
-                    operationWrapper.get().setPriorExecutionOperationProgress(operationProgress);
+                    operationWrapper.setPriorExecutionOperationProgress(operationProgress);
                 }
             });
     }
@@ -283,6 +282,8 @@ public class OperationConductor implements OnOperationCompleteListener
                 pendingOperations.clear();
             }
 
+            // this operation should migrate to complete no matter its current state
+            pendingOperations.remove(operationWrapper);
             runningOperations.remove(operationWrapper);
             completedOperations.add(operationWrapper);
         }
@@ -348,6 +349,15 @@ public class OperationConductor implements OnOperationCompleteListener
     protected List<OperationWrapper> getPendingOperations()
     {
         return pendingOperations;
+    }
+
+    /**
+     * Sets the pendingOperations. This should only be used for unit testing.
+     * @param pendingOperations The pending operations
+     */
+    protected void setPendingOperations(List<OperationWrapper> pendingOperations)
+    {
+        this.pendingOperations = pendingOperations;
     }
 
     protected List<OperationWrapper> getCompletedOperations()
