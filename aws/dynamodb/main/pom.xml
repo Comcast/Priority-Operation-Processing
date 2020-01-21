@@ -34,6 +34,7 @@
             <groupId>com.theplatform.dfh.modules.persistence</groupId>
             <artifactId>pl-dfh-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
