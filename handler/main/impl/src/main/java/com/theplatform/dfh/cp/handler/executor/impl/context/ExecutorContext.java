@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
+import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.handler.base.context.BaseOperationContext;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
@@ -40,6 +41,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private List<ShutdownProcessor> shutdownProcessors;
     private String agendaId;
     private String agendaProgressId;
+    private Agenda agenda;
 
     public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
@@ -156,6 +158,16 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public void setAgendaProgressId(String agendaProgressId)
     {
         this.agendaProgressId = agendaProgressId;
+    }
+
+    public void setAgenda(Agenda agenda)
+    {
+        this.agenda = agenda;
+    }
+
+    public Agenda getAgenda()
+    {
+        return agenda;
     }
 
     public HttpURLConnectionFactory getUrlConnectionFactory()

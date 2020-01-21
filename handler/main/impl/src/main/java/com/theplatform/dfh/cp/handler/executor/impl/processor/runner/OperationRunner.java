@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecut
 import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.event.OperationCompleteEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ public class OperationRunner implements Runnable
 {
     private static Logger logger = LoggerFactory.getLogger(OperationRunner.class);
 
+    private OperationCompleteEvent operationCompleteEvent;
     private OperationWrapper operationWrapper;
     private ExecutorContext executorContext;
     private OnOperationCompleteListener onOperationCompleteListener;
@@ -116,6 +118,11 @@ public class OperationRunner implements Runnable
 
     private void evaluateCompletedOperation(OperationWrapper operationWrapper, OperationProgress operationProgress, String outputPayload)
     {
+        if(operationCompleteEvent != null)
+        {
+            operationCompleteEvent.onOperationComplete(operationWrapper.getOperation(), operationProgress);
+        }
+
         if(CompleteStateMessage.SUCCEEDED.toString().equals(operationProgress.getProcessingStateMessage()))
         {
             operationWrapper.setOutputPayload(outputPayload);
@@ -132,5 +139,10 @@ public class OperationRunner implements Runnable
     public OperationWrapper getOperationWrapper()
     {
         return operationWrapper;
+    }
+
+    public void setOperationCompleteEvent(OperationCompleteEvent operationCompleteEvent)
+    {
+        this.operationCompleteEvent = operationCompleteEvent;
     }
 }

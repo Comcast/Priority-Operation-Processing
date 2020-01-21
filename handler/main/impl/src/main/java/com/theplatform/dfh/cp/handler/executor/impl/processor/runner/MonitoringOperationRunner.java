@@ -4,6 +4,7 @@ import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.event.OperationCompleteLog;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
 import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 
@@ -15,6 +16,7 @@ public class MonitoringOperationRunner extends OperationRunner
         OnOperationCompleteListener onOperationCompleteListener)
     {
         super(operationWrapper, executorContext, onOperationCompleteListener);
+        setOperationCompleteEvent(new OperationCompleteLog(executorContext));
         this.metricReport = metricReport;
     }
 
