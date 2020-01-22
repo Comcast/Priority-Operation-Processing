@@ -10,6 +10,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
 
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticPodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig.StaticProdPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
@@ -36,7 +37,10 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
 
         if (useStaticRegistryClient)
         {
-            this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
+            if(launchDataWrapper.getPropertyRetriever().getBoolean("useStaticProdRegistryClient", false))
+                this.podConfigRegistryClient = new StaticProdPodConfigRegistryClient();
+            else
+                this.podConfigRegistryClient = new StaticPodConfigRegistryClient();
         }
         else
         {

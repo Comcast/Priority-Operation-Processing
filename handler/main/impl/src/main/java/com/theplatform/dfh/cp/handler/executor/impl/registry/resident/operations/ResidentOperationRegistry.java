@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operation
 
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
+import com.theplatform.dfh.cp.handler.executor.impl.resident.log.LogResidentHandler;
 import com.theplatform.dfh.cp.handler.filter.accelerate.impl.AccelerateFilterHandler;
 import com.theplatform.dfh.cp.handler.filter.ldap.impl.LDAPFilterHandler;
 import com.theplatform.dfh.cp.handler.util.http.impl.CreateAgendaHandler;
@@ -24,6 +25,7 @@ public class ResidentOperationRegistry
     static
     {
         residentHandlerMap.put("residentSample", SampleResidentHandler.class);
+        residentHandlerMap.put("logMessages", LogResidentHandler.class);
         residentHandlerMap.put("agendaPost", CreateAgendaHandler.class);
         residentHandlerMap.put("ldap", LDAPFilterHandler.class);
         residentHandlerMap.put("accelerate", AccelerateFilterHandler.class);
