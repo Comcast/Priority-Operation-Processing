@@ -15,7 +15,7 @@
 
     <properties>
         <cp-persistence-api.version>1.0.2-SNAPSHOT</cp-persistence-api.version>
-        <cp-api.version>1.0.1</cp-api.version>
+        <cp-api.version>1.0.2</cp-api.version>
     </properties>
 
     <dependencies>
@@ -29,6 +29,12 @@
             <groupId>com.theplatform.dfh.cp.api</groupId>
             <artifactId>pl-dfh-cp-api</artifactId>
             <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
