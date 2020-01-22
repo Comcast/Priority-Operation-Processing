@@ -3,11 +3,11 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.Report;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
@@ -26,6 +26,7 @@ import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,16 +45,18 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
 
     private InsightRequestProcessor insightRequestProcessor;
     private ObjectPersister<Agenda> agendaPersister;
+    private ObjectPersister<AgendaProgress> agendaProgressPersister;
     private ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory;
 
     public GetAgendaServiceRequestProcessor(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory, ObjectPersister<Insight> insightPersister,
-        ObjectPersister<Agenda> agendaPersister)
+        ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister)
     {
         this.agendaInfoItemQueueFactory = agendaInfoItemQueueFactory;
         this.insightRequestProcessor = new InsightRequestProcessor(insightPersister);
         //override the default visibility filter since it's too visible for the calling user
         this.insightRequestProcessor.setVisibilityFilterMap(new VisibilityFilterMap<>());
         this.agendaPersister = agendaPersister;
+        this.agendaProgressPersister = agendaProgressPersister;
     }
 
     @Override
@@ -82,6 +85,7 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
             if(agendaInfoQueueResult.isSuccessful())
             {
                 List<Agenda> agendaList = new LinkedList<>();
+                List<AgendaProgress> agendaProgresses = new LinkedList<>();
                 logger.info("Insight {} queue: {} poll results: {}", insight.getId(), insight.getQueueName(),
                     agendaInfoQueueResult.getData() == null ? 0 : agendaInfoQueueResult.getData().size());
                 // TODO: if the results include more than the desired amount cap it
@@ -108,11 +112,16 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
                             {
                                 agenda.getParams().put(Report.ADDED_KEY, agendaInfo.getAdded());
                             }
+                            retrieveExistingAgendaProgress(agenda, agendaProgresses);
                             agendaList.add(agenda);
                         }
                     }
                 }
-                return new GetAgendaResponse(agendaList);
+                return new GetAgendaResponse(
+                    agendaList,
+                    agendaProgresses.size() == 0
+                        ? null
+                        : agendaProgresses);
             }
             else
             {
@@ -137,9 +146,29 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
         return req;
     }
 
-    public Agenda retrieveAgenda(String agendaId) throws PersistenceException
+    private Agenda retrieveAgenda(String agendaId) throws PersistenceException
     {
         return agendaPersister.retrieve(agendaId);
+    }
+
+    /**
+     * Retrieves the agendaProgress associated with the Agenda and appends it to the passed in list.
+     * Only appends progress that has operations wtih existing progress
+     * @param agenda The Agenda to lookup the progress for
+     * @param agendaProgresses The list to append with progress if it exists
+     */
+    protected void retrieveExistingAgendaProgress(Agenda agenda, List<AgendaProgress> agendaProgresses) throws PersistenceException
+    {
+        AgendaProgress agendaProgress = agendaProgressPersister.retrieve(agenda.getProgressId());
+        if(agendaProgress == null || agendaProgress.getOperationProgress() == null)
+            return;
+
+        // only add the AgendaProgress if one of the OperationProgress is non-waiting
+        if(Arrays.stream(agendaProgress.getOperationProgress())
+            .anyMatch(op -> ProcessingState.WAITING != op.getProcessingState()))
+        {
+            agendaProgresses.add(agendaProgress);
+        }
     }
 
     /**
@@ -168,6 +197,11 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
     public void setAgendaPersister(ObjectPersister<Agenda> agendaPersister)
     {
         this.agendaPersister = agendaPersister;
+    }
+
+    public void setAgendaProgressPersister(ObjectPersister<AgendaProgress> agendaProgressPersister)
+    {
+        this.agendaProgressPersister = agendaProgressPersister;
     }
 
     public void setAgendaInfoItemQueueFactory(ItemQueueFactory<AgendaInfo> agendaInfoItemQueueFactory)

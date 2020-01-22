@@ -1,9 +1,11 @@
-package com.theplatform.dfh.cp.endpoint.agenda.service;
+package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.endpoint.resourcepool.service.GetAgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.*;
@@ -23,8 +25,11 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -33,8 +38,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class AgendaServiceRequestProcessorTest
+public class GetAgendaServiceRequestProcessorTest
 {
+    private static final String AGENDA_PROGRESS_ID = UUID.randomUUID().toString();
+
     private GetAgendaServiceRequestProcessor processor;
 
     private ServiceRequest<GetAgendaRequest> getAgendaRequest;
@@ -44,6 +51,7 @@ public class AgendaServiceRequestProcessorTest
     private ObjectPersister<ResourcePool> mockResourcePoolPersister;
     private ItemQueueFactory<AgendaInfo> mockAgendaInfoItemQueueFactory;
     private ItemQueue<AgendaInfo> mockAgendaInfoItemQueue;
+    private ObjectPersister<AgendaProgress> mockAgendaProgressPersister;
 
     @BeforeMethod
     public void setup()
@@ -57,8 +65,9 @@ public class AgendaServiceRequestProcessorTest
         mockAgendaInfoItemQueueFactory = (ItemQueueFactory<AgendaInfo>)mock(ItemQueueFactory.class);
         mockAgendaInfoItemQueue = (ItemQueue<AgendaInfo>)mock(ItemQueue.class);
         doReturn(mockAgendaInfoItemQueue).when(mockAgendaInfoItemQueueFactory).createItemQueue(anyString());
+        mockAgendaProgressPersister = mock(ObjectPersister.class);
 
-        processor = new GetAgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister);
+        processor = new GetAgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister, mockAgendaProgressPersister);
     }
 
     @Test
@@ -181,6 +190,76 @@ public class AgendaServiceRequestProcessorTest
         {
             Assert.assertEquals(e.getMessage(), expectedMessage);
         }
+    }
+
+    @DataProvider
+    public Object[][] withoutOperationProgressProvider()
+    {
+        return new Object[][]
+            {
+                {null},
+                {createAgendaProgress(null)},
+                {createAgendaProgress(Arrays.asList())},
+                {createAgendaProgress(Arrays.asList(ProcessingState.WAITING))},
+                {createAgendaProgress(Arrays.asList(ProcessingState.WAITING, ProcessingState.WAITING, ProcessingState.WAITING))},
+            };
+    }
+
+    @Test(dataProvider = "withoutOperationProgressProvider")
+    public void testRetrieveExistingAgendaProgressNoProgress(AgendaProgress agendaProgress) throws PersistenceException
+    {
+        doReturn(agendaProgress).when(mockAgendaProgressPersister).retrieve(AGENDA_PROGRESS_ID);
+        List<AgendaProgress> agendaProgresses = new LinkedList<>();
+        processor.retrieveExistingAgendaProgress(createAgenda(AGENDA_PROGRESS_ID), agendaProgresses);
+        Assert.assertEquals(agendaProgresses.size(), 0);
+    }
+
+    @DataProvider
+    public Object[][] withOperationProgressProvider()
+    {
+        return new Object[][]
+            {
+                {createAgendaProgress(Arrays.asList(ProcessingState.COMPLETE))},
+                {createAgendaProgress(Arrays.asList(ProcessingState.EXECUTING))},
+                {createAgendaProgress(Arrays.asList(ProcessingState.WAITING, ProcessingState.COMPLETE, ProcessingState.WAITING))},
+            };
+    }
+
+    @Test(dataProvider = "withOperationProgressProvider")
+    public void testRetrieveExistingAgendaProgress(AgendaProgress agendaProgress) throws PersistenceException
+    {
+        doReturn(agendaProgress).when(mockAgendaProgressPersister).retrieve(AGENDA_PROGRESS_ID);
+        List<AgendaProgress> agendaProgresses = new LinkedList<>();
+        processor.retrieveExistingAgendaProgress(createAgenda(AGENDA_PROGRESS_ID), agendaProgresses);
+        Assert.assertEquals(agendaProgresses.size(), 1);
+    }
+
+    /**
+     * Creates an AgendaProgress with operations of the specified states
+     * @param processingStates Optional list of processing states to apply to sub-OperationProgress objects
+     * @return New AgendaProgress with the specified list of operations
+     */
+    private AgendaProgress createAgendaProgress(List<ProcessingState> processingStates)
+    {
+        AgendaProgress agendaProgress = new AgendaProgress();
+        if(processingStates != null)
+        {
+            agendaProgress.setOperationProgress(
+                processingStates.stream().map(ps ->
+                {
+                    OperationProgress operationProgress = new OperationProgress();
+                    operationProgress.setProcessingState(ps);
+                    return operationProgress;
+                }).collect(Collectors.toList()).toArray(new OperationProgress[0]));
+        }
+        return agendaProgress;
+    }
+
+    private Agenda createAgenda(String agendaProgressId)
+    {
+        Agenda agenda = new Agenda();
+        agenda.setProgressId(agendaProgressId);
+        return agenda;
     }
 
     private QueueResult<ReadyAgenda> createQueueResult(boolean successful, Collection<ReadyAgenda> data ,String message)
