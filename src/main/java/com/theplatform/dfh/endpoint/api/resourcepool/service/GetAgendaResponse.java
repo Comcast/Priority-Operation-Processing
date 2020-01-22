@@ -66,8 +66,14 @@ public class GetAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
             ? new HashMap<>()
             : getAgendaProgresses().stream().collect(Collectors.toMap(AgendaProgress::getId, Function.identity()));
 
-        return getAgendas() == null
-            ? new HashMap<>()
-            : getAgendas().stream().collect(Collectors.toMap(Function.identity(), agenda -> agendaProgressMap.get(agenda.getProgressId())));
+        Map<Agenda, AgendaProgress> agendaToProgressMap = new HashMap<>();
+        if(getAgendas() != null)
+        {
+            for (Agenda agenda : getAgendas())
+            {
+                agendaToProgressMap.put(agenda, agendaProgressMap.get(agenda.getProgressId()));
+            }
+        }
+        return agendaToProgressMap;
     }
 }
