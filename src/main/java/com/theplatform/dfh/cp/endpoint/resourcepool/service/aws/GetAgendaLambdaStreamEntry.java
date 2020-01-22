@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.ResourcePool;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
+import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.service.GetAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.*;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
@@ -32,18 +34,15 @@ public class GetAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataOb
     private ItemQueueFactory<AgendaInfo> infoItemQueueFactory;
     private ObjectPersisterFactory<Agenda> agendaPersisterFactory;
     private ObjectPersisterFactory<Insight> insightPersisterFactory;
-    private ObjectPersisterFactory<ResourcePool> resourcePoolPersisterFactory;
+    private ObjectPersisterFactory<AgendaProgress> agendaProgressPersisterFactory;
 
     @Override
     public RequestProcessor getRequestProcessor(LambdaRequest<GetAgendaRequest> lambdaRequest)
     {
-        String insightTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT);
-        //logger.info("TableName: {}", insightTableName);
-        ObjectPersister<Insight> insightPersister = insightPersisterFactory.getObjectPersister(insightTableName);
-        String agendaTableName = environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA);
-        ObjectPersister<Agenda> agendaPersister = agendaPersisterFactory.getObjectPersister(agendaTableName);
-
-        return new GetAgendaServiceRequestProcessor(infoItemQueueFactory, insightPersister, agendaPersister);
+        return new GetAgendaServiceRequestProcessor(infoItemQueueFactory,
+            insightPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT)),
+            agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
+            agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)));
     }
 
     @Override
@@ -57,7 +56,7 @@ public class GetAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<DataOb
         this.infoItemQueueFactory = new SQSItemQueueFactory<>(new AmazonSQSClientFactoryImpl().createClient(), ReadyAgenda.class);
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
-        this.resourcePoolPersisterFactory = new DynamoDBResourcePoolPersisterFactory();
+        this.agendaProgressPersisterFactory = new DynamoDBAgendaProgressPersisterFactory();
     }
 
     public ItemQueueFactory<AgendaInfo> getInfoItemQueueFactory()
