@@ -1,10 +1,9 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.runner.event;
 
-import com.sun.tools.javac.util.StringUtils;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThread;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,7 @@ public class OperationCompleteLog implements OperationCompleteEvent
             operation.getType(),
             operation.getName(),
             operationProgressId,
-            StringUtils.toLowerCase(operationProgress.getProcessingState().name()),
+            StringUtils.lowerCase(operationProgress.getProcessingState().name()),
             operationProgress.getProcessingStateMessage(),
             runTimeMs
         );
