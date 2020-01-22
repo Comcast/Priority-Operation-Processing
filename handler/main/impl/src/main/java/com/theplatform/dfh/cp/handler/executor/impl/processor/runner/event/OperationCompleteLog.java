@@ -31,7 +31,8 @@ public class OperationCompleteLog implements OperationCompleteEvent
 
         logger.info(
             "Completed operation " +
-            "agendaId={} externalId={} agendaProgressId={} operationType={} operationName={} operationProgressId={} state={} conclusion={} runTime={}",
+            "cid={} agendaId={} externalId={} agendaProgressId={} operationType={} operationName={} operationProgressId={} state={} conclusion={} runTime={}",
+            executorContext.getCid(),
             executorContext.getAgendaId(),
             executorContext.getAgenda().getLinkId(),
             executorContext.getAgendaProgressId(),
