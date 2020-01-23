@@ -31,6 +31,9 @@ public class OperationConductor implements OnOperationCompleteListener
 {
     private static Logger logger = LoggerFactory.getLogger(OperationConductor.class);
 
+    protected static final String UNKNOWN_OPERATION_NAME = "UnknownOperation";
+    protected static final String UNKNOWN_POD_NAME = "UnspecifiedPodName";
+
     private static final String THREAD_POOL_SIZE_SETTING = "operation.conductor.threadpool.size";
     private static final int DEFAULT_THREAD_POOL_SIZE = 50;
 
@@ -392,11 +395,27 @@ public class OperationConductor implements OnOperationCompleteListener
     {
         return failedOperations.stream()
             .map(operationWrapper ->
-                String.format("%1$s[%2$s]",
-                    operationWrapper.getOperation().getName(),
-                    operationWrapper.getOperationExecutor().getIdenitifier())
+                {
+                    String operationName = operationWrapper.getOperation() == null
+                        ? UNKNOWN_OPERATION_NAME
+                        : operationWrapper.getOperation().getName();
+
+                    String executorIdentifier = operationWrapper.getOperationExecutor() == null
+                        ? UNKNOWN_POD_NAME
+                        : operationWrapper.getOperationExecutor().getIdenitifier();
+
+                    return String.format(
+                        "%1$s[%2$s]",
+                        operationName,
+                        executorIdentifier);
+                }
             )
             .collect(Collectors.joining(delimiter));
+    }
+
+    protected void setFailedOperations(List<OperationWrapper> failedOperations)
+    {
+        this.failedOperations = failedOperations;
     }
 
     public void setProgressLoaderFactory(ProgressLoaderFactory progressLoaderFactory)

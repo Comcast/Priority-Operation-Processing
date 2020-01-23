@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
+import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
@@ -19,11 +20,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -217,6 +220,47 @@ public class OperationConductorTest
             Assert.assertEquals(succededOp, foundSucceededOp, opName + (succededOp ? " should be in the succeeded set" : " should not be in the succeeded set"));
             Assert.assertEquals(!succededOp, foundPendingOp, opName + (!succededOp ? " should be in the pending set" : " should not be in the pending set"));
         }
+    }
+
+    @Test
+    public void testGetFailedOperationsDelimitedNone()
+    {
+        Assert.assertEquals(operationConductor.getFailedOperationsDelimited(","), "");
+    }
+
+    @DataProvider
+    public Object[][] getFailedOperationsDelimitedProvider()
+    {
+        return new Object[][]
+        {
+            {null, null, OperationConductor.UNKNOWN_OPERATION_NAME + "[" + OperationConductor.UNKNOWN_POD_NAME + "]"},
+            {createOperation("Test"), null, "Test[" + OperationConductor.UNKNOWN_POD_NAME + "]"},
+            {null, createMockOperationExecutor("theId"), OperationConductor.UNKNOWN_OPERATION_NAME + "[theId]"},
+            {createOperation("Test"), createMockOperationExecutor("theId"), "Test[theId]"},
+        };
+    }
+
+    @Test(dataProvider = "getFailedOperationsDelimitedProvider")
+    public void testGetFailedOperationsDelimited(Operation operation, BaseOperationExecutor operationExecutor, final String EXPECTED_RESULT)
+    {
+        OperationWrapper operationWrapper = new OperationWrapper(operation);
+        operationWrapper.setOperationExecutor(operationExecutor);
+        operationConductor.setFailedOperations(Collections.singletonList(operationWrapper));
+        Assert.assertEquals(operationConductor.getFailedOperationsDelimited(","), EXPECTED_RESULT);
+    }
+
+    protected Operation createOperation(String name)
+    {
+        Operation operation = new Operation();
+        operation.setName(name);
+        return operation;
+    }
+
+    protected BaseOperationExecutor createMockOperationExecutor(String identifier)
+    {
+        BaseOperationExecutor mockOperationExecutor = mock(BaseOperationExecutor.class);
+        doReturn(identifier).when(mockOperationExecutor).getIdenitifier();
+        return mockOperationExecutor;
     }
 
     protected List<OperationWrapper> createOperationWrappers(List<String> operationNames)
