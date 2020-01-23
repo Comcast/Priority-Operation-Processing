@@ -27,7 +27,7 @@
         <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-client.version>1.0.3-SNAPSHOT</endpoint-client.version>
 
-        <handler-base.version>1.0.2</handler-base.version>
+        <handler-base.version>1.0.3-SNAPSHOT</handler-base.version>
         <dfh-fabric8-kube-client.version>1.0.4-SNAPSHOT</dfh-fabric8-kube-client.version>
         <handler-kubernetes-support.version>1.0.1</handler-kubernetes-support.version>
 

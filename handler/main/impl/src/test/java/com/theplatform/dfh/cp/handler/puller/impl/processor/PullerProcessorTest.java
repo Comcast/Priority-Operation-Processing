@@ -32,7 +32,7 @@ public class PullerProcessorTest
         return new Object[][]
             {
                 {null, 0},
-                {new Agenda(), 1}
+                {createAgenda(UUID.randomUUID().toString()), 1}
             };
     }
 
@@ -69,6 +69,14 @@ public class PullerProcessorTest
         pullerProcessor.setLaunchDataWrapper(launchDataWrapper);
         pullerProcessor.performAgendaRequest();
 
-        verify(launcherMock, times(executeCalls)).execute(agenda);
+        verify(launcherMock, times(executeCalls)).execute(agenda, null);
+    }
+
+    protected Agenda createAgenda(String agendaId)
+    {
+        Agenda agenda = new Agenda();
+        agenda.setId(agendaId);
+        agenda.setProgressId(UUID.randomUUID().toString());
+        return agenda;
     }
 }

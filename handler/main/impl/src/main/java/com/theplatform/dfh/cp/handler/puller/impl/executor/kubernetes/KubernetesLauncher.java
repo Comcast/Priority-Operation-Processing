@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaInsight;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
@@ -101,14 +102,15 @@ public class KubernetesLauncher implements BaseLauncher
     /**
      *  Use this code to run in the mode that we will use in production.
      *  Don't follow the pod run, just kick it asynchronously.
-     * @param agenda
+     * @param agenda The agenda to execute
+     * @param agendaProgress (optional) AgendaProgress to pass along (this is for the retry case where some ops have executed)
      */
     @Override
-    public void execute(Agenda agenda)
+    public void execute(Agenda agenda, AgendaProgress agendaProgress)
     {
         logAgendaMetadata(agenda);
         ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
-        executionConfigurator.setEnvVars(agenda);
+        executionConfigurator.setEnvVars(agenda, agendaProgress);
         podConfig.setReapCompletedPods(true);
         appendLabels(podConfig, agenda);
         podPushClient.startWithoutWatcher(podConfig, executionConfig);

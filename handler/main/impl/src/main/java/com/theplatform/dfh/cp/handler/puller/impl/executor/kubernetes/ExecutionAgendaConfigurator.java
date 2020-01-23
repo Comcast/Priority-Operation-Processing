@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
@@ -22,14 +23,19 @@ public class ExecutionAgendaConfigurator
     }
 
 
-    public void setEnvVars(Agenda agenda)
+    public void setEnvVars(Agenda agenda, AgendaProgress agendaProgress)
     {
         agendaId = agenda.getId();
         String payload = jsonHelper.getJSONString(agenda);
+        String progressPayload = agendaProgress == null
+            ? null
+            : jsonHelper.getJSONString(agendaProgress);
         logger.info("Launching Executor with Payload: {}", payload);
 
         setEnvVar(HandlerField.PAYLOAD.name(), payload);
-        setEnvVar(HandlerField.CID.name(),agenda.getCid());
+        if(progressPayload != null)
+            setEnvVar(HandlerField.LAST_PROGRESS.name(), progressPayload);
+        setEnvVar(HandlerField.CID.name(), agenda.getCid());
         setEnvVar(HandlerField.AGENDA_ID.name(), agenda.getId());
         setEnvVar(HandlerField.CUSTOMER_ID.name(), agenda.getCustomerId());
         setEnvVar(HandlerField.PROGRESS_ID.name(), agenda.getProgressId());

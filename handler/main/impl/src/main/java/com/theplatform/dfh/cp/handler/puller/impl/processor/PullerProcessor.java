@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.processor;
 
 import com.codahale.metrics.Timer;
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.theplatform.dfh.cp.handler.puller.impl.client.agenda.PullerResourcePoolServiceClientFactory;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Basic test/local/prototype processor for getting an Agenda and sending if to the Executor
@@ -137,11 +139,15 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
 
             if (agendas != null && agendas.size() > 0)
             {
-                Agenda agenda = (Agenda) agendas.toArray()[0];
-                logger.info("Retrieved Agenda: {}", new JsonHelper().getJSONString(agenda)); // logs agenda hashcode?
-
-                // launch an executor and pass it the agenda payload
-                launcherFactory.createLauncher(getOperationContext()).execute(agenda);
+                Map<Agenda, AgendaProgress> agendaToProgressMap = getAgendaResponse.retrieveAgendaToProgressMap();
+                for(Map.Entry<Agenda, AgendaProgress> mapEntry : agendaToProgressMap.entrySet())
+                {
+                    logger.info("Retrieved Agenda: {} (Existing Progress: {})",
+                        new JsonHelper().getJSONString(mapEntry.getKey()),
+                        mapEntry.getValue() != null);
+                    // launch an executor and pass it the agenda payload
+                    launcherFactory.createLauncher(getOperationContext()).execute(mapEntry.getKey(), mapEntry.getValue());
+                }
             }
             else
             {
