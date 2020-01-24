@@ -163,12 +163,17 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
         if(agendaProgress == null || agendaProgress.getOperationProgress() == null)
             return;
 
+        boolean foundProgress = false;
         // only add the AgendaProgress if one of the OperationProgress is non-waiting
         if(Arrays.stream(agendaProgress.getOperationProgress())
             .anyMatch(op -> ProcessingState.WAITING != op.getProcessingState()))
         {
+            foundProgress = true;
             agendaProgresses.add(agendaProgress);
         }
+        logger.info("{}Existing progress found for agenda: {}",
+            foundProgress ? "" : "No ",
+            agenda.getId());
     }
 
     /**
