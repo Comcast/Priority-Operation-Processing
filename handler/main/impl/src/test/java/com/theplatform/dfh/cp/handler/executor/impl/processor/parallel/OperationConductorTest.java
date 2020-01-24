@@ -171,7 +171,7 @@ public class OperationConductorTest
     public void testLoadPriorProgressNull()
     {
         doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(null).when(mockProgressLoader).loadProgress(anyString());
+        doReturn(null).when(mockProgressLoader).loadProgress();
         operationConductor.loadPriorProgress();
     }
 
@@ -179,7 +179,7 @@ public class OperationConductorTest
     public void testLoadPriorProgressNoOpProgress()
     {
         doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(null, null)).when(mockProgressLoader).loadProgress(anyString());
+        doReturn(createAgendaProgress(null, null)).when(mockProgressLoader).loadProgress();
         operationConductor.loadPriorProgress();
     }
 
@@ -188,7 +188,7 @@ public class OperationConductorTest
     {
         final List<String> operationNames = Arrays.asList("test.1", "test.2");
         doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(operationNames, null)).when(mockProgressLoader).loadProgress(anyString());
+        doReturn(createAgendaProgress(operationNames, null)).when(mockProgressLoader).loadProgress();
         operationConductor.setPendingOperations(createOperationWrappers(operationNames));
         operationConductor.loadPriorProgress();
         for (OperationWrapper operationWrapper : operationConductor.getPendingOperations())
@@ -203,7 +203,7 @@ public class OperationConductorTest
         final List<String> operationNames = Arrays.asList("test.1", "test.2", "test.3");
         final Set<String> suceededOperationNames = new HashSet<>(Arrays.asList("test.2"));
         doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(operationNames, suceededOperationNames)).when(mockProgressLoader).loadProgress(anyString());
+        doReturn(createAgendaProgress(operationNames, suceededOperationNames)).when(mockProgressLoader).loadProgress();
         operationConductor.setPendingOperations(createOperationWrappers(operationNames));
         operationConductor.loadPriorProgress();
         for(String opName : operationNames)

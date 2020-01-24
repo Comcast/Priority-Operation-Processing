@@ -93,6 +93,7 @@ public class OperationConductor implements OnOperationCompleteListener
 
         try
         {
+            logger.debug("Loading Prior Progress (if available)");
             loadPriorProgress();
 
             logger.debug("Getting executor service");
@@ -142,17 +143,21 @@ public class OperationConductor implements OnOperationCompleteListener
         ProgressLoader progressLoader = progressLoaderFactory.createProgressLoader(executorContext);
         if(progressLoader == null)
         {
+            logger.debug("No prior progress found");
             return;
         }
 
-        AgendaProgress agendaProgress = progressLoader.loadProgress(executorContext.getAgendaProgressId());
+        AgendaProgress agendaProgress = progressLoader.loadProgress();
 
         if(agendaProgress == null
             || agendaProgress.getOperationProgress() == null
             || pendingOperations.size() == 0)
         {
+            logger.debug("No prior progress loaded");
             return;
         }
+
+        logger.debug("Processing prior progress");
 
         Map<String, OperationWrapper> operationWrapperMap = new HashMap<>();
         pendingOperations.forEach(opWrapper -> operationWrapperMap.put(opWrapper.getOperation().getName(), opWrapper));
@@ -172,6 +177,12 @@ public class OperationConductor implements OnOperationCompleteListener
                     postProcessCompletedOperation(operationWrapper);
                 }
             });
+
+        if(completedOperations.size() > 0)
+        {
+            logger.info("Completed Operation Progress found for operations: {}",
+                completedOperations.stream().map(ow -> ow.getOperation().getName()).collect(Collectors.joining(",")));
+        }
 
         // Incomplete / Failed Ops
         Arrays.stream(agendaProgress.getOperationProgress())
