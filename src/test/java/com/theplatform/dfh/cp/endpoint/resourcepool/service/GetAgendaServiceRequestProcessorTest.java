@@ -2,13 +2,16 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.*;
+import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
@@ -22,6 +25,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,10 +34,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,10 +52,12 @@ public class GetAgendaServiceRequestProcessorTest
 
     private ObjectPersister<Insight> mockInsightPersister;
     private ObjectPersister<Agenda> mockAgendaPersister;
-    private ObjectPersister<ResourcePool> mockResourcePoolPersister;
     private ItemQueueFactory<AgendaInfo> mockAgendaInfoItemQueueFactory;
     private ItemQueue<AgendaInfo> mockAgendaInfoItemQueue;
     private ObjectPersister<AgendaProgress> mockAgendaProgressPersister;
+    private ObjectPersister<OperationProgress> mockOperationProgressPersister;
+    private AgendaProgressRequestProcessor mockAgendaProgressRequestProcessor;
+    private InsightRequestProcessor mockInsightRequestProcessor;
 
     @BeforeMethod
     public void setup()
@@ -61,42 +67,47 @@ public class GetAgendaServiceRequestProcessorTest
         getAgendaRequest.setAuthorizationResponse(authorizedResponse);
         mockInsightPersister = (ObjectPersister<Insight>)mock(ObjectPersister.class);
         mockAgendaPersister = (ObjectPersister<Agenda>)mock(ObjectPersister.class);
-        mockResourcePoolPersister = (ObjectPersister<ResourcePool>)mock(ObjectPersister.class);
         mockAgendaInfoItemQueueFactory = (ItemQueueFactory<AgendaInfo>)mock(ItemQueueFactory.class);
         mockAgendaInfoItemQueue = (ItemQueue<AgendaInfo>)mock(ItemQueue.class);
         doReturn(mockAgendaInfoItemQueue).when(mockAgendaInfoItemQueueFactory).createItemQueue(anyString());
         mockAgendaProgressPersister = mock(ObjectPersister.class);
+        mockOperationProgressPersister = mock(ObjectPersister.class);
+        mockAgendaProgressRequestProcessor = mock(AgendaProgressRequestProcessor.class);
+        mockInsightRequestProcessor = mock(InsightRequestProcessor.class);
+        doReturn(new DefaultDataObjectResponse<AgendaProgress>()).when(mockAgendaProgressRequestProcessor).handleGET(any());
 
-        processor = new GetAgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister, mockAgendaProgressPersister);
+        processor = new GetAgendaServiceRequestProcessor(mockAgendaInfoItemQueueFactory, mockInsightPersister, mockAgendaPersister, mockAgendaProgressPersister, mockOperationProgressPersister);
+        processor.setAgendaProgressRequestProcessor(mockAgendaProgressRequestProcessor);
+        processor.setInsightRequestProcessor(mockInsightRequestProcessor);
     }
 
     @Test
-    public void testInsightException() throws PersistenceException
+    public void testInsightException()
     {
-        doThrow(new PersistenceException("")).when(mockInsightPersister).retrieve(anyString());
+        DataObjectResponse<Insight> insightResponse = new DefaultDataObjectResponse<>(new ErrorResponse(new BadRequestException(), 500, ""));
+        doReturn(insightResponse).when(mockInsightRequestProcessor).handleGET(any());
         DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(getAgendaRequest);
         Assert.assertNull(getAgendaResponse.getAll());
         Assert.assertNotNull(getAgendaResponse.getErrorResponse());
-        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), ObjectNotFoundException.class.getSimpleName());
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), BadRequestException.class.getSimpleName());
         verify(mockAgendaInfoItemQueueFactory, times(0)).createItemQueue(anyString());
     }
 
     @Test
-    public void testInsightNotFound() throws PersistenceException
+    public void testInsightNotFound()
     {
-        doReturn(null).when(mockInsightPersister).retrieve(anyString());
+        setupInsightLookupMock(false);
         DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(getAgendaRequest);
         Assert.assertNull(getAgendaResponse.getAll());
         Assert.assertNotNull(getAgendaResponse.getErrorResponse());
-        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), ObjectNotFoundException.class.getSimpleName());
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), BadRequestException.class.getSimpleName());
         verify(mockAgendaInfoItemQueueFactory, times(0)).createItemQueue(anyString());
     }
 
     @Test
-    public void testAgendaInfoPollError() throws PersistenceException
+    public void testAgendaInfoPollError()
     {
-        doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
-        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
+        setupInsightLookupMock(true);
         doReturn(createQueueResult(false, null, "bad times")).when(mockAgendaInfoItemQueue).poll(anyInt());
         DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(getAgendaRequest);
         Assert.assertNull(getAgendaResponse.getAll());
@@ -106,10 +117,9 @@ public class GetAgendaServiceRequestProcessorTest
     }
 
     @Test
-    public void testAgendaInfoPollEmpty() throws PersistenceException
+    public void testAgendaInfoPollEmpty()
     {
-        doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
-        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
+        setupInsightLookupMock(true);
         doReturn(createQueueResult(true, null, null)).when(mockAgendaInfoItemQueue).poll(anyInt());
         DataObjectFeedServiceResponse<Agenda> getAgendaResponse = processor.handlePOST(getAgendaRequest);
         Assert.assertEquals(0, getAgendaResponse.getAll().size());
@@ -119,8 +129,7 @@ public class GetAgendaServiceRequestProcessorTest
     @Test
     public void testAgendaInfoPollItem() throws PersistenceException
     {
-        doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
-        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
+        setupInsightLookupMock(true);
         doReturn(createQueueResult(
             true,
             Collections.singletonList(new ReadyAgenda()),
@@ -135,8 +144,7 @@ public class GetAgendaServiceRequestProcessorTest
     @Test
     public void testAgendaInfoPollItems() throws PersistenceException
     {
-        doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
-        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
+        setupInsightLookupMock(true);
         doReturn(createQueueResult(
             true,
             Arrays.asList(new ReadyAgenda(), new ReadyAgenda()),
@@ -149,10 +157,9 @@ public class GetAgendaServiceRequestProcessorTest
     }
 
     @Test
-    public void testAgendaDoesNotExist() throws PersistenceException
+    public void testAgendaDoesNotExist()
     {
-        doReturn(new Insight()).when(mockInsightPersister).retrieve(anyString());
-        doReturn(new ResourcePool()).when(mockResourcePoolPersister).retrieve(anyString());
+        setupInsightLookupMock(true);
         doReturn(createQueueResult(
             true,
             Arrays.asList(new ReadyAgenda(), new ReadyAgenda()),
@@ -228,10 +235,21 @@ public class GetAgendaServiceRequestProcessorTest
     @Test(dataProvider = "withOperationProgressProvider")
     public void testRetrieveExistingAgendaProgress(AgendaProgress agendaProgress) throws PersistenceException
     {
-        doReturn(agendaProgress).when(mockAgendaProgressPersister).retrieve(AGENDA_PROGRESS_ID);
-        List<AgendaProgress> agendaProgresses = new LinkedList<>();
+        DataObjectResponse<AgendaProgress> response = new DefaultDataObjectResponse<>();
+        response.add(agendaProgress);
+        doReturn(response).when(mockAgendaProgressRequestProcessor).handleGET(any());
+        processor.setAgendaProgressRequestProcessor(mockAgendaProgressRequestProcessor);
+        List<AgendaProgress> agendaProgresses = new ArrayList<>();
         processor.retrieveExistingAgendaProgress(createAgenda(AGENDA_PROGRESS_ID), agendaProgresses);
         Assert.assertEquals(agendaProgresses.size(), 1);
+    }
+
+    private void setupInsightLookupMock(boolean createInsight)
+    {
+        DataObjectResponse<Insight> insightResponse = new DefaultDataObjectResponse<>();
+        if(createInsight)
+            insightResponse.add(new Insight());
+        doReturn(insightResponse).when(mockInsightRequestProcessor).handleGET(any());
     }
 
     /**

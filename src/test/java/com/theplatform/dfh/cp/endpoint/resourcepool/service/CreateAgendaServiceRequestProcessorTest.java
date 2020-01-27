@@ -69,7 +69,7 @@ public class CreateAgendaServiceRequestProcessorTest
         agendaCustomer.setResourcePoolId(ID_RESOURCEPOOL);
         agendaCustomer.setId(OWNERID_AGENDA);
         agendaCustomer.setCustomerId(OWNERID_AGENDA);
-        doReturn(agendaCustomer).when(customerPersister).retrieve(anyString());
+        doReturn(createDataObjectFeed(agendaCustomer)).when(customerPersister).retrieve(anyList());
 
         ObjectPersister<AgendaProgress> agendaProgressPersister = mock(ObjectPersister.class);
         AgendaProgress agendaProgress = new AgendaProgress();
@@ -199,6 +199,13 @@ public class CreateAgendaServiceRequestProcessorTest
         Assert.assertNull(getAgendaResponse.getErrorResponse());
         Assert.assertNotNull(getAgendaResponse.getAll());
         Assert.assertTrue(getAgendaResponse.getAll().size() == 1);
+    }
+
+    private <D> DataObjectFeed<D> createDataObjectFeed(D dataObject)
+    {
+        DataObjectFeed<D> customerFeed = new DataObjectFeed<>();
+        customerFeed.add(dataObject);
+        return customerFeed;
     }
 
     private QueueResult<ReadyAgenda> createQueueResult(boolean successful, Collection<ReadyAgenda> data ,String message)

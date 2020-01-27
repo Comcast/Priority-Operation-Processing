@@ -1,7 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool;
 
 import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.*;
