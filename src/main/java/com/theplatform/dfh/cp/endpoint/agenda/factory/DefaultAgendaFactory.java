@@ -53,6 +53,20 @@ public class DefaultAgendaFactory implements AgendaFactory
         return agenda;
     }
 
+    @Override
+    public Agenda createAgendaFromObject(AgendaTemplate agendaTemplate, Object payload, String progressId, String cid)
+    {
+        Agenda generatedAgenda = agendaTemplateMapper
+            .map(agendaTemplate,
+                jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.payload", payload)));
+        logger.info("Payload based Agenda generated from template: [{}]:[{}]", agendaTemplate.getId(), agendaTemplate.getTitle());
+
+        if (!StringUtils.isBlank(progressId))
+            generatedAgenda.setProgressId(progressId);
+
+        return generatedAgenda;
+    }
+
     /**
      * Adds any params to the Agenda from the TransformRequest
      * @param agenda The agenda to add any necessary params to
