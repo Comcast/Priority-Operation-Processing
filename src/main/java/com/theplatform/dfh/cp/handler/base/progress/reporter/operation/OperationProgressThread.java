@@ -97,16 +97,17 @@ public class OperationProgressThread extends BaseReporterThread<OperationProgres
     protected void onLostProgress()
     {
         OperationProgress operationProgressToReport = getOperationProgress();
-        if(operationProgressToReport != null)
+        try
         {
-            try
-            {
-                logger.error("Unable to report progress: {}", new JsonHelper().getJSONString(operationProgressToReport));
-            }
-            catch(Throwable t)
-            {
-                logger.error("Failed to log lost progress.");
-            }
+            logger.error("Unable to report progress: {} (completeProgressSeen: {})",
+                operationProgressToReport == null
+                ? "None"
+                : new JsonHelper().getJSONString(operationProgressToReport),
+                hasCompleteOperationProgress);
+        }
+        catch(Throwable t)
+        {
+            logger.error("Failed to log lost progress.");
         }
     }
 

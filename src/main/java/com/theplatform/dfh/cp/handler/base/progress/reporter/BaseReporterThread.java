@@ -100,7 +100,7 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
                     shutdownReportingAttemptsCount++;
                     logger.info("Outstanding progress remains to be reported. Attempt: {}/{}",
                         shutdownReportingAttemptsCount,
-                        progressReporterConfig.getMaxReportAttemptsAfterShutdown() - 1);
+                        progressReporterConfig.getMaxReportAttemptsAfterShutdown());
                     if(!reportProgressIgnoreExceptions())
                     {
                         delay();
@@ -113,6 +113,7 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
             }
             if(isThereProgressToReport())
             {
+                onLostProgress();
                 logger.error("Failed to report all progress.");
             }
         }
