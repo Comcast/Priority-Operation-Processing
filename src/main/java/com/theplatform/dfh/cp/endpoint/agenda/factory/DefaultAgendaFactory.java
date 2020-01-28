@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generates an Agenda based on the template specified in the TransformRequest
@@ -19,6 +21,9 @@ import java.util.Collections;
 public class DefaultAgendaFactory implements AgendaFactory
 {
     private static final Logger logger = LoggerFactory.getLogger(DefaultAgendaFactory.class);
+
+    public static final String OBJECT_PAYLOAD_STRING = "fission.payload";
+    public static final String TRANSFORM_PAYLOAD_STRING = "fission.transformRequest";
 
     private AgendaTemplateMapper agendaTemplateMapper;
     private JsonHelper jsonHelper = new JsonHelper();
@@ -58,7 +63,7 @@ public class DefaultAgendaFactory implements AgendaFactory
     {
         Agenda generatedAgenda = agendaTemplateMapper
             .map(agendaTemplate,
-                jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.payload", payload)));
+                jsonHelper.getObjectMapper().valueToTree(createDefaultPayloadMap(payload)));
         logger.info("Payload based Agenda generated from template: [{}]:[{}]", agendaTemplate.getId(), agendaTemplate.getTitle());
 
         if (!StringUtils.isBlank(progressId))
@@ -89,10 +94,18 @@ public class DefaultAgendaFactory implements AgendaFactory
     {
         Agenda generatedAgenda = agendaTemplateMapper
             .map(agendaTemplate,
-                jsonHelper.getObjectMapper().valueToTree(Collections.singletonMap("fission.transformRequest", transformRequest)));
+                jsonHelper.getObjectMapper().valueToTree(createDefaultPayloadMap(transformRequest)));
         //logger.info("Generated Agenda: {}", jsonHelper.getJSONString(generatedAgenda));
         logger.info("TransformRequest: [{}] Agenda generated from template: [{}]:[{}]", transformRequest.getId(), agendaTemplate.getId(), agendaTemplate.getTitle());
         return generatedAgenda;
+    }
+
+    protected Map<String, Object> createDefaultPayloadMap(Object payload)
+    {
+        Map<String, Object> payloadMap = new HashMap<>();
+        payloadMap.put(OBJECT_PAYLOAD_STRING, payload);
+        payloadMap.put(TRANSFORM_PAYLOAD_STRING, payload);
+        return payloadMap;
     }
 
     public DefaultAgendaFactory setAgendaTemplateMapper(AgendaTemplateMapper agendaTemplateMapper)
