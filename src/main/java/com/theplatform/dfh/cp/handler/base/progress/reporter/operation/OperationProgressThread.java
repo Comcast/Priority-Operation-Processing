@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.base.progress.reporter.operation;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThread;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 
 /**
  * Operation progress threaded reporter
@@ -90,6 +91,23 @@ public class OperationProgressThread extends BaseReporterThread<OperationProgres
         }
         // if the above succeeds reset the progress
         resetOperationProgress(operationProgressToReport);
+    }
+
+    @Override
+    protected void onLostProgress()
+    {
+        OperationProgress operationProgressToReport = getOperationProgress();
+        if(operationProgressToReport != null)
+        {
+            try
+            {
+                logger.error("Unable to report progress: {}", new JsonHelper().getJSONString(operationProgressToReport));
+            }
+            catch(Throwable t)
+            {
+                logger.error("Failed to log lost progress.");
+            }
+        }
     }
 
     @Override

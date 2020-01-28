@@ -95,10 +95,12 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
             // any outstanding reporting after shutdown requested
             for(int count = 0; count < progressReporterConfig.getMaxReportAttemptsAfterShutdown(); count++)
             {
-                if(isThereProgressToReport() && !Thread.interrupted())
+                if(isThereProgressToReport() && !isThreadInterrupted())
                 {
                     shutdownReportingAttemptsCount++;
-                    logger.info("Outstanding progress remains to be reported. Attempt: {}", shutdownReportingAttemptsCount);
+                    logger.info("Outstanding progress remains to be reported. Attempt: {}/{}",
+                        shutdownReportingAttemptsCount,
+                        progressReporterConfig.getMaxReportAttemptsAfterShutdown() - 1);
                     if(!reportProgressIgnoreExceptions())
                     {
                         delay();
@@ -145,6 +147,7 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
      */
     protected void delay() throws InterruptedException
     {
+        logger.warn("Delaying {}ms before attempting to report again", progressReporterConfig.getUpdateIntervalMilliseconds());
         Thread.sleep(progressReporterConfig.getUpdateIntervalMilliseconds());
     }
 
@@ -159,7 +162,7 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
      */
     protected boolean reportProgressIgnoreExceptions()
     {
-        if(Thread.interrupted()) return true;
+        if(isThreadInterrupted()) return true;
 
         try
         {
@@ -173,10 +176,28 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
         }
     }
 
+    /**
+     * Simple wrapper for Thread.interrupted that logs if it is
+     * @return true if thread is, otherwise false
+     */
+    private boolean isThreadInterrupted()
+    {
+        if(Thread.interrupted())
+        {
+            logger.info("Thread is interrupted");
+        }
+        return Thread.interrupted();
+    }
+
     protected Thread getReporterThread()
     {
         return reporterThread;
     }
+
+    /**
+     * Called if progress reporting fails with outstanding progress.
+     */
+    protected void onLostProgress(){}
 
     /**
      * After the shutdown method is called is a grace period where outstanding updates may be sent.
