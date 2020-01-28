@@ -54,7 +54,7 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     @Override
     public Pod startPod(Pod podToCreate)
     {
-        return Failsafe.with(getRetryPolicy("Pod start attempt failed.")).get(
+        return Failsafe.with(getRetryPolicy("Pod start attempt failed")).get(
             () -> kubernetesClient
                 .pods()
                 .create(podToCreate)
@@ -64,33 +64,48 @@ public class RetryableKubernetesClient extends RetryableBase implements Kubernet
     @Override
     public void updatePodAnnotations(String podName, Map<String, String> annotations)
     {
-        DoneablePod pod = kubernetesClient.pods().withName(podName).edit();
-        pod.editMetadata().addToAnnotations(annotations).and().done();
+        Failsafe.with(getRetryPolicy("Update pod annotations failed")).run(
+            () ->
+            {
+                DoneablePod pod = kubernetesClient.pods().withName(podName).edit();
+                pod.editMetadata().addToAnnotations(annotations).and().done();
+            });
     }
 
     @Override
     public Map<String, String> getPodAnnotations(String podName)
     {
-        DoneablePod pod = kubernetesClient.pods().withName(podName).edit();
-        return pod.buildMetadata().getAnnotations();
+        return Failsafe.with(getRetryPolicy("Get pod annotations failed")).get(
+            () ->
+            {
+                DoneablePod pod = kubernetesClient.pods().withName(podName).edit();
+                return pod.buildMetadata().getAnnotations();
+            });
     }
 
     @Override
     public PodResource<Pod, DoneablePod> getPodResource(String nameSpace, String podName)
     {
-        return kubernetesClient.pods().inNamespace(nameSpace).withName(podName);
+        return Failsafe.with(getRetryPolicy("Get pod resource failed")).get(
+            () -> kubernetesClient.pods().inNamespace(nameSpace).withName(podName)
+        );
     }
 
     @Override
     public Long getLastLogLineTimestamp(String namespace, String podName)
     {
-        String lastLogLine =
-            kubernetesClient.pods().inNamespace(namespace).withName(podName).usingTimestamps().tailingLines(1).getLog();
-        if(lastLogLine != null && lastLogLine.length() > 0)
-        {
-            return parseDatePrefix(lastLogLine);
-        }
-        return null;
+        return Failsafe.with(getRetryPolicy("Get last log line timestamp failed")).get(
+            () ->
+            {
+                String lastLogLine =
+                    kubernetesClient.pods().inNamespace(namespace).withName(podName).usingTimestamps().tailingLines(1).getLog();
+                if (lastLogLine != null && lastLogLine.length() > 0)
+                {
+                    return parseDatePrefix(lastLogLine);
+                }
+                return null;
+            }
+        );
     }
 
     protected Long parseDatePrefix(String message)
