@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.AgendaLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.agenda.service.aws.RetryAgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agenda.service.aws.SubmitAgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.AgendaTemplateLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
@@ -56,6 +57,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/dfh/idm/insight", new InsightLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/customer", new CustomerLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/agenda/service/submit", new SubmitAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/agenda/service/retry", new RetryAgendaLambdaStreamEntry());
     }
 
     @Override
