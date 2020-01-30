@@ -106,7 +106,10 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
                         // remove any existing progress for the same op
                         operationProgressToReport.removeIf(op -> StringUtils.equals(operationProgress.getOperation(), op.getOperation()));
                         if(operationProgress.getPercentComplete() != null)
-                            incompleteOperationPercentTotal += operationProgress.getPercentComplete();
+                        {
+                            // protect against handlers saying percents over 100
+                            incompleteOperationPercentTotal += Math.min(100d, operationProgress.getPercentComplete());
+                        }
                         operationProgressToReport.add(operationProgress);
                         break;
                     case COMPLETE:
