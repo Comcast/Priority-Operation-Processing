@@ -12,8 +12,6 @@ import com.theplatform.dfh.cp.handler.executor.impl.processor.JsonContextUpdater
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoader;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoaderFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +56,6 @@ public class OperationConductor implements OnOperationCompleteListener
     private ExecutorService executorService;
     private JsonContextUpdater jsonContextUpdater;
 
-    private ProgressLoaderFactory progressLoaderFactory;
-
     /**
      * Ctor
      * @param operations The operations to conduct (all will be run, unless there is a workflow problem)
@@ -76,7 +72,6 @@ public class OperationConductor implements OnOperationCompleteListener
         this.executorContext = executorContext;
         this.jsonContextUpdater = new JsonContextUpdater(executorContext);
         this.operationRunnerFactory = new OperationRunnerFactory();
-        this.progressLoaderFactory = new ProgressLoaderFactory();
 
         diagnosticEvents = new LinkedList<>();
 
@@ -140,14 +135,7 @@ public class OperationConductor implements OnOperationCompleteListener
      */
     protected void loadPriorProgress()
     {
-        ProgressLoader progressLoader = progressLoaderFactory.createProgressLoader(executorContext);
-        if(progressLoader == null)
-        {
-            logger.debug("No prior progress found");
-            return;
-        }
-
-        AgendaProgress agendaProgress = progressLoader.loadProgress();
+        AgendaProgress agendaProgress = executorContext.getLaunchDataWrapper().getLastProgressObject(AgendaProgress.class);
 
         if(agendaProgress == null
             || agendaProgress.getOperationProgress() == null
@@ -182,6 +170,8 @@ public class OperationConductor implements OnOperationCompleteListener
         {
             logger.info("Completed Operation Progress found for operations: {}",
                 completedOperations.stream().map(ow -> ow.getOperation().getName()).collect(Collectors.joining(",")));
+            // increment the completed count in the reporter (no reporting will be performed for already completed operations, for now this is just a numeric)
+            executorContext.getAgendaProgressReporter().incrementCompletedOperationCount(completedOperations.size());
         }
 
         // Incomplete / Failed Ops
@@ -427,10 +417,5 @@ public class OperationConductor implements OnOperationCompleteListener
     protected void setFailedOperations(List<OperationWrapper> failedOperations)
     {
         this.failedOperations = failedOperations;
-    }
-
-    public void setProgressLoaderFactory(ProgressLoaderFactory progressLoaderFactory)
-    {
-        this.progressLoaderFactory = progressLoaderFactory;
     }
 }

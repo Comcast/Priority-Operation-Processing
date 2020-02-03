@@ -7,4 +7,5 @@ public interface AgendaProgressConsumer
     void setAgendaProgress(AgendaProgress agendaProgress);
     void registerOperationProgressProvider(OperationProgressProvider operationProgressProvder);
     void setTotalProgressOperationCount(int operationTotalCount);
+    void incrementCompletedOperationCount(int incrementAmount);
 }

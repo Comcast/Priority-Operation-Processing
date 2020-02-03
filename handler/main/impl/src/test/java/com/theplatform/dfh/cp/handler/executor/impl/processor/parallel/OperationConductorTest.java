@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
@@ -12,8 +13,6 @@ import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationComplet
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressReporter;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoader;
-import com.theplatform.dfh.cp.handler.executor.impl.progress.loader.ProgressLoaderFactory;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.invocation.InvocationOnMock;
@@ -45,17 +44,16 @@ public class OperationConductorTest
     private ExecutorContext mockExecutorContext;
     private AgendaProgressReporter mockAgendaProgressReporter;
     private JsonContext mockJsonContext;
+    private LaunchDataWrapper mockLaunchDataWrapper;
     private ExecutorService mockExecutorService;
-    private ProgressLoaderFactory mockProgressLoaderFactory;
-    private ProgressLoader mockProgressLoader;
 
     @BeforeMethod
     public void setup()
     {
-        mockProgressLoader = mock(ProgressLoader.class);
-        mockProgressLoaderFactory = mock(ProgressLoaderFactory.class);
+        mockLaunchDataWrapper = mock(LaunchDataWrapper.class);
         mockAgendaProgressReporter = mock(AgendaProgressReporter.class);
         mockExecutorContext = mock(ExecutorContext.class);
+        doReturn(mockLaunchDataWrapper).when(mockExecutorContext).getLaunchDataWrapper();
         doReturn(mockAgendaProgressReporter).when(mockExecutorContext).getAgendaProgressReporter();
         mockJsonContext = mock(JsonContext.class);
         doReturn(mockJsonContext).when(mockExecutorContext).getJsonContext();
@@ -64,7 +62,6 @@ public class OperationConductorTest
         operationConductor = new OperationConductor(new ArrayList<>(), mockExecutorContext);
         operationConductor.setOperationRunnerFactory(mockOperationRunnerFactory);
         operationConductor.setExecutorService(mockExecutorService);
-        operationConductor.setProgressLoaderFactory(mockProgressLoaderFactory);
     }
 
     @Test
@@ -170,16 +167,14 @@ public class OperationConductorTest
     @Test
     public void testLoadPriorProgressNull()
     {
-        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(null).when(mockProgressLoader).loadProgress();
+        doReturn(null).when(mockLaunchDataWrapper).getLastProgressObject(any());
         operationConductor.loadPriorProgress();
     }
 
     @Test
     public void testLoadPriorProgressNoOpProgress()
     {
-        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(null, null)).when(mockProgressLoader).loadProgress();
+        doReturn(createAgendaProgress(null, null)).when(mockLaunchDataWrapper).getLastProgressObject(any());
         operationConductor.loadPriorProgress();
     }
 
@@ -187,8 +182,7 @@ public class OperationConductorTest
     public void testLoadPriorProgressWithOpProgress()
     {
         final List<String> operationNames = Arrays.asList("test.1", "test.2");
-        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(operationNames, null)).when(mockProgressLoader).loadProgress();
+        doReturn(createAgendaProgress(operationNames, null)).when(mockLaunchDataWrapper).getLastProgressObject(any());
         operationConductor.setPendingOperations(createOperationWrappers(operationNames));
         operationConductor.loadPriorProgress();
         for (OperationWrapper operationWrapper : operationConductor.getPendingOperations())
@@ -202,8 +196,7 @@ public class OperationConductorTest
     {
         final List<String> operationNames = Arrays.asList("test.1", "test.2", "test.3");
         final Set<String> suceededOperationNames = new HashSet<>(Arrays.asList("test.2"));
-        doReturn(mockProgressLoader).when(mockProgressLoaderFactory).createProgressLoader(any(ExecutorContext.class));
-        doReturn(createAgendaProgress(operationNames, suceededOperationNames)).when(mockProgressLoader).loadProgress();
+        doReturn(createAgendaProgress(operationNames, suceededOperationNames)).when(mockLaunchDataWrapper).getLastProgressObject(any());
         operationConductor.setPendingOperations(createOperationWrappers(operationNames));
         operationConductor.loadPriorProgress();
         for(String opName : operationNames)

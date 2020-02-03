@@ -190,6 +190,12 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
     }
 
     @Override
+    public synchronized void incrementCompletedOperationCount(int incrementAmount)
+    {
+        completedProgressOperationCount += incrementAmount;
+    }
+
+    @Override
     protected String getThreadName()
     {
         return "AgendaProgressThread";
