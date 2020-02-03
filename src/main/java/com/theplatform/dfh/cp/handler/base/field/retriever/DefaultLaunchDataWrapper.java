@@ -57,6 +57,12 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
     @Override
     public OperationProgress getLastOperationProgress()
     {
+        return getLastProgressObject(OperationProgress.class);
+    }
+
+    @Override
+    public <T> T getLastProgressObject(Class<T> objectClass)
+    {
         String operationProgressJson = getStringFromFields(HandlerArgument.LAST_PROGRESS_FILE, HandlerField.LAST_PROGRESS);
 
         if(operationProgressJson == null)
@@ -64,7 +70,7 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
 
         try
         {
-            return jsonHelper.getObjectFromString(operationProgressJson, OperationProgress.class);
+            return jsonHelper.getObjectFromString(operationProgressJson, objectClass);
         }
         catch(JsonHelperException e)
         {
