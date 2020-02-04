@@ -1,5 +1,6 @@
 package com.theplatform.dfh.endpoint.api.agenda.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,13 @@ import java.util.Objects;
  */
 public enum RetryAgendaParameter
 {
-    RESET_ALL("resetall");
+    RESET_ALL("resetall"), // all ops reset
+    SKIP_EXECUTION("skipExecution"), // do not submit a ready agenda
+    OPERATIONS_TO_RESET("operationsToReset"), // list of operations specifically to reset to WAITING
+    CONTINUE("continue"); // leave states as-is and let executor try again (failed/in-progress will be re-executed)
 
-    private static final String SEPARATOR = "=";
+    public static final String SEPARATOR = "=";
+    public static final String VALUE_DELIMITER = ",";
     private final String parameterName;
 
     RetryAgendaParameter(String parameterName)
@@ -29,6 +34,14 @@ public enum RetryAgendaParameter
     public String getParameterNameWithValue(String value)
     {
         return parameterName + SEPARATOR + value;
+    }
+
+    public String getParameterNameWithValue(Collection<String> values)
+    {
+        return parameterName + SEPARATOR +
+            values == null
+            ? ""
+            : String.join(VALUE_DELIMITER, values);
     }
 
     private static class AgendaRetryParameters
