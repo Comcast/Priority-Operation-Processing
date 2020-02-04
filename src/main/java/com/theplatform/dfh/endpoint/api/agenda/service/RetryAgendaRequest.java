@@ -6,17 +6,15 @@ public class RetryAgendaRequest
 {
     private String agendaId;
     private List<String> params;
-    private List<String> operationsToReset;
 
     public RetryAgendaRequest()
     {
     }
 
-    public RetryAgendaRequest(String agendaId, List<String> params, List<String> operationsToReset)
+    public RetryAgendaRequest(String agendaId, List<String> params)
     {
         this.agendaId = agendaId;
         this.params = params;
-        this.operationsToReset = operationsToReset;
     }
 
     public String getAgendaId()
@@ -37,15 +35,5 @@ public class RetryAgendaRequest
     public void setParams(List<String> params)
     {
         this.params = params;
-    }
-
-    public List<String> getOperationsToReset()
-    {
-        return operationsToReset;
-    }
-
-    public void setOperationsToReset(List<String> operationsToReset)
-    {
-        this.operationsToReset = operationsToReset;
     }
 }
