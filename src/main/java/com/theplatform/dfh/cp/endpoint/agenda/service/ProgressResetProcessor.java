@@ -13,8 +13,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Processes the reset of the Agenda and OperationProgress for the retry endpoint
+ */
 public class ProgressResetProcessor
 {
+    public final static String DEFAULT_RESET_STATE_MESSAGE = "pending";
+
     public void resetProgress(AgendaProgress agendaProgress, RetryAgendaRequest retryAgendaRequest, Map<RetryAgendaParameter, String> retryParameters)
     {
         boolean resetAll = retryParameters.containsKey(RetryAgendaParameter.RESET_ALL);
@@ -46,13 +51,13 @@ public class ProgressResetProcessor
     protected void resetAgendaProgress(AgendaProgress agendaProgress)
     {
         agendaProgress.setProcessingState(ProcessingState.WAITING);
-        agendaProgress.setProcessingStateMessage(null);
+        agendaProgress.setProcessingStateMessage(DEFAULT_RESET_STATE_MESSAGE);
     }
 
     protected void resetOperationProgress(OperationProgress operationProgress)
     {
         operationProgress.setProcessingState(ProcessingState.WAITING);
-        operationProgress.setProcessingStateMessage(null);
+        operationProgress.setProcessingStateMessage(DEFAULT_RESET_STATE_MESSAGE);
     }
 
     protected Set<String> getSpecifiedOperationsToReset(Map<RetryAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
