@@ -191,6 +191,40 @@ public class OperationConductorTest
         }
     }
 
+    @DataProvider
+    public Object[][] loadPriorProgressWithOpProgressStateProvider()
+    {
+        return new Object[][]
+            {
+                {ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString(), true},
+                {ProcessingState.COMPLETE, "garbage", true},
+                {ProcessingState.EXECUTING, "garbage", true},
+                {ProcessingState.WAITING, "garbage", false},
+            };
+    }
+
+    @Test(dataProvider = "loadPriorProgressWithOpProgressStateProvider")
+    public void testLoadPriorProgressWithOpProgressState(ProcessingState processingState, String processingStateMessage, boolean expectPriorProgress)
+    {
+        final List<String> operationNames = Collections.singletonList("test.1");
+        AgendaProgress agendaProgress = createAgendaProgress(operationNames, null);
+        OperationProgress operationProgress = agendaProgress.getOperationProgress()[0];
+        operationProgress.setId(OperationProgress.generateId(agendaProgress.getId(), operationNames.get(0)));
+        operationProgress.setProcessingState(processingState);
+        operationProgress.setProcessingStateMessage(processingStateMessage);
+        doReturn(agendaProgress).when(mockLaunchDataWrapper).getLastProgressObject(any());
+        operationConductor.setPendingOperations(createOperationWrappers(operationNames));
+        operationConductor.loadPriorProgress();
+        // ALWAYS should have the op present
+        Assert.assertEquals(operationConductor.getPendingOperations().size(), 1);
+        for (OperationWrapper operationWrapper : operationConductor.getPendingOperations())
+        {
+            Assert.assertEquals(operationWrapper.getPriorExecutionOperationProgress() != null, expectPriorProgress);
+            if(expectPriorProgress)
+                Assert.assertEquals(operationWrapper.getOperation().getName(), operationWrapper.getPriorExecutionOperationProgress().getOperation());
+        }
+    }
+
     @Test
     public void testLoadPriorProgressWithOpProgressMix()
     {
