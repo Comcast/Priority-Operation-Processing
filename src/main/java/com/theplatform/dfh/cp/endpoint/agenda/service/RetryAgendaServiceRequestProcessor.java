@@ -86,13 +86,13 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
         agendaProgressRequestProcessor.setVisibilityFilter(VisibilityMethod.PUT, new NoOpVisibilityFilter<>());
 
         DataObjectResponse<Agenda> agendaResponse = agendaRequestProcessor.handleGET(new DefaultDataObjectRequest<>(null, retryAgendaRequest.getAgendaId(), null));
-        if(agendaResponse.isError())
+        if(agendaResponse.isError() || agendaResponse.getFirst() == null)
             return createRetryAgendaResponse(serviceRequest, agendaResponse.getErrorResponse(), "Failed to retrieve Agenda.");
 
         Agenda agenda = agendaResponse.getFirst();
 
         DataObjectResponse<AgendaProgress> agendaProgressResponse = agendaProgressRequestProcessor.handleGET(new DefaultDataObjectRequest<>(null, agenda.getProgressId(), null));
-        if(agendaProgressResponse.isError())
+        if(agendaProgressResponse.isError() || agendaProgressResponse.getFirst() == null)
             return createRetryAgendaResponse(serviceRequest, agendaProgressResponse.getErrorResponse(), "Failed to retrieve AgendaProgress.");
 
         AgendaProgress agendaProgress = agendaProgressResponse.getFirst();
