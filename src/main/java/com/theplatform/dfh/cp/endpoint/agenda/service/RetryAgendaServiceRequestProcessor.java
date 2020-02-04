@@ -127,11 +127,14 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
                 new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
         }
 
-        DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(agenda.getAgendaInsight().getInsightId(), agenda.getId(),
-            agenda.getCustomerId(), serviceRequest.getCID());
-        if (readyAgendaResponse.isError())
+        if(!agendaRetryParams.containsKey(RetryAgendaParameter.SKIP_EXECUTION))
         {
-            return createRetryAgendaResponse(serviceRequest, readyAgendaResponse.getErrorResponse(), null);
+            DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(agenda.getAgendaInsight().getInsightId(), agenda.getId(),
+                agenda.getCustomerId(), serviceRequest.getCID());
+            if (readyAgendaResponse.isError())
+            {
+                return createRetryAgendaResponse(serviceRequest, readyAgendaResponse.getErrorResponse(), null);
+            }
         }
 
         return createRetryAgendaResponse(serviceRequest, null, null);

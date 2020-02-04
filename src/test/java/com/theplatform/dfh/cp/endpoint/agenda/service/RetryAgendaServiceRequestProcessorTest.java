@@ -163,22 +163,48 @@ public class RetryAgendaServiceRequestProcessorTest
         testErrorExecute(1, 1, 1, 1, 1);
     }
 
+    @Test
+    public void testSkipExecution()
+    {
+        retryAgendaRequest.setParams(Collections.singletonList(RetryAgendaParameter.SKIP_EXECUTION.getParameterName()));
+
+        AgendaProgress agendaProgress = TestUtil.createAgendaProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.name());
+        agendaProgress.setOperationProgress(new OperationProgress[] { TestUtil.createOperationProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.name())});
+
+        doReturn(TestUtil.createDataObjectResponse(agenda)).when(mockAgendaRequestProcessor).handleGET(any());
+        doReturn(TestUtil.createDataObjectResponse(agendaProgress)).when(mockAgendaProgressRequestProcessor).handleGET(any());
+        doReturn(TestUtil.createDataObjectResponse(agendaProgress)).when(mockAgendaProgressRequestProcessor).handlePUT(any());
+        doReturn(TestUtil.createDataObjectResponse(new OperationProgress())).when(mockOperationProgressRequestProcessor).handlePUT(any());
+
+        testExecute(1, 1, 1, 1, 0);
+    }
+
     private void testErrorExecute(int expectedAgendaGets, int expectedAgendaProgressGets, int expectedAgendaProgressPuts, int expectedOperationProgressPuts,
+        int expectedReadyAgendaPersists)
+    {
+        RetryAgendaResponse response = testExecute(expectedAgendaGets, expectedAgendaProgressGets, expectedAgendaProgressPuts, expectedOperationProgressPuts,
+            expectedReadyAgendaPersists);
+        Assert.assertNotNull(response);
+        Assert.assertTrue(response.isError());
+    }
+
+    private RetryAgendaResponse testExecute(int expectedAgendaGets, int expectedAgendaProgressGets, int expectedAgendaProgressPuts, int expectedOperationProgressPuts,
         int expectedReadyAgendaPersists)
     {
         try
         {
             RetryAgendaResponse response = requestProcessor.processPOST(new DefaultServiceRequest<>(retryAgendaRequest));
-            Assert.assertTrue(response.isError());
             verify(mockAgendaRequestProcessor, times(expectedAgendaGets)).handleGET(any());
             verify(mockAgendaProgressRequestProcessor, times(expectedAgendaProgressGets)).handleGET(any());
             verify(mockAgendaProgressRequestProcessor, times(expectedAgendaProgressPuts)).handlePUT(any());
             verify(mockOperationProgressRequestProcessor, times(expectedOperationProgressPuts)).handlePUT(any());
             verify(mockReadyAgendaPersister, times(expectedReadyAgendaPersists)).persist(any());
+            return response;
         }
         catch(Throwable t)
         {
             Assert.fail("Test failed for an unknown reason.", t);
         }
+        return null;
     }
 }

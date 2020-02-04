@@ -9,9 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,22 +17,30 @@ public class ProgressResetProcessor
 {
     public void resetProgress(AgendaProgress agendaProgress, RetryAgendaRequest retryAgendaRequest, Map<RetryAgendaParameter, String> retryParameters)
     {
-        Set<String> resetOperations = getResetSet(agendaProgress.getId(), retryAgendaRequest.getOperationsToReset());
-        Set<String> parameters = getParameters(retryAgendaRequest.getParams());
+        boolean resetAll = retryParameters.containsKey(RetryAgendaParameter.RESET_ALL);
+        boolean continueOnly = retryParameters.containsKey(RetryAgendaParameter.CONTINUE);
+        Set<String> operationsToReset = getSpecifiedOperationsToReset(retryParameters, agendaProgress);
 
-        final boolean resetAll = parameters.contains(RetryAgendaParameter.RESET_ALL.getParameterName());
-
-        // TODO: lots more options, reset all may be the default
+        if(!resetAll
+            && operationsToReset.size() == 0
+            && !continueOnly)
+        {
+            // nothing was specified so default to resetting everything
+            resetAll = true;
+        }
 
         resetAgendaProgress(agendaProgress);
+        resetOperationProgresses(agendaProgress, operationsToReset, resetAll);
+    }
 
+    protected void resetOperationProgresses(AgendaProgress agendaProgress, final Set<String> operationsToReset, final boolean resetAll)
+    {
         if(agendaProgress.getOperationProgress() == null)
             return;
 
         Arrays.stream(agendaProgress.getOperationProgress())
-            .filter(op -> resetOperations.contains(op.getId()) || resetAll)
+            .filter(op -> operationsToReset.contains(StringUtils.lowerCase(op.getId())) || resetAll)
             .forEach(this::resetOperationProgress);
-
     }
 
     protected void resetAgendaProgress(AgendaProgress agendaProgress)
@@ -49,23 +55,15 @@ public class ProgressResetProcessor
         operationProgress.setProcessingStateMessage(null);
     }
 
-    protected Set<String> getParameters(List<String> params)
+    protected Set<String> getSpecifiedOperationsToReset(Map<RetryAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
     {
-        return params == null
+        String delimitedOps = retryParameters.get(RetryAgendaParameter.OPERATIONS_TO_RESET);
+        return StringUtils.isBlank(delimitedOps)
                ? new HashSet<>()
-               : params.stream()
-                   .filter(Objects::nonNull)
-                   .map(StringUtils::lowerCase)
-                   .collect(Collectors.toSet());
-    }
-
-    protected Set<String> getResetSet(String agendaProgressId, List<String> operationsToReset)
-    {
-        return operationsToReset == null
-            ? new HashSet<>()
-            : operationsToReset.stream()
-                   .filter(Objects::nonNull)
-                   .map(id -> OperationProgress.generateId(agendaProgressId, StringUtils.lowerCase(id)))
-                   .collect(Collectors.toSet());
+               : new HashSet<>(
+                   Arrays.stream(StringUtils.split(delimitedOps, RetryAgendaParameter.VALUE_DELIMITER))
+                       .map(id -> StringUtils.lowerCase(OperationProgress.generateId(agendaProgress.getId(), id)))
+                       .collect(Collectors.toSet())
+        );
     }
 }
