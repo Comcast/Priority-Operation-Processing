@@ -190,7 +190,7 @@ public abstract class BaseReporterThread<C extends BaseReporterThreadConfig> imp
         return Thread.interrupted();
     }
 
-    protected Thread getReporterThread()
+    public Thread getReporterThread()
     {
         return reporterThread;
     }
