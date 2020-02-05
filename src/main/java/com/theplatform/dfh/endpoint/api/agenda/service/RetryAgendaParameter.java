@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public enum RetryAgendaParameter
 {
-    RESET_ALL("resetall"), // all ops reset
+    RESET_ALL("resetAll"), // all ops reset
     SKIP_EXECUTION("skipExecution"), // do not submit a ready agenda
     OPERATIONS_TO_RESET("operationsToReset"), // list of operations specifically to reset to WAITING
     CONTINUE("continue"); // leave states as-is and let executor try again (failed/in-progress will be re-executed)
