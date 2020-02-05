@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgre
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThread;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThreadConfig;
+import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
@@ -30,6 +31,8 @@ import java.util.UUID;
  */
 public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
 {
+    private final static int DEFAULT_PROGRESS_THREAD_EXIT_TIMEOUT_MS = 60000;
+
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private HttpURLConnectionFactory urlConnectionFactory;
     private OperationExecutorFactory operationExecutorFactory;
@@ -106,6 +109,19 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public void shutdown()
     {
         agendaProgressThread.shutdown(false);
+        try
+        {
+            // give the progress thread some time to report before giving up
+            Thread progressReportThread = agendaProgressThread.getReporterThread();
+            progressReportThread.join(
+                getLaunchDataWrapper().getPropertyRetriever().getInt(ExecutorProperty.PROGRESS_THREAD_EXIT_TIMEOUT_MS, DEFAULT_PROGRESS_THREAD_EXIT_TIMEOUT_MS));
+            if(progressReportThread.isAlive())
+                logger.warn("AgendaProgressThread join timed out.");
+        }
+        catch(InterruptedException e)
+        {
+            logger.warn("Reporter Thread join call was interrupted.", e);
+        }
         shutdownProcessors.forEach(ShutdownProcessor::shutdown);
     }
 

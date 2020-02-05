@@ -65,7 +65,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         {
             case kubernetes:
                 // self-reap is enabled by default
-                if(launchDataWrapper.getPropertyRetriever().getBoolean(ExecutorProperty.EXECUTOR_REAP_SELF, true))
+                if(launchDataWrapper.getPropertyRetriever().getBoolean(ExecutorProperty.REAP_SELF, true))
                     shutdownProcessors.add(new KubernetesShutdownProcessor(getKubeConfigFactory(), launchDataWrapper.getEnvironmentRetriever()));
                 break;
         }

@@ -4,7 +4,8 @@ import com.theplatform.dfh.cp.handler.base.field.retriever.api.NamedField;
 
 public enum ExecutorProperty implements NamedField
 {
-    EXECUTOR_REAP_SELF("executor.reap.self");
+    REAP_SELF("executor.reap.self"),
+    PROGRESS_THREAD_EXIT_TIMEOUT_MS("executor.progress.threadExitTimeoutMs");
 
     private final String fieldName;
 
