@@ -55,7 +55,11 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
 {
     private static final Logger logger = LoggerFactory.getLogger(SubmitAgendaServiceRequestProcessor.class);
 
+    public static final String INVALID_JSON_PAYLOAD = "Unable to parse input payload as JSON";
+
+    private RequestValidator<ServiceRequest<SubmitAgendaRequest>> requestValidator = new SubmitAgendaRequestValidator();
     private RequestProcessorFactory requestProcessorFactory;
+    private ServiceResponseFactory<SubmitAgendaResponse> responseFactory;
     private ServiceDataObjectRetriever<SubmitAgendaResponse> dataObjectRetriever;
 
     private JsonHelper jsonHelper = new JsonHelper();
@@ -85,13 +89,25 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         this.agendaTemplatePersister = agendaTemplatePersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        dataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(SubmitAgendaResponse.class));
+        responseFactory = new ServiceResponseFactory<>(SubmitAgendaResponse.class);
+        dataObjectRetriever = new ServiceDataObjectRetriever<>(responseFactory);
     }
 
     @Override
     public SubmitAgendaResponse processPOST(ServiceRequest<SubmitAgendaRequest> serviceRequest)
     {
         SubmitAgendaRequest submitAgendaRequest = serviceRequest.getPayload();
+
+        JsonNode payloadNode;
+        try
+        {
+            payloadNode = jsonHelper.getObjectMapper().readTree(submitAgendaRequest.getPayload());
+        }
+        catch(IOException e)
+        {
+            return createSubmitAgendaResponse(serviceRequest, null,
+                ErrorResponseFactory.badRequest(INVALID_JSON_PAYLOAD, serviceRequest.getCID()), null);
+        }
 
         AgendaTemplateRequestProcessor agendaTemplateRequestProcessor = requestProcessorFactory.createAgendaTemplateRequestProcessor(agendaTemplatePersister);
 
@@ -101,18 +117,6 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         if(agendaTemplateResult.getServiceResponse() != null)
             return agendaTemplateResult.getServiceResponse();
         AgendaTemplate agendaTemplate = agendaTemplateResult.getDataObjectResponse().getFirst();
-
-        JsonNode payloadNode;
-
-        try
-        {
-            payloadNode = jsonHelper.getObjectMapper().readTree(submitAgendaRequest.getPayload());
-        }
-        catch(IOException e)
-        {
-            return createSubmitAgendaResponse(serviceRequest, null,
-                ErrorResponseFactory.badRequest("Unable to parse input payload as JSON.", serviceRequest.getCID()));
-        }
 
         Agenda agendaToCreate = agendaFactory.createAgendaFromObject(agendaTemplate, payloadNode, null, serviceRequest.getCID());
 
@@ -141,22 +145,21 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         if(errorResponse != null)
         {
             return createSubmitAgendaResponse(serviceRequest, null,
-                ErrorResponseFactory.badRequest(String.format("[%1$s : %2$s]", errorResponse.getTitle(), errorResponse.getDescription()), serviceRequest.getCID()));
+                ErrorResponseFactory.badRequest(String.format("[%1$s : %2$s]", errorResponse.getTitle(), errorResponse.getDescription()), serviceRequest.getCID()), null);
         }
-        return createSubmitAgendaResponse(serviceRequest, createdAgenda, null);
+        return createSubmitAgendaResponse(serviceRequest, createdAgenda, null, null);
     }
 
-    private SubmitAgendaResponse createSubmitAgendaResponse(ServiceRequest<SubmitAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse)
+    private SubmitAgendaResponse createSubmitAgendaResponse(ServiceRequest<SubmitAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse, String errorPrefix)
     {
-        SubmitAgendaResponse submitAgendaResponse = new SubmitAgendaResponse(Collections.singletonList(agenda));
-        submitAgendaResponse.setCID(serviceRequest.getCID());
-        submitAgendaResponse.setErrorResponse(errorResponse);
+        SubmitAgendaResponse submitAgendaResponse = responseFactory.createResponse(serviceRequest, errorResponse, errorPrefix);
+        submitAgendaResponse.setAgendas(Collections.singletonList(agenda));
         return submitAgendaResponse;
     }
 
     public RequestValidator<ServiceRequest<SubmitAgendaRequest>> getRequestValidator()
     {
-        return null;
+        return requestValidator;
     }
 
     public void setAgendaFactory(AgendaFactory agendaFactory)
