@@ -70,7 +70,8 @@ public class RetryAgendaServiceRequestProcessorTest
         doReturn(mockAgendaProgressRequestProcessor).when(mockRequestProcessorFactory).createAgendaProgressRequestProcessor(any(), any(), any());
 
         requestProcessor = new RetryAgendaServiceRequestProcessor(mock(ObjectPersister.class), mock(ObjectPersister.class), mock(ObjectPersister.class),
-            mockReadyAgendaPersister, mockInsightPersister, mockCustomerPersister, mockRequestProcessorFactory);
+            mockReadyAgendaPersister, mockInsightPersister, mockCustomerPersister);
+        requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
     }
 
     @Test

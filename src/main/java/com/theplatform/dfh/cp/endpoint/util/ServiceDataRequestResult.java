@@ -7,12 +7,12 @@ import com.theplatform.dfh.object.api.IdentifiedObject;
 /**
  * Wrapper object for request processors that either need a DataObjectResponse(success) or a ServiceResponse(error)
  * @param <D> The type of object the DataObjectResponse contains
- * @param <SR> The type of ServiceResponse
+ * @param <R> The type of ServiceResponse
  */
-public class DataRequestResult<D extends IdentifiedObject, SR extends ServiceResponse>
+public class ServiceDataRequestResult<D extends IdentifiedObject, R extends ServiceResponse>
 {
     private DataObjectResponse<D> dataObjectResponse;
-    private SR serviceResponse;
+    private R serviceResponse;
 
     public DataObjectResponse<D> getDataObjectResponse()
     {
@@ -24,12 +24,12 @@ public class DataRequestResult<D extends IdentifiedObject, SR extends ServiceRes
         this.dataObjectResponse = dataObjectResponse;
     }
 
-    public SR getServiceResponse()
+    public R getServiceResponse()
     {
         return serviceResponse;
     }
 
-    public void setServiceResponse(SR serviceResponse)
+    public void setServiceResponse(R serviceResponse)
     {
         this.serviceResponse = serviceResponse;
     }

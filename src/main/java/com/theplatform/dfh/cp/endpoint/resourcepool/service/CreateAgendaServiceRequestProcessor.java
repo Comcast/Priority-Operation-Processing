@@ -7,21 +7,10 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.cp.endpoint.base.visibility.AllMatchVisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.base.visibility.CustomerVisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.client.DataObjectRequestProcessorClient;
-import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
+import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.*;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -33,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -56,6 +44,8 @@ import java.util.List;
 public class CreateAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<CreateAgendaResponse, ServiceRequest<CreateAgendaRequest>>
 {
     private static final Logger logger = LoggerFactory.getLogger(CreateAgendaServiceRequestProcessor.class);
+
+    private RequestProcessorFactory requestProcessorFactory = new RequestProcessorFactory();
 
     private ObjectPersister<Customer> customerPersister;
     private ObjectPersister<Insight> insightPersister;
@@ -95,7 +85,8 @@ public class CreateAgendaServiceRequestProcessor extends AbstractServiceRequestP
             //create an agenda req with the agenda.customerId for visibility
             DataObjectRequest<Agenda> agendaReqByCustomerId = DefaultDataObjectRequest.customerAuthInstance(agendaToCreate.getCustomerId(), agendaToCreate);
             //create agenda processor with a service level insight visibility
-            AgendaRequestProcessor agendaRequestProcessor = generateReqProcessorWithCallersVisibility(serviceRequest);
+            AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessorWithServiceRequestVisibility(
+                agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister, serviceRequest);
             try
             {
                 DataObjectResponse<Agenda> createdAgendaResponse = agendaRequestProcessor.handlePOST(agendaReqByCustomerId);
@@ -145,29 +136,9 @@ public class CreateAgendaServiceRequestProcessor extends AbstractServiceRequestP
         return null;
     }
 
-    /**
-     * Generate an Agenda Request Processor with added visibility checking for the calling user and the Agenda's Insight
-     * @param serviceRequest The calling users service request
-     * @return An agenda request processor
-     */
-    private AgendaRequestProcessor generateReqProcessorWithCallersVisibility(ServiceRequest serviceRequest)
+    public void setRequestProcessorFactory(RequestProcessorFactory requestProcessorFactory)
     {
-        //we need to set a different visibility policy for the insight request processor when a service request comes in.
-        InsightRequestProcessor insightRequestProcessor = InsightRequestProcessor.getServiceInstance(insightPersister, serviceRequest);
-
-        CustomerRequestProcessor customerRequestProcessor = new CustomerRequestProcessor(customerPersister);
-        AgendaProgressRequestProcessor agendaProgressRequestProcessor =
-            new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
-        OperationProgressRequestProcessor operationProgressRequestProcessor = new OperationProgressRequestProcessor(operationProgressPersister);
-        AgendaRequestProcessor agendaRequestProcessor = new AgendaRequestProcessor(agendaPersister,
-            readyAgendaPersister,
-            agendaProgressRequestProcessor,
-           operationProgressRequestProcessor,
-            new InsightSelector(insightRequestProcessor, customerRequestProcessor));
-        return agendaRequestProcessor;
+        this.requestProcessorFactory = requestProcessorFactory;
     }
-
-
-
 }
 

@@ -10,13 +10,13 @@ import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.AgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.DefaultAgendaFactory;
+import com.theplatform.dfh.cp.endpoint.agendatemplate.AgendaTemplateRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
+import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
+import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
+import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
+import com.theplatform.dfh.cp.endpoint.util.ServiceResponseFactory;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
@@ -29,14 +29,11 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Collections;
 
 /**
  * Agenda service request processor for creating agendas
@@ -58,7 +55,11 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
 {
     private static final Logger logger = LoggerFactory.getLogger(SubmitAgendaServiceRequestProcessor.class);
 
+    private RequestProcessorFactory requestProcessorFactory;
+    private ServiceDataObjectRetriever<SubmitAgendaResponse> dataObjectRetriever;
+
     private JsonHelper jsonHelper = new JsonHelper();
+
     private ObjectPersister<Customer> customerPersister;
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Agenda> agendaPersister;
@@ -80,9 +81,11 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         this.agendaProgressPersister = agendaProgressPersister;
         this.operationProgressPersister = operationProgressPersister;
         this.readyAgendaPersister = readyAgendaPersister;
-        this.agendaTemplatePersister = agendaTemplatePersister;
         this.agendaFactory = new DefaultAgendaFactory();
         this.agendaTemplatePersister = agendaTemplatePersister;
+
+        requestProcessorFactory = new RequestProcessorFactory();
+        dataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(SubmitAgendaResponse.class));
     }
 
     @Override
@@ -90,18 +93,16 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
     {
         SubmitAgendaRequest submitAgendaRequest = serviceRequest.getPayload();
 
-        AgendaTemplate agendaTemplate;
-        try
-        {
-            agendaTemplate = agendaTemplatePersister.retrieve(submitAgendaRequest.getAgendaTemplateId());
-        }
-        catch(PersistenceException e)
-        {
-            return createSubmitAgendaResponse(serviceRequest, null,
-                ErrorResponseFactory.badRequest("Template retrieve failed.", serviceRequest.getCID()));
-        }
+        AgendaTemplateRequestProcessor agendaTemplateRequestProcessor = requestProcessorFactory.createAgendaTemplateRequestProcessor(agendaTemplatePersister);
 
-        JsonNode payloadNode = null;
+        // retrieve the AgendaTemplate
+        ServiceDataRequestResult<AgendaTemplate, SubmitAgendaResponse> agendaTemplateResult = dataObjectRetriever.performObjectRetrieve(
+            serviceRequest, agendaTemplateRequestProcessor, submitAgendaRequest.getAgendaTemplateId(), AgendaTemplate.class);
+        if(agendaTemplateResult.getServiceResponse() != null)
+            return agendaTemplateResult.getServiceResponse();
+        AgendaTemplate agendaTemplate = agendaTemplateResult.getDataObjectResponse().getFirst();
+
+        JsonNode payloadNode;
 
         try
         {
@@ -109,86 +110,53 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         }
         catch(IOException e)
         {
-            return null;
+            return createSubmitAgendaResponse(serviceRequest, null,
+                ErrorResponseFactory.badRequest("Unable to parse input payload as JSON.", serviceRequest.getCID()));
         }
 
         Agenda agendaToCreate = agendaFactory.createAgendaFromObject(agendaTemplate, payloadNode, null, serviceRequest.getCID());
 
-        List<Agenda> createdAgendas = new ArrayList<>();
-        List<ErrorResponse> errorResponses = new ArrayList<>();
-
         //create an agenda req with the agenda.customerId for visibility
         DataObjectRequest<Agenda> agendaReqByCustomerId = DefaultDataObjectRequest.customerAuthInstance(agendaToCreate.getCustomerId(), agendaToCreate);
         //create agenda processor with a service level insight visibility
-        AgendaRequestProcessor agendaRequestProcessor = generateReqProcessorWithCallersVisibility(serviceRequest);
+        AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessorWithServiceRequestVisibility(
+            agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister, serviceRequest);
+
+        ErrorResponse errorResponse;
+        Agenda createdAgenda = null;
         try
         {
             DataObjectResponse<Agenda> createdAgendaResponse = agendaRequestProcessor.handlePOST(agendaReqByCustomerId);
-            if (createdAgendaResponse.getErrorResponse() == null)
+            errorResponse = createdAgendaResponse.getErrorResponse();
+            if (errorResponse == null)
             {
-                createdAgendas.add(createdAgendaResponse.getFirst());
-            }
-            else
-            {
-                errorResponses.add(createdAgendaResponse.getErrorResponse());
+                createdAgenda = createdAgendaResponse.getFirst();
             }
         }
         catch (RuntimeServiceException e)
         {
-            errorResponses.add(ErrorResponseFactory.runtimeServiceException(e, serviceRequest.getCID()));
+            errorResponse = ErrorResponseFactory.runtimeServiceException(e, serviceRequest.getCID());
         }
 
-        if(errorResponses.size() > 0)
+        if(errorResponse != null)
         {
-            return createSubmitAgendaResponse(serviceRequest, createdAgendas,
-                ErrorResponseFactory.badRequest(errorResponsesToString(errorResponses), serviceRequest.getCID()));
+            return createSubmitAgendaResponse(serviceRequest, null,
+                ErrorResponseFactory.badRequest(String.format("[%1$s : %2$s]", errorResponse.getTitle(), errorResponse.getDescription()), serviceRequest.getCID()));
         }
-        return createSubmitAgendaResponse(serviceRequest, createdAgendas, null);
+        return createSubmitAgendaResponse(serviceRequest, createdAgenda, null);
     }
 
-    private SubmitAgendaResponse createSubmitAgendaResponse(ServiceRequest<SubmitAgendaRequest> serviceRequest, List<Agenda> createdAgendas, ErrorResponse errorResponse)
+    private SubmitAgendaResponse createSubmitAgendaResponse(ServiceRequest<SubmitAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse)
     {
-        SubmitAgendaResponse submitAgendaResponse = new SubmitAgendaResponse(createdAgendas);
+        SubmitAgendaResponse submitAgendaResponse = new SubmitAgendaResponse(Collections.singletonList(agenda));
         submitAgendaResponse.setCID(serviceRequest.getCID());
         submitAgendaResponse.setErrorResponse(errorResponse);
         return submitAgendaResponse;
     }
 
-    private String errorResponsesToString(List<ErrorResponse> errorResponses)
-    {
-        if(errorResponses == null) return "";
-        //to string the error responses to report.
-        final String errorResponseOutput = "[%s : %s]";
-        StringBuilder builder = new StringBuilder();
-        errorResponses.forEach(error -> builder.append(String.format(errorResponseOutput, error.getTitle(), error.getDescription())));
-        return builder.toString();
-    }
-
     public RequestValidator<ServiceRequest<SubmitAgendaRequest>> getRequestValidator()
     {
         return null;
-    }
-
-    /**
-     * Generate an Agenda Request Processor with added visibility checking for the calling user and the Agenda's Insight
-     * @param serviceRequest The calling users service request
-     * @return An agenda request processor
-     */
-    private AgendaRequestProcessor generateReqProcessorWithCallersVisibility(ServiceRequest serviceRequest)
-    {
-        //we need to set a different visibility policy for the insight request processor when a service request comes in.
-        InsightRequestProcessor insightRequestProcessor = InsightRequestProcessor.getServiceInstance(insightPersister, serviceRequest);
-
-        CustomerRequestProcessor customerRequestProcessor = new CustomerRequestProcessor(customerPersister);
-        AgendaProgressRequestProcessor agendaProgressRequestProcessor =
-            new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
-        OperationProgressRequestProcessor operationProgressRequestProcessor = new OperationProgressRequestProcessor(operationProgressPersister);
-        AgendaRequestProcessor agendaRequestProcessor = new AgendaRequestProcessor(agendaPersister,
-            readyAgendaPersister,
-            agendaProgressRequestProcessor,
-           operationProgressRequestProcessor,
-            new InsightSelector(insightRequestProcessor, customerRequestProcessor));
-        return agendaRequestProcessor;
     }
 
     public void setAgendaFactory(AgendaFactory agendaFactory)
@@ -199,6 +167,17 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
     public void setJsonHelper(JsonHelper jsonHelper)
     {
         this.jsonHelper = jsonHelper;
+    }
+
+    public void setDataObjectRetriever(
+        ServiceDataObjectRetriever<SubmitAgendaResponse> dataObjectRetriever)
+    {
+        this.dataObjectRetriever = dataObjectRetriever;
+    }
+
+    public void setRequestProcessorFactory(RequestProcessorFactory requestProcessorFactory)
+    {
+        this.requestProcessorFactory = requestProcessorFactory;
     }
 }
 

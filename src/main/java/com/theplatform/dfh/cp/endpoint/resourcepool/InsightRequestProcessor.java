@@ -38,18 +38,9 @@ public class InsightRequestProcessor extends EndpointDataObjectRequestProcessor<
         return new InsightValidator();
     }
 
-    public static InsightRequestProcessor getServiceInstance(ObjectPersister<Insight> insightObjectPersister, ServiceRequest<Insight> serviceRequest)
+    public static AnyMatchVisibilityFilter getDefaultObjectReadVisibilityFilter()
     {
-        InsightRequestProcessor processor = new InsightRequestProcessor(insightObjectPersister);
-        //the service needs extra visibility checking.
-        //get current visibilty filter
-        AllMatchVisibilityFilter allMatchVisibilityFilter = new AllMatchVisibilityFilter()
-            .withFilter(globalObjectReadVisibilityFilter)
-            .withFilter(new ServiceRequestVisibilityFilter(serviceRequest));
-        processor.setVisibilityFilter(VisibilityMethod.GET, allMatchVisibilityFilter);
-        return processor;
+        return globalObjectReadVisibilityFilter;
     }
-
-
 
 }
