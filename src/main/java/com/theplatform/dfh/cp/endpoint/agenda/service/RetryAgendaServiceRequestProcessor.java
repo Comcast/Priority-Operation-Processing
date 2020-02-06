@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
@@ -117,7 +118,10 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
                 new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
         }
 
-        if(!agendaRetryParams.containsKey(RetryAgendaParameter.SKIP_EXECUTION))
+        boolean skipExecution = agendaRetryParams.containsKey(RetryAgendaParameter.SKIP_EXECUTION)
+            || (agenda.getParams() != null && agenda.getParams().containsKey(GeneralParamKey.doNotRun));
+
+        if(!skipExecution)
         {
             DataObjectResponse<ReadyAgenda> readyAgendaResponse = persistReadyAgenda(agenda.getAgendaInsight().getInsightId(), agenda.getId(),
                 agenda.getCustomerId(), serviceRequest.getCID());
