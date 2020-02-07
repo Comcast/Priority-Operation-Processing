@@ -6,18 +6,18 @@ import com.theplatform.dfh.endpoint.api.ErrorResponse;
 
 import java.util.Collection;
 
-public class SubmitAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
+public class IgniteAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
 {
-    public SubmitAgendaResponse()
+    public IgniteAgendaResponse()
     {
     }
 
-    public SubmitAgendaResponse(ErrorResponse errorResponse)
+    public IgniteAgendaResponse(ErrorResponse errorResponse)
     {
         super(errorResponse);
     }
 
-    public SubmitAgendaResponse(Collection<Agenda> dataObjects)
+    public IgniteAgendaResponse(Collection<Agenda> dataObjects)
     {
         super(dataObjects);
     }

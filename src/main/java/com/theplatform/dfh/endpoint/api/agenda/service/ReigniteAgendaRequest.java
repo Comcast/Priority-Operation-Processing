@@ -2,16 +2,16 @@ package com.theplatform.dfh.endpoint.api.agenda.service;
 
 import java.util.List;
 
-public class RetryAgendaRequest
+public class ReigniteAgendaRequest
 {
     private String agendaId;
     private List<String> params;
 
-    public RetryAgendaRequest()
+    public ReigniteAgendaRequest()
     {
     }
 
-    public RetryAgendaRequest(String agendaId, List<String> params)
+    public ReigniteAgendaRequest(String agendaId, List<String> params)
     {
         this.agendaId = agendaId;
         this.params = params;

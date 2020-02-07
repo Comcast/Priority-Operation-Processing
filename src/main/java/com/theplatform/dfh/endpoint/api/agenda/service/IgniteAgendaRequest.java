@@ -1,15 +1,15 @@
 package com.theplatform.dfh.endpoint.api.agenda.service;
 
-public class SubmitAgendaRequest
+public class IgniteAgendaRequest
 {
     private String payload;
     private String agendaTemplateId;
 
-    public SubmitAgendaRequest()
+    public IgniteAgendaRequest()
     {
     }
 
-    public SubmitAgendaRequest(String payload, String agendaTemplateId)
+    public IgniteAgendaRequest(String payload, String agendaTemplateId)
     {
         this.payload = payload;
         this.agendaTemplateId = agendaTemplateId;

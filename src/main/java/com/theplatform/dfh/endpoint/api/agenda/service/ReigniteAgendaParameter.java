@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Parameters and mapping utility for the AgendaRetry
  */
-public enum RetryAgendaParameter
+public enum ReigniteAgendaParameter
 {
     RESET_ALL("resetAll"), // all ops reset
     SKIP_EXECUTION("skipExecution"), // do not submit a ready agenda
@@ -20,10 +20,10 @@ public enum RetryAgendaParameter
     public static final String VALUE_DELIMITER = ",";
     private final String parameterName;
 
-    RetryAgendaParameter(String parameterName)
+    ReigniteAgendaParameter(String parameterName)
     {
         this.parameterName = parameterName;
-        AgendaRetryParameters.parameterMap.put(parameterName, this);
+        AgendaReigniteParameters.parameterMap.put(parameterName, this);
     }
 
     public String getParameterName()
@@ -44,14 +44,14 @@ public enum RetryAgendaParameter
             : String.join(VALUE_DELIMITER, values);
     }
 
-    private static class AgendaRetryParameters
+    private static class AgendaReigniteParameters
     {
-        private static final Map<String, RetryAgendaParameter> parameterMap = new HashMap<>();
+        private static final Map<String, ReigniteAgendaParameter> parameterMap = new HashMap<>();
     }
 
-    public static Map<RetryAgendaParameter, String> getParametersMap(List<String> parameters)
+    public static Map<ReigniteAgendaParameter, String> getParametersMap(List<String> parameters)
     {
-        Map<RetryAgendaParameter, String> paramatersMap = new HashMap<>();
+        Map<ReigniteAgendaParameter, String> paramatersMap = new HashMap<>();
         if(parameters != null)
         {
             parameters.stream()
@@ -66,10 +66,10 @@ public enum RetryAgendaParameter
                     {
                         parameterValue = split[1];
                     }
-                    RetryAgendaParameter retryAgendaParameter = AgendaRetryParameters.parameterMap.get(parameterName);
-                    if(retryAgendaParameter != null)
+                    ReigniteAgendaParameter reigniteAgendaParameter = AgendaReigniteParameters.parameterMap.get(parameterName);
+                    if(reigniteAgendaParameter != null)
                     {
-                        paramatersMap.put(retryAgendaParameter, parameterValue);
+                        paramatersMap.put(reigniteAgendaParameter, parameterValue);
                     }
                 });
         }
