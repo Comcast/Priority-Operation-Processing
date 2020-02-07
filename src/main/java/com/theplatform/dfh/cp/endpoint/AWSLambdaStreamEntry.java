@@ -4,8 +4,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.AgendaLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.agenda.service.aws.RetryAgendaLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.agenda.service.aws.SubmitAgendaLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.agenda.service.aws.ReigniteAgendaLambdaStreamEntry;
+import com.theplatform.dfh.cp.endpoint.agenda.service.aws.IgniteAgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.AgendaTemplateLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
@@ -56,8 +56,8 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/dfh/idm/resourcepool", new ResourcePoolLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/insight", new InsightLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/customer", new CustomerLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/agenda/service/ignite", new SubmitAgendaLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/agenda/service/reignite", new RetryAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
     }
 
     @Override

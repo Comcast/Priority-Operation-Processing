@@ -9,7 +9,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.agenda.service.SubmitAgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.IgniteAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.persistence.DynamoDBAgendaTemplatePersisterFactory;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
@@ -21,15 +21,15 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCust
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
- * Main entry point class for the AWS Agenda submit endpoint
+ * Main entry point class for the AWS Agenda+payload submit endpoint
  */
-public class SubmitAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<SubmitAgendaResponse, LambdaRequest<SubmitAgendaRequest>>
+public class IgniteAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<IgniteAgendaResponse, LambdaRequest<IgniteAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -42,9 +42,9 @@ public class SubmitAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Sub
     private ObjectPersisterFactory<AgendaTemplate> agendaTemplatePersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<SubmitAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<IgniteAgendaRequest> lambdaRequest)
     {
-        return new SubmitAgendaServiceRequestProcessor(
+        return new IgniteAgendaServiceRequestProcessor(
             insightPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT)),
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
             customerPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.CUSTOMER)),
@@ -55,12 +55,12 @@ public class SubmitAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Sub
     }
 
     @Override
-    public LambdaRequest<SubmitAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<IgniteAgendaRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, SubmitAgendaRequest.class);
+        return new LambdaRequest<>(node, IgniteAgendaRequest.class);
     }
 
-    public SubmitAgendaLambdaStreamEntry()
+    public IgniteAgendaLambdaStreamEntry()
     {
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();

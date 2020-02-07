@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.agenda.service.RetryAgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.ReigniteAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
@@ -19,15 +19,15 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCust
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
  * Main entry point class for the AWS Agenda retry endpoint
  */
-public class RetryAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<RetryAgendaResponse, LambdaRequest<RetryAgendaRequest>>
+public class ReigniteAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<ReigniteAgendaResponse, LambdaRequest<ReigniteAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -39,9 +39,9 @@ public class RetryAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Retr
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<RetryAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<ReigniteAgendaRequest> lambdaRequest)
     {
-        return new RetryAgendaServiceRequestProcessor(
+        return new ReigniteAgendaServiceRequestProcessor(
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
             agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
             operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
@@ -52,12 +52,12 @@ public class RetryAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Retr
     }
 
     @Override
-    public LambdaRequest<RetryAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<ReigniteAgendaRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, RetryAgendaRequest.class);
+        return new LambdaRequest<>(node, ReigniteAgendaRequest.class);
     }
 
-    public RetryAgendaLambdaStreamEntry()
+    public ReigniteAgendaLambdaStreamEntry()
     {
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
