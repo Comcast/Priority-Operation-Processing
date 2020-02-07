@@ -8,8 +8,8 @@ import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class AgendaServiceClient extends FissionServiceClient
 {
-    private static final String SUBMIT_AGENDA_ENDPOINT = "submit";
-    private static final String RETRY_AGENDA_ENDPOINT = "retry";
+    private static final String SUBMIT_AGENDA_ENDPOINT = "ignite";
+    private static final String RETRY_AGENDA_ENDPOINT = "reignite";
 
     private String agendaServiceUrl;
 
