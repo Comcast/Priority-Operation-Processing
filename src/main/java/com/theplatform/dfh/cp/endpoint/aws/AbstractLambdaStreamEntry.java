@@ -119,7 +119,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
         try
         {
             // Don't bother to log the exception as a param, it's broken across newlines and won't have the CID
-            logger.error(String.format("Failed to process request. Exception: %1%s %2$s", e.getClass().getSimpleName(), objectMapper.writeValueAsString(e)));
+            logger.error(String.format("Failed to process request. Exception: %1$s %2$s", e.getClass().getSimpleName(), objectMapper.writeValueAsString(e)));
         }
         catch(Exception ex)
         {
