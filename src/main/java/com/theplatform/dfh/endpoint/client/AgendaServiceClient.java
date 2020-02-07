@@ -1,15 +1,15 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaResponse;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class AgendaServiceClient extends FissionServiceClient
 {
-    private static final String SUBMIT_AGENDA_ENDPOINT = "ignite";
-    private static final String RETRY_AGENDA_ENDPOINT = "reignite";
+    private static final String IGNITE_AGENDA_ENDPOINT = "ignite";
+    private static final String REIGNITE_AGENDA_ENDPOINT = "reignite";
 
     private String agendaServiceUrl;
 
@@ -24,18 +24,18 @@ public class AgendaServiceClient extends FissionServiceClient
         this.agendaServiceUrl = agendaServiceUrl;
     }
 
-    public SubmitAgendaResponse submitAgenda(SubmitAgendaRequest submitAgendaRequest)
+    public IgniteAgendaResponse igniteAgenda(IgniteAgendaRequest igniteAgendaRequest)
     {
         return new GenericFissionClient<>(
-            String.join("/", agendaServiceUrl, SUBMIT_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), SubmitAgendaResponse.class)
-            .getObjectFromPOST(submitAgendaRequest);
+            String.join("/", agendaServiceUrl, IGNITE_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), IgniteAgendaResponse.class)
+            .getObjectFromPOST(igniteAgendaRequest);
     }
 
-    public RetryAgendaResponse retryAgenda(RetryAgendaRequest retryAgendaRequest)
+    public ReigniteAgendaResponse reigniteAgenda(ReigniteAgendaRequest reigniteAgendaRequest)
     {
         return new GenericFissionClient<>(
-            String.join("/", agendaServiceUrl, RETRY_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), RetryAgendaResponse.class)
-            .getObjectFromPOST(retryAgendaRequest);
+            String.join("/", agendaServiceUrl, REIGNITE_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), ReigniteAgendaResponse.class)
+            .getObjectFromPOST(reigniteAgendaRequest);
     }
 
     public AgendaServiceClient setAgendaServiceUrl(String agendaServiceUrl)
