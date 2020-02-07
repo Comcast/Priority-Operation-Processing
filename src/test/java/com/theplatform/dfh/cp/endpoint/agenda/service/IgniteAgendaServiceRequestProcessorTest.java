@@ -13,8 +13,8 @@ import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import org.apache.commons.lang3.StringUtils;
@@ -29,20 +29,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class SubmitAgendaServiceRequestProcessorTest
+public class IgniteAgendaServiceRequestProcessorTest
 {
     private static final String TEMPLATE_ID = "templateId";
     private static final String INVALID_JSON = "{";
     private static final String PAYLOAD_JSON = "{}";
 
-    private ServiceResponseFactory<SubmitAgendaResponse> responseFactory = new ServiceResponseFactory<>(SubmitAgendaResponse.class);
+    private ServiceResponseFactory<IgniteAgendaResponse> responseFactory = new ServiceResponseFactory<>(IgniteAgendaResponse.class);
 
-    private SubmitAgendaServiceRequestProcessor requestProcessor;
+    private IgniteAgendaServiceRequestProcessor requestProcessor;
 
     private RequestProcessorFactory mockRequestProcessorFactory;
     private AgendaTemplateRequestProcessor mockAgendaTemplateRequestProcessor;
     private AgendaRequestProcessor mockAgendaRequestProcessor;
-    private ServiceDataObjectRetriever<SubmitAgendaResponse> mockDataObjectRetriever;
+    private ServiceDataObjectRetriever<IgniteAgendaResponse> mockDataObjectRetriever;
     private AgendaFactory mockAgendaFactory;
 
     @BeforeMethod
@@ -56,7 +56,7 @@ public class SubmitAgendaServiceRequestProcessorTest
         doReturn(mockAgendaRequestProcessor).when(mockRequestProcessorFactory).createAgendaRequestProcessorWithServiceRequestVisibility(
             any(), any(), any(), any(), any(), any(), any());
         doReturn(mockAgendaTemplateRequestProcessor).when(mockRequestProcessorFactory).createAgendaTemplateRequestProcessor(any());
-        requestProcessor = new SubmitAgendaServiceRequestProcessor(null, null, null, null, null, null, null);
+        requestProcessor = new IgniteAgendaServiceRequestProcessor(null, null, null, null, null, null, null);
         requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
         requestProcessor.setAgendaFactory(mockAgendaFactory);
         requestProcessor.setDataObjectRetriever(mockDataObjectRetriever);
@@ -84,15 +84,15 @@ public class SubmitAgendaServiceRequestProcessorTest
         }
         catch(ValidationException e)
         {
-            Assert.assertTrue(StringUtils.containsIgnoreCase(e.getMessage(), SubmitAgendaRequestValidator.REQUIRED_PARAMS_MISSING));
+            Assert.assertTrue(StringUtils.containsIgnoreCase(e.getMessage(), IgniteAgendaServiceRequestValidator.REQUIRED_PARAMS_MISSING));
         }
     }
 
     @Test
     public void testInvalidJsonInput()
     {
-        ServiceRequest<SubmitAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, INVALID_JSON);
-        verifyFailure(serviceRequest, SubmitAgendaServiceRequestProcessor.INVALID_JSON_PAYLOAD);
+        ServiceRequest<IgniteAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, INVALID_JSON);
+        verifyFailure(serviceRequest, IgniteAgendaServiceRequestProcessor.INVALID_JSON_PAYLOAD);
         verify(mockDataObjectRetriever, times(0)).performObjectRetrieve(any(), any(), any(), any());
     }
 
@@ -100,7 +100,7 @@ public class SubmitAgendaServiceRequestProcessorTest
     public void testAgendaTemplateLookupFail()
     {
         final String NOT_FOUND = "not found";
-        ServiceRequest<SubmitAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
+        ServiceRequest<IgniteAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
         doReturn(createServiceDataRequestResult(null, responseFactory.createResponse(serviceRequest, ErrorResponseFactory.objectNotFound(NOT_FOUND, ""), null)))
             .when(mockDataObjectRetriever).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         verifyFailure(serviceRequest, NOT_FOUND);
@@ -111,7 +111,7 @@ public class SubmitAgendaServiceRequestProcessorTest
     public void testAgendaSubmitFail()
     {
         final String UNKNOWN_ERROR = "unknown error";
-        ServiceRequest<SubmitAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
+        ServiceRequest<IgniteAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
         doReturn(createServiceDataRequestResult(new AgendaTemplate(), null))
             .when(mockDataObjectRetriever).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         doReturn(new Agenda()).when(mockAgendaFactory).createAgendaFromObject(any(), any(), any(), any());
@@ -124,20 +124,20 @@ public class SubmitAgendaServiceRequestProcessorTest
     @Test
     public void testAgendaSubmitSuccess()
     {
-        ServiceRequest<SubmitAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
+        ServiceRequest<IgniteAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, PAYLOAD_JSON);
         doReturn(createServiceDataRequestResult(new AgendaTemplate(), null))
             .when(mockDataObjectRetriever).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         doReturn(new Agenda()).when(mockAgendaFactory).createAgendaFromObject(any(), any(), any(), any());
         doReturn(new DefaultDataObjectResponse<Agenda>()).when(mockAgendaRequestProcessor).handlePOST(any());
-        SubmitAgendaResponse response = requestProcessor.handlePOST(serviceRequest);
+        IgniteAgendaResponse response = requestProcessor.handlePOST(serviceRequest);
         Assert.assertFalse(response.isError());
         verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(any(), any(), any(), any());
         verify(mockAgendaRequestProcessor, times(1)).handlePOST(any());
     }
 
-    private void verifyFailure(ServiceRequest<SubmitAgendaRequest> serviceRequest, String expectedMessage)
+    private void verifyFailure(ServiceRequest<IgniteAgendaRequest> serviceRequest, String expectedMessage)
     {
-        SubmitAgendaResponse response = requestProcessor.handlePOST(serviceRequest);
+        IgniteAgendaResponse response = requestProcessor.handlePOST(serviceRequest);
         Assert.assertTrue(response.isError());
         if(expectedMessage != null)
         {
@@ -145,10 +145,10 @@ public class SubmitAgendaServiceRequestProcessorTest
         }
     }
 
-    private <D extends IdentifiedObject> ServiceDataRequestResult<D, SubmitAgendaResponse> createServiceDataRequestResult(
-        D dataObject, SubmitAgendaResponse serviceResponse)
+    private <D extends IdentifiedObject> ServiceDataRequestResult<D, IgniteAgendaResponse> createServiceDataRequestResult(
+        D dataObject, IgniteAgendaResponse serviceResponse)
     {
-        ServiceDataRequestResult<D, SubmitAgendaResponse> response = new ServiceDataRequestResult<>();
+        ServiceDataRequestResult<D, IgniteAgendaResponse> response = new ServiceDataRequestResult<>();
         response.setServiceResponse(serviceResponse);
 
         if(dataObject != null)
@@ -160,12 +160,12 @@ public class SubmitAgendaServiceRequestProcessorTest
         return response;
     }
 
-    private ServiceRequest<SubmitAgendaRequest> createServiceRequest(String agendaTemplateId, String payload)
+    private ServiceRequest<IgniteAgendaRequest> createServiceRequest(String agendaTemplateId, String payload)
     {
-        SubmitAgendaRequest submitAgendaRequest = new SubmitAgendaRequest();
-        submitAgendaRequest.setAgendaTemplateId(agendaTemplateId);
-        submitAgendaRequest.setPayload(payload);
-        return new DefaultServiceRequest<>(submitAgendaRequest);
+        IgniteAgendaRequest igniteAgendaRequest = new IgniteAgendaRequest();
+        igniteAgendaRequest.setAgendaTemplateId(agendaTemplateId);
+        igniteAgendaRequest.setPayload(payload);
+        return new DefaultServiceRequest<>(igniteAgendaRequest);
     }
 
 }

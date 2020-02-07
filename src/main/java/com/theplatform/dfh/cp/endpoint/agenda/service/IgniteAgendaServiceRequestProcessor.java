@@ -23,8 +23,8 @@ import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.SubmitAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
- * Agenda service request processor for creating agendas
- * A Resource Pool handler may need to create agendas. We do not want to give access to customer Agenda creation.
+ * Agenda service request processor for creating agendas with payloads
+ * A caller may need to create agendas. We do not want to give access to customer Agenda creation.
  * Instead, they are provisioned by having the Insight.ownerID the Agenda maps to in their authorized account list for the calling user.
  *
  * So, the following must be true:
@@ -51,16 +51,16 @@ import java.util.Collections;
  * We first try to create the Agenda using the Agenda.customerId visibility against the Insight
  * Then we verify the calling user has visibility to that Insight
  */
-public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<SubmitAgendaResponse, ServiceRequest<SubmitAgendaRequest>>
+public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<IgniteAgendaResponse, ServiceRequest<IgniteAgendaRequest>>
 {
-    private static final Logger logger = LoggerFactory.getLogger(SubmitAgendaServiceRequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(IgniteAgendaServiceRequestProcessor.class);
 
     public static final String INVALID_JSON_PAYLOAD = "Unable to parse input payload as JSON";
 
-    private RequestValidator<ServiceRequest<SubmitAgendaRequest>> requestValidator = new SubmitAgendaRequestValidator();
+    private RequestValidator<ServiceRequest<IgniteAgendaRequest>> requestValidator = new IgniteAgendaServiceRequestValidator();
     private RequestProcessorFactory requestProcessorFactory;
-    private ServiceResponseFactory<SubmitAgendaResponse> responseFactory;
-    private ServiceDataObjectRetriever<SubmitAgendaResponse> dataObjectRetriever;
+    private ServiceResponseFactory<IgniteAgendaResponse> responseFactory;
+    private ServiceDataObjectRetriever<IgniteAgendaResponse> dataObjectRetriever;
 
     private JsonHelper jsonHelper = new JsonHelper();
 
@@ -73,7 +73,7 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
     private ObjectPersister<AgendaTemplate> agendaTemplatePersister;
     private AgendaFactory agendaFactory;
 
-    public SubmitAgendaServiceRequestProcessor(ObjectPersister<Insight> insightPersister,
+    public IgniteAgendaServiceRequestProcessor(ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister,
         ObjectPersister<Customer> customerPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister,
@@ -89,31 +89,31 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
         this.agendaTemplatePersister = agendaTemplatePersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        responseFactory = new ServiceResponseFactory<>(SubmitAgendaResponse.class);
+        responseFactory = new ServiceResponseFactory<>(IgniteAgendaResponse.class);
         dataObjectRetriever = new ServiceDataObjectRetriever<>(responseFactory);
     }
 
     @Override
-    public SubmitAgendaResponse processPOST(ServiceRequest<SubmitAgendaRequest> serviceRequest)
+    public IgniteAgendaResponse processPOST(ServiceRequest<IgniteAgendaRequest> serviceRequest)
     {
-        SubmitAgendaRequest submitAgendaRequest = serviceRequest.getPayload();
+        IgniteAgendaRequest igniteAgendaRequest = serviceRequest.getPayload();
 
         JsonNode payloadNode;
         try
         {
-            payloadNode = jsonHelper.getObjectMapper().readTree(submitAgendaRequest.getPayload());
+            payloadNode = jsonHelper.getObjectMapper().readTree(igniteAgendaRequest.getPayload());
         }
         catch(IOException e)
         {
-            return createSubmitAgendaResponse(serviceRequest, null,
+            return createIgniteAgendaResponse(serviceRequest, null,
                 ErrorResponseFactory.badRequest(INVALID_JSON_PAYLOAD, serviceRequest.getCID()), null);
         }
 
         AgendaTemplateRequestProcessor agendaTemplateRequestProcessor = requestProcessorFactory.createAgendaTemplateRequestProcessor(agendaTemplatePersister);
 
         // retrieve the AgendaTemplate
-        ServiceDataRequestResult<AgendaTemplate, SubmitAgendaResponse> agendaTemplateResult = dataObjectRetriever.performObjectRetrieve(
-            serviceRequest, agendaTemplateRequestProcessor, submitAgendaRequest.getAgendaTemplateId(), AgendaTemplate.class);
+        ServiceDataRequestResult<AgendaTemplate, IgniteAgendaResponse> agendaTemplateResult = dataObjectRetriever.performObjectRetrieve(
+            serviceRequest, agendaTemplateRequestProcessor, igniteAgendaRequest.getAgendaTemplateId(), AgendaTemplate.class);
         if(agendaTemplateResult.getServiceResponse() != null)
             return agendaTemplateResult.getServiceResponse();
         AgendaTemplate agendaTemplate = agendaTemplateResult.getDataObjectResponse().getFirst();
@@ -144,20 +144,20 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
 
         if(errorResponse != null)
         {
-            return createSubmitAgendaResponse(serviceRequest, null,
+            return createIgniteAgendaResponse(serviceRequest, null,
                 ErrorResponseFactory.badRequest(String.format("[%1$s : %2$s]", errorResponse.getTitle(), errorResponse.getDescription()), serviceRequest.getCID()), null);
         }
-        return createSubmitAgendaResponse(serviceRequest, createdAgenda, null, null);
+        return createIgniteAgendaResponse(serviceRequest, createdAgenda, null, null);
     }
 
-    private SubmitAgendaResponse createSubmitAgendaResponse(ServiceRequest<SubmitAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse, String errorPrefix)
+    private IgniteAgendaResponse createIgniteAgendaResponse(ServiceRequest<IgniteAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse, String errorPrefix)
     {
-        SubmitAgendaResponse submitAgendaResponse = responseFactory.createResponse(serviceRequest, errorResponse, errorPrefix);
-        submitAgendaResponse.setAgendas(Collections.singletonList(agenda));
-        return submitAgendaResponse;
+        IgniteAgendaResponse igniteAgendaResponse = responseFactory.createResponse(serviceRequest, errorResponse, errorPrefix);
+        igniteAgendaResponse.setAgendas(Collections.singletonList(agenda));
+        return igniteAgendaResponse;
     }
 
-    public RequestValidator<ServiceRequest<SubmitAgendaRequest>> getRequestValidator()
+    public RequestValidator<ServiceRequest<IgniteAgendaRequest>> getRequestValidator()
     {
         return requestValidator;
     }
@@ -173,7 +173,7 @@ public class SubmitAgendaServiceRequestProcessor extends AbstractServiceRequestP
     }
 
     public void setDataObjectRetriever(
-        ServiceDataObjectRetriever<SubmitAgendaResponse> dataObjectRetriever)
+        ServiceDataObjectRetriever<IgniteAgendaResponse> dataObjectRetriever)
     {
         this.dataObjectRetriever = dataObjectRetriever;
     }

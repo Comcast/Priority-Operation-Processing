@@ -3,8 +3,8 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaParameter;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaParameter;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -20,10 +20,10 @@ public class ProgressResetProcessor
 {
     public final static String DEFAULT_RESET_STATE_MESSAGE = "pending";
 
-    public void resetProgress(AgendaProgress agendaProgress, RetryAgendaRequest retryAgendaRequest, Map<RetryAgendaParameter, String> retryParameters)
+    public void resetProgress(AgendaProgress agendaProgress, ReigniteAgendaRequest reigniteAgendaRequest, Map<ReigniteAgendaParameter, String> retryParameters)
     {
-        boolean resetAll = retryParameters.containsKey(RetryAgendaParameter.RESET_ALL);
-        boolean continueOnly = retryParameters.containsKey(RetryAgendaParameter.CONTINUE);
+        boolean resetAll = retryParameters.containsKey(ReigniteAgendaParameter.RESET_ALL);
+        boolean continueOnly = retryParameters.containsKey(ReigniteAgendaParameter.CONTINUE);
         Set<String> operationsToReset = getSpecifiedOperationsToReset(retryParameters, agendaProgress);
 
         if(!resetAll
@@ -60,13 +60,13 @@ public class ProgressResetProcessor
         operationProgress.setProcessingStateMessage(DEFAULT_RESET_STATE_MESSAGE);
     }
 
-    protected Set<String> getSpecifiedOperationsToReset(Map<RetryAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
+    protected Set<String> getSpecifiedOperationsToReset(Map<ReigniteAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
     {
-        String delimitedOps = retryParameters.get(RetryAgendaParameter.OPERATIONS_TO_RESET);
+        String delimitedOps = retryParameters.get(ReigniteAgendaParameter.OPERATIONS_TO_RESET);
         return StringUtils.isBlank(delimitedOps)
                ? new HashSet<>()
                : new HashSet<>(
-                   Arrays.stream(StringUtils.split(delimitedOps, RetryAgendaParameter.VALUE_DELIMITER))
+                   Arrays.stream(StringUtils.split(delimitedOps, ReigniteAgendaParameter.VALUE_DELIMITER))
                        .map(id -> StringUtils.lowerCase(OperationProgress.generateId(agendaProgress.getId(), id)))
                        .collect(Collectors.toSet())
         );

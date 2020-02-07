@@ -20,9 +20,9 @@ import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaParameter;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.RetryAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaParameter;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaResponse;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
@@ -36,14 +36,14 @@ import java.util.Map;
 
 
 /**
- * Processor for the retry/rerun/special execute/ignite/reignite/???  method for running an agenda that was already run before.
+ * Processor for the retry/rerun/reignite  method for running an agenda that was already run before.
  */
-public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<RetryAgendaResponse, ServiceRequest<RetryAgendaRequest>>
+public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<ReigniteAgendaResponse, ServiceRequest<ReigniteAgendaRequest>>
 {
-    private static final Logger logger = LoggerFactory.getLogger(RetryAgendaServiceRequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReigniteAgendaServiceRequestProcessor.class);
 
     private RequestProcessorFactory requestProcessorFactory;
-    private ServiceDataObjectRetriever<RetryAgendaResponse> serviceDataObjectRetriever;
+    private ServiceDataObjectRetriever<ReigniteAgendaResponse> serviceDataObjectRetriever;
 
     private ProgressResetProcessor progressResetProcessor = new ProgressResetProcessor();
 
@@ -54,7 +54,7 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Customer> customerPersister;
 
-    public RetryAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
+    public ReigniteAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Customer> customerPersister)
     {
@@ -66,14 +66,14 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
         this.customerPersister = customerPersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(RetryAgendaResponse.class));
+        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(ReigniteAgendaResponse.class));
     }
 
     @Override
-    public RetryAgendaResponse processPOST(ServiceRequest<RetryAgendaRequest> serviceRequest)
+    public ReigniteAgendaResponse processPOST(ServiceRequest<ReigniteAgendaRequest> serviceRequest)
     {
-        RetryAgendaRequest retryAgendaRequest = serviceRequest.getPayload();
-        Map<RetryAgendaParameter, String> agendaRetryParams = RetryAgendaParameter.getParametersMap(retryAgendaRequest.getParams());
+        ReigniteAgendaRequest reigniteAgendaRequest = serviceRequest.getPayload();
+        Map<ReigniteAgendaParameter, String> agendaRetryParams = ReigniteAgendaParameter.getParametersMap(reigniteAgendaRequest.getParams());
 
         AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessor(agendaPersister, agendaProgressPersister, readyAgendaPersister,
             operationProgressPersister, insightPersister, customerPersister);
@@ -85,21 +85,21 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
         agendaProgressRequestProcessor.setVisibilityFilter(VisibilityMethod.PUT, new NoOpVisibilityFilter<>());
 
         // Get the Agenda
-        ServiceDataRequestResult<Agenda, RetryAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
-            serviceRequest, agendaRequestProcessor, retryAgendaRequest.getAgendaId(), Agenda.class);
+        ServiceDataRequestResult<Agenda, ReigniteAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+            serviceRequest, agendaRequestProcessor, reigniteAgendaRequest.getAgendaId(), Agenda.class);
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
         Agenda agenda = agendaRequestResult.getDataObjectResponse().getFirst();
 
         // Get the AgendaProgress
-        ServiceDataRequestResult<AgendaProgress, RetryAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<AgendaProgress, ReigniteAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest, agendaProgressRequestProcessor, agenda.getProgressId(), AgendaProgress.class);
         if(agendaProgressRequestResult.getServiceResponse() != null)
             return agendaProgressRequestResult.getServiceResponse();
         AgendaProgress agendaProgress = agendaProgressRequestResult.getDataObjectResponse().getFirst();
 
         // Reset the progress (as specified)
-        progressResetProcessor.resetProgress(agendaProgress, retryAgendaRequest, agendaRetryParams);
+        progressResetProcessor.resetProgress(agendaProgress, reigniteAgendaRequest, agendaRetryParams);
 
         // Update the AgendaProgress and OperationProgress
         try
@@ -109,16 +109,16 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
                 agendaProgressRequestProcessor.handlePUT(new DefaultDataObjectRequest<>(null, agendaProgress.getId(), agendaProgress));
 
             if(updateAgendaProgressResponse.isError())
-                return createRetryAgendaResponse(serviceRequest, updateAgendaProgressResponse.getErrorResponse(), "Failed to update AgendaProgress.");
+                return createReigniteAgendaResponse(serviceRequest, updateAgendaProgressResponse.getErrorResponse(), "Failed to update AgendaProgress.");
         }
         catch (Exception e)
         {
             logger.error("Failed to update progress for reset. Agenda will not execute.", e);
-            return createRetryAgendaResponse(serviceRequest, ErrorResponseFactory.runtimeServiceException(
+            return createReigniteAgendaResponse(serviceRequest, ErrorResponseFactory.runtimeServiceException(
                 new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
         }
 
-        boolean skipExecution = agendaRetryParams.containsKey(RetryAgendaParameter.SKIP_EXECUTION)
+        boolean skipExecution = agendaRetryParams.containsKey(ReigniteAgendaParameter.SKIP_EXECUTION)
             || (agenda.getParams() != null && agenda.getParams().containsKey(GeneralParamKey.doNotRun));
 
         if(!skipExecution)
@@ -127,11 +127,11 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
                 agenda.getCustomerId(), serviceRequest.getCID());
             if (readyAgendaResponse.isError())
             {
-                return createRetryAgendaResponse(serviceRequest, readyAgendaResponse.getErrorResponse(), null);
+                return createReigniteAgendaResponse(serviceRequest, readyAgendaResponse.getErrorResponse(), null);
             }
         }
 
-        return createRetryAgendaResponse(serviceRequest, null, null);
+        return createReigniteAgendaResponse(serviceRequest, null, null);
     }
 
     private DataObjectResponse<ReadyAgenda> persistReadyAgenda(String insightId, String agendaId, String customerId, String cid)
@@ -154,16 +154,16 @@ public class RetryAgendaServiceRequestProcessor extends AbstractServiceRequestPr
         }
     }
 
-    private RetryAgendaResponse createRetryAgendaResponse(ServiceRequest<RetryAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
+    private ReigniteAgendaResponse createReigniteAgendaResponse(ServiceRequest<ReigniteAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
     {
         if(errorResponsePrefix != null && errorResponse != null && errorResponse.getDescription() != null)
         {
             errorResponse.setDescription(errorResponsePrefix + " " + errorResponse.getDescription());
         }
-        RetryAgendaResponse retryAgendaResponse = new RetryAgendaResponse();
-        retryAgendaResponse.setCID(serviceRequest.getCID());
-        retryAgendaResponse.setErrorResponse(errorResponse);
-        return retryAgendaResponse;
+        ReigniteAgendaResponse reigniteAgendaResponse = new ReigniteAgendaResponse();
+        reigniteAgendaResponse.setCID(serviceRequest.getCID());
+        reigniteAgendaResponse.setErrorResponse(errorResponse);
+        return reigniteAgendaResponse;
     }
 
     public void setProgressResetProcessor(ProgressResetProcessor progressResetProcessor)
