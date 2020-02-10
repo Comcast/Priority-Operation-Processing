@@ -53,8 +53,8 @@ public class IgniteAgendaServiceRequestProcessorTest
         mockAgendaRequestProcessor = mock(AgendaRequestProcessor.class);
         mockAgendaFactory = mock(AgendaFactory.class);
         mockDataObjectRetriever = mock(ServiceDataObjectRetriever.class);
-        doReturn(mockAgendaRequestProcessor).when(mockRequestProcessorFactory).createAgendaRequestProcessorWithServiceRequestVisibility(
-            any(), any(), any(), any(), any(), any(), any());
+        doReturn(mockAgendaRequestProcessor).when(mockRequestProcessorFactory).createAgendaRequestProcessor(
+            any(), any(), any(), any(), any(), any());
         doReturn(mockAgendaTemplateRequestProcessor).when(mockRequestProcessorFactory).createAgendaTemplateRequestProcessor(any());
         requestProcessor = new IgniteAgendaServiceRequestProcessor(null, null, null, null, null, null, null);
         requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
