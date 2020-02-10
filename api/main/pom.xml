@@ -9,7 +9,7 @@
     
     <groupId>com.theplatform.dfh.modules.persistence</groupId>
     <artifactId>pl-dfh-persistence-api</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Persistence API</name>
 
