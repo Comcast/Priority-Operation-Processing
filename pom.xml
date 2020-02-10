@@ -17,7 +17,7 @@
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <cp-api.version>1.0.2</cp-api.version>
-        <dfh-persistence-api.version>1.0.2-SNAPSHOT</dfh-persistence-api.version>
+        <dfh-persistence-api.version>1.0.2</dfh-persistence-api.version>
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
         <cp-endpoint-base.version>1.0.1</cp-endpoint-base.version>
         <cp-endpoint-api.version>1.0.3-SNAPSHOT</cp-endpoint-api.version>
