@@ -123,8 +123,8 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
         //create an agenda req with the agenda.customerId for visibility
         DataObjectRequest<Agenda> agendaReqByCustomerId = DefaultDataObjectRequest.customerAuthInstance(agendaToCreate.getCustomerId(), agendaToCreate);
         //create agenda processor with a service level insight visibility
-        AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessorWithServiceRequestVisibility(
-            agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister, serviceRequest);
+        AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessor(
+            agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister);
 
         ErrorResponse errorResponse;
         Agenda createdAgenda = null;
