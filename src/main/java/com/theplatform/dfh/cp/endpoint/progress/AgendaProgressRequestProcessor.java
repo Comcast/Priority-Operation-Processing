@@ -12,19 +12,14 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.query.ByFields;
 import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.progress.ByAgendaProgressId;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.query.Query;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Agenda specific RequestProcessor
@@ -48,26 +43,27 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     public DataObjectResponse<AgendaProgress> handlePUT(DataObjectRequest<AgendaProgress> request) throws BadRequestException
     {
         AgendaProgress objectToUpdate = request.getDataObject();
-        // lookup the existing AgendaProgress (make sure they can access it) with a few basic fields for OperationProgress updates.
-        DataObjectResponse<AgendaProgress> response = super.handleGET(
-            new DefaultDataObjectRequest<>(Collections.singletonList(new ByFields("id,customerId")), objectToUpdate.getId(), null));
+        DataObjectResponse<AgendaProgress> response;
+        response = super.handlePUT(request);
 
+        agendaProgressReporter.logCompletedAgenda(response);
         if(response.isError())
             return response;
+        //@todo tstair -- We post progress before agenda in POST but here we do it after????
         if(objectToUpdate.getOperationProgress() != null)
         {
-            AgendaProgress existingProgress = response.getFirst();
-            if(existingProgress == null)
+            AgendaProgress updatedProgress = response.getFirst();
+            if(updatedProgress == null)
             {
-                logger.warn("Unable to retrieve AgendaProgress: {}", request.getDataObject().getId());
+                logger.warn("Progress update was successful but object not returned in response: {}", request.getDataObject().getId());
                 return response;
             }
             for (OperationProgress op : objectToUpdate.getOperationProgress())
             {
-                op.setAgendaProgressId(existingProgress.getId());
+                op.setAgendaProgressId(updatedProgress.getId());
                 if (op.getId() == null)
-                    op.setId(OperationProgress.generateId(existingProgress.getId(), op.getOperation()));
-                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(existingProgress.getCustomerId(), op);
+                    op.setId(OperationProgress.generateId(updatedProgress.getId(), op.getOperation()));
+                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(updatedProgress.getCustomerId(), op);
                 DataObjectResponse<OperationProgress> opProgressResponse = operationProgressClient.handlePUT(opProgressReq);
                 if (opProgressResponse.isError())
                 {
@@ -76,9 +72,6 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
                 }
             }
         }
-
-        response = super.handlePUT(request);
-        agendaProgressReporter.logCompletedAgenda(response);
         return response;
     }
 
@@ -91,44 +84,20 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     public DataObjectResponse<AgendaProgress> handleGET(DataObjectRequest<AgendaProgress> request)
     {
         DataObjectResponse<AgendaProgress> response = super.handleGET(request);
-        boolean retrieveOperationProgress = shouldReturnField(request, "operationProgress");
-
-        if(retrieveOperationProgress)
+        for (AgendaProgress agendaProgress : response.getAll())
         {
-            for (AgendaProgress agendaProgress : response.getAll())
+            DataObjectResponse<OperationProgress> opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
+            // TODO: babs - tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
+            //AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
+            if(opProgressResponse.isError())
             {
-                DataObjectResponse<OperationProgress> opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
-                // TODO: babs - tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
-                //AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
-                if (opProgressResponse.isError())
-                {
-                    response.setErrorResponse(opProgressResponse.getErrorResponse());
-                    logger.error(opProgressResponse.getErrorResponse().getServerStackTrace());
-                    return response;
-                }
-                agendaProgress.setOperationProgress(opProgressResponse.getAll().toArray(new OperationProgress[0]));
+                response.setErrorResponse(opProgressResponse.getErrorResponse());
+                logger.error(opProgressResponse.getErrorResponse().getServerStackTrace());
+                return response;
             }
+            agendaProgress.setOperationProgress(opProgressResponse.getAll().toArray(new OperationProgress[0]));
         }
         return response;
-    }
-
-    /**
-     * Determines if a field should be returned based on the request
-     * @param request The request to evaluate
-     * @param fieldName The field to consider returning
-     * @return True if there are no field queries or if the field is listed in a field query.
-     */
-    protected boolean shouldReturnField(DataObjectRequest<AgendaProgress> request, String fieldName)
-    {
-        if(request.getQueries() != null)
-        {
-            List<Query> fieldQueries = request.getQueries().stream().filter(q -> q.getField().isMatch(ByFields.fieldName())).collect(Collectors.toList());
-            if(fieldQueries.size() > 0)
-            {
-                return fieldQueries.stream().anyMatch(q -> StringUtils.containsIgnoreCase(q.getStringValue(), fieldName));
-            }
-        }
-        return true;
     }
 
     private DataObjectResponse<OperationProgress> getOperationProgressObjects(String customerID, String agendaProgressId)
