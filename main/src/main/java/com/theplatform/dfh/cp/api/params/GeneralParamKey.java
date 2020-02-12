@@ -9,6 +9,7 @@ public enum GeneralParamKey implements ParamKey
     cid,
     customerId,
     externalId,
+    maximumAttempts,
     mpxTaskSourceFiles,
     mpxTaskRemovedFiles,
     mpxTaskResultFile,

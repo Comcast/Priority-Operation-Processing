@@ -20,6 +20,8 @@ public class AgendaProgress extends DefaultEndpointDataObject
     private String processingStateMessage;
     private OperationProgress[] operationProgress;
     private DiagnosticEvent[] diagnosticEvents;
+    private Integer attemptsCompleted;
+    private Integer maximumAttempts;
     private Date startedTime;
     private Date completedTime;
     private Double percentComplete;
@@ -115,6 +117,26 @@ public class AgendaProgress extends DefaultEndpointDataObject
     public void setDiagnosticEvents(DiagnosticEvent[] diagnosticEvents)
     {
         this.diagnosticEvents = diagnosticEvents;
+    }
+
+    public Integer getAttemptsCompleted()
+    {
+        return attemptsCompleted;
+    }
+
+    public void setAttemptsCompleted(Integer attemptsCompleted)
+    {
+        this.attemptsCompleted = attemptsCompleted;
+    }
+
+    public Integer getMaximumAttempts()
+    {
+        return maximumAttempts;
+    }
+
+    public void setMaximumAttempts(Integer maximumAttempts)
+    {
+        this.maximumAttempts = maximumAttempts;
     }
 
     public Date getStartedTime()
