@@ -86,6 +86,18 @@ public class PersistentAgendaProgress extends AgendaProgress
     }
 
     @Override
+    public Integer getAttemptsCompleted()
+    {
+        return super.getAttemptsCompleted();
+    }
+
+    @Override
+    public Integer getMaximumAttempts()
+    {
+        return super.getMaximumAttempts();
+    }
+
+    @Override
     @DynamoDBTypeConverted(converter = DateConverter.class)
     public Date getUpdatedTime()
     {
