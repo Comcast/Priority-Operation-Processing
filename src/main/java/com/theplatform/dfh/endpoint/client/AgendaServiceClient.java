@@ -18,7 +18,7 @@ public class AgendaServiceClient extends FissionServiceClient
         super(httpUrlConnectionFactory);
     }
 
-    public AgendaServiceClient(HttpURLConnectionFactory httpUrlConnectionFactory, String agendaServiceUrl)
+    public AgendaServiceClient(String agendaServiceUrl, HttpURLConnectionFactory httpUrlConnectionFactory)
     {
         super(httpUrlConnectionFactory);
         this.agendaServiceUrl = agendaServiceUrl;
