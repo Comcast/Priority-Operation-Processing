@@ -23,7 +23,7 @@
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
         <endpoint-impl.version>1.0.1-SNAPSHOT</endpoint-impl.version>
         <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
         <persistence-api.version>1.0.2</persistence-api.version>
         <jackson.version>2.9.8</jackson.version>
