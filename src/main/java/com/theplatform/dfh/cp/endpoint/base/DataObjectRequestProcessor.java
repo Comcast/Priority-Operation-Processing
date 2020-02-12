@@ -28,11 +28,11 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     protected ObjectPersister<T> objectPersister;
     private RequestValidator<DataObjectRequest<T>> requestValidator = new DataObjectValidator<>();
     private VisibilityFilterMap<T,DataObjectRequest<T>> visibilityFilterMap = new VisibilityFilterMap<>();
-    private static final String OBJECT_NOT_FOUND_EXCEPTION = "Unable to get object by id %1$s";
-    private static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
-    private static final String UNABLE_TO_CREATE_EXCEPTION = "Unable to create object";
-    private static final String UNABLE_TO_UPDATE_EXCEPTION = "Unable to update object by id %1$s";
-    private static final String UNABLE_TO_DELETE_EXCEPTION = "Unable to delete object by id %1$s";
+    public static final String OBJECT_NOT_FOUND_EXCEPTION = "Unable to get object by id %1$s";
+    public static final String AUTHORIZATION_EXCEPTION = "You do not have permission to perform this action for customerId %1$s";
+    public static final String UNABLE_TO_CREATE_EXCEPTION = "Unable to create object";
+    public static final String UNABLE_TO_UPDATE_EXCEPTION = "Unable to update object by id %1$s";
+    public static final String UNABLE_TO_DELETE_EXCEPTION = "Unable to delete object by id %1$s";
 
     public DataObjectRequestProcessor(ObjectPersister<T> objectPersister, DataObjectValidator<T, DataObjectRequest<T>> validator)
     {
