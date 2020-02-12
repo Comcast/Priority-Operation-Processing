@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
+import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -60,7 +61,8 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         if(existingProgress == null)
         {
             logger.warn("Unable to retrieve AgendaProgress: {}", request.getDataObject().getId());
-            return retrieveResponse;
+            return new DefaultDataObjectResponse<>(ErrorResponseFactory.objectNotFound(
+                new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND_EXCEPTION, request.getDataObject().getId())), request.getCID()));
         }
 
         if(objectToUpdate.getOperationProgress() != null)
