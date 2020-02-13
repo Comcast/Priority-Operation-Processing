@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.api.progress;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 
 import java.util.Date;
 
@@ -28,6 +29,7 @@ public class AgendaProgressBuilder
         object.setParams(agenda.getParams());
         object.setAgendaInsight(agenda.getAgendaInsight());
         object.setId(agenda.getProgressId());
+        configureMaximumAttempts(agenda);
         return this;
     }
 
@@ -62,6 +64,20 @@ public class AgendaProgressBuilder
         return this;
     }
 
+    protected void configureMaximumAttempts(Agenda agenda)
+    {
+        this.object.setMaximumAttempts(AgendaProgress.DEFAULT_MAX_ATTEMPTS);
+        if(agenda != null && agenda.getParams() != null)
+        {
+            this.object.setMaximumAttempts(
+                agenda.getParams().getInt(GeneralParamKey.maximumAttempts, AgendaProgress.DEFAULT_MAX_ATTEMPTS));
+        }
+    }
+
+    /**
+     * Returns the internal AgendaProgress. This is not a clone. Any reuse of this builder may affect previously created objects.
+     * @return The internal AgendaProgress
+     */
     public AgendaProgress build()
     {
         return this.object;

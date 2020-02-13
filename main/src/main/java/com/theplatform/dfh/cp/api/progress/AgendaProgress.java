@@ -12,6 +12,8 @@ import java.util.Objects;
  */
 public class AgendaProgress extends DefaultEndpointDataObject
 {
+    public static final int DEFAULT_MAX_ATTEMPTS = 3;
+
     private String agendaId;
     private String linkId;
     private String externalId;
