@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.progress;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaProgressReporter;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
@@ -82,6 +83,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
             }
         }
 
+        updateAgendaProgressAttemptsOnComplete(objectToUpdate, existingProgress);
         DataObjectResponse<AgendaProgress> updateResponse = super.handlePUT(request);
         agendaProgressReporter.logCompletedAgenda(updateResponse);
         return updateResponse;
@@ -149,6 +151,20 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         {
             logger.warn("Failed to retrieve OperationProgress objects.", e);
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.runtimeServiceException(e.getMessage(), null));
+        }
+    }
+
+    protected void updateAgendaProgressAttemptsOnComplete(AgendaProgress updatedProgress, AgendaProgress originalProgress)
+    {
+        // confirm this is a flip from a incomplete -> complete AgendaProgress
+        if(updatedProgress != null
+            && originalProgress != null
+            && updatedProgress.getProcessingState() == ProcessingState.COMPLETE
+            && originalProgress.getProcessingState() != ProcessingState.COMPLETE)
+        {
+            // no regard for maximums or anything, just count it
+            int currentAttemptCount = originalProgress.getAttemptsCompleted() == null ? 0 : originalProgress.getAttemptsCompleted();
+            updatedProgress.setAttemptsCompleted(currentAttemptCount + 1);
         }
     }
 

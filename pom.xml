@@ -18,7 +18,7 @@
         <endpoint-base.version>1.0.2-SNAPSHOT</endpoint-base.version>
         <cp-scheduling-api.version>1.0.0</cp-scheduling-api.version>
         <cp-json-helper.version>1.0.1</cp-json-helper.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
         <dfh-http-util.version>1.0.1</dfh-http-util.version>
         <dfh-endpoint-client.version>1.0.3-SNAPSHOT</dfh-endpoint-client.version>
         <mediainfo-handler-api.version>1.0.2</mediainfo-handler-api.version>

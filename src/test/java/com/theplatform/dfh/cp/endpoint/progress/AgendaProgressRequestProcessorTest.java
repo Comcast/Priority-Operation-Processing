@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.endpoint.progress;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.query.ByFields;
 import com.theplatform.dfh.endpoint.api.data.query.ById;
@@ -57,5 +57,35 @@ public class AgendaProgressRequestProcessorTest
     public void testShouldReturnField(List<Query> queryList, String fieldName, final boolean EXPECTED_RESULT)
     {
         Assert.assertEquals(requestProcessor.shouldReturnField(new DefaultDataObjectRequest<>(queryList, null, null), fieldName), EXPECTED_RESULT);
+    }
+
+    @DataProvider
+    public Object[][] agendaProgressAttemptsProvider()
+    {
+        return new Object[][]
+            {
+                {null, null, null},
+                {null, createAgendaProgress(ProcessingState.COMPLETE, null), null},
+                {createAgendaProgress(ProcessingState.COMPLETE, null), null, null},
+                {createAgendaProgress(ProcessingState.COMPLETE, null), createAgendaProgress(ProcessingState.COMPLETE, null), null},
+                {createAgendaProgress(ProcessingState.COMPLETE, null), createAgendaProgress(null, null), 1},
+                {createAgendaProgress(ProcessingState.COMPLETE, null), createAgendaProgress(null, 2), 3}
+            };
+    }
+
+    @Test(dataProvider = "agendaProgressAttemptsProvider")
+    public void testUpdateAgendaProgressAttemptsOnComplete(AgendaProgress updatedProgress, AgendaProgress currentProgress, Integer expectedAttemptsCompleted)
+    {
+        requestProcessor.updateAgendaProgressAttemptsOnComplete(updatedProgress, currentProgress);
+        if(updatedProgress != null)
+            Assert.assertEquals(updatedProgress.getAttemptsCompleted(), expectedAttemptsCompleted);
+    }
+
+    private AgendaProgress createAgendaProgress(ProcessingState processingState, Integer attemptsCompleted)
+    {
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setProcessingState(processingState);
+        agendaProgress.setAttemptsCompleted(attemptsCompleted);
+        return agendaProgress;
     }
 }
