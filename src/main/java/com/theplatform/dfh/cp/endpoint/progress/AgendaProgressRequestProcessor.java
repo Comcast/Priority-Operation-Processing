@@ -48,6 +48,19 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     }
 
     @Override
+    public DataObjectResponse<AgendaProgress> handlePOST(DataObjectRequest<AgendaProgress> request)
+    {
+        AgendaProgress agendaProgress = request.getDataObject();
+        // default vars
+        if(agendaProgress != null)
+        {
+            if(agendaProgress.getMaximumAttempts() == null)
+                agendaProgress.setMaximumAttempts(AgendaProgress.DEFAULT_MAX_ATTEMPTS);
+        }
+        return super.handlePOST(request);
+    }
+
+    @Override
     public DataObjectResponse<AgendaProgress> handlePUT(DataObjectRequest<AgendaProgress> request) throws BadRequestException
     {
         AgendaProgress objectToUpdate = request.getDataObject();
