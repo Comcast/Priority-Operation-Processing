@@ -5,7 +5,6 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 public class AgendaTemplate extends AllowedCustomerEndpointDataObject implements GlobalEndpointDataObject
 {
     private String title;
-    private ParamsMap templateParameters;
     private ParamsMap staticParameters;
     private ParamsMap params;
     private Agenda agenda;
@@ -20,16 +19,6 @@ public class AgendaTemplate extends AllowedCustomerEndpointDataObject implements
     public void setTitle(String title)
     {
         this.title = title;
-    }
-
-    public ParamsMap getTemplateParameters()
-    {
-        return templateParameters;
-    }
-
-    public void setTemplateParameters(ParamsMap templateParameters)
-    {
-        this.templateParameters = templateParameters;
     }
 
     public ParamsMap getStaticParameters()
