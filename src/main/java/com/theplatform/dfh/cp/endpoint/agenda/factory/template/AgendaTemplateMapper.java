@@ -3,8 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.factory.template;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.AgendaTemplateParametersExtractor;
-import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.StaticParametersExtractor;
+import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.BasicParametersExtractor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
@@ -16,25 +15,22 @@ public class AgendaTemplateMapper
 {
     private JsonHelper jsonHelper;
     private JsonReferenceReplacer referenceReplacer;
-    private StaticParametersExtractor staticParametersExtractor;
-    private AgendaTemplateParametersExtractor agendaTemplateParametersExtractor;
+    private BasicParametersExtractor basicParametersExtractor;
 
     public AgendaTemplateMapper()
     {
         this.referenceReplacer = new JsonReferenceReplacer();
         this.jsonHelper = new JsonHelper();
-        this.staticParametersExtractor = new StaticParametersExtractor();
-        this.agendaTemplateParametersExtractor = new AgendaTemplateParametersExtractor();
+        this.basicParametersExtractor = new BasicParametersExtractor();
     }
 
     public Agenda map(AgendaTemplate agendaTemplate, JsonNode inputParams)
     {
         JsonNode agendaTemplateRoot = jsonHelper.getObjectMapper().valueToTree(agendaTemplate);
         Map<String, JsonNode> parameterMap = new HashMap<>();
-        staticParametersExtractor.updateParameterMap(parameterMap, agendaTemplateRoot.get("staticParameters"));
-        agendaTemplateParametersExtractor
-            .setRequiredParameters(agendaTemplateRoot.get("templateParameters"))
-            .updateParameterMap(parameterMap, inputParams);
+        basicParametersExtractor.updateParameterMap(parameterMap, agendaTemplateRoot.get("staticParameters"));
+        // NOTE: previously we supported "required" parameters that used the AgendaTemplateParametersExtractor (no longer required)
+        basicParametersExtractor.updateParameterMap(parameterMap, inputParams);
 
         JsonNode agendaTemplateNode = agendaTemplateRoot.get("agenda");
 
@@ -62,16 +58,9 @@ public class AgendaTemplateMapper
         return this;
     }
 
-    public AgendaTemplateMapper setStaticParametersExtractor(StaticParametersExtractor staticParametersExtractor)
+    public AgendaTemplateMapper setBasicParametersExtractor(BasicParametersExtractor basicParametersExtractor)
     {
-        this.staticParametersExtractor = staticParametersExtractor;
-        return this;
-    }
-
-    public AgendaTemplateMapper setAgendaTemplateParametersExtractor(
-        AgendaTemplateParametersExtractor agendaTemplateParametersExtractor)
-    {
-        this.agendaTemplateParametersExtractor = agendaTemplateParametersExtractor;
+        this.basicParametersExtractor = basicParametersExtractor;
         return this;
     }
 }

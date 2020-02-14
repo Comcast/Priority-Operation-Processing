@@ -8,18 +8,18 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StaticParametersExtractorTest
+public class BasicParametersExtractorTest
 {
     private final String MISSING_PARAM = "missing";
     private final String VALID_PARAM = "valid";
 
     private JsonHelper jsonHelper = new JsonHelper();
-    private StaticParametersExtractor extractor;
+    private BasicParametersExtractor extractor;
 
     @BeforeMethod
     public void setup()
     {
-        extractor = new StaticParametersExtractor();
+        extractor = new BasicParametersExtractor();
     }
 
 

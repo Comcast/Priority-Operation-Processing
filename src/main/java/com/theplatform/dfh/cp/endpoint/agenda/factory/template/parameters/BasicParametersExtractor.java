@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Extracts the static parameters from the specified JsonNode
  */
-public class StaticParametersExtractor extends ParametersExtractor
+public class BasicParametersExtractor extends ParametersExtractor
 {
     @Override
     public void updateParameterMap(Map<String, JsonNode> parameterMap, JsonNode templateStaticParameters)
