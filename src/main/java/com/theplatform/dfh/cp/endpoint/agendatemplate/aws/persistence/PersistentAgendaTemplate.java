@@ -55,14 +55,6 @@ public class PersistentAgendaTemplate extends AgendaTemplate
 
     @Override
     @DynamoDBTypeConverted(converter = ParamsMapConverter.class)
-    @DynamoDBAttribute(attributeName = "templateParameters")
-    public ParamsMap getTemplateParameters()
-    {
-        return super.getTemplateParameters();
-    }
-
-    @Override
-    @DynamoDBTypeConverted(converter = ParamsMapConverter.class)
     @DynamoDBAttribute(attributeName = "staticParameters")
     public ParamsMap getStaticParameters()
     {
