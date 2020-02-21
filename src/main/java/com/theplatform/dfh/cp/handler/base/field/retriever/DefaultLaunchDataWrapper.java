@@ -110,23 +110,33 @@ public class DefaultLaunchDataWrapper extends LaunchDataWrapper
      */
     protected String getStringFromFields(HandlerArgument commandLineArg, HandlerField environmentVar)
     {
-        String payloadFile = getArgumentRetriever().getField(commandLineArg.getArgumentName(), null);
+        String payload = getStringFromFileArg(commandLineArg);
 
+        return payload == null
+            ? getEnvironmentRetriever().getField(environmentVar.name())
+            : payload;
+    }
+
+    /**
+     * Retrieves the raw string from the file associated with the specified command line arg (assumes UTF-8)
+     * @param commandLineArg The argument to extract from
+     * @return The string from the file contents or null
+     */
+    protected String getStringFromFileArg(HandlerArgument commandLineArg)
+    {
+        String payloadFile = getArgumentRetriever().getField(commandLineArg.getArgumentName(), null);
         if(payloadFile != null)
         {
             try
             {
                 return new String(Files.readAllBytes(Paths.get(payloadFile)), StandardCharsets.UTF_8);
             }
-            catch(IOException e)
+            catch (IOException e)
             {
                 throw new RuntimeException(String.format("Failed to load data from: %1$s", payloadFile), e);
             }
         }
-        else
-        {
-            return getEnvironmentRetriever().getField(environmentVar.name());
-        }
+        return null;
     }
 
     protected static String getPropertiesPath(FieldRetriever argumentRetriever)
