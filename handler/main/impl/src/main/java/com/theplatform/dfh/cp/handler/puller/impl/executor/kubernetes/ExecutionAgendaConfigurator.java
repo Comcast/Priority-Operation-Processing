@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.payload.PayloadWriter;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import org.apache.commons.lang3.StringUtils;
@@ -11,15 +12,17 @@ import org.slf4j.LoggerFactory;
 
 public class ExecutionAgendaConfigurator
 {
-    private  Logger logger = LoggerFactory.getLogger(ExecutionAgendaConfigurator.class);
+    private Logger logger = LoggerFactory.getLogger(ExecutionAgendaConfigurator.class);
     private final ExecutionConfig executionConfig;
     private final JsonHelper jsonHelper;
+    private PayloadWriter payloadWriter;
     private String agendaId;
 
-    public ExecutionAgendaConfigurator(ExecutionConfig executionConfig, JsonHelper jsonHelper)
+    public ExecutionAgendaConfigurator(ExecutionConfig executionConfig, JsonHelper jsonHelper, PayloadWriter payloadWriter)
     {
         this.executionConfig = executionConfig;
         this.jsonHelper = jsonHelper;
+        this.payloadWriter = payloadWriter;
     }
 
 
@@ -30,9 +33,10 @@ public class ExecutionAgendaConfigurator
         String progressPayload = agendaProgress == null
             ? null
             : jsonHelper.getJSONString(agendaProgress);
-        logger.info("Launching Executor with Payload: {}", payload);
+        logger.debug("Launching Executor with Payload: {}", payload);
 
-        setEnvVar(HandlerField.PAYLOAD.name(), payload);
+        payloadWriter.writePayload(payload, executionConfig.getEnvVars());
+
         if(progressPayload != null)
             setEnvVar(HandlerField.LAST_PROGRESS.name(), progressPayload);
         setEnvVar(HandlerField.CID.name(), agenda.getCid());
@@ -56,6 +60,11 @@ public class ExecutionAgendaConfigurator
     protected void setLogger(Logger logger)
     {
         this.logger = logger;
+    }
+
+    public void setPayloadWriter(PayloadWriter payloadWriter)
+    {
+        this.payloadWriter = payloadWriter;
     }
 }
 

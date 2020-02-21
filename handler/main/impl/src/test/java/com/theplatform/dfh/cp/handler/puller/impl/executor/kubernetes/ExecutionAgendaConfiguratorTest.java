@@ -3,12 +3,13 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
+import com.theplatform.dfh.cp.handler.base.payload.PayloadWriter;
+import com.theplatform.dfh.cp.handler.kubernetes.support.payload.EnvironmentPayloadWriter;
 import com.theplatform.dfh.cp.handler.puller.impl.CaptureLogger;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -19,6 +20,7 @@ public class ExecutionAgendaConfiguratorTest
 {
     private CaptureLogger captureLogger = new CaptureLogger();
     private ExecutionAgendaConfigurator executionConfigurator;
+    private PayloadWriter payloadWriter;
     private ExecutionConfig executionConfig;
     private JsonHelper jsonHelper;
     private Agenda agenda;
@@ -35,7 +37,8 @@ public class ExecutionAgendaConfiguratorTest
     {
         jsonHelper = mock(JsonHelper.class);
         executionConfig = new ExecutionConfig();
-        executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
+        payloadWriter = new EnvironmentPayloadWriter();
+        executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper, payloadWriter);
         executionConfigurator.setLogger(captureLogger);
     }
 

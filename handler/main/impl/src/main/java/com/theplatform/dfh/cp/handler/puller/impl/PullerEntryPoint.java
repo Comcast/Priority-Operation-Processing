@@ -55,6 +55,8 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
      * Debugging running local with minikube for pod launches
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties -confPath ./handler/main/package/local/config/conf.yaml
      *
+     * NOTE! For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
+     *
      * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
      * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -confPath ./handler/main/package/local/config/conf.yaml
      *

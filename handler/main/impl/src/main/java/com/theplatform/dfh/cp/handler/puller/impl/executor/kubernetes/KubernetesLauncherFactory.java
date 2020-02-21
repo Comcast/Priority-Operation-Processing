@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 
+import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.JsonPodConfigRegistryClient;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
@@ -27,6 +28,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
     private static final Object registryLock = new Object();
     private static Logger logger = LoggerFactory.getLogger(KubernetesLauncherFactory.class);
 
+    private PullerLaunchDataWrapper launchDataWrapper;
     private int podRetryDelay = 2000;
 
     private static PodConfigRegistryClient podConfigRegistryClient;
@@ -54,6 +56,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
                 }
             }
         }
+        this.launchDataWrapper = pullerLaunchDataWrapper;
     }
 
     @Override
@@ -106,7 +109,7 @@ public class KubernetesLauncherFactory implements LauncherFactory
             }
         });
 
-        return new KubernetesLauncher(kubeConfig, podConfig, executionConfig);
+        return new KubernetesLauncher(kubeConfig, podConfig, executionConfig, launchDataWrapper);
     }
 
 

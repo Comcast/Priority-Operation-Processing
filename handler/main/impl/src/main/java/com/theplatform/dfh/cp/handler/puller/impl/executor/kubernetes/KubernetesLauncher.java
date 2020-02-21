@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.puller.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.puller.impl.executor.BaseLauncher;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
@@ -36,18 +37,20 @@ public class KubernetesLauncher implements BaseLauncher
     protected PodPushClient podPushClient;
     protected PodFollower<PodPushClient> follower;
     protected JsonHelper jsonHelper;
+    protected PullerLaunchDataWrapper launchDataWrapper;
 
-    public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig)
+    public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, PullerLaunchDataWrapper launchDataWrapper)
     {
-        this(kubeConfig, podConfig, executionConfig, new PodPushClientFactoryImpl(), new PodFollowerFactory<>());
+        this(kubeConfig, podConfig, executionConfig, launchDataWrapper, new PodPushClientFactoryImpl(), new PodFollowerFactory<>());
     }
 
-    public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig,
+    public KubernetesLauncher(KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, PullerLaunchDataWrapper launchDataWrapper,
         PodPushClientFactory<CpuRequestModulator> podPushClientFactory, PodFollowerFactory<PodPushClient> podFollowerFactory)
     {
         this.kubeConfig = kubeConfig;
         this.podConfig = podConfig;
         this.executionConfig = executionConfig;
+        this.launchDataWrapper = launchDataWrapper;
         this.podPushClientFactory = podPushClientFactory;
         this.podFollowerFactory = podFollowerFactory;
         this.podPushClient = podPushClientFactory.getClient(kubeConfig);
@@ -109,7 +112,7 @@ public class KubernetesLauncher implements BaseLauncher
     public void execute(Agenda agenda, AgendaProgress agendaProgress)
     {
         logAgendaMetadata(agenda);
-        ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper);
+        ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper, launchDataWrapper.getPayloadWriterFactory().createWriter());
         executionConfigurator.setEnvVars(agenda, agendaProgress);
         podConfig.setReapCompletedPods(true);
         appendLabels(podConfig, agenda);
