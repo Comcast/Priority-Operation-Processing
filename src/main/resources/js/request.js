@@ -10,7 +10,7 @@ function getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue
     if(querySelectedType == "byId")
     {
         // Note: byId is an endpoint, not a query param
-        endpointURL = queryValue == "" ? endpointURL : endpointURL + "/" +queryValue;
+        endpointURL = queryValue == "" ? endpointURL : endpointURL + "/" + encodeURIComponent(queryValue);
     }
     else if(querySelectedType == "other")
     {
