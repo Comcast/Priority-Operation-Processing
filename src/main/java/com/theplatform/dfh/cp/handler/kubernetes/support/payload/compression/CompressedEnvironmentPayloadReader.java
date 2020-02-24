@@ -9,9 +9,10 @@ import java.util.Base64;
 /**
  * Specialized reader the processes compressed payloads across potentially multiple environment variables (OS limitation fun)
  */
-public class CompressedEnvironmentPayloadReader extends BaseCompressedEnvironmentPayload implements PayloadReader
+public class CompressedEnvironmentPayloadReader implements PayloadReader
 {
     private LaunchDataWrapper launchDataWrapper;
+    private CompressedEnvironmentPayloadUtil compressedEnvironmentPayloadUtil = new CompressedEnvironmentPayloadUtil();
 
     public CompressedEnvironmentPayloadReader(LaunchDataWrapper launchDataWrapper)
     {
@@ -26,7 +27,7 @@ public class CompressedEnvironmentPayloadReader extends BaseCompressedEnvironmen
         StringBuilder payloadBuilder = new StringBuilder();
         while(true)
         {
-            String payloadSubpart = fieldRetriever.getField(getEnvironmentVariableName(index));
+            String payloadSubpart = fieldRetriever.getField(compressedEnvironmentPayloadUtil.getEnvironmentVariableName(index));
             if(payloadSubpart == null)
                 break;
             payloadBuilder.append(payloadSubpart);
@@ -34,6 +35,11 @@ public class CompressedEnvironmentPayloadReader extends BaseCompressedEnvironmen
         }
         String base64Encoded = payloadBuilder.toString();
         byte[] compressedBytes = Base64.getDecoder().decode(base64Encoded);
-        return zlibUtil.inflateMe(compressedBytes);
+        return compressedEnvironmentPayloadUtil.getZlibUtil().inflateMe(compressedBytes);
+    }
+
+    public void setCompressedEnvironmentPayloadUtil(CompressedEnvironmentPayloadUtil compressedEnvironmentPayloadUtil)
+    {
+        this.compressedEnvironmentPayloadUtil = compressedEnvironmentPayloadUtil;
     }
 }

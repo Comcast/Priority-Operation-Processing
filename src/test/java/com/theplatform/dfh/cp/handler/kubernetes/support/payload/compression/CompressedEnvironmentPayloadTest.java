@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.handler.kubernetes.support.payload.compression;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.environment.EnvironmentFieldRetriever;
 import com.theplatform.dfh.cp.handler.base.field.retriever.environment.EnvironmentVariableProvider;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -26,6 +27,8 @@ public class CompressedEnvironmentPayloadTest
     private LaunchDataWrapper mockLaunchDataWrapper;
     private EnvironmentFieldRetriever environmentRetriever;
 
+    private ExecutionConfig executionConfig;
+
     @BeforeMethod
     public void setup()
     {
@@ -33,7 +36,9 @@ public class CompressedEnvironmentPayloadTest
         environmentRetriever = new EnvironmentFieldRetriever();
         doReturn(environmentRetriever).when(mockLaunchDataWrapper).getEnvironmentRetriever();
 
-        writer = new CompressedEnvironmentPayloadWriter();
+        executionConfig = new ExecutionConfig();
+        executionConfig.setEnvVars(new HashMap<>());
+        writer = new CompressedEnvironmentPayloadWriter(executionConfig);
         reader = new CompressedEnvironmentPayloadReader(mockLaunchDataWrapper);
     }
 
@@ -41,7 +46,7 @@ public class CompressedEnvironmentPayloadTest
     public void testWriteReadPayload()
     {
         final String PAYLOAD = generatePayload(512_875);
-        Map<String, String> envVars = new HashMap<>();
+        Map<String, String> envVars = executionConfig.getEnvVars();
         environmentRetriever.setEnvironmentVariableProvider(new EnvironmentVariableProvider()
         {
             @Override
@@ -50,7 +55,7 @@ public class CompressedEnvironmentPayloadTest
                 return envVars.get(envVar);
             }
         });
-        writer.writePayload(PAYLOAD, envVars);
+        writer.writePayload(PAYLOAD);
         String resultPayload = reader.readPayload();
         Assert.assertEquals(resultPayload, PAYLOAD);
     }
@@ -76,13 +81,13 @@ public class CompressedEnvironmentPayloadTest
         writer.setMaxPayloadSegmentLength(MAX_VAR_LENGTH);
         final String PAYLOAD = generatePayload(PAYLOAD_LENGTH);
         Assert.assertEquals(PAYLOAD.length(), PAYLOAD_LENGTH);
-        Map<String, String> payloadMap = new HashMap<>();
+        Map<String, String> payloadMap = executionConfig.getEnvVars();
         writer.writePartsToMap(PAYLOAD, payloadMap);
         Assert.assertEquals(payloadMap.size(), EXPECTED_PARTS);
         StringBuilder restoredBuilder = new StringBuilder();
         for(int idx = 0; idx < EXPECTED_PARTS; idx++)
         {
-            String subSection = payloadMap.get(BaseCompressedEnvironmentPayload.getEnvironmentVariableName(idx));
+            String subSection = payloadMap.get(writer.getCompressedEnvironmentPayloadUtil().getEnvironmentVariableName(idx));
             int expectedLength = MAX_VAR_LENGTH;
             if(idx + 1 == EXPECTED_PARTS)
             {

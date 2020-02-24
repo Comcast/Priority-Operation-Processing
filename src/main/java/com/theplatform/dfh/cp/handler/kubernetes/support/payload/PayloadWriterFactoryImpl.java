@@ -4,9 +4,9 @@ import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadWriter;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadWriterFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.payload.compression.CompressedEnvironmentPayloadWriter;
-import org.apache.commons.lang3.StringUtils;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 
-public class PayloadWriterFactoryImpl implements PayloadWriterFactory
+public class PayloadWriterFactoryImpl implements PayloadWriterFactory<ExecutionConfig>
 {
     private LaunchDataWrapper launchDataWrapper;
 
@@ -16,13 +16,20 @@ public class PayloadWriterFactoryImpl implements PayloadWriterFactory
     }
 
     @Override
-    public PayloadWriter createWriter()
+    public PayloadWriter createWriter(ExecutionConfig executionConfig)
     {
-        // if payload compression is on, use it!
-        if(StringUtils.equalsIgnoreCase(Boolean.TRUE.toString(), launchDataWrapper.getPropertyRetriever().getField(PayloadField.PAYLOAD_COMPRESSION_ENABLED)))
+        // get the output type, defaulting to writing to the env var
+        String payloadTypeString = launchDataWrapper.getPropertyRetriever().getField(PayloadField.PAYLOAD_OUTPUT_TYPE_PROPERTY, PayloadType.ENV_VAR.getFieldName());
+
+        PayloadType payloadType = PayloadType.determinePayloadType(payloadTypeString, PayloadType.ENV_VAR);
+
+        switch(payloadType)
         {
-            return new CompressedEnvironmentPayloadWriter(launchDataWrapper);
+            case COMPRESSED_ENV_VAR:
+                return new CompressedEnvironmentPayloadWriter(executionConfig, launchDataWrapper);
+            case ENV_VAR:
+            default:
+                return new EnvironmentPayloadWriter(executionConfig);
         }
-        return new EnvironmentPayloadWriter();
     }
 }

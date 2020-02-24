@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.kubernetes.support.payload;
 
-import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadReader;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadReaderFactory;
@@ -18,11 +17,18 @@ public class PayloadReaderFactoryImpl implements PayloadReaderFactory
     @Override
     public PayloadReader createReader()
     {
-        // if the PAYLOAD env var is there use it
-        if(launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PAYLOAD.name()) != null)
+        String payloadTypeString = launchDataWrapper.getEnvironmentRetriever()
+            .getField(PayloadField.PAYLOAD_TYPE_ENV_VAR.getFieldName(), PayloadType.ENV_VAR.getFieldName());
+
+        PayloadType payloadType = PayloadType.determinePayloadType(payloadTypeString, PayloadType.ENV_VAR);
+
+        switch(payloadType)
         {
-            return new EnvironmentPayloadReader(launchDataWrapper);
+            case COMPRESSED_ENV_VAR:
+                return new CompressedEnvironmentPayloadReader(launchDataWrapper);
+            case ENV_VAR:
+            default:
+                return new EnvironmentPayloadReader(launchDataWrapper);
         }
-        return new CompressedEnvironmentPayloadReader(launchDataWrapper);
     }
 }
