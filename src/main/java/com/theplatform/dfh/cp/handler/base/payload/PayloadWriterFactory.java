@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.handler.base.payload;
 
-public interface PayloadWriterFactory
+public interface PayloadWriterFactory<T>
 {
-    PayloadWriter createWriter();
+    PayloadWriter createWriter(T param);
 }
