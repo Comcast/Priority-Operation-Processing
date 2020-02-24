@@ -112,7 +112,7 @@ public class KubernetesLauncher implements BaseLauncher
     public void execute(Agenda agenda, AgendaProgress agendaProgress)
     {
         logAgendaMetadata(agenda);
-        ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper, launchDataWrapper.getPayloadWriterFactory().createWriter());
+        ExecutionAgendaConfigurator executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper, launchDataWrapper.getPayloadWriterFactory().createWriter(executionConfig));
         executionConfigurator.setEnvVars(agenda, agendaProgress);
         podConfig.setReapCompletedPods(true);
         appendLabels(podConfig, agenda);

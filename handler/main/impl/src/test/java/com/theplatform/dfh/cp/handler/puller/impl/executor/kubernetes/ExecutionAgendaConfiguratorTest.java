@@ -37,7 +37,7 @@ public class ExecutionAgendaConfiguratorTest
     {
         jsonHelper = mock(JsonHelper.class);
         executionConfig = new ExecutionConfig();
-        payloadWriter = new EnvironmentPayloadWriter();
+        payloadWriter = new EnvironmentPayloadWriter(executionConfig);
         executionConfigurator = new ExecutionAgendaConfigurator(executionConfig, jsonHelper, payloadWriter);
         executionConfigurator.setLogger(captureLogger);
     }

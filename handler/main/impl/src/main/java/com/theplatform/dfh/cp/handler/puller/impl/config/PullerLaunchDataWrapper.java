@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.handler.base.payload.PayloadWriterFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubernetesLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.kubernetes.support.payload.PayloadWriterFactoryImpl;
 import com.theplatform.dfh.cp.handler.puller.impl.monitor.alive.LastRequestAliveCheck;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 
 /**
  */
@@ -13,7 +14,7 @@ public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
     private PullerConfig pullerConfig;
     private LastRequestAliveCheck lastRequestAliveCheck = new LastRequestAliveCheck();
 
-    private PayloadWriterFactory payloadWriterFactory = new PayloadWriterFactoryImpl(this);
+    private PayloadWriterFactory<ExecutionConfig> payloadWriterFactory = new PayloadWriterFactoryImpl(this);
 
     public PullerLaunchDataWrapper(ArgumentRetriever argumentRetriever)
     {
@@ -48,7 +49,7 @@ public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
         return this;
     }
 
-    public PayloadWriterFactory getPayloadWriterFactory()
+    public PayloadWriterFactory<ExecutionConfig> getPayloadWriterFactory()
     {
         return payloadWriterFactory;
     }

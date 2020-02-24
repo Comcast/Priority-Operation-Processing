@@ -35,7 +35,7 @@ public class ExecutionAgendaConfigurator
             : jsonHelper.getJSONString(agendaProgress);
         logger.debug("Launching Executor with Payload: {}", payload);
 
-        payloadWriter.writePayload(payload, executionConfig.getEnvVars());
+        payloadWriter.writePayload(payload);
 
         if(progressPayload != null)
             setEnvVar(HandlerField.LAST_PROGRESS.name(), progressPayload);
