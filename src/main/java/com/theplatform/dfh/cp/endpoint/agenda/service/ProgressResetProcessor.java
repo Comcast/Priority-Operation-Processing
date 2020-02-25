@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.api.progress.WaitingStateMessage;
 import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaParameter;
 import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +19,6 @@ import java.util.stream.Collectors;
  */
 public class ProgressResetProcessor
 {
-    public final static String DEFAULT_RESET_STATE_MESSAGE = "pending";
-
     public void resetProgress(AgendaProgress agendaProgress, ReigniteAgendaRequest reigniteAgendaRequest, Map<ReigniteAgendaParameter, String> retryParameters)
     {
         boolean resetAll = retryParameters.containsKey(ReigniteAgendaParameter.RESET_ALL);
@@ -51,13 +50,13 @@ public class ProgressResetProcessor
     protected void resetAgendaProgress(AgendaProgress agendaProgress)
     {
         agendaProgress.setProcessingState(ProcessingState.WAITING);
-        agendaProgress.setProcessingStateMessage(DEFAULT_RESET_STATE_MESSAGE);
+        agendaProgress.setProcessingStateMessage(WaitingStateMessage.PENDING.toString());
     }
 
     protected void resetOperationProgress(OperationProgress operationProgress)
     {
         operationProgress.setProcessingState(ProcessingState.WAITING);
-        operationProgress.setProcessingStateMessage(DEFAULT_RESET_STATE_MESSAGE);
+        operationProgress.setProcessingStateMessage(WaitingStateMessage.PENDING.toString());
     }
 
     protected Set<String> getSpecifiedOperationsToReset(Map<ReigniteAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)

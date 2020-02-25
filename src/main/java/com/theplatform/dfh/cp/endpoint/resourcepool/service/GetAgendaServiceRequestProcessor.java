@@ -14,7 +14,7 @@ import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceValidator;
+import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceGetAgendaValidator;
 import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
@@ -216,7 +216,7 @@ public class GetAgendaServiceRequestProcessor extends AbstractServiceRequestProc
 
     public RequestValidator<ServiceRequest<GetAgendaRequest>> getRequestValidator()
     {
-        return new AgendaServiceValidator();
+        return new AgendaServiceGetAgendaValidator();
     }
 
     public void setAgendaPersister(ObjectPersister<Agenda> agendaPersister)

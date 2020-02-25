@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  *
  */
-public class AgendaServiceValidator extends DefaultRequestValidator<ServiceRequest<GetAgendaRequest>>
+public class AgendaServiceGetAgendaValidator extends DefaultRequestValidator<ServiceRequest<GetAgendaRequest>>
 {
     @Override
     public void validatePOST(ServiceRequest<GetAgendaRequest> request)

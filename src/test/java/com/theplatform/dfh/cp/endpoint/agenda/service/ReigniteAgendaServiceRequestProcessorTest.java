@@ -9,6 +9,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.theplatform.dfh.cp.api.progress.WaitingStateMessage;
 import com.theplatform.dfh.cp.endpoint.TestUtil;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
@@ -99,13 +100,13 @@ public class ReigniteAgendaServiceRequestProcessorTest
 
         // AgendaProgress checks
         Assert.assertEquals(agendaProgress.getProcessingState(), ProcessingState.WAITING);
-        Assert.assertEquals(agendaProgress.getProcessingStateMessage(), ProgressResetProcessor.DEFAULT_RESET_STATE_MESSAGE);
+        Assert.assertEquals(agendaProgress.getProcessingStateMessage(), WaitingStateMessage.PENDING.toString());
 
         // OperationProgress checks
         for (OperationProgress operationProgress : agendaProgress.getOperationProgress())
         {
             Assert.assertEquals(operationProgress.getProcessingState(), ProcessingState.WAITING);
-            Assert.assertEquals(operationProgress.getProcessingStateMessage(), ProgressResetProcessor.DEFAULT_RESET_STATE_MESSAGE);
+            Assert.assertEquals(operationProgress.getProcessingStateMessage(), WaitingStateMessage.PENDING.toString());
         }
     }
 

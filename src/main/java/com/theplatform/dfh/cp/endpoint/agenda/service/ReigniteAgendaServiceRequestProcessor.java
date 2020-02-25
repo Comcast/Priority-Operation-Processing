@@ -8,6 +8,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.NoOpVisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
@@ -15,6 +16,7 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.cp.endpoint.util.ServiceResponseFactory;
+import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceReigniteValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
@@ -34,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.Map;
 
-
 /**
  * Processor for the retry/rerun/reignite  method for running an agenda that was already run before.
  */
@@ -46,6 +47,7 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
     private ServiceDataObjectRetriever<ReigniteAgendaResponse> serviceDataObjectRetriever;
 
     private ProgressResetProcessor progressResetProcessor = new ProgressResetProcessor();
+    private RequestValidator<ServiceRequest<ReigniteAgendaRequest>> requestValidator = new AgendaServiceReigniteValidator();
 
     private ObjectPersister<Agenda> agendaPersister;
     private ObjectPersister<AgendaProgress> agendaProgressPersister;
@@ -164,6 +166,12 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         reigniteAgendaResponse.setCID(serviceRequest.getCID());
         reigniteAgendaResponse.setErrorResponse(errorResponse);
         return reigniteAgendaResponse;
+    }
+
+    @Override
+    protected RequestValidator<ServiceRequest<ReigniteAgendaRequest>> getRequestValidator()
+    {
+        return requestValidator;
     }
 
     public void setProgressResetProcessor(ProgressResetProcessor progressResetProcessor)
