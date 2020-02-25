@@ -4,6 +4,9 @@ import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadReader;
 
+/**
+ * Basic payload writer that reads the payload from a single environment variable
+ */
 public class EnvironmentPayloadReader implements PayloadReader
 {
     private LaunchDataWrapper launchDataWrapper;

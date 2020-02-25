@@ -35,7 +35,7 @@ public class CompressedEnvironmentPayloadWriter extends BaseExecutionConfigPaylo
     }
 
     @Override
-    public void writePayloadInternal(String payload, Map<String, String> outputMap)
+    public void writePayload(String payload, Map<String, String> outputMap)
     {
         byte[] compressedPayload = compressedEnvironmentPayloadUtil.getZlibUtil().deflateMe(payload.getBytes(StandardCharsets.UTF_8));
         String base64Encoded = Base64.getEncoder().encodeToString(compressedPayload);

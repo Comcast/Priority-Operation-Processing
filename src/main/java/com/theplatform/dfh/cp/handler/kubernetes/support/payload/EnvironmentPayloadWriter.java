@@ -5,6 +5,9 @@ import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 
 import java.util.Map;
 
+/**
+ * Basic payload writer that sets the payload on a single environment variable
+ */
 public class EnvironmentPayloadWriter extends BaseExecutionConfigPayloadWriter
 {
     public EnvironmentPayloadWriter(ExecutionConfig executionConfig)
@@ -13,7 +16,7 @@ public class EnvironmentPayloadWriter extends BaseExecutionConfigPayloadWriter
     }
 
     @Override
-    public void writePayloadInternal(String payload, Map<String, String> outputMap)
+    public void writePayload(String payload, Map<String, String> outputMap)
     {
         outputMap.put(HandlerField.PAYLOAD.name(), payload);
     }
