@@ -7,6 +7,7 @@ import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.api.LaunchType;
 import com.theplatform.dfh.cp.handler.base.field.api.args.HandlerArgument;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
+import com.theplatform.dfh.cp.handler.base.payload.PayloadWriterFactory;
 import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressFactory;
@@ -15,8 +16,10 @@ import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgre
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.AgendaProgressThreadConfig;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
+import com.theplatform.dfh.cp.handler.kubernetes.support.payload.PayloadWriterFactoryImpl;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +37,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private final static int DEFAULT_PROGRESS_THREAD_EXIT_TIMEOUT_MS = 60000;
 
     private static Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
+
     private HttpURLConnectionFactory urlConnectionFactory;
     private OperationExecutorFactory operationExecutorFactory;
     private JsonHelper jsonHelper = new JsonHelper();
@@ -45,6 +49,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private String agendaId;
     private String agendaProgressId;
     private Agenda agenda;
+    private PayloadWriterFactory<ExecutionConfig> payloadWriterFactory;
 
     public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
@@ -65,6 +70,7 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
             AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
             agendaProgressId
         ));
+        payloadWriterFactory = new PayloadWriterFactoryImpl(launchDataWrapper);
     }
 
     private AgendaProgressThreadConfig createAgendaProgressThreadConfig(ProgressReporter reporter)
@@ -205,5 +211,16 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public void setJsonHelper(JsonHelper jsonHelper)
     {
         this.jsonHelper = jsonHelper;
+    }
+
+    public PayloadWriterFactory<ExecutionConfig> getPayloadWriterFactory()
+    {
+        return payloadWriterFactory;
+    }
+
+    public void setPayloadWriterFactory(
+        PayloadWriterFactory<ExecutionConfig> payloadWriterFactory)
+    {
+        this.payloadWriterFactory = payloadWriterFactory;
     }
 }

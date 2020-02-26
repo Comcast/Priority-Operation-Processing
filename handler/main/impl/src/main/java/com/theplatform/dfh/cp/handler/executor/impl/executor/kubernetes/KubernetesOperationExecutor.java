@@ -198,7 +198,8 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     private void configureMetadata(String payload)
     {
         Map<String,String> envVars = executionConfig.getEnvVars();
-        envVars.put(HandlerField.PAYLOAD.name(), payload);
+
+        executorContext.getPayloadWriterFactory().createWriter(executionConfig).writePayload(payload);
 
         envVars.put(HandlerField.AGENDA_ID.name(), executorContext.getAgendaId());
         setEnvVar(envVars, HandlerField.CID);
