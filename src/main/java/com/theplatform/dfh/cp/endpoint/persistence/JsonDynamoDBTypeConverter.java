@@ -15,9 +15,9 @@ public class JsonDynamoDBTypeConverter<T> implements DynamoDBTypeConverter<Strin
 
     private static JsonHelper jsonHelper = new JsonHelper();
 
-    private final TypeReference typeReference;
+    private final TypeReference<T> typeReference;
 
-    public JsonDynamoDBTypeConverter(TypeReference typeReference)
+    public JsonDynamoDBTypeConverter(TypeReference<T> typeReference)
     {
         this.typeReference = typeReference;
     }

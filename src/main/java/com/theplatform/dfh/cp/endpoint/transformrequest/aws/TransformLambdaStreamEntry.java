@@ -35,8 +35,9 @@ public class TransformLambdaStreamEntry extends DataObjectLambdaStreamEntry<Tran
     private ObjectPersisterFactory<Insight> insightPersisterFactory;
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
     private ObjectPersisterFactory<AgendaTemplate> agendaTemplatePersisterFactory;
+    private boolean isReset;
 
-    public TransformLambdaStreamEntry()
+    public TransformLambdaStreamEntry(boolean isReset)
     {
         super(
             TransformRequest.class,
@@ -49,6 +50,7 @@ public class TransformLambdaStreamEntry extends DataObjectLambdaStreamEntry<Tran
         insightPersisterFactory = new DynamoDBInsightPersisterFactory();
         customerPersisterFactory = new DynamoDBCustomerPersisterFactory();
         agendaTemplatePersisterFactory = new DynamoDBAgendaTemplatePersisterFactory();
+        this.isReset = isReset;
     }
 
     @Override
@@ -68,8 +70,8 @@ public class TransformLambdaStreamEntry extends DataObjectLambdaStreamEntry<Tran
             readyAgendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.READY_AGENDA)),
             insightPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT)),
             customerPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.CUSTOMER)),
-            agendaTemplatePersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_TEMPLATE))
-        );
+            agendaTemplatePersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_TEMPLATE)),
+            isReset);
     }
 
     @Override

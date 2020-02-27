@@ -52,7 +52,10 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/dfh/idm/progress/operation", new OperationProgressLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/progress/agenda", new ProgressLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/progress/agenda/service", new ProgressServiceLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/transform", new TransformLambdaStreamEntry());
+        //TODO: deprecated in favor of transform/service/submit
+        endpointHandlers.put("/dfh/idm/transform", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/dfh/idm/transform/service/submit", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/dfh/idm/transform/service/resubmit", new TransformLambdaStreamEntry(true));
         endpointHandlers.put("/dfh/idm/resourcepool", new ResourcePoolLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/insight", new InsightLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/customer", new CustomerLambdaStreamEntry());
