@@ -18,7 +18,6 @@ import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
@@ -49,11 +48,6 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     private JsonHelper jsonHelper;
     private OperationProgress defaultFailedOperationProgress;
     private AtomicBoolean isCompleteOperationProgressRetrieved = new AtomicBoolean(false);
-
-    public KubernetesOperationExecutor(Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, ExecutorContext executorContext)
-    {
-        this(new PodFollowerImpl<>(kubeConfig, podConfig, executionConfig), operation, kubeConfig, podConfig, executionConfig, executorContext);
-    }
 
     public KubernetesOperationExecutor(PodFollower<PodPushClient> follower, Operation operation, KubeConfig kubeConfig, PodConfig podConfig, ExecutionConfig executionConfig, ExecutorContext executorContext)
     {
@@ -238,5 +232,25 @@ public class KubernetesOperationExecutor extends BaseOperationExecutor
     protected void setIsCompleteOperationProgressRetrievedValue(boolean value)
     {
         isCompleteOperationProgressRetrieved.set(value);
+    }
+
+    protected AtomicBoolean getIsCompleteOperationProgressRetrieved()
+    {
+        return isCompleteOperationProgressRetrieved;
+    }
+
+    public KubeConfig getKubeConfig()
+    {
+        return kubeConfig;
+    }
+
+    public PodConfig getPodConfig()
+    {
+        return podConfig;
+    }
+
+    public ExecutionConfig getExecutionConfig()
+    {
+        return executionConfig;
     }
 }

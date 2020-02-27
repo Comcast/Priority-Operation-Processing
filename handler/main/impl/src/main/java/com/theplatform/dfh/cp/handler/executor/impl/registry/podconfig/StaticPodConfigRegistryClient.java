@@ -1,13 +1,18 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
+import com.theplatform.dfh.cp.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
 import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +26,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     private static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
     private static PodConfigFactory podConfigFactory = new PodConfigFactoryImpl();
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
+    private static JsonHelper jsonHelper = new JsonHelper();
 
     static
     {
@@ -28,6 +34,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 makeDfhBasePod("lab-main-t-aor-fhsamp-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.2")
                         .setNamePrefix("dfh-samp")
+        );
+
+        podConfigMap.put("slack",
+            makeDfhBasePod("lab-main-t-aor-fhtele-t01")
+                .setImageName("docker-proto.repo.theplatform.com/fhslak:1.0.0")
+                .setNamePrefix("dfh-fission-slack")
         );
 
         podConfigMap.put("analysis",
@@ -74,9 +86,23 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     }
 
     @Override
-    public PodConfig getPodConfig(String type)
+    public PodConfig getPodConfig(String type) throws PodConfigRegistryClientException
     {
-        return podConfigMap.get(type);
+        PodConfig originalConfig = podConfigMap.get(type);
+        ObjectMapper objectMapper = jsonHelper.getObjectMapper();
+        IOException ioException = null;
+        if (originalConfig != null)
+        {
+            try
+            {
+                return objectMapper.readValue(objectMapper.writeValueAsString(originalConfig), PodConfig.class);
+            }
+            catch(IOException e)
+            {
+                ioException = e;
+            }
+        }
+        throw new PodConfigRegistryClientException("Failed to get pod config type: " + type, ioException);
     }
 
     public static PodConfig makeDfhBasePod(String configMapName)

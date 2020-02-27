@@ -3,12 +3,14 @@ package com.theplatform.dfh.cp.handler.executor.impl.executor.kubernetes;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.field.retriever.DefaultLaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadWriter;
 import com.theplatform.dfh.cp.handler.base.payload.PayloadWriterFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.kubernetes.support.payload.PayloadWriterFactoryImpl;
+import com.theplatform.dfh.cp.handler.kubernetes.support.reporter.KubernetesReporter;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
@@ -22,7 +24,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
@@ -34,6 +38,8 @@ import static org.mockito.Mockito.mock;
 
 public class KubernetesOperationExecutorTest
 {
+    private JsonHelper jsonHelper = new JsonHelper();
+
     private KubernetesOperationExecutor executor;
     private Operation operation;
     private KubeConfig kubeConfig;
@@ -150,6 +156,65 @@ public class KubernetesOperationExecutorTest
             Assert.assertEquals(diagnosticLines.get(diagnosticLineIndex), Integer.toString(numberEntry));
             diagnosticLineIndex++;
         }
+    }
+
+    @Test
+    public void testRetrieveOperationProgressSuccess()
+    {
+        final ProcessingState EXPECTED_PROCESSING_STATE = ProcessingState.EXECUTING;
+        final String EXPECTED_MESSAGE = "Working";
+        final Double EXPECTED_PERCENT = 50d;
+
+        configurePodAnnotations(jsonHelper.getJSONString(createOperationProgress(EXPECTED_PROCESSING_STATE, EXPECTED_MESSAGE, EXPECTED_PERCENT)), null);
+        OperationProgress operationProgress = executor.retrieveOperationProgress();
+        Assert.assertNotNull(operationProgress);
+        Assert.assertEquals(operationProgress.getProcessingState(), EXPECTED_PROCESSING_STATE);
+        Assert.assertEquals(operationProgress.getProcessingStateMessage(), EXPECTED_MESSAGE);
+        Assert.assertEquals(operationProgress.getPercentComplete(), EXPECTED_PERCENT);
+    }
+
+    @Test
+    public void testRetrieveCompleteOperationProgressSuccess()
+    {
+        final ProcessingState EXPECTED_PROCESSING_STATE = ProcessingState.COMPLETE;
+
+        configurePodAnnotations(jsonHelper.getJSONString(createOperationProgress(EXPECTED_PROCESSING_STATE, null, null)), null);
+        OperationProgress operationProgress = executor.retrieveOperationProgress();
+        Assert.assertNotNull(operationProgress);
+        Assert.assertEquals(operationProgress.getProcessingState(), EXPECTED_PROCESSING_STATE);
+        Assert.assertTrue(executor.getIsCompleteOperationProgressRetrieved().get());
+    }
+
+    @Test
+    public void testRetrieveOperationProgressPayloadIssue()
+    {
+        // invalid json
+        configurePodAnnotations("{>", null);
+        Assert.assertNull(executor.retrieveOperationProgress());
+    }
+
+    @Test
+    public void testRetrieveOperationProgressError()
+    {
+        doThrow(new RuntimeException()).when(mockPodFollower).getPodAnnotations();
+        Assert.assertNull(executor.retrieveOperationProgress());
+    }
+
+    private void configurePodAnnotations(String operationProgressPayload, String resultPayload)
+    {
+        Map<String, String> annotations = new HashMap<>();
+        annotations.put(KubernetesReporter.REPORT_PAYLOAD_ANNOTATION, resultPayload);
+        annotations.put(KubernetesReporter.REPORT_PROGRESS_ANNOTATION, operationProgressPayload);
+        doReturn(annotations).when(mockPodFollower).getPodAnnotations();
+    }
+
+    private OperationProgress createOperationProgress(ProcessingState processingState, String processingStateMessage, Double percentComplete)
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setProcessingState(processingState);
+        operationProgress.setProcessingStateMessage(processingStateMessage);
+        operationProgress.setPercentComplete(percentComplete);
+        return operationProgress;
     }
 
     private CircularFifoQueue<String> generateLogQueue(final int LOG_LINES)

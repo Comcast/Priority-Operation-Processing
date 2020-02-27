@@ -30,6 +30,7 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
     private static Logger logger = LoggerFactory.getLogger(KubernetesOperationExecutorFactory.class);
     private PodConfigRegistryClient podConfigRegistryClient;
     private KubeConfigFactory kubeConfigFactory;
+    private PodFollowerFactory podFollowerFactory = new PodFollowerFactory();
 
     public KubernetesOperationExecutorFactory(LaunchDataWrapper launchDataWrapper)
     {
@@ -101,7 +102,8 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
             }
         });
 
-        return new KubernetesOperationExecutor(operation, kubeConfig, podConfig, executionConfig, executorContext);
+        return new KubernetesOperationExecutor(
+            podFollowerFactory.createFollower(kubeConfig, podConfig, executionConfig), operation, kubeConfig, podConfig, executionConfig, executorContext);
     }
 
     public KubernetesOperationExecutorFactory setPodConfigRegistryClient(PodConfigRegistryClient podConfigRegistryClient)
@@ -119,5 +121,15 @@ public class KubernetesOperationExecutorFactory extends OperationExecutorFactory
     {
         this.kubeConfigFactory = kubeConfigFactory;
         return this;
+    }
+
+    public PodFollowerFactory getPodFollowerFactory()
+    {
+        return podFollowerFactory;
+    }
+
+    public void setPodFollowerFactory(PodFollowerFactory podFollowerFactory)
+    {
+        this.podFollowerFactory = podFollowerFactory;
     }
 }
