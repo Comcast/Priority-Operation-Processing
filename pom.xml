@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,8 +15,9 @@
 
     <properties>
         <dfh-persistence-api.version>1.0.2</dfh-persistence-api.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
         <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
+        <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>
