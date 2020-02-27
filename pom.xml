@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
         <dfh-persistence-api.version>1.0.2</dfh-persistence-api.version>
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
         <cp-endpoint-base.version>1.0.1</cp-endpoint-base.version>
