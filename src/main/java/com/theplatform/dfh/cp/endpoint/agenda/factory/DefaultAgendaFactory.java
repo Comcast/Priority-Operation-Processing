@@ -34,31 +34,6 @@ public class DefaultAgendaFactory implements AgendaFactory
     }
 
     @Override
-    public Agenda createAgenda(AgendaTemplate agendaTemplate, TransformRequest transformRequest, String progressId, String cid)
-    {
-        Agenda agenda = null;
-        if(agendaTemplate != null)
-        {
-            agenda = generateTemplatedAgenda(agendaTemplate, transformRequest);
-        }
-        if(agenda == null)
-        {
-            return null;
-        }
-        agenda.setCustomerId(transformRequest.getCustomerId());
-        // set the progress id on the agenda
-        if(agenda.getParams() == null) agenda.setParams(new ParamsMap());
-        addParamsFromTransformRequest(agenda, transformRequest);
-        agenda.setJobId(transformRequest.getId());
-        agenda.setLinkId(transformRequest.getLinkId());
-        agenda.setCid(cid);
-        agenda.setCustomerId(transformRequest.getCustomerId());
-        if (!StringUtils.isBlank(progressId))
-            agenda.setProgressId(progressId);
-        return agenda;
-    }
-
-    @Override
     public Agenda createAgendaFromObject(AgendaTemplate agendaTemplate, Object payload, String progressId, String cid)
     {
         Agenda generatedAgenda = agendaTemplateMapper
@@ -69,25 +44,10 @@ public class DefaultAgendaFactory implements AgendaFactory
         if (!StringUtils.isBlank(progressId))
             generatedAgenda.setProgressId(progressId);
 
+        if(StringUtils.isBlank(generatedAgenda.getCid()))
+            generatedAgenda.setCid(cid);
+
         return generatedAgenda;
-    }
-
-    /**
-     * Adds any params to the Agenda from the TransformRequest
-     * @param agenda The agenda to add any necessary params to
-     * @param transformRequest The TransformRequest to pull information from
-     */
-    protected void addParamsFromTransformRequest(Agenda agenda, TransformRequest transformRequest)
-    {
-        if(agenda.getParams() == null) agenda.setParams(new ParamsMap());
-
-        if(!StringUtils.isBlank(transformRequest.getExternalId())) agenda.getParams().put(GeneralParamKey.externalId, transformRequest.getExternalId());
-
-        ParamsMap transformParams = transformRequest.getParams();
-        if (transformParams != null && transformParams.containsKey(GeneralParamKey.doNotRun))
-            agenda.getParams().put(GeneralParamKey.doNotRun, transformParams.get(GeneralParamKey.doNotRun));
-
-        agenda.setCid(transformRequest.getCid());
     }
 
     protected Agenda generateTemplatedAgenda(AgendaTemplate agendaTemplate, TransformRequest transformRequest)
