@@ -252,12 +252,6 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         }
     }
 
-    @Override
-    public RequestValidator<DataObjectRequest<TransformRequest>> getRequestValidator()
-    {
-        return new TransformValidator();
-    }
-
     public void setJsonHelper(JsonHelper jsonHelper)
     {
         this.jsonHelper = jsonHelper;

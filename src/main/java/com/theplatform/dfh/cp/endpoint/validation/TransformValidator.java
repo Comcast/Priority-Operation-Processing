@@ -3,11 +3,11 @@ package com.theplatform.dfh.cp.endpoint.validation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.AbstractStream;
 import com.theplatform.dfh.cp.api.TransformRequest;
+import com.theplatform.dfh.cp.api.input.InputFileResource;
 import com.theplatform.dfh.cp.api.input.InputStream;
 import com.theplatform.dfh.cp.api.output.OutputStream;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,9 +34,23 @@ public class TransformValidator extends DataObjectValidator<TransformRequest, Da
 
         JsonNode rootTransformNode = jsonHelper.getObjectMapper().valueToTree(transform);
 
+        validateInputs(transform.getInputs());
         validateReferences(transform, rootTransformNode);
 
         processValidationIssues(validationIssues);
+    }
+
+    protected void validateInputs(List<InputFileResource> inputFiles)
+    {
+        if(inputFiles == null || inputFiles.size() == 0)
+        {
+            validationIssues.add("Inputs are required. Please specify the input files.");
+            return;
+        }
+        if(inputFiles.stream().anyMatch(input -> StringUtils.isBlank(input.getUrl())))
+        {
+            validationIssues.add("All inputs must specify a valid url.");
+        }
     }
 
     protected void validateReferences(TransformRequest transformRequest, JsonNode rootTransformNode)

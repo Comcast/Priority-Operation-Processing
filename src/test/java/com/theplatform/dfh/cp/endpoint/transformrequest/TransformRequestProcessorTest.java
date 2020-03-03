@@ -10,6 +10,7 @@ import com.theplatform.dfh.cp.endpoint.AbstractRequestProcessorTest;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.AgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.service.IgniteAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
@@ -69,6 +70,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         transformRequestProcessor.setAgendaProgressRequestProcessor(mockAgendaProgressRequestProcessor);
         transformRequestProcessor.setAgendaTemplateClient(mockAgendaTemplateClient);
         transformRequestProcessor.setIgniteAgendaServiceRequestProcessor(mockIgniteAgendaServiceRequestProcessor);
+        transformRequestProcessor.setRequestValidator(null);
         return transformRequestProcessor;
     }
 

@@ -13,8 +13,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
 {
@@ -31,7 +33,44 @@ public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
     @Test
     public void testValidCustomer()
     {
-        validator.validatePOST(createRequest(createTransform(CUSTOMER_ID)));
+        callValidatePostWithInputFileResource(createTransform(CUSTOMER_ID));
+    }
+
+    ///
+    /// Inputs
+    ///
+
+    @Test(expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*Inputs are required. Please specify the input files.*")
+    public void testNoInputs()
+    {
+        TransformRequest transformRequest = createTransform(CUSTOMER_ID);
+        validator.validatePOST(createRequest(transformRequest));
+    }
+
+    @DataProvider
+    public Object[][] invalidInputURLsProvider()
+    {
+        return new Object[][]
+            {
+                {new String[] {""} },
+                {new String[] {null} },
+                {new String[] {" "} },
+                {new String[] {"file.mp4", null} },
+                {new String[] {null, "file.mp4"} },
+            };
+    }
+
+    @Test(dataProvider = "invalidInputURLsProvider", expectedExceptions = ValidationException.class, expectedExceptionsMessageRegExp = ".*All inputs must specify a valid url.*")
+    public void testInvalidInputURLs(String[] fileUrls)
+    {
+        TransformRequest transformRequest = createTransform(CUSTOMER_ID);
+        transformRequest.setInputs(Arrays.stream(fileUrls).map(fileUrl ->
+            {
+                InputFileResource inputFile = new InputFileResource();
+                inputFile.setUrl(fileUrl);
+                return inputFile;
+            }).collect(Collectors.toList()));
+        validator.validatePOST(createRequest(transformRequest));
     }
 
     ///
@@ -194,6 +233,7 @@ public class TransformValidatorTest extends BaseValidatorTest<TransformRequest>
     private void callValidatePostWithInputFileResource(TransformRequest transformRequest)
     {
         InputFileResource inputFileResource = new InputFileResource();
+        inputFileResource.setUrl("file.mp4");
         transformRequest.setInputs(Collections.singletonList(inputFileResource));
         validator.validatePOST(createRequest(transformRequest));
     }
