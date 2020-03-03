@@ -26,8 +26,8 @@ import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
+import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
@@ -36,13 +36,17 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
+import com.theplatform.dfh.endpoint.api.data.query.progress.ByLinkId;
+import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,7 +62,10 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
     private DataObjectRequestProcessor<AgendaProgress> agendaProgressRequestProcessor;
     private DataObjectRequestProcessor<AgendaTemplate> agendaTemplateClient;
     private IgniteAgendaServiceRequestProcessor igniteAgendaServiceRequestProcessor;
-    private boolean isReset;
+    private boolean isReexecute;
+    private ObjectPersister<TransformRequest> transformRequestObjectPersister;
+    private ObjectPersister<Agenda> agendaPersister;
+    private ObjectPersister<AgendaProgress> agendaProgressPersister;
 
     public TransformRequestProcessor(
         ObjectPersister<TransformRequest> transformRequestObjectPersister,
@@ -69,20 +76,52 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         ObjectPersister<Insight> insightPersister,
         ObjectPersister<Customer> customerPersister,
         ObjectPersister<AgendaTemplate> agendaTemplatePersister,
-        boolean isReset)
+        boolean isReexecute)
     {
         super(transformRequestObjectPersister, new TransformValidator());
+        this.transformRequestObjectPersister = transformRequestObjectPersister;
+        this.agendaPersister = agendaPersister;
+        this.agendaProgressPersister = agendaProgressPersister;
         agendaProgressRequestProcessor = new AgendaProgressRequestProcessor(agendaProgressPersister, agendaPersister, operationProgressPersister);
         agendaTemplateClient = new AgendaTemplateRequestProcessor(agendaTemplatePersister);
         igniteAgendaServiceRequestProcessor = new IgniteAgendaServiceRequestProcessor(insightPersister, agendaPersister, customerPersister, agendaProgressPersister,
             operationProgressPersister, readyAgendaPersister, agendaTemplatePersister);
-        this.isReset = isReset;
+        this.isReexecute = isReexecute;
     }
 
     @Override
     public DataObjectResponse<TransformRequest> handlePOST(DataObjectRequest<TransformRequest> request)
     {
         preProcessTransformRequest(request.getDataObject());
+
+        TransformRequest originalTransformRequest = null;
+        Agenda originalAgenda = null;
+        List<AgendaProgress> originalAgendaProgresses = new ArrayList<>();
+        if (isReexecute)
+        {
+            try
+            {
+                String linkId = request.getDataObject().getLinkId();
+                //Retrieve old progress/Agenda, see if it is still in progress
+                originalAgendaProgresses = getAgendaProgresses(linkId);
+                for (AgendaProgress progress : originalAgendaProgresses)
+                {
+                    if (progress.getProcessingState().equals(ProcessingState.EXECUTING))
+                    {
+                        return new DefaultDataObjectResponse<>(
+                            new ErrorResponse(
+                                new BadRequestException("Agenda is currently processing, cannot reexecute."), 400, request.getCID()));
+                    }
+                }
+
+                originalTransformRequest = getTransformRequest(linkId);
+                originalAgenda = getAgenda(linkId);
+            }
+            catch (PersistenceException e)
+            {
+                return new DefaultDataObjectResponse<>(new ErrorResponse(e, 400, request.getCID()));
+            }
+        }
 
         //We create the transform req first, so we have the ID for progress operations.
         //If progress fails, we need to rollback the transformReq.
@@ -92,7 +131,6 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             return response;
         }
         TransformRequest transformRequest = response.getFirst();
-
 
         ObjectTrackerManager trackerManager = new ObjectTrackerManager();
         trackerManager.register(new EndpointObjectTracker<>(agendaProgressRequestProcessor, AgendaProgress.class, transformRequest.getCustomerId()));
@@ -114,11 +152,6 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             return new DefaultDataObjectResponse<>(agendaTemplateResponse.getErrorResponse());
         }
         AgendaTemplate agendaTemplate = agendaTemplateResponse.getFirst();
-
-        if (isReset)
-        {
-            //delete old exec progress && see if progress is not in final case
-        }
 
         // HACK - NOTE: This is a tempish hack so we don't create Exec progress when not needed. This needs to be revisited.
         if(agendaTemplate.getParams() == null ||
@@ -150,17 +183,12 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.badRequest("Unable to marshall transformRequest", request.getCID()));
         }
 
-        IgniteAgendaRequest igniteAgendaRequest = new IgniteAgendaRequest(payload, agendaTemplateResponse.getFirst().getId()); // should just pass templateId or title once
-        // lookup is no longer needed
+        // should just pass templateId or title once lookup is no longer needed
+        IgniteAgendaRequest igniteAgendaRequest = new IgniteAgendaRequest(payload, agendaTemplateResponse.getFirst().getId());
         DefaultServiceRequest<IgniteAgendaRequest> igniteServiceRequest = new DefaultServiceRequest<>(igniteAgendaRequest);
 
         igniteServiceRequest.setCid(request.getCID());
         igniteServiceRequest.setAuthorizationResponse(request.getAuthorizationResponse());
-
-        if (isReset)
-        {
-            //todo - delete progress and see if its running
-        }
 
         IgniteAgendaResponse agendaResponse = igniteAgendaServiceRequestProcessor.handlePOST(igniteServiceRequest);
 
@@ -168,6 +196,18 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         {
             trackerManager.cleanUp();
             return new DefaultDataObjectResponse<>(agendaResponse.getErrorResponse());
+        }
+
+        if (isReexecute)
+        {
+            try {
+                //delete old progress/agenda/transformRequest
+                deleteOldState(originalAgenda, originalTransformRequest, originalAgendaProgresses);
+            }
+            catch (PersistenceException e)
+            {
+                return new DefaultDataObjectResponse<>(new ErrorResponse(e, 400, request.getCID()));
+            }
         }
 
         // The transformRequest needs to be persisted with the updated fields (TODO: this order of operations is not desirable)
@@ -186,6 +226,39 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
         return response;
     }
 
+    private void deleteOldState(Agenda originalAgenda, TransformRequest originalTransformRequest, List<AgendaProgress> originalAgendaProgresses) throws PersistenceException
+    {
+        if (originalAgenda != null)
+        {
+            agendaPersister.delete(originalAgenda.getId());
+        }
+        if (originalTransformRequest != null)
+        {
+            transformRequestObjectPersister.delete(originalTransformRequest.getId());
+        }
+        if (!originalAgendaProgresses.isEmpty())
+        {
+            for (AgendaProgress progress : originalAgendaProgresses)
+            {
+                agendaPersister.delete(progress.getId());
+            }
+        }
+    }
+
+    private List<AgendaProgress> getAgendaProgresses(String linkId) throws PersistenceException
+    {
+        return agendaProgressPersister.retrieve(Collections.singletonList(new ByLinkId(linkId))).getAll();
+    }
+
+    private Agenda getAgenda(String linkId) throws PersistenceException
+    {
+        return first(agendaPersister.retrieve(Collections.singletonList(new ByLinkId(linkId))));
+    }
+
+    private TransformRequest getTransformRequest(String linkId) throws PersistenceException
+    {
+        return first(transformRequestObjectPersister.retrieve(Collections.singletonList(new ByLinkId(linkId))));
+    }
 
     @Override
     public DataObjectResponse<TransformRequest> handlePUT(DataObjectRequest<TransformRequest> request)
@@ -250,6 +323,15 @@ public class TransformRequestProcessor extends EndpointDataObjectRequestProcesso
                 new RuntimeException(String.format("Failed to persist the Progress TransformRequest: %1$s", transformRequestId), e),
                 400, cid));
         }
+    }
+
+    private <T> T first(DataObjectFeed<T> feed)
+    {
+        if(feed.getAll().isEmpty())
+        {
+            return null;
+        }
+        return feed.getAll().get(0);
     }
 
     public void setJsonHelper(JsonHelper jsonHelper)
