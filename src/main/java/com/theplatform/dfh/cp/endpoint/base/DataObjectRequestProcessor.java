@@ -37,6 +37,7 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     public DataObjectRequestProcessor(ObjectPersister<T> objectPersister, DataObjectValidator<T, DataObjectRequest<T>> validator)
     {
         this.objectPersister = objectPersister;
+        this.requestValidator = validator;
     }
     public DataObjectRequestProcessor(ObjectPersister<T> objectPersister)
     {
