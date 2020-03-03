@@ -44,7 +44,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 
         podConfigMap.put("analysis",
                 makeDfhBasePod("lab-main-t-aor-fhami-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhami:1.0.1")
+                        .setImageName("docker-lab.repo.theplatform.com/fhami:1.0.3")
                         .setNamePrefix("dfh-analysis")
         );
 
