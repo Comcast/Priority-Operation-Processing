@@ -21,7 +21,7 @@
         <dfh-monitor-bananas.version>1.0.0</dfh-monitor-bananas.version>
         <dfh-compression.version>1.0.0</dfh-compression.version>
         <cp-api.version>1.0.2</cp-api.version>
-        <jackson.version>2.10.0</jackson.version>
+        <jackson.version>2.10.2</jackson.version>
     </properties>
     
     <dependencies>
