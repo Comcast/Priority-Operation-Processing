@@ -14,7 +14,7 @@
     <name>Scheduling Queue Monitor AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <jackson.version>2.7.4</jackson.version>
+        <jackson.version>2.10.2</jackson.version>
         <cp-api.version>1.0.2</cp-api.version>
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
