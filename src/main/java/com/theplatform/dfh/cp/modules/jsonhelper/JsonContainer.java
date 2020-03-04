@@ -16,6 +16,12 @@ public class JsonContainer
     {
         jsonHelper = new JsonHelper();
         rootNode = jsonHelper.getObjectMapper().readTree(jsonString);
+
+        //new jackson behavior
+        if (rootNode.isMissingNode())
+        {
+            throw new IOException("json object is invalid.");
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <name>JSON Helper</name>
 
     <properties>
-        <jackson.version>2.7.4</jackson.version>
+        <jackson.version>2.10.2</jackson.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-text.version>1.4</commons-text.version>
