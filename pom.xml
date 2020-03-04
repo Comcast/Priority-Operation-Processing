@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.theplatform.dfh.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,6 +22,7 @@
         <cp-api.version>1.0.2</cp-api.version>
         <dfh-producer-consumer-util>1.0.1</dfh-producer-consumer-util>
         <dfh-dynamodb.version>1.0.1</dfh-dynamodb.version>
+        <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>
