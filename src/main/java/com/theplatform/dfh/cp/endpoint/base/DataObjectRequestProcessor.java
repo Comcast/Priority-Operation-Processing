@@ -127,6 +127,17 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
     @Override
     public DataObjectResponse<T> handlePUT(DataObjectRequest<T> request)
     {
+        return handlePUT(request, null);
+    }
+
+    /**
+     * Handles a PUT of an object using a previously retrieved object (within something extending this class)
+     * @param request holding the object to persist
+     * @param previouslyRetrievedObject Optional object (retrieved from the data store already)
+     * @return Response with the object
+     */
+    public DataObjectResponse<T> handlePUT(DataObjectRequest<T> request, T previouslyRetrievedObject)
+    {
         if(getRequestValidator() != null) getRequestValidator().validatePUT(request);
 
         T dataObjectToUpdate = request.getDataObject();
@@ -138,7 +149,9 @@ public class DataObjectRequestProcessor<T extends IdentifiedObject> implements R
             dataObjectToUpdate.setId(request.getId());
             VisibilityFilter<T, DataObjectRequest<T>> visibilityFilter = visibilityFilterMap.get(VisibilityMethod.PUT);
             //Get persisted object to verify visibility.
-            T persistedDataObject = objectPersister.retrieve(dataObjectToUpdate.getId());
+            T persistedDataObject = previouslyRetrievedObject == null
+                ? objectPersister.retrieve(dataObjectToUpdate.getId())
+                : previouslyRetrievedObject;
             if (persistedDataObject == null)
             {
                 response.setErrorResponse(ErrorResponseFactory.objectNotFound(
