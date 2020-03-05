@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.progress;
 
+import com.theplatform.dfh.endpoint.api.ErrorResponseCode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
@@ -8,7 +9,6 @@ import com.theplatform.dfh.cp.endpoint.agenda.reporter.AgendaProgressReporter;
 import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ObjectNotFoundException;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
@@ -71,8 +71,8 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
 
         if(retrieveResponse.isError())
             return retrieveResponse;
-        AgendaProgress existingProgress = retrieveResponse.getFirst();
-        if(existingProgress == null)
+        AgendaProgress retrievedProgress = retrieveResponse.getFirst();
+        if(retrievedProgress == null)
         {
             logger.warn("Unable to retrieve AgendaProgress: {}", request.getDataObject().getId());
             return new DefaultDataObjectResponse<>(ErrorResponseFactory.objectNotFound(
@@ -83,11 +83,21 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         {
             for (OperationProgress op : objectToUpdate.getOperationProgress())
             {
-                op.setAgendaProgressId(existingProgress.getId());
+                op.setAgendaProgressId(retrievedProgress.getId());
                 if (op.getId() == null)
-                    op.setId(OperationProgress.generateId(existingProgress.getId(), op.getOperation()));
-                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(existingProgress.getCustomerId(), op);
+                    op.setId(OperationProgress.generateId(retrievedProgress.getId(), op.getOperation()));
+                DataObjectRequest<OperationProgress> opProgressReq = DefaultDataObjectRequest.customerAuthInstance(retrievedProgress.getCustomerId(), op);
                 DataObjectResponse<OperationProgress> opProgressResponse = operationProgressClient.handlePUT(opProgressReq);
+
+                // an op progress can be created on-the-fly, if the update fails attempt a create
+                // TODO: consider a param on the op progress indicating this is a generated op progress
+                if (opProgressResponse.isError()
+                    && ErrorResponseCode.getFromCode(opProgressResponse.getErrorResponse().getResponseCode()) == ErrorResponseCode.OBJECT_NOT_FOUND)
+                {
+                    opProgressReq = DefaultDataObjectRequest.customerAuthInstance(retrievedProgress.getCustomerId(), populateOperationProgressForCreate(retrievedProgress, op));
+                    opProgressResponse = operationProgressClient.handlePOST(opProgressReq);
+                }
+                // PUT/POST may result in an error
                 if (opProgressResponse.isError())
                 {
                     logger.error("Unable to update OperationProgress with id {} {}", op.getId(), opProgressResponse.getErrorResponse().toString());
@@ -96,8 +106,8 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
             }
         }
 
-        updateAgendaProgressAttemptsOnComplete(objectToUpdate, existingProgress);
-        DataObjectResponse<AgendaProgress> updateResponse = super.handlePUT(request);
+        updateAgendaProgressAttemptsOnComplete(objectToUpdate, retrievedProgress);
+        DataObjectResponse<AgendaProgress> updateResponse = super.handlePUT(request, retrievedProgress);
         agendaProgressReporter.logCompletedAgenda(updateResponse);
         return updateResponse;
     }
@@ -210,5 +220,23 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
             operationProgressClient.handleDELETE(opProgressReq);
         }
         return response;
+    }
+
+    protected OperationProgress populateOperationProgressForCreate(AgendaProgress agendaProgress, OperationProgress sourceProgress)
+    {
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setCustomerId(agendaProgress.getCustomerId());
+        operationProgress.setAgendaProgressId(agendaProgress.getId());
+        operationProgress.setProcessingState(sourceProgress.getProcessingState() == null ? ProcessingState.WAITING : sourceProgress.getProcessingState());
+        operationProgress.setOperation(sourceProgress.getOperation());
+        operationProgress.setCid(agendaProgress.getCid());
+        operationProgress.setId(OperationProgress.generateId(agendaProgress.getId(), sourceProgress.getOperation()));
+        operationProgress.setParams(sourceProgress.getParams());
+        return operationProgress;
+    }
+
+    public void setOperationProgressClient(OperationProgressRequestProcessor operationProgressClient)
+    {
+        this.operationProgressClient = operationProgressClient;
     }
 }
