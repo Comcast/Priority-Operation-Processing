@@ -39,9 +39,11 @@ public enum ReigniteAgendaParameter
     public String getParameterNameWithValue(Collection<String> values)
     {
         return parameterName + SEPARATOR +
-            values == null
-            ? ""
-            : String.join(VALUE_DELIMITER, values);
+            (
+                values == null
+                    ? ""
+                    : String.join(VALUE_DELIMITER, values)
+            );
     }
 
     private static class AgendaReigniteParameters
