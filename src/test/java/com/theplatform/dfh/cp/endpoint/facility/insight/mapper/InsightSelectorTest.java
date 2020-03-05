@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.InsightMapper;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
@@ -15,6 +16,7 @@ import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -28,6 +30,10 @@ public class InsightSelectorTest
     private static final InsightRequestProcessor insightRequestProcessor = mock(InsightRequestProcessor.class);
     private static final CustomerRequestProcessor customerRequestProcesssor = mock(CustomerRequestProcessor.class);
     private static final DataObjectResponse<Insight> insightResponse = mock(DataObjectResponse.class);
+    private static final String INSIGHT_ID_1 = "insightId1";
+    private static final String INSIGHT_ID_2 = "insightId2";
+    private static final String INSIGHT_TITLE_1 = "insightTitle1";
+    private static final String INSIGHT_TITLE_2 = "insightTitle2";
     private static final Insight insight1 = new Insight();
     private static final Insight insight2 = new Insight();
     private static final InsightSelector selector = new InsightSelector(insightRequestProcessor, customerRequestProcesssor);
@@ -42,7 +48,12 @@ public class InsightSelectorTest
     public void setUp() throws PersistenceException
     {
         insight1.setIsGlobal(true);
+        insight1.setTitle(INSIGHT_TITLE_1);
+        insight1.setId(INSIGHT_ID_1);
         insight2.setIsGlobal(true);
+        insight2.setTitle(INSIGHT_TITLE_2);
+        insight2.setId(INSIGHT_ID_2);
+
         final String resourcePoolId = "myResourcPoolId76786";
         Customer agendaCustomer = new Customer();
         agendaCustomer.setCustomerId(CUSTOMER_ID_AGENDA);
@@ -98,6 +109,42 @@ public class InsightSelectorTest
         Insight insight = selector.select(agenda);
         Assert.assertNotNull(insight);
         Assert.assertEquals(insight2, insight);
+    }
+
+    @DataProvider
+    public Object[][] defaultIdTitleMatchProvider()
+    {
+        return new Object[][]
+            {
+                {INSIGHT_ID_2, insight2},
+                {INSIGHT_TITLE_2, insight2},
+                {"MissingInsightIdenitifier", insight1} // should default to first that matches
+            };
+    }
+
+    @Test(dataProvider = "defaultIdTitleMatchProvider")
+    public void testDefaultMatch(String defaultInsight, Insight expectedInsight)
+    {
+        // all insights may match
+        ParamsMap paramsMap = new ParamsMap();
+        paramsMap.put(InsightSelector.PARAM_DEFAULT_INSIGHT, defaultInsight);
+        when(agenda.getParams()).thenReturn(paramsMap);
+        // NOTE: internally both insights technically match
+        when(agenda.getOperations()).thenReturn(Arrays.asList(
+            createOperation(INSIGHT_OPERATION_TYPE_1),
+            createOperation(INSIGHT_OPERATION_TYPE_2A),
+            createOperation(INSIGHT_OPERATION_TYPE_2B)));
+
+        Insight selectedInsight = selector.select(agenda);
+        Assert.assertNotNull(selectedInsight);
+        Assert.assertEquals(expectedInsight, selectedInsight);
+    }
+
+    protected Operation createOperation(String type)
+    {
+        Operation operation = new Operation();
+        operation.setType(type);
+        return operation;
     }
 
     ////////

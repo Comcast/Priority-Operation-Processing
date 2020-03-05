@@ -13,14 +13,18 @@ import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.ValidationException;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class InsightSelector
 {
+    public static final String PARAM_DEFAULT_INSIGHT = "defaultInsight";
+
     private InsightRequestProcessor insightRequestProcessor;
     private CustomerRequestProcessor customerRequestProcessor;
 
@@ -44,6 +48,9 @@ public class InsightSelector
         List<Insight> availableInsights = lookupInsights(customer.getResourcePoolId(), customer.getId());
         if(availableInsights == null) return null;
 
+        String defaultInsightId = getDefaultInsightIdentifier(agenda);
+        List<Insight> matchedInsights = new LinkedList<>();
+
         for(Insight insight : availableInsights)
         {
             Map<String, Set<String>> insightMappers = insight.getMappers();
@@ -51,11 +58,35 @@ public class InsightSelector
             for(Map.Entry<String, Set<String>> mapEntry : insightMappers.entrySet())
             {
                 InsightMapper insightMapper = InsightMapperRegistry.getMapper(mapEntry.getKey(), mapEntry.getValue());
-                if(insightMapper != null && insightMapper.matches(agenda)) return insight;
+                if(insightMapper != null && insightMapper.matches(agenda))
+                {
+                    // no desired default, done
+                    if(defaultInsightId == null)
+                        return insight;
+                    // match the desired default to title or id, done
+                    if(StringUtils.equalsIgnoreCase(defaultInsightId, insight.getTitle())
+                        ||  StringUtils.equalsIgnoreCase(defaultInsightId, insight.getId()))
+                    {
+                        return insight;
+                    }
+                    // backup list as we search for matches (assumes a default is specified)
+                    matchedInsights.add(insight);
+                }
             }
         }
+        // default not found, tolerate not found and return first from the found list
+        if(matchedInsights.size() > 0)
+            return matchedInsights.get(0);
         return null;
     }
+
+    private String getDefaultInsightIdentifier(Agenda agenda)
+    {
+        if(agenda.getParams() == null || !agenda.getParams().containsKey(PARAM_DEFAULT_INSIGHT))
+            return null;
+        return agenda.getParams().getString(PARAM_DEFAULT_INSIGHT);
+    }
+
     private List<Insight> lookupInsights(final String resourcePoolId, final String customerId)
     {
         if(resourcePoolId == null) return null;
