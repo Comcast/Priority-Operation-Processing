@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.progress;
 
+import com.theplatform.dfh.cp.endpoint.validation.AgendaProgressValidator;
 import com.theplatform.dfh.endpoint.api.ErrorResponseCode;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
@@ -41,7 +42,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
     public AgendaProgressRequestProcessor(ObjectPersister<AgendaProgress> agendaProgressPersister, ObjectPersister<Agenda> agendaPersister,
         ObjectPersister<OperationProgress> operationProgressPersister)
     {
-        super(agendaProgressPersister, new DataObjectValidator<>());
+        super(agendaProgressPersister, new AgendaProgressValidator());
         agendaProgressReporter = new AgendaProgressReporter(agendaPersister);
         agendaProgressReporter.setAgendaProgressPersister(agendaProgressPersister);
         operationProgressClient = new OperationProgressRequestProcessor(operationProgressPersister);
@@ -83,6 +84,8 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         {
             for (OperationProgress op : objectToUpdate.getOperationProgress())
             {
+                if(op == null) continue; // help the user a slight bit
+
                 op.setAgendaProgressId(retrievedProgress.getId());
                 if (op.getId() == null)
                     op.setId(OperationProgress.generateId(retrievedProgress.getId(), op.getOperation()));
@@ -224,15 +227,12 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
 
     protected OperationProgress populateOperationProgressForCreate(AgendaProgress agendaProgress, OperationProgress sourceProgress)
     {
-        OperationProgress operationProgress = new OperationProgress();
-        operationProgress.setCustomerId(agendaProgress.getCustomerId());
-        operationProgress.setAgendaProgressId(agendaProgress.getId());
-        operationProgress.setProcessingState(sourceProgress.getProcessingState() == null ? ProcessingState.WAITING : sourceProgress.getProcessingState());
-        operationProgress.setOperation(sourceProgress.getOperation());
-        operationProgress.setCid(agendaProgress.getCid());
-        operationProgress.setId(OperationProgress.generateId(agendaProgress.getId(), sourceProgress.getOperation()));
-        operationProgress.setParams(sourceProgress.getParams());
-        return operationProgress;
+        sourceProgress.setCustomerId(agendaProgress.getCustomerId());
+        sourceProgress.setAgendaProgressId(agendaProgress.getId());
+        sourceProgress.setProcessingState(sourceProgress.getProcessingState() == null ? ProcessingState.WAITING : sourceProgress.getProcessingState());
+        sourceProgress.setCid(agendaProgress.getCid());
+        sourceProgress.setId(OperationProgress.generateId(agendaProgress.getId(), sourceProgress.getOperation()));
+        return sourceProgress;
     }
 
     public void setOperationProgressClient(OperationProgressRequestProcessor operationProgressClient)
