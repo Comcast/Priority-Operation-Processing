@@ -3,6 +3,7 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.theplatform.dfh.cp.endpoint.agenda.service.aws.ExpandAgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
@@ -36,6 +37,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/resourcepool/service/expandAgenda", new ExpandAgendaLambdaStreamEntry());
     }
 
     @Override
