@@ -28,6 +28,7 @@ import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -135,7 +136,9 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         agenda.setId(sourceAgenda.getId());
         agenda.setCustomerId(sourceAgenda.getCustomerId());
         // append operations
-        sourceAgenda.getOperations().addAll(expandAgendaRequest.getOperations());
+        agenda.setOperations(new LinkedList<>());
+        agenda.getOperations().addAll(sourceAgenda.getOperations());
+        agenda.getOperations().addAll(expandAgendaRequest.getOperations());
         // append any params
         if(expandAgendaRequest.getParams() != null)
         {
