@@ -19,15 +19,15 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCust
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
  * Main entry point class for the AWS Agenda expand endpoint
  */
-public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<ReigniteAgendaResponse, LambdaRequest<ReigniteAgendaRequest>>
+public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<ExpandAgendaResponse, LambdaRequest<ExpandAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -39,7 +39,7 @@ public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Rei
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<ReigniteAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<ExpandAgendaRequest> lambdaRequest)
     {
         return new ExpandAgendaServiceRequestProcessor(
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
@@ -52,9 +52,9 @@ public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Rei
     }
 
     @Override
-    public LambdaRequest<ReigniteAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<ExpandAgendaRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, ReigniteAgendaRequest.class);
+        return new LambdaRequest<>(node, ExpandAgendaRequest.class);
     }
 
     public ExpandAgendaLambdaStreamEntry()
