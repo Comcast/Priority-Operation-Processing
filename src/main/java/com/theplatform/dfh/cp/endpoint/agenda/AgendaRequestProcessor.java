@@ -18,6 +18,7 @@ import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.cleanup.EndpointObjectTracker;
 import com.theplatform.dfh.cp.endpoint.cleanup.ObjectTrackerManager;
 import com.theplatform.dfh.cp.endpoint.cleanup.PersisterObjectTracker;
+import com.theplatform.dfh.cp.endpoint.data.EndpointObjectGenerator;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaValidator;
@@ -133,7 +134,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         // always create new OperationProgress objects
         if (agendaToPersist.getOperations() != null)
         {
-            DataObjectResponse<OperationProgress> persistResponse = persistOperationProgresses(agendaToPersist, agendaProgressId, request.getCID(), trackerManager);
+            DataObjectResponse<OperationProgress> persistResponse = persistOperationProgresses(agendaToPersist, request.getCID(), trackerManager);
             if (persistResponse.isError())
             {
                 trackerManager.cleanUp();
@@ -163,10 +164,12 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
 
         return agendaPersistResponse;
     }
+
     @Override
     public DataObjectResponse<Agenda> handlePUT(DataObjectRequest<Agenda> request)
     {
-        throw new BadRequestException("PUT is not implemented for this endpoint");
+        // NOTE: this is currently only intended for use with the Agenda expansion functionality, no agenda/operation progress is affected as with the other methods
+        return super.handlePUT(request);
     }
 
     @Override
@@ -240,7 +243,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         return agendaProgressClient.handlePUT(DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(),agendaProgress));
     }
 
-    private DataObjectResponse<OperationProgress> persistOperationProgresses(Agenda agenda, String agendaProgressId, String cid, ObjectTrackerManager trackerManager)
+    private DataObjectResponse<OperationProgress> persistOperationProgresses(Agenda agenda, String cid, ObjectTrackerManager trackerManager)
     {
         ////
         // persist operation progress
@@ -248,20 +251,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         DataObjectResponse<OperationProgress> dataObjectResponse = new DefaultDataObjectResponse<>();
         for (Operation operation : agenda.getOperations())
         {
-            OperationProgress operationProgress = new OperationProgress();
-            operationProgress.setCustomerId(agenda.getCustomerId());
-            operationProgress.setAgendaProgressId(agendaProgressId);
-            operationProgress.setProcessingState(ProcessingState.WAITING);
-            operationProgress.setOperation(operation.getName());
-            operationProgress.setCid(agenda.getCid());
-            operationProgress.setId(OperationProgress.generateId(agendaProgressId, operation.getName()));
-
-            if (operation.getParams() != null)
-            {
-                ParamsMap params = new ParamsMap();
-                params.putAll(operation.getParams());
-                operationProgress.setParams(params);
-            }
+            OperationProgress operationProgress = EndpointObjectGenerator.generateWaitingOperationProgress(agenda, operation);
 
             try {
                 //If the customer can create transform requests then they are allowed to create progress.
