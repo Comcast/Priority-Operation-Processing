@@ -142,14 +142,21 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         // append any params
         if(expandAgendaRequest.getParams() != null)
         {
-            if(sourceAgenda.getParams() == null)
-                sourceAgenda.setParams(new ParamsMap());
-            for (Map.Entry<String, Object> entry : expandAgendaRequest.getParams().entrySet())
-            {
-                sourceAgenda.getParams().put(entry.getKey(), entry.getValue());
-            }
+            agenda.setParams(new ParamsMap());
+            appendParams(sourceAgenda.getParams(), agenda.getParams());
+            appendParams(expandAgendaRequest.getParams(), agenda.getParams());
         }
         return agenda;
+    }
+
+    private void appendParams(ParamsMap sourceParams, ParamsMap destinationParams)
+    {
+        if(sourceParams == null)
+            return;
+        for (Map.Entry<String, Object> entry : sourceParams.entrySet())
+        {
+            destinationParams.put(entry.getKey(), entry.getValue());
+        }
     }
 
     private List<OperationProgress> generateOperationProgressList(Agenda agenda, ExpandAgendaRequest expandAgendaRequest)
