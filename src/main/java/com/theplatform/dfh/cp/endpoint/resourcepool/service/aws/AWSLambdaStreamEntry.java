@@ -3,7 +3,6 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.endpoint.agenda.service.aws.ExpandAgendaLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.JsonRequestStreamHandler;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;

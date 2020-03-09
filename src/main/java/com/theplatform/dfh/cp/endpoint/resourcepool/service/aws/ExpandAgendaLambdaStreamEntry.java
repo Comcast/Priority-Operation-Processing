@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.endpoint.agenda.service.aws;
+package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.theplatform.dfh.cp.api.Agenda;
@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.agenda.service.ExpandAgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.service.ExpandAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
