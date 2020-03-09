@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
@@ -10,20 +11,29 @@ import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
+import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,13 +67,55 @@ public class ExpandAgendaServiceRequestProcessorTest
         requestProcessor.setServiceDataObjectRetriever(mockDataObjectRetriever);
     }
 
-    @Test
-    public void testSuccessfulUpdate()
+    @DataProvider
+    public Object[][] validParamsMapProvider()
+    {
+        return new Object[][]
+        {
+            {null},
+            {new ParamsMap()},
+            {createParamsMap("key1")},
+            {createParamsMap("key1", "key2", "key3")},
+        };
+    }
+
+    @Test(dataProvider = "validParamsMapProvider")
+    public void testSuccessfulUpdate(ParamsMap paramsMap)
     {
         setupSuccessfulAgendaLookup();
-        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
+        doAnswer(new Answer()
+        {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable
+            {
+                DataObjectRequest<Agenda> agendaRequest = (DataObjectRequest<Agenda>)invocation.getArguments()[0];
+                DataObjectResponse<Agenda> agendaResponse = new DefaultDataObjectResponse<>();
+                agendaResponse.add(agendaRequest.getDataObject());
+                return agendaResponse;
+            }
+        }).when(mockAgendaRequestProcessor).handlePUT(any());
+
         doReturn(new DefaultDataObjectResponse<>()).when(mockOperationProgressRequestProcessor).handlePOST(any());
-        testExecute(1,1);
+        if(paramsMap != null)
+            expandAgendaRequest.setParams(paramsMap);
+        ExpandAgendaResponse response = testExecute(1,1);
+        Assert.assertNotNull(response);
+        Agenda resultingAgenda = response.getAgenda();
+        Assert.assertNotNull(resultingAgenda);
+        if(paramsMap != null)
+        {
+            ParamsMap resultingMap = resultingAgenda.getParams();
+            Assert.assertNotNull(resultingMap);
+            for (Map.Entry<String, Object> entries : paramsMap.entrySet())
+            {
+                Assert.assertTrue(resultingMap.containsKey(entries.getKey()));
+                Assert.assertEquals(resultingMap.get(entries.getKey()), entries.getValue());
+            }
+        }
+        else
+        {
+            Assert.assertNull(resultingAgenda.getParams());
+        }
     }
 
     @Test
@@ -88,6 +140,16 @@ public class ExpandAgendaServiceRequestProcessorTest
     }
 
     @Test
+    public void testExceptionOnAgendaUpdate()
+    {
+        setupSuccessfulAgendaLookup();
+        DefaultDataObjectResponse<Agenda> agendaPersistResponse = new DefaultDataObjectResponse<>();
+        agendaPersistResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
+        doThrow(new RuntimeServiceException("", 500)).when(mockAgendaRequestProcessor).handlePUT(any());
+        testErrorExecute(1, 0);
+    }
+
+    @Test
     public void testErrorOnOperationProgressCreate()
     {
         setupSuccessfulAgendaLookup();
@@ -95,6 +157,15 @@ public class ExpandAgendaServiceRequestProcessorTest
         operationProgressCreateResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
         doReturn(operationProgressCreateResponse).when(mockOperationProgressRequestProcessor).handlePOST(any());
+        testErrorExecute(1, 1);
+    }
+
+    @Test
+    public void testExceptionOnOperationProgressCreate()
+    {
+        setupSuccessfulAgendaLookup();
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
+        doThrow(new RuntimeServiceException("", 500)).when(mockOperationProgressRequestProcessor).handlePOST(any());
         testErrorExecute(1, 1);
     }
 
@@ -150,5 +221,15 @@ public class ExpandAgendaServiceRequestProcessorTest
             op.setName(opName);
             return op;
         }).collect(Collectors.toList());
+    }
+
+    private ParamsMap createParamsMap(String... keyNames)
+    {
+        ParamsMap paramsMap = new ParamsMap();
+        Arrays.stream(keyNames).forEach(key ->
+        {
+            paramsMap.put(key, UUID.randomUUID().toString());
+        });
+        return paramsMap;
     }
 }

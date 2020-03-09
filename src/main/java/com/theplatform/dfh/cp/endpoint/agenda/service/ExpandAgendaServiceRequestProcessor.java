@@ -83,6 +83,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
         Agenda agenda = agendaRequestResult.getDataObjectResponse().getFirst();
+        Agenda resultAgenda = null;
 
         ////
         // Update/Persist the Agenda (basically just a pass through to PUT)
@@ -95,6 +96,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
 
             if(updatedAgendaResponse.isError())
                 return createExpandAgendaResponse(serviceRequest, updatedAgendaResponse.getErrorResponse(), "Failed to update Agenda.");
+            resultAgenda = updatedAgendaResponse.getFirst();
         }
         catch (Exception e)
         {
@@ -126,7 +128,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
                 new RuntimeServiceException("Failed to update agenda progress with generated operations.", e, 500), serviceRequest.getCID()), null);
         }
 
-        return createExpandAgendaResponse(serviceRequest, null, null);
+        return createExpandAgendaResponse(serviceRequest, resultAgenda);
     }
 
     private Agenda createUpdatedAgenda(Agenda sourceAgenda, ExpandAgendaRequest expandAgendaRequest)
@@ -164,6 +166,14 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         return expandAgendaRequest.getOperations().stream()
             .map(op -> EndpointObjectGenerator.generateWaitingOperationProgress(agenda, op))
             .collect(Collectors.toList());
+    }
+
+    private ExpandAgendaResponse createExpandAgendaResponse(ServiceRequest<ExpandAgendaRequest> serviceRequest, Agenda resultingAgenda)
+    {
+        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
+        expandAgendaResponse.setCID(serviceRequest.getCID());
+        expandAgendaResponse.setAgenda(resultingAgenda);
+        return expandAgendaResponse;
     }
 
     private ExpandAgendaResponse createExpandAgendaResponse(ServiceRequest<ExpandAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
