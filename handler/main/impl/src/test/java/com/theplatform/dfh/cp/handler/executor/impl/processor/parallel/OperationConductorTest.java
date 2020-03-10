@@ -59,7 +59,7 @@ public class OperationConductorTest
         doReturn(mockJsonContext).when(mockExecutorContext).getJsonContext();
         mockExecutorService = mock(ExecutorService.class);
         mockOperationRunnerFactory = mock(OperationRunnerFactory.class);
-        operationConductor = new OperationConductor(new ArrayList<>(), mockExecutorContext);
+        operationConductor = new OperationConductor(new ArrayList<>(), mockExecutorContext, null);
         operationConductor.setOperationRunnerFactory(mockOperationRunnerFactory);
         operationConductor.setExecutorService(mockExecutorService);
     }
@@ -80,7 +80,8 @@ public class OperationConductorTest
     @Test(expectedExceptions = AgendaExecutorException.class, expectedExceptionsMessageRegExp = ".*deadlock.*")
     public void testDeadlock()
     {
-        // no pending ops, no running ops
+        // 1 pending op that is not ready and no running operations = DEADLOCK
+        addOperations(1, false, operationConductor.getPendingOperations());
         operationConductor.launchReadyPendingOperations();
     }
 

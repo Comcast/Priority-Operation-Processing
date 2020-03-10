@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations;
 
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
+import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
 import com.theplatform.dfh.cp.handler.executor.impl.resident.log.LogResidentHandler;
 import com.theplatform.dfh.cp.handler.filter.accelerate.impl.AccelerateFilterHandler;
@@ -20,32 +21,36 @@ public class ResidentOperationRegistry
 {
     private static Logger logger = LoggerFactory.getLogger(ResidentOperationRegistry.class);
 
-    private static Map<String, Class<? extends ResidentHandler>> residentHandlerMap = new HashMap<>();
+    private Map<String, ResidentHandlerFactory> residentHandlerMap = new HashMap<>();
 
-    static
+    public ResidentOperationRegistry()
     {
-        residentHandlerMap.put("residentSample", SampleResidentHandler.class);
-        residentHandlerMap.put("logMessages", LogResidentHandler.class);
-        residentHandlerMap.put("agendaPost", CreateAgendaHandler.class);
-        residentHandlerMap.put("ldap", LDAPFilterHandler.class);
-        residentHandlerMap.put("accelerate", AccelerateFilterHandler.class);
-        residentHandlerMap.put("idmhttp", IdmHttpRequestHandler.class);
+        registerDefaultHandlers();
     }
 
-    public ResidentHandler getHandler(String type)
+    private void registerDefaultHandlers()
     {
-        Class<? extends ResidentHandler> residentHandlerClass = residentHandlerMap.get(type);
-        if(residentHandlerClass != null)
+        // NOTE: this is only the simple resident handlers. Any that require additional functionality use registerHandlerFactory (op generator for example)
+        residentHandlerMap.put("residentSample", new BasicResidentHandlerFactory<>(SampleResidentHandler.class));
+        residentHandlerMap.put("logMessages", new BasicResidentHandlerFactory<>(LogResidentHandler.class));
+        residentHandlerMap.put("agendaPost", new BasicResidentHandlerFactory<>(CreateAgendaHandler.class));
+        residentHandlerMap.put("ldap", new BasicResidentHandlerFactory<>(LDAPFilterHandler.class));
+        residentHandlerMap.put("accelerate", new BasicResidentHandlerFactory<>(AccelerateFilterHandler.class));
+        residentHandlerMap.put("idmhttp", new BasicResidentHandlerFactory<>(IdmHttpRequestHandler.class));
+    }
+
+    public ResidentHandler getHandler(ExecutorContext executorContext, String type)
+    {
+        ResidentHandlerFactory residentHandlerFactory = residentHandlerMap.get(type);
+        if(residentHandlerFactory != null)
         {
-            try
-            {
-                return residentHandlerClass.newInstance();
-            }
-            catch(InstantiationException | IllegalAccessException e)
-            {
-                logger.error("Failed to instantiate ResidentHandler: {}", residentHandlerClass.getSimpleName());
-            }
+            return residentHandlerFactory.create(executorContext);
         }
         return null;
+    }
+
+    public void registerHandlerFactory(String id, ResidentHandlerFactory residentHandlerFactory)
+    {
+        residentHandlerMap.put(id, residentHandlerFactory);
     }
 }

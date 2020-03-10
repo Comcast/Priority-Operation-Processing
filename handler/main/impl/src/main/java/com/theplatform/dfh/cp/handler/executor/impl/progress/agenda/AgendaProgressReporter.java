@@ -92,6 +92,11 @@ public class AgendaProgressReporter
         agendaProgressConsumer.incrementCompletedOperationCount(incrementAmount);
     }
 
+    public void adjustOperationTotalCount(int operationTotalCountAdjust)
+    {
+        agendaProgressConsumer.adjustTotalProgressOperationCount(operationTotalCountAdjust);
+    }
+
     public AgendaProgressFactory getAgendaProgressFactory()
     {
         return agendaProgressFactory;

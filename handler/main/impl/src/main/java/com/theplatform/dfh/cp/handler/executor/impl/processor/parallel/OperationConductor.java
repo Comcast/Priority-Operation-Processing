@@ -12,6 +12,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.JsonContextUpdater;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
+import com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator.GeneratedOperationsModifier;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.runner.OperationRunnerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -56,13 +57,16 @@ public class OperationConductor implements OnOperationCompleteListener
     private OperationRunnerFactory operationRunnerFactory;
     private ExecutorService executorService;
     private JsonContextUpdater jsonContextUpdater;
+    private List<OperationConductorModifier> completedOperationModifiers;
 
     /**
      * Ctor
      * @param operations The operations to conduct (all will be run, unless there is a workflow problem)
      * @param executorContext The context for this executor instance
+     * @param completedOperationModifiers The modifiers to use when operations are completed
      */
-    public OperationConductor(Collection<Operation> operations, ExecutorContext executorContext)
+    public OperationConductor(Collection<Operation> operations, ExecutorContext executorContext,
+        List<OperationConductorModifier> completedOperationModifiers)
     {
         this.postProcessingOperationQueue = new LinkedBlockingQueue<>();
         // thread safety is not actually important on these collections. They are only adjusted/read in the OperationAdviser thread
@@ -78,6 +82,18 @@ public class OperationConductor implements OnOperationCompleteListener
 
         this.pendingOperations = operations.stream().map(op -> new OperationWrapper(op).init(executorContext, jsonContextUpdater)).collect(Collectors.toList());
         this.allOperations = Collections.unmodifiableList(new ArrayList<>(pendingOperations));
+        this.completedOperationModifiers = completedOperationModifiers;
+    }
+
+    /**
+     * Ctor
+     * @param operations The operations to conduct (all will be run, unless there is a workflow problem)
+     * @param executorContext The context for this executor instance
+     */
+    public OperationConductor(Collection<Operation> operations, ExecutorContext executorContext)
+    {
+        this(operations, executorContext, Arrays.asList(
+            new GeneratedOperationsModifier(executorContext)));
     }
 
     /**
@@ -104,15 +120,10 @@ public class OperationConductor implements OnOperationCompleteListener
             executorContext.getAgendaProgressReporter().addProgress(ProcessingState.EXECUTING, ExecutorMessages.OPERATIONS_RUNNING.getMessage());
 
             logger.debug("Before drain/launch operations.");
-            while (!pendingOperations.isEmpty())
+            while (pendingOperations.size() > 0 || runningOperations.size() > 0)
             {
                 drainPostProcessOperations();
                 launchReadyPendingOperations();
-                waitOnPostProcessOperations();
-            }
-            while(!runningOperations.isEmpty())
-            {
-                drainPostProcessOperations();
                 waitOnPostProcessOperations();
             }
         }
@@ -206,12 +217,14 @@ public class OperationConductor implements OnOperationCompleteListener
         Collection<OperationWrapper> readyOperations = getReadyOperations();
 
         // if there is nothing ready and nothing running it's DEADLOCK time!
-        if(runningOperations.size() == 0 && readyOperations.size() == 0)
+        if(runningOperations.size() == 0
+            && readyOperations.size() == 0
+            && pendingOperations.size() > 0)
         {
             logger.info("DEADLOCK{}{}", System.getProperty("line.separator"),
                 pendingOperations.stream().map(ow -> ow.getOperation().getName() + ":(depends on):" + String.join(",", ow.getDependencies()))
                     .collect(Collectors.joining(System.getProperty("line.separator"))));
-            throw new AgendaExecutorException("Agenda operation deadlock has occurred. There are operations with dependencies but nothing is running.");
+            throw new AgendaExecutorException("Agenda operation deadlock has occurred. There are pending operations (likely with dependencies) but none are ready.");
         }
 
         if(readyOperations.size() > 0)
@@ -294,6 +307,13 @@ public class OperationConductor implements OnOperationCompleteListener
                 // remove all pending operations
                 pendingOperations.clear();
             }
+            else
+            {
+                // perform any successful+completed operation modifications
+                if(completedOperationModifiers != null)
+                    completedOperationModifiers.forEach(operationConductorModifier ->
+                        operationConductorModifier.modify(executorContext, operationWrapper, this));
+            }
 
             // this operation should migrate to complete no matter its current state
             pendingOperations.remove(operationWrapper);
@@ -354,14 +374,24 @@ public class OperationConductor implements OnOperationCompleteListener
         return postProcessingOperationQueue;
     }
 
-    protected List<OperationWrapper> getRunningOperations()
+    public List<OperationWrapper> getRunningOperations()
     {
         return runningOperations;
     }
 
-    protected List<OperationWrapper> getPendingOperations()
+    public List<OperationWrapper> getPendingOperations()
     {
         return pendingOperations;
+    }
+
+    public List<OperationWrapper> getFailedOperations()
+    {
+        return failedOperations;
+    }
+
+    public JsonContextUpdater getJsonContextUpdater()
+    {
+        return jsonContextUpdater;
     }
 
     /**
@@ -426,5 +456,10 @@ public class OperationConductor implements OnOperationCompleteListener
     protected void setFailedOperations(List<OperationWrapper> failedOperations)
     {
         this.failedOperations = failedOperations;
+    }
+
+    public void setCompletedOperationModifiers(List<OperationConductorModifier> completedOperationModifiers)
+    {
+        this.completedOperationModifiers = completedOperationModifiers;
     }
 }

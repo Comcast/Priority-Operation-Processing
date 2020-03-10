@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.executor.impl.context;
 
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
@@ -14,10 +13,12 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.ResourcePoolServiceAgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
+import com.theplatform.dfh.cp.handler.executor.impl.resident.generator.AgendaUpdateResidentHandlerFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.idm.IDMHTTPClientConfig;
@@ -87,8 +88,12 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         operationExecutorFactory.setResidentOperationExecutorFactory(new ResidentOperationExecutorFactory());
 
-        return new ExecutorContext(createAgendaReporter(urlConnectionFactory), launchDataWrapper, operationExecutorFactory, shutdownProcessors)
+        ExecutorContext executorContext = new ExecutorContext(launchDataWrapper, operationExecutorFactory, shutdownProcessors)
             .setUrlConnectionFactory(urlConnectionFactory);
+
+        setupResidentOperationExecutorFactory(operationExecutorFactory);
+        configureLaunchTypeReporter(executorContext, urlConnectionFactory);
+        return executorContext;
     }
 
     @Override
@@ -97,20 +102,28 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         throw new UnsupportedOperationException();
     }
 
-    public ProgressReporter<AgendaProgress> createAgendaReporter(HttpURLConnectionFactory httpURLConnectionFactory)
+    protected void setupResidentOperationExecutorFactory(OperationExecutorFactory operationExecutorFactory)
+    {
+        operationExecutorFactory.getResidentOperationExecutorFactory()
+            .getResidentOperationsRegistry().registerHandlerFactory("agendaUpdate", new AgendaUpdateResidentHandlerFactory());
+    }
+
+    public void configureLaunchTypeReporter(ExecutorContext executorContext, HttpURLConnectionFactory httpURLConnectionFactory)
     {
         switch(getLaunchType())
         {
             case local:
             case docker:
-                return new LogReporter<>();
+                executorContext.setReporter(new LogReporter<>());
+                break;
             case kubernetes:
             default:
-                return createHttpAgendaReporter(httpURLConnectionFactory);
+                setupHttpResourcePoolAccess(executorContext, httpURLConnectionFactory);
+
         }
     }
 
-    protected ProgressReporter<AgendaProgress> createHttpAgendaReporter(HttpURLConnectionFactory httpURLConnectionFactory)
+    protected void setupHttpResourcePoolAccess(ExecutorContext executorContext, HttpURLConnectionFactory httpURLConnectionFactory)
     {
         FieldRetriever propertyRetriever = launchDataWrapper.getPropertyRetriever();
 
@@ -120,10 +133,13 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         {
             throw new RuntimeException("Invalid AgendaProgress url specified.");
         }
-        return new ResourcePoolServiceAgendaProgressReporter(
-            resourcePoolServiceClientFactory.create(agendaProgressUrl, httpURLConnectionFactory));
+        ResourcePoolServiceClient resourcePoolServiceClient =
+            resourcePoolServiceClientFactory.create(agendaProgressUrl, httpURLConnectionFactory);
+        executorContext.setResourcePoolServiceClient(resourcePoolServiceClient);
+        executorContext.setReporter(new ResourcePoolServiceAgendaProgressReporter(resourcePoolServiceClient));
     }
 
+    //TODO: restore the timeouts (the http stuff changed affecting its use)
     protected int getProgressTimeout(PropertyRetriever propertyRetriever)
     {
         String progressConnectionTimeoutString = propertyRetriever.getField(AGENDA_PROGRESS_CONNECTION_TIMEOUT, Integer.toString(DEFAULT_AGENDA_PROGRESS_CONNECTION_TIMEOUT));

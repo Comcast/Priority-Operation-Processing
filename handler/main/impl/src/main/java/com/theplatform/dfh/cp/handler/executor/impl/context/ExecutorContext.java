@@ -20,6 +20,7 @@ import com.theplatform.dfh.cp.handler.kubernetes.support.payload.PayloadWriterFa
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
 
     private HttpURLConnectionFactory urlConnectionFactory;
     private OperationExecutorFactory operationExecutorFactory;
+    private PayloadWriterFactory<ExecutionConfig> payloadWriterFactory;
+    private ResourcePoolServiceClient resourcePoolServiceClient;
     private JsonHelper jsonHelper = new JsonHelper();
     private JsonContext jsonContext;
     private ProgressReporter reporter;
@@ -49,27 +52,15 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     private String agendaId;
     private String agendaProgressId;
     private Agenda agenda;
-    private PayloadWriterFactory<ExecutionConfig> payloadWriterFactory;
 
-    public ExecutorContext(ProgressReporter reporter, LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
+    public ExecutorContext(LaunchDataWrapper launchDataWrapper, OperationExecutorFactory operationExecutorFactory,
         List<ShutdownProcessor> shutdownProcessors)
     {
         super(launchDataWrapper);
-        this.reporter = reporter;
         this.operationExecutorFactory = operationExecutorFactory;
         this.shutdownProcessors = new LinkedList<>();
         this.shutdownProcessors.addAll(shutdownProcessors);
         this.jsonContext = new JsonContext();
-        agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
-        agendaProgressId = launchDataWrapper.getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
-        if(agendaProgressId == null)
-        {
-            logger.warn("{} was unset, defaulting null", HandlerField.PROGRESS_ID.name());
-        }
-        agendaProgressReporter = new
-            AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
-            agendaProgressId
-        ));
         payloadWriterFactory = new PayloadWriterFactoryImpl(launchDataWrapper);
     }
 
@@ -100,14 +91,19 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         return agendaProgressReporter;
     }
 
-    protected void setAgendaProgressReporter(AgendaProgressReporter agendaProgressReporter)
-    {
-        this.agendaProgressReporter = agendaProgressReporter;
-    }
-
     @Override
     public void init()
     {
+        agendaProgressThread = new AgendaProgressThread(createAgendaProgressThreadConfig(reporter));
+        agendaProgressId = getLaunchDataWrapper().getEnvironmentRetriever().getField(HandlerField.PROGRESS_ID.name(), null);
+        if(agendaProgressId == null)
+        {
+            logger.warn("{} was unset, defaulting null", HandlerField.PROGRESS_ID.name());
+        }
+        agendaProgressReporter = new
+            AgendaProgressReporter(agendaProgressThread, new AgendaProgressFactory(
+            agendaProgressId
+        ));
         agendaProgressThread.init();
     }
 
@@ -154,6 +150,11 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
     public ProgressReporter getReporter()
     {
         return reporter;
+    }
+
+    public void setReporter(ProgressReporter reporter)
+    {
+        this.reporter = reporter;
     }
 
     public String getAgendaId()
@@ -222,5 +223,15 @@ public class ExecutorContext extends BaseOperationContext<LaunchDataWrapper>
         PayloadWriterFactory<ExecutionConfig> payloadWriterFactory)
     {
         this.payloadWriterFactory = payloadWriterFactory;
+    }
+
+    public ResourcePoolServiceClient getResourcePoolServiceClient()
+    {
+        return resourcePoolServiceClient;
+    }
+
+    public void setResourcePoolServiceClient(ResourcePoolServiceClient resourcePoolServiceClient)
+    {
+        this.resourcePoolServiceClient = resourcePoolServiceClient;
     }
 }

@@ -159,19 +159,20 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
         else
         {
             logger.trace("Reporting progress here. LinkId:[" + agendaProgress.getLinkId() + "], agendaId: [" +
-                         agendaProgress.getAgendaId() + "], Id: [" + agendaProgress.getId() + "], Cid: [" + agendaProgress.getCid() + "]");
+                agendaProgress.getAgendaId() + "], Id: [" + agendaProgress.getId() + "], Cid: [" + agendaProgress.getCid() + "]");
             agendaProgressThreadConfig.getReporter().reportProgress(agendaProgress);
-
-            logger.debug(
-                "Reported progress {} {}% for: {} with progress updates for ops: {}",
-                agendaProgress.getProcessingState(),
-                agendaProgress.getPercentComplete(),
-                agendaProgress.getId(),
-                operationProgressToReport == null
-                ? null
-                : operationProgressToReport.stream().map(OperationProgress::getOperation).collect(Collectors.joining(","))
-            );
         }
+
+        logger.debug(
+            "Reported progress {} {}% for: {} with progress updates for ops: {}",
+            agendaProgress.getProcessingState(),
+            agendaProgress.getPercentComplete(),
+            agendaProgress.getId(),
+            operationProgressToReport == null
+            ? null
+            : operationProgressToReport.stream().map(OperationProgress::getOperation).collect(Collectors.joining(","))
+        );
+
 
         if(agendaProgress.getProcessingState() == ProcessingState.COMPLETE)
         {
@@ -187,6 +188,12 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
     public synchronized void setTotalProgressOperationCount(int totalProgressOperationCount)
     {
         this.totalProgressOperationCount = totalProgressOperationCount;
+    }
+
+    @Override
+    public synchronized void adjustTotalProgressOperationCount(int operationTotalCountAdjustment)
+    {
+        setTotalProgressOperationCount(totalProgressOperationCount + operationTotalCountAdjustment);
     }
 
     @Override

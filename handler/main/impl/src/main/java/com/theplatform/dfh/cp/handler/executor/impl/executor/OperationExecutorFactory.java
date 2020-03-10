@@ -39,4 +39,9 @@ public abstract class OperationExecutorFactory
         this.residentOperationExecutorFactory = residentOperationExecutorFactory;
         return this;
     }
+
+    public ResidentOperationExecutorFactory getResidentOperationExecutorFactory()
+    {
+        return residentOperationExecutorFactory;
+    }
 }
