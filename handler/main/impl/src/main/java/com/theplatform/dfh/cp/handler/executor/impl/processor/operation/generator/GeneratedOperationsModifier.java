@@ -50,7 +50,15 @@ public class GeneratedOperationsModifier implements OperationConductorModifier
         if(!isOperationGenerator(operationWrapper.getOperation()))
             return;
 
-        GeneratedOperationData generatedOperationData = retrieveGeneratedOperationData(operationWrapper, retrieveOutputDefinition(operationWrapper.getOperation()));
+        OperationGeneratorOutputDefinition outputDefinition = retrieveOutputDefinition(operationWrapper.getOperation());
+
+        if(outputDefinition.getLogOnly() != null && outputDefinition.getLogOnly())
+        {
+            logger.info("Skipping operation injection (by request).");
+            return;
+        }
+
+        GeneratedOperationData generatedOperationData = retrieveGeneratedOperationData(operationWrapper, outputDefinition);
 
         List<Operation> generatedOperations = generatedOperationData.getOperations();
         if(generatedOperations == null || generatedOperations.size() == 0)

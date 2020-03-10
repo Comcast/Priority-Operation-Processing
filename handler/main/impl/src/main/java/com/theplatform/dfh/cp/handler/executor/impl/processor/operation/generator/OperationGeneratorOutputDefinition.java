@@ -10,6 +10,7 @@ public class OperationGeneratorOutputDefinition
 {
     private String operationsJsonPointer;
     private String paramsJsonPointer;
+    private Boolean logOnly;
 
     public OperationGeneratorOutputDefinition()
     {
@@ -44,5 +45,15 @@ public class OperationGeneratorOutputDefinition
     public void setParamsJsonPointer(String paramsJsonPointer)
     {
         this.paramsJsonPointer = paramsJsonPointer;
+    }
+
+    public Boolean getLogOnly()
+    {
+        return logOnly;
+    }
+
+    public void setLogOnly(Boolean logOnly)
+    {
+        this.logOnly = logOnly;
     }
 }
