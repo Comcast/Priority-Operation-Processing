@@ -89,6 +89,11 @@ public class RequestProcessorFactory
         return new AgendaTemplateRequestProcessor(agendaTemplatePersister);
     }
 
+    public InsightRequestProcessor createInsightRequestProcessor(ObjectPersister<Insight> insightObjectPersister)
+    {
+        return new InsightRequestProcessor(insightObjectPersister);
+    }
+
     public InsightRequestProcessor createInsightRequestProcessorWithServiceRequestVisibility(ObjectPersister<Insight> insightObjectPersister,
         ServiceRequest serviceRequest)
     {

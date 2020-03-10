@@ -39,10 +39,27 @@ public class ServiceDataObjectRetriever<R extends ServiceResponse<ErrorResponse>
         String objectId, Class<D> objectClass)
     {
         DataObjectRequest<D> dataObjectRequest = new DefaultDataObjectRequest<>(null, objectId, null);
-
         // just pass through from the original caller
         dataObjectRequest.setAuthorizationResponse(serviceRequest.getAuthorizationResponse());
+        return performObjectRetrieve(dataObjectRequest, serviceRequest, requestProcessor, objectId, objectClass);
+    }
 
+    /**
+     * Performs an object retrieve on the specified RequestProcessor, defaulting to error cases if there is an issue.
+     * Authorization is controlled by the incoming dataObjectRequest
+     * @param dataObjectRequest The DataObjectRequest to use to perform the lookup
+     * @param serviceRequest The incoming ServiceRequest (with auth/cid)
+     * @param requestProcessor The request processor to perform the retrieve with
+     * @param objectId The id to retrieve
+     * @param objectClass The class of the DefaultEndpointDataObject
+     * @param <D> The type of the DefaultEndpointDataObject
+     * @return ServiceDataRequestResult with either the data response for the object or a ServiceResponse due to error (error or object not found)
+     */
+    public <D extends DefaultEndpointDataObject> ServiceDataRequestResult<D, R> performObjectRetrieve(
+        DataObjectRequest<D> dataObjectRequest,
+        ServiceRequest serviceRequest, EndpointDataObjectRequestProcessor<D> requestProcessor,
+        String objectId, Class<D> objectClass)
+    {
         DataObjectResponse<D> dataObjectResponse = requestProcessor.handleGET(dataObjectRequest);
         ServiceDataRequestResult<D, R> dataRequestResult = new ServiceDataRequestResult<>();
         if(dataObjectResponse.isError())

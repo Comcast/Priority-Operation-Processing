@@ -1,13 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
+import com.theplatform.dfh.cp.api.AgendaInsight;
+import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.resourcepool.service.ExpandAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
@@ -84,6 +85,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     public void testSuccessfulUpdate(ParamsMap paramsMap)
     {
         setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
         doAnswer(new Answer()
         {
             @Override
@@ -126,6 +128,18 @@ public class ExpandAgendaServiceRequestProcessorTest
         expandAgendaResponse.setErrorResponse(ErrorResponseFactory.objectNotFound("", null));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> agendaResult = new ServiceDataRequestResult<>();
         agendaResult.setServiceResponse(expandAgendaResponse);
+        doReturn(agendaResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), any());
+        testErrorExecute(0, 0);
+    }
+
+    @Test
+    public void testErrorOnInsightLookup()
+    {
+        setupSuccessfulAgendaLookup();
+        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
+        expandAgendaResponse.setErrorResponse(ErrorResponseFactory.objectNotFound("", null));
+        ServiceDataRequestResult<Insight, ExpandAgendaResponse> agendaResult = new ServiceDataRequestResult<>();
+        agendaResult.setServiceResponse(expandAgendaResponse);
         doReturn(agendaResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any());
         testErrorExecute(0, 0);
     }
@@ -134,6 +148,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     public void testErrorOnAgendaUpdate()
     {
         setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
         DefaultDataObjectResponse<Agenda> agendaPersistResponse = new DefaultDataObjectResponse<>();
         agendaPersistResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doReturn(agendaPersistResponse).when(mockAgendaRequestProcessor).handlePUT(any());
@@ -144,6 +159,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     public void testExceptionOnAgendaUpdate()
     {
         setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
         DefaultDataObjectResponse<Agenda> agendaPersistResponse = new DefaultDataObjectResponse<>();
         agendaPersistResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doThrow(new RuntimeServiceException("", 500)).when(mockAgendaRequestProcessor).handlePUT(any());
@@ -154,6 +170,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     public void testErrorOnOperationProgressCreate()
     {
         setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
         DefaultDataObjectResponse<OperationProgress> operationProgressCreateResponse = new DefaultDataObjectResponse<>();
         operationProgressCreateResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
@@ -165,12 +182,11 @@ public class ExpandAgendaServiceRequestProcessorTest
     public void testExceptionOnOperationProgressCreate()
     {
         setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
         doThrow(new RuntimeServiceException("", 500)).when(mockOperationProgressRequestProcessor).handlePOST(any());
         testErrorExecute(1, 1);
     }
-
-    // TODO: test total failure exceptions
 
     private void setupSuccessfulAgendaLookup()
     {
@@ -178,6 +194,15 @@ public class ExpandAgendaServiceRequestProcessorTest
         agendaResponse.add(createAgenda(new String[]{"existingOp"}));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> result = new ServiceDataRequestResult<>();
         result.setDataObjectResponse(agendaResponse);
+        // TODO: this happens to match with the Agenda lookup
+        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), any());
+    }
+
+    private void setupSuccessfulInsightLookup()
+    {
+        ServiceDataRequestResult<Insight, ExpandAgendaResponse> result = new ServiceDataRequestResult<>();
+        result.setDataObjectResponse(new DefaultDataObjectResponse<>());
+        // TODO: this happens to match with the Insight lookup
         doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any());
     }
 
@@ -211,6 +236,7 @@ public class ExpandAgendaServiceRequestProcessorTest
         {
             agenda.setOperations(createOperations(newOperationNames));
         }
+        agenda.setAgendaInsight(new AgendaInsight());
         return agenda;
     }
 

@@ -11,10 +11,12 @@ import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.data.EndpointObjectGenerator;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.cp.endpoint.util.ServiceResponseFactory;
 import com.theplatform.dfh.cp.endpoint.validation.ExpandAgendaServiceValidator;
+import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
@@ -22,6 +24,8 @@ import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -77,19 +81,31 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         OperationProgressRequestProcessor operationProgressRequestProcessor =
             requestProcessorFactory.createOperationProgressRequestProcessor(operationProgressPersister);
 
-        // Get the Agenda
+        InsightRequestProcessor insightRequestProcessor = requestProcessorFactory.createInsightRequestProcessor(insightPersister);
+
+        // Get the Agenda -- global acccess lookup
+        DefaultDataObjectRequest<Agenda> globalAgendaRequest = new DefaultDataObjectRequest<>(null, expandAgendaRequest.getAgendaId(), null);
+        globalAgendaRequest.setAuthorizationResponse(new AuthorizationResponse(null, null, null, DataVisibility.global));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
-            serviceRequest, agendaRequestProcessor, expandAgendaRequest.getAgendaId(), Agenda.class);
+            globalAgendaRequest, serviceRequest, agendaRequestProcessor, expandAgendaRequest.getAgendaId(), Agenda.class);
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
+
         Agenda agenda = agendaRequestResult.getDataObjectResponse().getFirst();
+
+        // Get the Insight -- normal lookup proving access to the ResourcePool in general
+        ServiceDataRequestResult<Insight, ExpandAgendaResponse> insightRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+            serviceRequest, insightRequestProcessor, agenda.getAgendaInsight().getInsightId(), Insight.class);
+        if(insightRequestResult.getServiceResponse() != null)
+            return insightRequestResult.getServiceResponse();
+
         Agenda resultAgenda = null;
 
         ////
         // Update/Persist the Agenda (basically just a pass through to PUT)
         try
         {
-            // Updating the AgendaProgress internally updates the OperationProgress
+            // Updating the Agenda has no impact on Progress objects
             DataObjectResponse<Agenda> updatedAgendaResponse =
                 agendaRequestProcessor.handlePUT(
                     DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(), createUpdatedAgenda(agenda, expandAgendaRequest)));
@@ -106,7 +122,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         }
 
         ////
-        // Update/Persist the OperationProgress
+        // Persist the new OperationProgress
         try
         {
             for(OperationProgress opProgress : generateOperationProgressList(agenda, expandAgendaRequest))
