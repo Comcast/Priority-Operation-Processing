@@ -36,7 +36,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
         endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/resourcepool/service/expandAgenda", new ExpandAgendaLambdaStreamEntry());
+        endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgenda", new UpdateAgendaLambdaStreamEntry());
     }
 
     @Override

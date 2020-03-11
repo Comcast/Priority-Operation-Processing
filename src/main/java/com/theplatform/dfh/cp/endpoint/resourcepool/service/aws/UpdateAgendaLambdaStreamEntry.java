@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.resourcepool.service.ExpandAgendaServiceRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.service.UpdateAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
@@ -19,15 +19,15 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCust
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
  * Main entry point class for the AWS Agenda expand endpoint
  */
-public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<ExpandAgendaResponse, LambdaRequest<ExpandAgendaRequest>>
+public class UpdateAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<UpdateAgendaResponse, LambdaRequest<UpdateAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -39,9 +39,9 @@ public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Exp
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<ExpandAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<UpdateAgendaRequest> lambdaRequest)
     {
-        return new ExpandAgendaServiceRequestProcessor(
+        return new UpdateAgendaServiceRequestProcessor(
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
             agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
             operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
@@ -52,12 +52,12 @@ public class ExpandAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Exp
     }
 
     @Override
-    public LambdaRequest<ExpandAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<UpdateAgendaRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, ExpandAgendaRequest.class);
+        return new LambdaRequest<>(node, UpdateAgendaRequest.class);
     }
 
-    public ExpandAgendaLambdaStreamEntry()
+    public UpdateAgendaLambdaStreamEntry()
     {
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
