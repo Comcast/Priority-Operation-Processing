@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
 
+import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
@@ -14,6 +15,8 @@ import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Operation Generator Resident handler - Creates operations on the persisted Agenda/Progress using the inputs provided (operations/params)
@@ -45,7 +48,7 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
     public String execute(AgendaUpdateHandlerInput handlerInput)
     {
         AgendaUpdateHandlerOutput agendaUpdateHandlerOutput = new AgendaUpdateHandlerOutput();
-        agendaUpdateHandlerOutput.setOperations(handlerInput.getOperations());
+        agendaUpdateHandlerOutput.setOperations(processOperations(handlerInput.getOperations()));
         agendaUpdateHandlerOutput.setParams(handlerInput.getParams());
         updatePersistedAgenda(handlerInput);
         getProgressReporter().reportProgress(getOperationProgressFactory().create(ProcessingState.COMPLETE, CompleteStateMessage.SUCCEEDED.toString()));
@@ -62,6 +65,11 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
     public Class<AgendaUpdateHandlerInput> getPayloadClassType()
     {
         return AgendaUpdateHandlerInput.class;
+    }
+
+    private List<Operation> processOperations(List<Operation> operations)
+    {
+        return operations;
     }
 
     protected void updatePersistedAgenda(AgendaUpdateHandlerInput handlerInput)

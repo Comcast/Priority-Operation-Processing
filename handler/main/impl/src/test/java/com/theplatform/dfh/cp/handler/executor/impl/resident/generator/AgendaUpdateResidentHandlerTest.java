@@ -1,5 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
 
+import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
 import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
@@ -19,18 +21,26 @@ import static org.mockito.Mockito.verify;
 
 public class AgendaUpdateResidentHandlerTest
 {
+    final String OP_NAME = "theOp";
     private AgendaUpdateResidentHandler handler;
     private AgendaUpdateHandlerInput agendaUpdateHandlerInput;
     private ExecutorContext mockExecutorContext;
     private ResourcePoolAgendaUpdater mockResourcePoolAgendaUpdater;
     private ResourcePoolServiceClient mockResourcePoolServiceclient;
+    private ResidentHandlerParams residentHandlerParams;
     private LaunchDataWrapper mockLaunchDataWrapper;
     private PropertyRetriever mockPropertyRetriever;
     private ProgressReporter mockProgressReporter;
+    private Operation operation;
 
     @BeforeMethod
     public void setup()
     {
+        operation = new Operation();
+        operation.setName(OP_NAME);
+        residentHandlerParams = new ResidentHandlerParams()
+            .setOperation(operation);
+
         agendaUpdateHandlerInput = new AgendaUpdateHandlerInput();
         mockResourcePoolServiceclient = mock(ResourcePoolServiceClient.class);
         mockProgressReporter = mock(ProgressReporter.class);
@@ -44,6 +54,7 @@ public class AgendaUpdateResidentHandlerTest
         handler = new AgendaUpdateResidentHandler(mockExecutorContext);
         handler.setResourcePoolAgendaUpdater(mockResourcePoolAgendaUpdater);
         handler.setProgressReporter(mockProgressReporter);
+        handler.setResidentHandlerParams(residentHandlerParams);
     }
 
     @Test

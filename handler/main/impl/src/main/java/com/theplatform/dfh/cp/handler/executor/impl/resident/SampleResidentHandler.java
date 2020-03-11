@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
-import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
+import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.executor.impl.exception.AgendaExecutorException;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
@@ -28,14 +27,15 @@ public class SampleResidentHandler implements ResidentHandler
     }
 
     @Override
-    public String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter reporter)
+    public String execute(ResidentHandlerParams params)
     {
         JsonNode outputNode = new ObjectNode(objectMapper.getNodeFactory());
-        reporter.reportProgress(createOperationProgress(ProcessingState.EXECUTING, "Init"));
+
+        params.getReporter().reportProgress(createOperationProgress(ProcessingState.EXECUTING, "Init"));
         try
         {
             // extract the output override from the payload
-            JsonNode rootNode = objectMapper.readTree(payload);
+            JsonNode rootNode = objectMapper.readTree(params.getPayload());
             JsonNode outputOverrideNode = rootNode.at(OUTPUT_OVERRIDE_PTR);
             if(!outputOverrideNode.isMissingNode())
             {
@@ -48,7 +48,7 @@ public class SampleResidentHandler implements ResidentHandler
         }
 
         String outputPayload = jsonHelper.getJSONString(outputNode);
-        reporter.reportProgress(createOperationProgress(ProcessingState.COMPLETE, "Success"));
+        params.getReporter().reportProgress(createOperationProgress(ProcessingState.COMPLETE, "Success"));
         return outputPayload;
     }
 
