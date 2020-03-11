@@ -1,8 +1,8 @@
 package com.theplatform.dfh.endpoint.client;
 
 import com.theplatform.dfh.endpoint.api.ServiceResponse;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaRequest;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaResponse;
 import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
@@ -46,9 +46,9 @@ public class ResourcePoolServiceClient extends FissionServiceClient
         return makeServiceCall(request, UpdateAgendaProgressResponse.class, ResourcePoolEndpoint.updateAgendaProgress);
     }
 
-    public ExpandAgendaResponse expandAgenda(ExpandAgendaRequest request)
+    public UpdateAgendaResponse updateAgenda(UpdateAgendaRequest request)
     {
-        return makeServiceCall(request, ExpandAgendaResponse.class, ResourcePoolEndpoint.expandAgenda);
+        return makeServiceCall(request, UpdateAgendaResponse.class, ResourcePoolEndpoint.updateAgenda);
     }
 
     private <Req, Res extends ServiceResponse> Res makeServiceCall(Req request, Class<Res> responseClass, ResourcePoolEndpoint resourcePoolEndpoint)

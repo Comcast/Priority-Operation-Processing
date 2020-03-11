@@ -5,7 +5,7 @@ public enum ResourcePoolEndpoint
     getAgenda("getAgenda"),
     createAgenda("createAgenda"),
     updateAgendaProgress("updateAgendaProgress"),
-    expandAgenda("expandAgenda");
+    updateAgenda("updateAgenda");
 
     private String path;
 
