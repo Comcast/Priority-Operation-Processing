@@ -5,6 +5,7 @@ import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
+import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.api.HandlerField;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
@@ -18,11 +19,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Convenience ResidentHandler base providing translation of the payload
+ * @param <T> The type of input the handler expects
+ * @param <O> The type of operation progress factory
+ */
 public abstract class BaseResidentHandler<T, O extends OperationProgressFactory> implements ResidentHandler
 {
     private LaunchDataWrapper launchDataWrapper;
     private ProgressReporter progressReporter;
     private JsonHelper jsonHelper;
+    private ResidentHandlerParams residentHandlerParams;
 
     public BaseResidentHandler()
     {
@@ -30,12 +37,13 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
     }
 
     @Override
-    public String execute(String payload, LaunchDataWrapper launchDataWrapper, ProgressReporter<OperationProgress> reporter)
+    public String execute(ResidentHandlerParams residentHandlerParams)
     {
-        this.progressReporter = reporter;
+        this.progressReporter = residentHandlerParams.getReporter();
+        this.residentHandlerParams = residentHandlerParams;
         this.launchDataWrapper = launchDataWrapper;
         PayloadTranslationResult<T> translationResult = new JsonPayloadTranslator<T>(jsonHelper)
-            .translatePayload(payload, getPayloadClassType());
+            .translatePayload(residentHandlerParams.getPayload(), getPayloadClassType());
         if(!translationResult.isSuccessful())
         {
             processLoadFailure(Collections.singletonList(translationResult.getDiagnosticEvent()));
@@ -121,5 +129,15 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
         if(environmentRetriever == null)
             return UUID.randomUUID().toString();
         return environmentRetriever.getField(HandlerField.CID.name(), UUID.randomUUID().toString());
+    }
+
+    public ResidentHandlerParams getResidentHandlerParams()
+    {
+        return residentHandlerParams;
+    }
+
+    public void setResidentHandlerParams(ResidentHandlerParams residentHandlerParams)
+    {
+        this.residentHandlerParams = residentHandlerParams;
     }
 }
