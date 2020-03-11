@@ -16,14 +16,14 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.cp.endpoint.util.ServiceResponseFactory;
-import com.theplatform.dfh.cp.endpoint.validation.ExpandAgendaServiceValidator;
+import com.theplatform.dfh.cp.endpoint.validation.UpdateAgendaServiceValidator;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
 import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
@@ -39,14 +39,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Processor for the expand Agenda method for adding additional operations to the Agenda
+ * Processor for the update Agenda method for adding additional operations to the Agenda (also adjusts progress)
  */
-public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<ExpandAgendaResponse, ServiceRequest<ExpandAgendaRequest>>
+public class UpdateAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<UpdateAgendaResponse, ServiceRequest<UpdateAgendaRequest>>
 {
-    private static final Logger logger = LoggerFactory.getLogger(ExpandAgendaServiceRequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpdateAgendaServiceRequestProcessor.class);
 
     private RequestProcessorFactory requestProcessorFactory;
-    private ServiceDataObjectRetriever<ExpandAgendaResponse> serviceDataObjectRetriever;
+    private ServiceDataObjectRetriever<UpdateAgendaResponse> serviceDataObjectRetriever;
 
     private ObjectPersister<Agenda> agendaPersister;
     private ObjectPersister<AgendaProgress> agendaProgressPersister;
@@ -55,11 +55,11 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Customer> customerPersister;
 
-    public ExpandAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
+    public UpdateAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Customer> customerPersister)
     {
-        setRequestValidator(new ExpandAgendaServiceValidator());
+        setRequestValidator(new UpdateAgendaServiceValidator());
         this.agendaPersister = agendaPersister;
         this.agendaProgressPersister = agendaProgressPersister;
         this.operationProgressPersister = operationProgressPersister;
@@ -68,13 +68,13 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         this.customerPersister = customerPersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(ExpandAgendaResponse.class));
+        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(UpdateAgendaResponse.class));
     }
 
     @Override
-    public ExpandAgendaResponse processPOST(ServiceRequest<ExpandAgendaRequest> serviceRequest)
+    public UpdateAgendaResponse processPOST(ServiceRequest<UpdateAgendaRequest> serviceRequest)
     {
-        ExpandAgendaRequest expandAgendaRequest = serviceRequest.getPayload();
+        UpdateAgendaRequest updateAgendaRequest = serviceRequest.getPayload();
 
         AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessor(
             agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister);
@@ -88,18 +88,18 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         InsightRequestProcessor insightRequestProcessor = requestProcessorFactory.createInsightRequestProcessor(insightPersister);
 
         // Get the Agenda -- global acccess lookup
-        ServiceDataRequestResult<Agenda, ExpandAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<Agenda, UpdateAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest,
             agendaRequestProcessor,
             new AuthorizationResponse(null, null, null, DataVisibility.global),
-            expandAgendaRequest.getAgendaId(),
+            updateAgendaRequest.getAgendaId(),
             Agenda.class);
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
         Agenda currentAgenda = agendaRequestResult.getDataObjectResponse().getFirst();
 
         // Get the Insight -- normal lookup proving access to the ResourcePool in general (pass through auth response)
-        ServiceDataRequestResult<Insight, ExpandAgendaResponse> insightRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<Insight, UpdateAgendaResponse> insightRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest,
             insightRequestProcessor,
             currentAgenda.getAgendaInsight().getInsightId(),
@@ -108,7 +108,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
             return insightRequestResult.getServiceResponse();
 
         // Get the AgendaProgress -- using customer on agenda as the auth
-        ServiceDataRequestResult<AgendaProgress, ExpandAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<AgendaProgress, UpdateAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest,
             agendaProgressRequestProcessor,
             new CustomerIdAuthorizationResponse(currentAgenda.getCustomerId()),
@@ -127,7 +127,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
             // Updating the Agenda has no impact on Progress objects
             DataObjectResponse<AgendaProgress> updatedAgendaProgressResponse =
                 agendaProgressRequestProcessor.handlePUT(
-                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgendaProgress(currentProgress, expandAgendaRequest)));
+                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgendaProgress(currentProgress, updateAgendaRequest)));
 
             if(updatedAgendaProgressResponse.isError())
                 return createExpandAgendaResponse(serviceRequest, updatedAgendaProgressResponse.getErrorResponse(), "Failed to update AgendaProgress.");
@@ -146,7 +146,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
             // Updating the Agenda has no impact on Progress objects
             DataObjectResponse<Agenda> updatedAgendaResponse =
                 agendaRequestProcessor.handlePUT(
-                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgenda(currentAgenda, expandAgendaRequest)));
+                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgenda(currentAgenda, updateAgendaRequest)));
 
             if(updatedAgendaResponse.isError())
                 return createExpandAgendaResponse(serviceRequest, updatedAgendaResponse.getErrorResponse(), "Failed to update Agenda.");
@@ -163,7 +163,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         // Persist the new OperationProgress
         try
         {
-            for(OperationProgress opProgress : generateOperationProgressList(currentAgenda, expandAgendaRequest))
+            for(OperationProgress opProgress : generateOperationProgressList(currentAgenda, updateAgendaRequest))
             {
                 DataObjectResponse<OperationProgress> createOperationProgressResponse =
                     operationProgressRequestProcessor.handlePOST(DefaultDataObjectRequest.customerAuthInstance(opProgress.getCustomerId(), opProgress));
@@ -183,21 +183,21 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         return createExpandAgendaResponse(serviceRequest, resultAgenda);
     }
 
-    private AgendaProgress createUpdatedAgendaProgress(AgendaProgress sourceAgendaProgress, ExpandAgendaRequest expandAgendaRequest)
+    private AgendaProgress createUpdatedAgendaProgress(AgendaProgress sourceAgendaProgress, UpdateAgendaRequest updateAgendaRequest)
     {
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setId(sourceAgendaProgress.getId());
         agendaProgress.setCustomerId(sourceAgendaProgress.getCustomerId());
-        if(expandAgendaRequest.getParams() != null)
+        if(updateAgendaRequest.getParams() != null)
         {
             agendaProgress.setParams(new ParamsMap());
             appendParams(sourceAgendaProgress.getParams(), agendaProgress.getParams());
-            appendParams(expandAgendaRequest.getParams(), agendaProgress.getParams());
+            appendParams(updateAgendaRequest.getParams(), agendaProgress.getParams());
         }
         return agendaProgress;
     }
 
-    private Agenda createUpdatedAgenda(Agenda sourceAgenda, ExpandAgendaRequest expandAgendaRequest)
+    private Agenda createUpdatedAgenda(Agenda sourceAgenda, UpdateAgendaRequest updateAgendaRequest)
     {
         // build a sparse agenda for update
         Agenda agenda = new Agenda();
@@ -206,13 +206,13 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         // append operations
         agenda.setOperations(new LinkedList<>());
         agenda.getOperations().addAll(sourceAgenda.getOperations());
-        agenda.getOperations().addAll(expandAgendaRequest.getOperations());
+        agenda.getOperations().addAll(updateAgendaRequest.getOperations());
         // append any params
-        if(expandAgendaRequest.getParams() != null)
+        if(updateAgendaRequest.getParams() != null)
         {
             agenda.setParams(new ParamsMap());
             appendParams(sourceAgenda.getParams(), agenda.getParams());
-            appendParams(expandAgendaRequest.getParams(), agenda.getParams());
+            appendParams(updateAgendaRequest.getParams(), agenda.getParams());
         }
         return agenda;
     }
@@ -227,31 +227,31 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         }
     }
 
-    private List<OperationProgress> generateOperationProgressList(Agenda agenda, ExpandAgendaRequest expandAgendaRequest)
+    private List<OperationProgress> generateOperationProgressList(Agenda agenda, UpdateAgendaRequest updateAgendaRequest)
     {
-        return expandAgendaRequest.getOperations().stream()
+        return updateAgendaRequest.getOperations().stream()
             .map(op -> EndpointObjectGenerator.generateWaitingOperationProgress(agenda, op))
             .collect(Collectors.toList());
     }
 
-    private ExpandAgendaResponse createExpandAgendaResponse(ServiceRequest<ExpandAgendaRequest> serviceRequest, Agenda resultingAgenda)
+    private UpdateAgendaResponse createExpandAgendaResponse(ServiceRequest<UpdateAgendaRequest> serviceRequest, Agenda resultingAgenda)
     {
-        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
-        expandAgendaResponse.setCID(serviceRequest.getCID());
-        expandAgendaResponse.setAgenda(resultingAgenda);
-        return expandAgendaResponse;
+        UpdateAgendaResponse updateAgendaResponse = new UpdateAgendaResponse();
+        updateAgendaResponse.setCID(serviceRequest.getCID());
+        updateAgendaResponse.setAgenda(resultingAgenda);
+        return updateAgendaResponse;
     }
 
-    private ExpandAgendaResponse createExpandAgendaResponse(ServiceRequest<ExpandAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
+    private UpdateAgendaResponse createExpandAgendaResponse(ServiceRequest<UpdateAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
     {
         if(errorResponsePrefix != null && errorResponse != null && errorResponse.getDescription() != null)
         {
             errorResponse.setDescription(errorResponsePrefix + " " + errorResponse.getDescription());
         }
-        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
-        expandAgendaResponse.setCID(serviceRequest.getCID());
-        expandAgendaResponse.setErrorResponse(errorResponse);
-        return expandAgendaResponse;
+        UpdateAgendaResponse updateAgendaResponse = new UpdateAgendaResponse();
+        updateAgendaResponse.setCID(serviceRequest.getCID());
+        updateAgendaResponse.setErrorResponse(errorResponse);
+        return updateAgendaResponse;
     }
 
     public void setRequestProcessorFactory(RequestProcessorFactory requestProcessorFactory)
@@ -260,7 +260,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
     }
 
     public void setServiceDataObjectRetriever(
-        ServiceDataObjectRetriever<ExpandAgendaResponse> serviceDataObjectRetriever)
+        ServiceDataObjectRetriever<UpdateAgendaResponse> serviceDataObjectRetriever)
     {
         this.serviceDataObjectRetriever = serviceDataObjectRetriever;
     }
