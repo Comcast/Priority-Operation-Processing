@@ -3,11 +3,11 @@ package com.theplatform.dfh.endpoint.api.agenda.service;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.endpoint.api.DefaultServiceResponse;
 
-public class ExpandAgendaResponse extends DefaultServiceResponse
+public class UpdateAgendaResponse extends DefaultServiceResponse
 {
     private Agenda agenda;
 
-    public ExpandAgendaResponse()
+    public UpdateAgendaResponse()
     {
     }
 

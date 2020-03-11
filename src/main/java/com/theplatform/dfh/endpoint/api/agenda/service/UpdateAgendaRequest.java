@@ -5,13 +5,13 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.List;
 
-public class ExpandAgendaRequest
+public class UpdateAgendaRequest
 {
     private String agendaId;
     private List<Operation> operations;
     private ParamsMap params;
 
-    public ExpandAgendaRequest()
+    public UpdateAgendaRequest()
     {
     }
 
