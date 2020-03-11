@@ -41,7 +41,7 @@ public abstract class BaseResidentHandler<T, O extends OperationProgressFactory>
     {
         this.progressReporter = residentHandlerParams.getReporter();
         this.residentHandlerParams = residentHandlerParams;
-        this.launchDataWrapper = launchDataWrapper;
+        this.launchDataWrapper = residentHandlerParams.getLaunchDataWrapper();
         PayloadTranslationResult<T> translationResult = new JsonPayloadTranslator<T>(jsonHelper)
             .translatePayload(residentHandlerParams.getPayload(), getPayloadClassType());
         if(!translationResult.isSuccessful())
