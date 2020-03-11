@@ -93,7 +93,7 @@ public class IgniteAgendaServiceRequestProcessorTest
     {
         ServiceRequest<IgniteAgendaRequest> serviceRequest = createServiceRequest(TEMPLATE_ID, INVALID_JSON);
         verifyFailure(serviceRequest, IgniteAgendaServiceRequestProcessor.INVALID_JSON_PAYLOAD);
-        verify(mockDataObjectRetriever, times(0)).performObjectRetrieve(any(), any(), any(), any());
+        verify(mockDataObjectRetriever, times(0)).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class IgniteAgendaServiceRequestProcessorTest
         doReturn(createServiceDataRequestResult(null, responseFactory.createResponse(serviceRequest, ErrorResponseFactory.objectNotFound(NOT_FOUND, ""), null)))
             .when(mockDataObjectRetriever).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         verifyFailure(serviceRequest, NOT_FOUND);
-        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(any(), any(), any(), any());
+        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class IgniteAgendaServiceRequestProcessorTest
         doReturn(new Agenda()).when(mockAgendaFactory).createAgendaFromObject(any(), any(), any(), any());
         doReturn(new DefaultDataObjectResponse<Agenda>(ErrorResponseFactory.runtimeServiceException(UNKNOWN_ERROR, null))).when(mockAgendaRequestProcessor).handlePOST(any());
         verifyFailure(serviceRequest, UNKNOWN_ERROR);
-        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(any(), any(), any(), any());
+        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         verify(mockAgendaRequestProcessor, times(1)).handlePOST(any());
     }
 
@@ -131,7 +131,7 @@ public class IgniteAgendaServiceRequestProcessorTest
         doReturn(new DefaultDataObjectResponse<Agenda>()).when(mockAgendaRequestProcessor).handlePOST(any());
         IgniteAgendaResponse response = requestProcessor.handlePOST(serviceRequest);
         Assert.assertFalse(response.isError());
-        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(any(), any(), any(), any());
+        verify(mockDataObjectRetriever, times(1)).performObjectRetrieve(serviceRequest, mockAgendaTemplateRequestProcessor, TEMPLATE_ID, AgendaTemplate.class);
         verify(mockAgendaRequestProcessor, times(1)).handlePOST(any());
     }
 

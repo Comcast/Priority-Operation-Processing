@@ -5,10 +5,13 @@ import com.theplatform.dfh.cp.api.AgendaInsight;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
@@ -33,6 +36,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -44,9 +48,11 @@ public class ExpandAgendaServiceRequestProcessorTest
 {
     private ExpandAgendaServiceRequestProcessor requestProcessor;
     private ExpandAgendaRequest expandAgendaRequest;
+    private DefaultServiceRequest<ExpandAgendaRequest> serviceRequest;
 
     private RequestProcessorFactory mockRequestProcessorFactory;
     private AgendaRequestProcessor mockAgendaRequestProcessor;
+    private AgendaProgressRequestProcessor mockAgendaProgressRequestProcessor;
     private OperationProgressRequestProcessor mockOperationProgressRequestProcessor;
     private ServiceDataObjectRetriever<ExpandAgendaResponse> mockDataObjectRetriever;
 
@@ -56,14 +62,17 @@ public class ExpandAgendaServiceRequestProcessorTest
         expandAgendaRequest = new ExpandAgendaRequest();
         expandAgendaRequest.setAgendaId("");
         expandAgendaRequest.setOperations(createOperations(new String[] { "newOp" }));
+        serviceRequest = new DefaultServiceRequest<>(expandAgendaRequest);
 
         mockRequestProcessorFactory = mock(RequestProcessorFactory.class);
         mockAgendaRequestProcessor = mock(AgendaRequestProcessor.class);
+        mockAgendaProgressRequestProcessor = mock(AgendaProgressRequestProcessor.class);
         mockOperationProgressRequestProcessor = mock(OperationProgressRequestProcessor.class);
         mockDataObjectRetriever = mock(ServiceDataObjectRetriever.class);
         doReturn(mockAgendaRequestProcessor).when(mockRequestProcessorFactory).createAgendaRequestProcessor(
             any(), any(), any(), any(), any(), any());
         doReturn(mockOperationProgressRequestProcessor).when(mockRequestProcessorFactory).createOperationProgressRequestProcessor(any());
+        doReturn(mockAgendaProgressRequestProcessor).when(mockRequestProcessorFactory).createAgendaProgressRequestProcessor(any(), any(), any());
         requestProcessor = new ExpandAgendaServiceRequestProcessor(null, null, null, null, null, null);
         requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
         requestProcessor.setServiceDataObjectRetriever(mockDataObjectRetriever);
@@ -86,6 +95,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         setupSuccessfulAgendaLookup();
         setupSuccessfulInsightLookup();
+        setupSuccessfulAgendaProgressLookup();
         doAnswer(new Answer()
         {
             @Override
@@ -98,6 +108,7 @@ public class ExpandAgendaServiceRequestProcessorTest
             }
         }).when(mockAgendaRequestProcessor).handlePUT(any());
 
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
         doReturn(new DefaultDataObjectResponse<>()).when(mockOperationProgressRequestProcessor).handlePOST(any());
         if(paramsMap != null)
             expandAgendaRequest.setParams(paramsMap);
@@ -128,7 +139,7 @@ public class ExpandAgendaServiceRequestProcessorTest
         expandAgendaResponse.setErrorResponse(ErrorResponseFactory.objectNotFound("", null));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> agendaResult = new ServiceDataRequestResult<>();
         agendaResult.setServiceResponse(expandAgendaResponse);
-        doReturn(agendaResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), any());
+        doReturn(agendaResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), eq(Agenda.class));
         testErrorExecute(0, 0);
     }
 
@@ -138,9 +149,22 @@ public class ExpandAgendaServiceRequestProcessorTest
         setupSuccessfulAgendaLookup();
         ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
         expandAgendaResponse.setErrorResponse(ErrorResponseFactory.objectNotFound("", null));
-        ServiceDataRequestResult<Insight, ExpandAgendaResponse> agendaResult = new ServiceDataRequestResult<>();
-        agendaResult.setServiceResponse(expandAgendaResponse);
-        doReturn(agendaResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any());
+        ServiceDataRequestResult<Insight, ExpandAgendaResponse> insightResult = new ServiceDataRequestResult<>();
+        insightResult.setServiceResponse(expandAgendaResponse);
+        doReturn(insightResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(InsightRequestProcessor.class), any(), eq(Insight.class));
+        testErrorExecute(0, 0);
+    }
+
+    @Test
+    public void testErrorOnAgendaProgressLookup()
+    {
+        setupSuccessfulAgendaLookup();
+        setupSuccessfulInsightLookup();
+        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
+        expandAgendaResponse.setErrorResponse(ErrorResponseFactory.objectNotFound("", null));
+        ServiceDataRequestResult<AgendaProgress, ExpandAgendaResponse> agendaProgressResult = new ServiceDataRequestResult<>();
+        agendaProgressResult.setServiceResponse(expandAgendaResponse);
+        doReturn(agendaProgressResult).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), eq(AgendaProgress.class));
         testErrorExecute(0, 0);
     }
 
@@ -149,6 +173,8 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         setupSuccessfulAgendaLookup();
         setupSuccessfulInsightLookup();
+        setupSuccessfulAgendaProgressLookup();
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
         DefaultDataObjectResponse<Agenda> agendaPersistResponse = new DefaultDataObjectResponse<>();
         agendaPersistResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doReturn(agendaPersistResponse).when(mockAgendaRequestProcessor).handlePUT(any());
@@ -160,6 +186,8 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         setupSuccessfulAgendaLookup();
         setupSuccessfulInsightLookup();
+        setupSuccessfulAgendaProgressLookup();
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
         DefaultDataObjectResponse<Agenda> agendaPersistResponse = new DefaultDataObjectResponse<>();
         agendaPersistResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
         doThrow(new RuntimeServiceException("", 500)).when(mockAgendaRequestProcessor).handlePUT(any());
@@ -171,9 +199,11 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         setupSuccessfulAgendaLookup();
         setupSuccessfulInsightLookup();
+        setupSuccessfulAgendaProgressLookup();
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
         DefaultDataObjectResponse<OperationProgress> operationProgressCreateResponse = new DefaultDataObjectResponse<>();
         operationProgressCreateResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", null));
-        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
         doReturn(operationProgressCreateResponse).when(mockOperationProgressRequestProcessor).handlePOST(any());
         testErrorExecute(1, 1);
     }
@@ -183,6 +213,8 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         setupSuccessfulAgendaLookup();
         setupSuccessfulInsightLookup();
+        setupSuccessfulAgendaProgressLookup();
+        doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaRequestProcessor).handlePUT(any());
         doThrow(new RuntimeServiceException("", 500)).when(mockOperationProgressRequestProcessor).handlePOST(any());
         testErrorExecute(1, 1);
@@ -194,16 +226,25 @@ public class ExpandAgendaServiceRequestProcessorTest
         agendaResponse.add(createAgenda(new String[]{"existingOp"}));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> result = new ServiceDataRequestResult<>();
         result.setDataObjectResponse(agendaResponse);
-        // TODO: this happens to match with the Agenda lookup
-        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), any());
+        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), eq(Agenda.class));
     }
 
     private void setupSuccessfulInsightLookup()
     {
         ServiceDataRequestResult<Insight, ExpandAgendaResponse> result = new ServiceDataRequestResult<>();
         result.setDataObjectResponse(new DefaultDataObjectResponse<>());
-        // TODO: this happens to match with the Insight lookup
-        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any());
+        // matching on these is not obvious, but eq + the request processsor did it!
+        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(InsightRequestProcessor.class), any(), eq(Insight.class));
+    }
+
+    private void setupSuccessfulAgendaProgressLookup()
+    {
+        DataObjectResponse<AgendaProgress> agendaProgressResponse = new DefaultDataObjectResponse<>();
+        ServiceDataRequestResult<AgendaProgress, ExpandAgendaResponse> result = new ServiceDataRequestResult<>();
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgressResponse.add(agendaProgress);
+        result.setDataObjectResponse(agendaProgressResponse);
+        doReturn(result).when(mockDataObjectRetriever).performObjectRetrieve(any(), any(), any(), any(), eq(AgendaProgress.class));
     }
 
     private void testErrorExecute(int expectedAgendaPUTs, int expectedOperationProgressPOSTs)
@@ -217,7 +258,7 @@ public class ExpandAgendaServiceRequestProcessorTest
     {
         try
         {
-            ExpandAgendaResponse response = requestProcessor.processPOST(new DefaultServiceRequest<>(expandAgendaRequest));
+            ExpandAgendaResponse response = requestProcessor.processPOST(serviceRequest);
             verify(mockAgendaRequestProcessor, times(expectedAgendaPUTs)).handlePUT(any());
             verify(mockOperationProgressRequestProcessor, times(expectedOperationProgressPOSTs)).handlePOST(any());
             return response;

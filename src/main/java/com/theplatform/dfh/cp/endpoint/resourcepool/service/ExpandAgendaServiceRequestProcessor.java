@@ -11,12 +11,12 @@ import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.data.EndpointObjectGenerator;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
 import com.theplatform.dfh.cp.endpoint.util.ServiceResponseFactory;
 import com.theplatform.dfh.cp.endpoint.validation.ExpandAgendaServiceValidator;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
@@ -25,6 +25,7 @@ import com.theplatform.dfh.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
+import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
 import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -78,28 +79,65 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessor(
             agendaPersister, agendaProgressPersister, readyAgendaPersister, operationProgressPersister, insightPersister, customerPersister);
 
+        AgendaProgressRequestProcessor agendaProgressRequestProcessor = requestProcessorFactory.createAgendaProgressRequestProcessor(
+            agendaProgressPersister, agendaPersister, operationProgressPersister);
+
         OperationProgressRequestProcessor operationProgressRequestProcessor =
             requestProcessorFactory.createOperationProgressRequestProcessor(operationProgressPersister);
 
         InsightRequestProcessor insightRequestProcessor = requestProcessorFactory.createInsightRequestProcessor(insightPersister);
 
         // Get the Agenda -- global acccess lookup
-        DefaultDataObjectRequest<Agenda> globalAgendaRequest = new DefaultDataObjectRequest<>(null, expandAgendaRequest.getAgendaId(), null);
-        globalAgendaRequest.setAuthorizationResponse(new AuthorizationResponse(null, null, null, DataVisibility.global));
         ServiceDataRequestResult<Agenda, ExpandAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
-            globalAgendaRequest, serviceRequest, agendaRequestProcessor, expandAgendaRequest.getAgendaId(), Agenda.class);
+            serviceRequest,
+            agendaRequestProcessor,
+            new AuthorizationResponse(null, null, null, DataVisibility.global),
+            expandAgendaRequest.getAgendaId(),
+            Agenda.class);
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
+        Agenda currentAgenda = agendaRequestResult.getDataObjectResponse().getFirst();
 
-        Agenda agenda = agendaRequestResult.getDataObjectResponse().getFirst();
-
-        // Get the Insight -- normal lookup proving access to the ResourcePool in general
+        // Get the Insight -- normal lookup proving access to the ResourcePool in general (pass through auth response)
         ServiceDataRequestResult<Insight, ExpandAgendaResponse> insightRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
-            serviceRequest, insightRequestProcessor, agenda.getAgendaInsight().getInsightId(), Insight.class);
+            serviceRequest,
+            insightRequestProcessor,
+            currentAgenda.getAgendaInsight().getInsightId(),
+            Insight.class);
         if(insightRequestResult.getServiceResponse() != null)
             return insightRequestResult.getServiceResponse();
 
+        // Get the AgendaProgress -- using customer on agenda as the auth
+        ServiceDataRequestResult<AgendaProgress, ExpandAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+            serviceRequest,
+            agendaProgressRequestProcessor,
+            new CustomerIdAuthorizationResponse(currentAgenda.getCustomerId()),
+            currentAgenda.getProgressId(),
+            AgendaProgress.class);
+        if(agendaProgressRequestResult.getServiceResponse() != null)
+            return agendaProgressRequestResult.getServiceResponse();
+        AgendaProgress currentProgress = agendaProgressRequestResult.getDataObjectResponse().getFirst();
+
         Agenda resultAgenda = null;
+
+        ////
+        // Update/Persist the AgendaProgress
+        try
+        {
+            // Updating the Agenda has no impact on Progress objects
+            DataObjectResponse<AgendaProgress> updatedAgendaProgressResponse =
+                agendaProgressRequestProcessor.handlePUT(
+                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgendaProgress(currentProgress, expandAgendaRequest)));
+
+            if(updatedAgendaProgressResponse.isError())
+                return createExpandAgendaResponse(serviceRequest, updatedAgendaProgressResponse.getErrorResponse(), "Failed to update AgendaProgress.");
+        }
+        catch (Exception e)
+        {
+            logger.error("Failed to update agenda progress with generated operations.", e);
+            return createExpandAgendaResponse(serviceRequest, ErrorResponseFactory.runtimeServiceException(
+                new RuntimeServiceException("Failed to update agenda progress with generated operations.", e, 500), serviceRequest.getCID()), null);
+        }
 
         ////
         // Update/Persist the Agenda (basically just a pass through to PUT)
@@ -108,7 +146,7 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
             // Updating the Agenda has no impact on Progress objects
             DataObjectResponse<Agenda> updatedAgendaResponse =
                 agendaRequestProcessor.handlePUT(
-                    DefaultDataObjectRequest.customerAuthInstance(agenda.getCustomerId(), createUpdatedAgenda(agenda, expandAgendaRequest)));
+                    DefaultDataObjectRequest.customerAuthInstance(currentAgenda.getCustomerId(), createUpdatedAgenda(currentAgenda, expandAgendaRequest)));
 
             if(updatedAgendaResponse.isError())
                 return createExpandAgendaResponse(serviceRequest, updatedAgendaResponse.getErrorResponse(), "Failed to update Agenda.");
@@ -125,15 +163,13 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         // Persist the new OperationProgress
         try
         {
-            for(OperationProgress opProgress : generateOperationProgressList(agenda, expandAgendaRequest))
+            for(OperationProgress opProgress : generateOperationProgressList(currentAgenda, expandAgendaRequest))
             {
                 DataObjectResponse<OperationProgress> createOperationProgressResponse =
                     operationProgressRequestProcessor.handlePOST(DefaultDataObjectRequest.customerAuthInstance(opProgress.getCustomerId(), opProgress));
 
                 if(createOperationProgressResponse.isError())
-                    return createExpandAgendaResponse(
-                        serviceRequest,
-                        createOperationProgressResponse.getErrorResponse(),
+                    return createExpandAgendaResponse(serviceRequest, createOperationProgressResponse.getErrorResponse(),
                         String.format("Failed to create OperationProgress: %1$s", opProgress.getId()));
             }
         }
@@ -145,6 +181,20 @@ public class ExpandAgendaServiceRequestProcessor extends AbstractServiceRequestP
         }
 
         return createExpandAgendaResponse(serviceRequest, resultAgenda);
+    }
+
+    private AgendaProgress createUpdatedAgendaProgress(AgendaProgress sourceAgendaProgress, ExpandAgendaRequest expandAgendaRequest)
+    {
+        AgendaProgress agendaProgress = new AgendaProgress();
+        agendaProgress.setId(sourceAgendaProgress.getId());
+        agendaProgress.setCustomerId(sourceAgendaProgress.getCustomerId());
+        if(expandAgendaRequest.getParams() != null)
+        {
+            agendaProgress.setParams(new ParamsMap());
+            appendParams(sourceAgendaProgress.getParams(), agendaProgress.getParams());
+            appendParams(expandAgendaRequest.getParams(), agendaProgress.getParams());
+        }
+        return agendaProgress;
     }
 
     private Agenda createUpdatedAgenda(Agenda sourceAgenda, ExpandAgendaRequest expandAgendaRequest)
