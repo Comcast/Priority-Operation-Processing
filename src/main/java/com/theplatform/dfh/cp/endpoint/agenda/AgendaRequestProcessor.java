@@ -222,6 +222,13 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
             .withAgendaFields(agenda)
             .withProcessingState(ProcessingState.WAITING)
             .build();
+
+        // HACK / TODO: ExternalId should be a field on the Agenda and copied to the AgendaProgress
+        if(agenda.getParams() != null && agenda.getParams().containsKey(GeneralParamKey.externalId))
+        {
+            agendaProgress.setExternalId(agenda.getParams().getString(GeneralParamKey.externalId));
+        }
+
         logger.debug("Generated AgendaProgress: {}", jsonHelper.getJSONString(agendaProgress));
 
         //If the customer can create transform requests then they are allowed to create progress.
