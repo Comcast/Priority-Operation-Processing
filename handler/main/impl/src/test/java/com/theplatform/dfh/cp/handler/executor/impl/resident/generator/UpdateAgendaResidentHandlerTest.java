@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -19,11 +19,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class AgendaUpdateResidentHandlerTest
+public class UpdateAgendaResidentHandlerTest
 {
     final String OP_NAME = "theOp";
-    private AgendaUpdateResidentHandler handler;
-    private AgendaUpdateHandlerInput agendaUpdateHandlerInput;
+    private UpdateAgendaResidentHandler handler;
+    private UpdateAgendaHandlerInput updateAgendaHandlerInput;
     private ExecutorContext mockExecutorContext;
     private ResourcePoolAgendaUpdater mockResourcePoolAgendaUpdater;
     private ResourcePoolServiceClient mockResourcePoolServiceclient;
@@ -41,7 +41,7 @@ public class AgendaUpdateResidentHandlerTest
         residentHandlerParams = new ResidentHandlerParams()
             .setOperation(operation);
 
-        agendaUpdateHandlerInput = new AgendaUpdateHandlerInput();
+        updateAgendaHandlerInput = new UpdateAgendaHandlerInput();
         mockResourcePoolServiceclient = mock(ResourcePoolServiceClient.class);
         mockProgressReporter = mock(ProgressReporter.class);
         mockPropertyRetriever = mock(PropertyRetriever.class);
@@ -51,7 +51,7 @@ public class AgendaUpdateResidentHandlerTest
         doReturn(mockLaunchDataWrapper).when(mockExecutorContext).getLaunchDataWrapper();
         doReturn(mockResourcePoolServiceclient).when(mockExecutorContext).getResourcePoolServiceClient();
         mockResourcePoolAgendaUpdater = mock(ResourcePoolAgendaUpdater.class);
-        handler = new AgendaUpdateResidentHandler(mockExecutorContext);
+        handler = new UpdateAgendaResidentHandler(mockExecutorContext);
         handler.setResourcePoolAgendaUpdater(mockResourcePoolAgendaUpdater);
         handler.setProgressReporter(mockProgressReporter);
         handler.setResidentHandlerParams(residentHandlerParams);
@@ -60,8 +60,8 @@ public class AgendaUpdateResidentHandlerTest
     @Test
     public void testSuccessfulUpdate()
     {
-        doReturn(new ExpandAgendaResponse()).when(mockResourcePoolAgendaUpdater).update(any(), any());
-        handler.execute(agendaUpdateHandlerInput);
+        doReturn(new UpdateAgendaResponse()).when(mockResourcePoolAgendaUpdater).update(any(), any());
+        handler.execute(updateAgendaHandlerInput);
         verify(mockResourcePoolAgendaUpdater, times(1)).update(any(), any());
     }
 
@@ -70,23 +70,23 @@ public class AgendaUpdateResidentHandlerTest
     public void testSuccessfulUpdateNoResourcePoolClient()
     {
         doReturn(null).when(mockExecutorContext).getResourcePoolServiceClient();
-        handler.execute(agendaUpdateHandlerInput);
+        handler.execute(updateAgendaHandlerInput);
         verify(mockResourcePoolAgendaUpdater, times(0)).update(any(), any());
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*Failed to persist Agenda with generated operations.*")
     public void testErrorReponse()
     {
-        ExpandAgendaResponse expandAgendaResponse = new ExpandAgendaResponse();
+        UpdateAgendaResponse expandAgendaResponse = new UpdateAgendaResponse();
         expandAgendaResponse.setErrorResponse(new ErrorResponse());
         doReturn(expandAgendaResponse).when(mockResourcePoolAgendaUpdater).update(any(), any());
-        handler.execute(agendaUpdateHandlerInput);
+        handler.execute(updateAgendaHandlerInput);
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*Failed to persist Agenda with generated operations.*")
     public void testNullResponse()
     {
         doReturn(null).when(mockResourcePoolAgendaUpdater).update(any(), any());
-        handler.execute(agendaUpdateHandlerInput);
+        handler.execute(updateAgendaHandlerInput);
     }
 }

@@ -10,8 +10,8 @@ import com.theplatform.dfh.cp.handler.executor.impl.config.ExecutorConfigPropert
 import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
 import com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +25,15 @@ import java.util.List;
  *
  * TODO: consider other alternatives so the executor can be told a given operation creates other ops
  */
-public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdateHandlerInput, OperationProgressFactory>
+public class UpdateAgendaResidentHandler extends BaseResidentHandler<UpdateAgendaHandlerInput, OperationProgressFactory>
 {
     private static final int DEFAULT_EXPAND_AGENDA_ATTEMPTS = 3;
     private static final int DEFAULT_EXPAND_AGENDA_ATTEMPT_DELAY_MS = 3000;
-    private static final Logger logger = LoggerFactory.getLogger(AgendaUpdateResidentHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpdateAgendaResidentHandler.class);
     private ResourcePoolAgendaUpdater resourcePoolAgendaUpdater;
     private ExecutorContext executorContext;
 
-    public AgendaUpdateResidentHandler(ExecutorContext executorContext)
+    public UpdateAgendaResidentHandler(ExecutorContext executorContext)
     {
         this.executorContext = executorContext;
         this.resourcePoolAgendaUpdater = new ResourcePoolAgendaUpdater();
@@ -45,14 +45,14 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
     }
 
     @Override
-    public String execute(AgendaUpdateHandlerInput handlerInput)
+    public String execute(UpdateAgendaHandlerInput handlerInput)
     {
-        AgendaUpdateHandlerOutput agendaUpdateHandlerOutput = new AgendaUpdateHandlerOutput();
-        agendaUpdateHandlerOutput.setOperations(processOperations(handlerInput.getOperations()));
-        agendaUpdateHandlerOutput.setParams(handlerInput.getParams());
+        UpdateAgendaHandlerOutput updateAgendaHandlerOutput = new UpdateAgendaHandlerOutput();
+        updateAgendaHandlerOutput.setOperations(processOperations(handlerInput.getOperations()));
+        updateAgendaHandlerOutput.setParams(handlerInput.getParams());
         updatePersistedAgenda(handlerInput);
         getProgressReporter().reportProgress(getOperationProgressFactory().create(ProcessingState.COMPLETE, CompleteStateMessage.SUCCEEDED.toString()));
-        return new JsonHelper().getJSONString(agendaUpdateHandlerOutput);
+        return new JsonHelper().getJSONString(updateAgendaHandlerOutput);
     }
 
     @Override
@@ -62,9 +62,9 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
     }
 
     @Override
-    public Class<AgendaUpdateHandlerInput> getPayloadClassType()
+    public Class<UpdateAgendaHandlerInput> getPayloadClassType()
     {
-        return AgendaUpdateHandlerInput.class;
+        return UpdateAgendaHandlerInput.class;
     }
 
     private List<Operation> processOperations(List<Operation> operations)
@@ -72,16 +72,16 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
         return operations;
     }
 
-    protected void updatePersistedAgenda(AgendaUpdateHandlerInput handlerInput)
+    protected void updatePersistedAgenda(UpdateAgendaHandlerInput handlerInput)
     {
-        ExpandAgendaRequest expandAgendaRequest = new ExpandAgendaRequest();
-        expandAgendaRequest.setAgendaId(executorContext.getAgendaId());
-        expandAgendaRequest.setOperations(handlerInput.getOperations());
-        expandAgendaRequest.setParams(handlerInput.getParams());
+        UpdateAgendaRequest updateAgendaRequest = new UpdateAgendaRequest();
+        updateAgendaRequest.setAgendaId(executorContext.getAgendaId());
+        updateAgendaRequest.setOperations(handlerInput.getOperations());
+        updateAgendaRequest.setParams(handlerInput.getParams());
 
         if(handlerInput.getLogOnly() != null && handlerInput.getLogOnly())
         {
-            logger.info("Skipping agendaUpdate call (by request): {}", executorContext.getJsonHelper().getJSONString(expandAgendaRequest));
+            logger.info("Skipping agendaUpdate call (by request): {}", executorContext.getJsonHelper().getJSONString(updateAgendaRequest));
             return;
         }
 
@@ -91,7 +91,7 @@ public class AgendaUpdateResidentHandler extends BaseResidentHandler<AgendaUpdat
             logger.info("No ResourcePoolServiceClient defined. Generated operations are not being persisted.");
             return;
         }
-        ExpandAgendaResponse response = resourcePoolAgendaUpdater.update(resourcePoolServiceClient, expandAgendaRequest);
+        UpdateAgendaResponse response = resourcePoolAgendaUpdater.update(resourcePoolServiceClient, updateAgendaRequest);
         if(response == null)
             throw new RuntimeException("Failed to persist Agenda with generated operations.");
         if(response.isError())

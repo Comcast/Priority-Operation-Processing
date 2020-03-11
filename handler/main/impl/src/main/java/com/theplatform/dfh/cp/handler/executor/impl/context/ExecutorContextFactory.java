@@ -13,7 +13,7 @@ import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFa
 import com.theplatform.dfh.cp.handler.executor.impl.executor.resident.ResidentOperationExecutorFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.progress.agenda.ResourcePoolServiceAgendaProgressReporter;
 import com.theplatform.dfh.cp.handler.executor.impl.properties.ExecutorProperty;
-import com.theplatform.dfh.cp.handler.executor.impl.resident.generator.AgendaUpdateResidentHandlerFactory;
+import com.theplatform.dfh.cp.handler.executor.impl.resident.generator.UpdateAgendaResidentHandlerFactory;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
@@ -105,7 +105,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     protected void setupResidentOperationExecutorFactory(OperationExecutorFactory operationExecutorFactory)
     {
         operationExecutorFactory.getResidentOperationExecutorFactory()
-            .getResidentOperationsRegistry().registerHandlerFactory("agendaUpdate", new AgendaUpdateResidentHandlerFactory());
+            .getResidentOperationsRegistry().registerHandlerFactory("agendaUpdate", new UpdateAgendaResidentHandlerFactory());
     }
 
     public void configureLaunchTypeReporter(ExecutorContext executorContext, HttpURLConnectionFactory httpURLConnectionFactory)

@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator;
 
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ExpandAgendaResponse;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
+import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
@@ -25,7 +25,7 @@ public class ResourcePoolAgendaUpdater
      * @param expandAgendaRequest The request to transmit
      * @return The response or null if there is an issue
      */
-    public ExpandAgendaResponse update(ResourcePoolServiceClient serviceClient, ExpandAgendaRequest expandAgendaRequest)
+    public UpdateAgendaResponse update(ResourcePoolServiceClient serviceClient, UpdateAgendaRequest expandAgendaRequest)
     {
         logger.debug("Initializing retry");
         RetryPolicy<Object> policy = new RetryPolicy<>()
@@ -39,7 +39,7 @@ public class ResourcePoolAgendaUpdater
                 logger.warn(String.format("Attempt [%1$s / %2$s] to update agenda failed.", executionCompletedEvent.getAttemptCount(), maxRetries + 1),
                     executionCompletedEvent.getFailure());
             })
-            .get((() -> serviceClient.expandAgenda(expandAgendaRequest)));
+            .get((() -> serviceClient.updateAgenda(expandAgendaRequest)));
     }
 
     public int getMaxRetries()

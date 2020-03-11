@@ -5,7 +5,7 @@ import com.theplatform.dfh.cp.api.params.ParamsMap;
 
 import java.util.List;
 
-public class AgendaUpdateHandlerInput
+public class UpdateAgendaHandlerInput
 {
     private List<Operation> operations;
     private ParamsMap params;
