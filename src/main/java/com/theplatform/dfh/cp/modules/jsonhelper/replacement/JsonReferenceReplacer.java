@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.modules.jsonhelper.replacement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -200,17 +201,16 @@ public class JsonReferenceReplacer
 
                 //logger.debug("Checking for token [{}] in node [{}]", translatedValue, nodeId);
                 JsonNode parameterValue = getParameterValue(parameterMap, referenceName, referencePath, report);
+
                 if (parameterValue != null)
                 {
                     fullNodeReplace = true;
-                    if(parameterValue.isObject() || parameterValue.isArray())
+                    if(parameterValue.isObject()
+                        || parameterValue.isArray()
+                        || parameterValue.isTextual()
+                        || parameterValue.isNumber()
+                        || parameterValue == NullNode.getInstance())
                     {
-                        //logger.debug("Object Replace: {} => {}", nodeValue, parameterValue);
-                        jsonNodeReplacer.updateValue(parameterValue);
-                    }
-                    else if(parameterValue.isTextual() || parameterValue.isNumber())
-                    {
-                        //logger.debug("JSON Pointer String Replace: {} => {}", nodeValue, parameterValue);
                         jsonNodeReplacer.updateValue(parameterValue);
                     }
                 }
@@ -285,7 +285,12 @@ public class JsonReferenceReplacer
         JsonNode atNode = parameterValue.at(StringUtils.prependIfMissing(jsonPointer, JACKSON_PATH_SEPARATOR));
         if(atNode.isMissingNode())
         {
-            if(splitPtr.length > 1)
+            if(splitPtr.length == 1
+                && jsonPtrExpr.endsWith(CONTEXT_FALLBACK_VALUE_SEPARATOR))
+            {
+                return NullNode.getInstance();
+            }
+            else if(splitPtr.length > 1)
             {
                 return new TextNode(splitPtr[1]);
             }
