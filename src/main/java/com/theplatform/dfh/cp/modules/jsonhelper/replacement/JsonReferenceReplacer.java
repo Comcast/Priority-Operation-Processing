@@ -2,6 +2,7 @@ package com.theplatform.dfh.cp.modules.jsonhelper.replacement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public class JsonReferenceReplacer
     public static final String DEFAULT_REFERENCE_PREFIX = "@<";
     public static final String DEFAULT_REFERENCE_SUFFIX = ">";
     public static final String DEFAULT_REFERENCE_SEPARATOR = "::";
+    public static final String DEFAULT_FALLBACK_VALUE_SEPARATOR = "?";
     public static final String JACKSON_PATH_SEPARATOR = "/";
     public static final String REFERENCE_GROUP_NAME = "reference";
     public static final String PATH_GROUP_NAME = "path";
@@ -24,6 +26,7 @@ public class JsonReferenceReplacer
     private final String CONTEXT_REFERENCE_PREFIX;
     private final String CONTEXT_REFERENCE_SUFFIX;
     private final String CONTEXT_REFERENCE_SEPARATOR;
+    private final String CONTEXT_FALLBACK_VALUE_SEPARATOR;
     private final Pattern referencePattern;
 
     private ArrayNodeReplacer arrayNodeReplacer = new ArrayNodeReplacer();
@@ -31,14 +34,15 @@ public class JsonReferenceReplacer
 
     public JsonReferenceReplacer()
     {
-        this(DEFAULT_REFERENCE_PREFIX, DEFAULT_REFERENCE_SEPARATOR, DEFAULT_REFERENCE_SUFFIX);
+        this(DEFAULT_REFERENCE_PREFIX, DEFAULT_REFERENCE_SEPARATOR, DEFAULT_REFERENCE_SUFFIX, DEFAULT_FALLBACK_VALUE_SEPARATOR);
     }
 
-    public JsonReferenceReplacer(String referencePrefix, String referenceSeparator, String referenceSuffix)
+    public JsonReferenceReplacer(String referencePrefix, String referenceSeparator, String referenceSuffix, String fallbackValueSeparator)
     {
         CONTEXT_REFERENCE_PREFIX = referencePrefix;
         CONTEXT_REFERENCE_SEPARATOR = referenceSeparator;
         CONTEXT_REFERENCE_SUFFIX = referenceSuffix;
+        CONTEXT_FALLBACK_VALUE_SEPARATOR = fallbackValueSeparator;
         // the quote replacements escape any special characters (like $)
         String pattern = String.format("(%1$s(?<%2$s>.+?)(%3$s(?<%4$s>.+?))?%5$s)",
             Matcher.quoteReplacement(CONTEXT_REFERENCE_PREFIX),
@@ -275,12 +279,22 @@ public class JsonReferenceReplacer
             return parameterValue;
         }
 
-        JsonNode atNode = parameterValue.at(StringUtils.prependIfMissing(jsonPtrExpr, JACKSON_PATH_SEPARATOR));
+        String[] splitPtr = StringUtils.split(jsonPtrExpr, CONTEXT_FALLBACK_VALUE_SEPARATOR, 2);
+        String jsonPointer = splitPtr[0];
+
+        JsonNode atNode = parameterValue.at(StringUtils.prependIfMissing(jsonPointer, JACKSON_PATH_SEPARATOR));
         if(atNode.isMissingNode())
         {
-            // this is an invalid reference
-            report.addInvalidReference(generateReference(parameter, jsonPtrExpr));
-            return null;
+            if(splitPtr.length > 1)
+            {
+                return new TextNode(splitPtr[1]);
+            }
+            else
+            {
+                // this is an invalid reference
+                report.addInvalidReference(generateReference(parameter, jsonPointer));
+                return null;
+            }
         }
         return atNode;
     }
