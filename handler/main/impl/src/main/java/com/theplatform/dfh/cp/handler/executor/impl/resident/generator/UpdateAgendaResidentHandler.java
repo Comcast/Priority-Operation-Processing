@@ -1,6 +1,8 @@
 package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
+import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
@@ -69,6 +71,13 @@ public class UpdateAgendaResidentHandler extends BaseResidentHandler<UpdateAgend
 
     private List<Operation> processOperations(List<Operation> operations)
     {
+        final String generatorOpName = getResidentHandlerParams().getOperation().getName();
+        operations.forEach(op ->
+        {
+            if(op.getParams() == null)
+                op.setParams(new ParamsMap());
+            op.getParams().put(GeneralParamKey.generatedOperationParent, generatorOpName);
+        });
         return operations;
     }
 

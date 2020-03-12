@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
+import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
@@ -10,8 +11,14 @@ import com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generato
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -32,6 +39,7 @@ public class UpdateAgendaResidentHandlerTest
     private PropertyRetriever mockPropertyRetriever;
     private ProgressReporter mockProgressReporter;
     private Operation operation;
+    private List<Operation> generatedOperations;
 
     @BeforeMethod
     public void setup()
@@ -41,7 +49,10 @@ public class UpdateAgendaResidentHandlerTest
         residentHandlerParams = new ResidentHandlerParams()
             .setOperation(operation);
 
+        generatedOperations = IntStream.range(0, 10).mapToObj(i -> new Operation()).collect(Collectors.toList());
         updateAgendaHandlerInput = new UpdateAgendaHandlerInput();
+        updateAgendaHandlerInput.setOperations(generatedOperations);
+
         mockResourcePoolServiceclient = mock(ResourcePoolServiceClient.class);
         mockProgressReporter = mock(ProgressReporter.class);
         mockPropertyRetriever = mock(PropertyRetriever.class);
@@ -63,6 +74,7 @@ public class UpdateAgendaResidentHandlerTest
         doReturn(new UpdateAgendaResponse()).when(mockResourcePoolAgendaUpdater).update(any(), any());
         handler.execute(updateAgendaHandlerInput);
         verify(mockResourcePoolAgendaUpdater, times(1)).update(any(), any());
+        verifyOperationsAdjusted();
     }
 
     // this use-case is just for local testing
@@ -72,6 +84,7 @@ public class UpdateAgendaResidentHandlerTest
         doReturn(null).when(mockExecutorContext).getResourcePoolServiceClient();
         handler.execute(updateAgendaHandlerInput);
         verify(mockResourcePoolAgendaUpdater, times(0)).update(any(), any());
+        verifyOperationsAdjusted();
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*Failed to persist Agenda with generated operations.*")
@@ -88,5 +101,13 @@ public class UpdateAgendaResidentHandlerTest
     {
         doReturn(null).when(mockResourcePoolAgendaUpdater).update(any(), any());
         handler.execute(updateAgendaHandlerInput);
+    }
+
+    private void verifyOperationsAdjusted()
+    {
+        Assert.assertFalse(generatedOperations.stream().anyMatch(op ->
+            op.getParams() == null
+                || !op.getParams().containsKey(GeneralParamKey.generatedOperationParent)
+                || !StringUtils.equalsIgnoreCase(op.getParams().getString(GeneralParamKey.generatedOperationParent), OP_NAME)));
     }
 }
