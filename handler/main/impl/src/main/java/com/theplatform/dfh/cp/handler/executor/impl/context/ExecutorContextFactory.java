@@ -105,7 +105,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
     protected void setupResidentOperationExecutorFactory(OperationExecutorFactory operationExecutorFactory)
     {
         operationExecutorFactory.getResidentOperationExecutorFactory()
-            .getResidentOperationsRegistry().registerHandlerFactory("agendaUpdate", new UpdateAgendaResidentHandlerFactory());
+            .getResidentOperationsRegistry().registerHandlerFactory("updateAgenda", new UpdateAgendaResidentHandlerFactory());
     }
 
     public void configureLaunchTypeReporter(ExecutorContext executorContext, HttpURLConnectionFactory httpURLConnectionFactory)
