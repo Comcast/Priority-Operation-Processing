@@ -25,6 +25,7 @@
         <handler-kubernetes-support.version>1.0.2-SNAPSHOT</handler-kubernetes-support.version>
         <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
         <dfh-http-util.version>1.0.2-SNAPSHOT</dfh-http-util.version>
+        <json-helper.version>1.0.2-SNAPSHOT</json-helper.version>
 
         <!-- Resident Handlers-->
         <http-request-util-handler.version>1.0.3-SNAPSHOT</http-request-util-handler.version>
@@ -38,6 +39,12 @@
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <version>${json-helper.version}</version>
+        </dependency>
+
         <!-- Resident Handlers -->
         <dependency>
             <groupId>com.theplatform.dfh.cp.handler</groupId>
@@ -113,6 +120,7 @@
             <artifactId>pl-dfh-monitor-graphite</artifactId>
             <version>${dfh-monitor-graphite.version}</version>
         </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>com.theplatform.modules</groupId>
