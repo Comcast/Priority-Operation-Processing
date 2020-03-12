@@ -6,6 +6,7 @@ public enum GeneralParamKey implements ParamKey
     execProgressId,
     agendaId,
     dependsOn,
+    generatedOperationParent,
     cid,
     customerId,
     externalId,
