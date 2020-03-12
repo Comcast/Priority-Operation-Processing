@@ -279,6 +279,7 @@ public class JsonReferenceReplacer
             return parameterValue;
         }
 
+        // NOTE / TODO: If we opt to create more special types I recommend individual processors and multiple characters (don't overload '?' for example)
         String[] splitPtr = StringUtils.split(jsonPtrExpr, CONTEXT_FALLBACK_VALUE_SEPARATOR, 2);
         String jsonPointer = splitPtr[0];
 

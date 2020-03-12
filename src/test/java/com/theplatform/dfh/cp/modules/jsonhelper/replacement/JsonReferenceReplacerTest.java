@@ -196,6 +196,7 @@ public class JsonReferenceReplacerTest extends JsonReplacementTestBase
                 {"@<sampleValue::subItem/item3>", "45"},
                 {"@<sampleValue::subItem/item3/nothere?95>", "95"},
                 {"-@<sampleValue::subItem/item3/nothere?95>", "-95"},
+                {"@<sampleValue::subItem/item3?95>", "45"},
                 {"-@<sampleValue::/wrongitem?95>", "-95"},
                 {"-@<sampleValue::/wrongitem?>", "-null"},
                 {"@<sampleValue::/wrongitem?>", null},
