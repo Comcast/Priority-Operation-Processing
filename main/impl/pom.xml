@@ -82,6 +82,11 @@
             <artifactId>pl-logging-extension-logback</artifactId>
             <version>${logging-extension.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.cts.modules</groupId>
+            <artifactId>millis-syslog-appender</artifactId>
+            <version>0.1.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
