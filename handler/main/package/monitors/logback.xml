@@ -10,7 +10,7 @@
         </layout>
     </appender>
 
-    <appender name="syslogServiceAppender" class="ch.qos.logback.classic.net.SyslogAppender">
+    <appender name="syslogServiceAppender" class="com.cts.modules.logging.MillisSyslogAppender">
         <filter class="com.theplatform.module.logging.extension.logback.filter.LevelMatchFilter" />
         <syslogHost>syslog.logging</syslogHost>
         <facility>local0</facility>
