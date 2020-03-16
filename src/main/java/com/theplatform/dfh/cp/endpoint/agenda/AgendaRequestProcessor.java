@@ -117,6 +117,7 @@ public class AgendaRequestProcessor extends EndpointDataObjectRequestProcessor<A
         AgendaInsight agendaInsight = new AgendaInsight();
         agendaInsight.setInsightId(insight.getId());
         agendaInsight.setResourcePoolId(insight.getResourcePoolId());
+        agendaToPersist.setCid(agendaToPersist.getCid() == null ? UUID.randomUUID().toString() : agendaToPersist.getCid());
         agendaToPersist.setAgendaInsight(agendaInsight);
         agendaToPersist.setParams(agendaToPersist.getParams() == null ? new ParamsMap() : agendaToPersist.getParams());
 
