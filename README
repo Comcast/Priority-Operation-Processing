@@ -1,7 +1,8 @@
 Local Docker Apache image for testing: (localhost:8080)
 ----
-navigate to the resources folder in the terminal
-docker run -p 8080:80 -v $(pwd):/usr/local/apache2/htdocs/ httpd:2.4
+1) navigate to the resources folder in the terminal
+2) Run this command: docker run -p 8080:80 -v $(pwd):/usr/local/apache2/htdocs/ httpd:2.4
+3) Browser: http://localhost:8080/
 
 Clean up old docker stuff (like non-running containers)
 ------
