@@ -8,7 +8,11 @@
     <script type="text/javascript" src="js/server-info.js"></script>
     <script type="text/javascript" src="js/request.js"></script>
     <script type="text/javascript" src="js/authorization.js"></script>
+    <script type="text/javascript" src="js/agenda-status.js"></script>
     <script type="text/javascript" src="js/tab.js"></script>
+    <!-- https://github.com/visjs/vis-network -->
+    <!-- https://visjs.github.io/vis-network/examples/ -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
 <!--<form id="loginForm">-->
@@ -121,6 +125,16 @@
 <div class="container">
     <pre id="json-renderer"></pre>
 </div>
+
+<table>
+    <input type="submit" value="Populate Agenda Status" name="populate_agenda_status_table" onclick="processAgendaStatusRequest(event)"/>
+    <div id="agendaStatusTable"></div>
+    <textarea id="agendaStatusArea" name="agendaStatusArea" class="response" rows="20"></textarea>
+
+    <div id="mynetwork"></div>
+</table>
+
+
 </body>
 <!-- Load up the default tab (TODO: put into onload method?)-->
 <script>
