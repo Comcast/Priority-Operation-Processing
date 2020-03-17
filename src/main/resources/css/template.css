@@ -7097,6 +7097,12 @@ body.site.fluid {
 .header {
     margin-bottom: 10px;
 }
+.topic-header{
+    color: #f28ef2;
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 20px;
+}
 .header .finder {
     margin-top: 14px;
 }
