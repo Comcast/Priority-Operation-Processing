@@ -56,113 +56,107 @@
             <div id="menu-side" class="span3">
                 <div class="well _menu">
                     <h3 class="page-header">Menu</h3>
-                    <ul class="nav menu mod-list">
-                        <li class="item-101 default current active"><a href="/index.html" >Home</a></li>
+                    <ul class="nav">
+                        <li class="nav-header">Welcome</li>
+                    </ul>
+                    <ul class="nav">
+                        <li class="nav-header">Progress</li>
+                    </ul>
+                    <ul class="nav">
+                        <li class="nav-header">Data Management</li>
+                        <ul class="nav-list divider">
+                            <script>
+                                endpoints.forEach(addEndpointSelectOption);
+                                function addEndpointSelectOption(item, index) {
+                                    document.write("<li>\<a href=\"/index.html\" >"+ item.name +"</a></li>")
+                                }
+                            </script>
+                        </ul>
                     </ul>
                 </div>
-                <div class="well ">
-                    <h3 class="page-header">Login</h3>
-                    <form action="/index.php" method="post" id="login-form" class="form-inline">
-                        <div class="userdata">
-                            <div id="form-login-username" class="control-group">
-                                <div class="controls">
-                                    <div class="input-prepend">
-						<span class="add-on">
-							<span class="icon-user hasTooltip" title="Username"></span>
-							<label for="modlgn-username" class="element-invisible">Username</label>
-						</span>
-                                        <input id="modlgn-username" type="text" name="mpx_username" class="input-small" tabindex="0" size="18" placeholder="Username"  onchange="resetTokenInfo()" required/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="form-login-password" class="control-group">
-                                <div class="controls">
-                                    <div class="input-prepend">
-						<span class="add-on">
-							<span class="icon-lock hasTooltip" title="Password">
-							</span>
-								<label for="modlgn-passwd" class="element-invisible">Password</label>
-						</span>
-                                        <input id="modlgn-passwd" type="password" name="mpx_password" class="input-small" tabindex="0" size="18" placeholder="Password"  onchange="resetTokenInfo()" required/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <select name="target_server" id="target_server">
-                                    <script>
-                                        serverInfo.forEach(addServerSelectOption);
-                                        function addServerSelectOption(item, index) {
-                                            document.write("<option value=\""+ index +"\">" + item.name + "</option>")
-                                        }
-                                    </script>
-                                </select>
-                            </div>
-                    </form>
+                <div id="html-login" class="well ">
+                    <div class="userdata">
+                        <script>
+                            $(function(){
+                                $("#html-login").load("login.html");
+                            });
+                        </script>
+                        <div class="control-group">
+                            <select name="target_server" id="target_server">
+                                <script>
+                                    serverInfo.forEach(addServerSelectOption);
+                                    function addServerSelectOption(item, index) {
+                                        document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                                    }
+                                </script>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- End Right Sidebar -->
+            <main id="content" role="main" class="span9">
+                <!-- Begin Content -->
+                <div class="page-header">
+                    <div class="tab">
+                        <button class="tablinks" onclick="openTab(event, 'GET')" id="defaultOpen">GET</button>
+                        <button class="tablinks" onclick="openTab(event, 'POST')">POST</button>
+                        <button class="tablinks" onclick="openTab(event, 'PUT')">PUT</button>
+                        <button class="tablinks" onclick="openTab(event, 'DELETE')">DELETE</button>
+                    </div>
+                </div>
+                <div id="GET" class="tabcontent">
+                    <select name="get_query_type" id="get_query_type">
+                        <option value="byId">byId</option>
+                        <option value="bycid">byCid</option>
+                        <option value="bylinkId">byLinkId</option>
+                        <option value="byresourcePoolId">byResourcePoolId</option>
+                        <option value="other">other</option>
+                    </select>
+                    <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
+                    <label for="get_limit_value">Limit</label>
+                    <input id="get_limit_value" name="get_limit_value" class="input-small">
+                    <label for="get_fields_value">Fields</label>
+                    <input id="get_fields_value" name="get_fields_value" class="input-small">
+                </div>
+
+                <div id="POST" class="tabcontent">
+                    <div>
+                        <textarea id="data_to_post" class="input-block-level"  name="data_to_post" rows="10"></textarea>
+                    </div>
+                </div>
+
+                <div id="PUT" class="tabcontent">
+                    <div>
+                        <textarea id="data_to_put" class="input-block-level" name="data_to_put" rows="10"></textarea>
+                    </div>
+                </div>
+                <div id="DELETE" class="tabcontent">
+                    Delete Id: <input id="delete_query_value" name="delete_query_value" class="input-large" size="180" required>
+                </div>
+
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)" class="btn btn-primary submit-button"/>
+                            </td>
+                            <td>
+                                <div style="margin-left: 20px;height: 40px;width: 40px">
+                                    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <label for="response">Response</label>
+                    <textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
+                </div>
+                <!-- End Content -->
+            </main>
         </div>
-        <!-- End Right Sidebar -->
-        <main id="content" role="main" class="span9">
-            <!-- Begin Content -->
-            <div class="page-header">
-                <div class="tab">
-                    <button class="tablinks" onclick="openTab(event, 'GET')" id="defaultOpen">GET</button>
-                    <button class="tablinks" onclick="openTab(event, 'POST')">POST</button>
-                    <button class="tablinks" onclick="openTab(event, 'PUT')">PUT</button>
-                    <button class="tablinks" onclick="openTab(event, 'DELETE')">DELETE</button>
-                </div>
-            </div>
-            <div id="GET" class="tabcontent">
-                <select name="get_query_type" id="get_query_type">
-                    <option value="byId">byId</option>
-                    <option value="bycid">byCid</option>
-                    <option value="bylinkId">byLinkId</option>
-                    <option value="byresourcePoolId">byResourcePoolId</option>
-                    <option value="other">other</option>
-                </select>
-                <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
-                <label for="get_limit_value">Limit</label>
-                <input id="get_limit_value" name="get_limit_value" class="input-small">
-                <label for="get_fields_value">Fields</label>
-                <input id="get_fields_value" name="get_fields_value" class="input-small">
-            </div>
-
-            <div id="POST" class="tabcontent">
-                <div>
-                    <textarea id="data_to_post" class="input-block-level"  name="data_to_post" rows="10"></textarea>
-                </div>
-            </div>
-
-            <div id="PUT" class="tabcontent">
-                <div>
-                    <textarea id="data_to_put" class="input-block-level" name="data_to_put" rows="10"></textarea>
-                </div>
-            </div>
-            <div id="DELETE" class="tabcontent">
-                Delete Id: <input id="delete_query_value" name="delete_query_value" class="input-large" size="180" required>
-            </div>
-
-            <div>
-                <table>
-                    <tr>
-                        <td>
-                            <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)" class="btn btn-primary submit-button"/>
-                        </td>
-                        <td>
-                            <div style="margin-left: 20px;height: 40px;width: 40px">
-                                <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div>
-                <label for="response">Response</label>
-                <textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
-            </div>
-            <!-- End Content -->
-        </main>
     </div>
 </div>
 
