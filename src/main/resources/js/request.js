@@ -34,6 +34,40 @@ function appendQueryParamToArray(array, queryPrefix, queryValue) {
         array.push(queryPrefix + queryValue);
 }
 
+function processRequestNew(e) {
+    e.preventDefault();
+
+    // reset view
+    $("#response").val("");
+    $("#progressTable").html("");
+
+    if(!validateGeneralInputs())
+        return;
+
+    toggleSpinner(true);
+
+    regenerateCid();
+
+    var targetServerIndex = $("#target_server").val();
+    var server = serverInfo[targetServerIndex];
+    var endpoint = endpointsByName[requestEndpointName];
+    var username = $("#modlgn-username").val();
+    var password = $("#modlgn-passwd").val();
+
+    performAuthorizeRequest(server.endpointIDMURL, username, password, g_requestCid,
+            function(){
+                // get the active tab
+                var activeTab = getActiveTab();
+                if(activeTab != null)
+                    window["process" + activeTab.id + "Request"](server, endpoint);
+                // TODO: alert on no tab
+            },
+            function(error){
+                console.log(error);
+                toggleSpinner(false);
+            });
+}
+
 function processRequest(e) {
     e.preventDefault();
 

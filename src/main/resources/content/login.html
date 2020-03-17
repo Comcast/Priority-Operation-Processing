@@ -1,4 +1,13 @@
 <h3 class="page-header">Login</h3>
+<div class="control-group">
+    <select name="target_server" id="target_server">
+    </select>
+    <script>
+        serverInfo.forEach(function (item, index) {
+            $('#target_server').append("<option value=\""+ index +"\">" + item.name + "</option>");
+        });
+    </script>
+</div>
 <div id="form-login-username" class="control-group">
     <div class="controls">
         <div class="input-prepend">
@@ -22,3 +31,4 @@
         </div>
     </div>
 </div>
+
