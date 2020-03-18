@@ -70,7 +70,7 @@ public class JsonReferenceReplacer
     }
 
     /**
-     * This is primarily a test method for pattern verification
+     * Performs the match to the internal reference pattern
      * @param input The input to match
      * @return A matcher using the internal pattern
      */
@@ -94,6 +94,17 @@ public class JsonReferenceReplacer
                : CONTEXT_REFERENCE_SEPARATOR + jsonPtrExpr)
             + CONTEXT_REFERENCE_SUFFIX;
     }
+
+    public JsonReferenceComponents extractComponents(String input)
+    {
+        Matcher matcher = getMatcher(input);
+        if (matcher.matches())
+        {
+            return new JsonReferenceComponents(matcher.group(REFERENCE_GROUP_NAME), matcher.group(PATH_GROUP_NAME));
+        }
+        return null;
+    }
+
     /**
      * Replaces the references in the specified json structure
      * @param rootNode The root JsonNode to traverse for references
