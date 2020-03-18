@@ -34,6 +34,62 @@ function appendQueryParamToArray(array, queryPrefix, queryValue) {
         array.push(queryPrefix + queryValue);
 }
 
+
+///////////////
+
+function processAuthorizedRequest(e, server, endpoint, successCallback, failCallback) {
+    e.preventDefault();
+
+    if(!validateCredentialInputs())
+        return;
+
+    toggleSpinner(true);
+
+    regenerateCid();
+
+    var username = $("#modlgn-username").val();
+    var password = $("#modlgn-passwd").val();
+
+    performAuthorizeRequest(server.endpointIDMURL, username, password, g_requestCid,
+            function(){
+                successCallback();
+                toggleSpinner(false);
+            },
+            function(error){
+                console.log(error);
+                toggleSpinner(false);
+                failCallback();
+            });
+}
+
+function performBasicRequest(httpVerb, url, data, successFunction){
+    $.ajax({
+        type: httpVerb,
+        url: url,
+        crossDomain: true,
+        jsonp: true,
+        contentType: "application/json",
+        data: data,
+        headers: {
+            'Authorization': "Basic " + btoa(getAccountId() + ":" + g_idmToken),
+            'Content-Type': "application/json",
+            'X-thePlatform-cid': g_requestCid
+        },
+        success: function (response) {
+            if(successFunction != null)
+                successFunction(response);
+        },
+        error: function (response) {
+            resetTokenInfo();
+            alert("Unsuccessful CID '" + g_requestCid +"' -- Identity token has been reset. Please try the request again.");
+        }
+    });
+}
+
+
+///////////////
+
+// TODO: make a generic one that does the auth request
 function processRequestNew(e) {
     e.preventDefault();
 
@@ -41,7 +97,7 @@ function processRequestNew(e) {
     $("#response").val("");
     $("#progressTable").html("");
 
-    if(!validateGeneralInputs())
+    if(!validateCredentialInputs())
         return;
 
     toggleSpinner(true);
@@ -71,11 +127,13 @@ function processRequestNew(e) {
 function processRequest(e) {
     e.preventDefault();
 
+    console.log("1");
+
     // reset view
     $("#response").val("");
     $("#progressTable").html("");
 
-    if(!validateGeneralInputs())
+    if(!validateCredentialInputs())
         return;
 
     toggleSpinner(true);
@@ -106,9 +164,9 @@ function processRequest(e) {
 function processGETRequest(server, endpoint){
     var queryElement = document.getElementById("get_query_type");
     var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
-    var queryValue = getQueryValue("get_query_value")
-    var limitValue = getQueryValue("get_limit_value")
-    var fieldsValue = getQueryValue("get_fields_value")
+    var queryValue = getQueryValue("get_query_value");
+    var limitValue = getQueryValue("get_limit_value");
+    var fieldsValue = getQueryValue("get_fields_value");
     performRequest(
         "GET",
         getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, fieldsValue),
@@ -203,7 +261,7 @@ function verifyJson(json)
     }
 }
 
-function validateGeneralInputs(){
+function validateCredentialInputs(){
     if ($("#mpx_username").val()=="") {
         alert ("Please enter your user id");
         return false;

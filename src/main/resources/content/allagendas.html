@@ -1,0 +1,61 @@
+<select name="get_query_type" id="get_query_type">
+    <option value="byId">byId</option>
+    <option value="bycid">byCid</option>
+    <option value="bylinkId">byLinkId</option>
+    <option value="byresourcePoolId">byResourcePoolId</option>
+    <option value="other">other</option>
+</select>
+<input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
+<label for="get_limit_value">Limit</label>
+<input id="get_limit_value" name="get_limit_value" class="input-small">
+
+<div>
+    <table>
+        <tr>
+            <td>
+                <input type="submit" value="Submit Request" name="request_button" onclick="doThings(event);" class="btn btn-primary submit-button"/>
+            </td>
+            <td>
+                <div style="margin-left: 20px;height: 40px;width: 40px">
+                    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="agendaStatusTable"></div>
+<label for="response">Response</label>
+<textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
+<div id="mynetwork"></div>
+
+<script>
+    function doThings(event){
+        var targetServerIndex = $("#target_server").val();
+        var server = serverInfo[targetServerIndex];
+        var endpoint = endpointsByName["Agenda Progress"];
+
+        processAuthorizedRequest(event,
+                server,
+                endpoint,
+                function(event){
+                    var queryElement = document.getElementById("get_query_type");
+                    var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
+                    var queryValue = getQueryValue("get_query_value");
+                    var limitValue = getQueryValue("get_limit_value");
+
+                    performBasicRequest(
+                            "GET",
+                            getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
+                            null,
+                            function(response){
+                                $("#response").val(JSON.stringify(response, null, 2));
+                                buildAgendaStatusTable(response);
+                            });
+                },
+                function(error){
+
+                }
+        );
+    }
+</script>

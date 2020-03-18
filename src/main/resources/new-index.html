@@ -54,9 +54,13 @@
                         <li class="nav-header">Welcome</li>
                     </ul>
                     <ul class="nav">
-                        <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a>
-                        </li>
+                        <li class="nav-header">Progress</li>
+                        <ul class="nav-list divider">
+                            <li>All Agendas</li>
+                            <li>Agenda</li>
+                        </ul>
                     </ul>
+
                     <ul class="nav">
                         <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a>
                         </li>
@@ -74,6 +78,7 @@
             </div>
             <!-- End Right Sidebar -->
             <main id="content" role="main" class="span9">
+                <h3 class="topic-header">testheader</h3>
                 <!-- Begin Content -->
                 <div id="theContent"></div>
                 <!-- End Content -->
@@ -81,6 +86,13 @@
         </div>
     </div>
 </div>
+
+<!-- All Agendas -->
+<script>
+    function loadAllAgendasInterface() {
+        $("#theContent").load("content/allagendas.html");
+    }
+</script>
 
 <script>
     function loadRequestInterface(menuitem){
