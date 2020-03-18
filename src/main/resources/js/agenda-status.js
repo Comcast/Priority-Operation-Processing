@@ -195,6 +195,8 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         if (d.x < x0) x0 = d.x;
     });
 
+    // wipte the existing render
+    $("#mynetwork").empty();
     // instead of append, need to clear, else multiclicks means multipics
     const svg = d3.select("#mynetwork").append("svg")
             .attr("viewBox", [0, 0, width, (x1 - x0 + root.dx) * 2]);
