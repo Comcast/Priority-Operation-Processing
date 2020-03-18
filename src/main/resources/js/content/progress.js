@@ -28,7 +28,7 @@ function showAgendaStatusList(event){
                         null,
                         function(response){
                             $("#response").val(JSON.stringify(response, null, 2));
-                            buildAgendaStatusTableNew(response);
+                            buildAgendaStatusTable(response);
                             toggleSpinner(false);
                         },
                         function(error){
@@ -41,7 +41,7 @@ function showAgendaStatusList(event){
     );
 }
 
-function buildAgendaStatusTableNew(response) {
+function buildAgendaStatusTable(response) {
     var tableText = "";
     if(response.errorResponse != null)
     {
@@ -54,7 +54,7 @@ function buildAgendaStatusTableNew(response) {
     response["all"].forEach(function (agendaProgress, index) {
         tableText += "<tr>"
                 //+ addTd(agendaProgress.agendaId)
-                + addTd("<a onClick=\"requestAgendaNodeViewUpdateNew(event, \'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
+                + addTd("<a onClick=\"requestAgendaNodeViewUpdate(event, \'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
                         + " hand;\">" + agendaProgress.agendaId + "</a>")
                 + addTd(agendaProgress.processingState)
                 + addTd(agendaProgress.processingStateMessage)
@@ -66,7 +66,7 @@ function buildAgendaStatusTableNew(response) {
     $("#agendaStatusTable").html(tableText);
 }
 
-function requestAgendaNodeViewUpdateNew(event, agendaId, agendaProgressId) {
+function requestAgendaNodeViewUpdate(event, agendaId, agendaProgressId) {
     var server = getServer();
     toggleSpinner(true);
     processAuthorizeRequest(event,
