@@ -22,8 +22,11 @@
 </div>
 
 <div id="singleAgendaView">
+    <div id="singleAgendaTitle"></div>
     <a onClick="updateViewState(false);">Return to Agenda List</a>
-<div id="mynetwork"></div>
+    <!--TODO  when toggled on the height of the network view ends up super small (aka invisible) so this div needs some tuning... not a fixed height! -->
+    <div id="mynetwork" style="height: 400px"></div>
+    <div id="progressTable"></div>
 </div>
 
 <div id="agendaStatusView">
@@ -86,8 +89,7 @@ function buildAgendaStatusTableNew(response) {
                 + "</tr>";
     });
     tableText += "</table></td>";
-    //$("agendaStatusTable").innerHTML = tableText;
-    document.getElementById("agendaStatusTable").innerHTML = tableText;
+    $("#agendaStatusTable").html(tableText);
 }
 
 function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
@@ -107,16 +109,26 @@ function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
                         function(response) {
                             var agendaProgress = response["all"][0];
                             setupAgendaNetwork(agenda, agendaProgress);
-                            updateViewState(true);
+                            writeAgendaProgressTable(response);
+                            switchToSingleAgendaView(agendaId);
                         }
                 );
             }
     );
 }
 
+function switchToSingleAgendaView(agendaId){
+    $("#singleAgendaTitle").html("Agenda " + agendaId);
+    updateViewState(true);
+}
+
 function updateViewState(showSingleAgenda){
-    $("#singleAgendaView").css('visibility', showSingleAgenda ? 'visible' : 'hidden');
-    $("#agendaStatusView").css('visibility', showSingleAgenda ? 'hidden' : 'visible');
+//    $("#singleAgendaView").css('visibility', showSingleAgenda ? 'visible' : 'hidden');
+//    $("#agendaStatusView").css('visibility', showSingleAgenda ? 'hidden' : 'visible');
+
+    $("#singleAgendaView").toggle(showSingleAgenda);
+    $("#mynetwork").toggle(showSingleAgenda);
+    $("#agendaStatusView").toggle(!showSingleAgenda);
 }
 
 updateViewState(false);
