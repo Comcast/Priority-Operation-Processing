@@ -128,8 +128,6 @@ function processRequestNew(e) {
 function processRequest(e) {
     e.preventDefault();
 
-    console.log("1");
-
     // reset view
     $("#response").val("");
     $("#progressTable").html("");
