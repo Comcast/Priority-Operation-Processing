@@ -1,3 +1,4 @@
+<!-- see js/content/progress.js for the script -->
 <div class="well-small ">
     <h3 class="topic-header">ALL AGENDAS</h3>
     <div class="sub-topic-header">
@@ -47,103 +48,5 @@
 </div>
 
 <script>
-function showAgendaStatusList(event){
-    var targetServerIndex = $("#target_server").val();
-    var server = serverInfo[targetServerIndex];
-    var endpoint = endpointsByName["Agenda Progress"];
-
-    toggleSpinner(true);
-
-    processAuthorizedRequest(event,
-            server,
-            endpoint,
-            function(event){
-                var queryElement = document.getElementById("get_query_type");
-                var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
-                var queryValue = getQueryValue("get_query_value");
-                var limitValue = getQueryValue("get_limit_value");
-
-                performBasicRequest(
-                        "GET",
-                        getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
-                        null,
-                        function(response){
-                            $("#response").val(JSON.stringify(response, null, 2));
-                            buildAgendaStatusTableNew(response);
-                            toggleSpinner(false);
-                        },
-                        function(error){
-                            toggleSpinner(false);
-                        });
-            },
-            function(error){
-                toggleSpinner(false);
-            }
-    );
-}
-
-function buildAgendaStatusTableNew(response) {
-    var tableText = "";
-    if(response.errorResponse != null)
-    {
-        $("#agendaStatusTable").innerHTML = tableText;
-        return;
-    }
-    tableText += "<table class=\"table-bordered\">";
-    tableText += "<thead><tr><th>Agenda</th><th>State</th><th>Message</th><th>Attempts Completed</th><th>CID</th></tr></thead>";
-    tableText += "<tbody>";
-    response["all"].forEach(function (agendaProgress, index) {
-        tableText += "<tr>"
-                //+ addTd(agendaProgress.agendaId)
-                + addTd("<a onClick=\"requestAgendaNodeViewUpdateNew(\'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
-                        + " hand;\">" + agendaProgress.agendaId + "</a>")
-                + addTd(agendaProgress.processingState)
-                + addTd(agendaProgress.processingStateMessage)
-                + addTd(defined(agendaProgress.attemptsCompleted) ? agendaProgress.attemptsCompleted : "0")
-                + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
-                + "</tr>";
-    });
-    tableText += "</tbody></table>";
-    $("#agendaStatusTable").html(tableText);
-}
-
-function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
-    var targetServerIndex = $("#target_server").val();
-    var server = serverInfo[targetServerIndex];
-    toggleSpinner(true);
-    performRequest(
-            "GET",
-            getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
-            null,
-            function(response) {
-                var agenda = response["all"][0];
-                // TODO: would like to do this request at the same time...
-                performRequest(
-                        "GET",
-                        getQueryURL(server, endpointsByName["Agenda Progress"], "byid", agendaProgressId, 1, ""),
-                        null,
-                        function(response) {
-                            var agendaProgress = response["all"][0];
-                            setupAgendaNetwork(agenda, agendaProgress);
-                            writeSingleAgendaProgressTable(response);
-                            switchToSingleAgendaView(agendaId);
-                        }
-                );
-            }
-    );
-}
-
-function switchToSingleAgendaView(agendaId){
-    $("#singleAgendaTitle").html("<p class=\"topic-header\">Agenda</p><p>" + agendaId +"</p>");
-    updateViewState(true);
-}
-
-function updateViewState(showSingleAgenda){
-    $("#singleAgendaView").toggle(showSingleAgenda);
-    $("#mynetwork").toggle(showSingleAgenda);
-    $("#agendaStatusView").toggle(!showSingleAgenda);
-}
-
 updateViewState(false);
-
 </script>

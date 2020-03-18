@@ -7,44 +7,30 @@
     <title>Fission</title>
     <link rel="stylesheet" href="css/tab.css">
     <link rel="stylesheet" href="css/rotate.css">
+    <link rel="stylesheet" href="css/liquidFillGuage.css">
     <link rel="stylesheet" href="css/external/jquery.json-viewer.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
     <link href="css/template.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/opensans.css">
+
     <script type="text/javascript" src="js/external/jquery.min-3.3.1.js"></script>
     <script type="text/javascript" src="js/external/jquery.json-viewer.js"></script>
+
+    <!-- general scripts -->
     <script type="text/javascript" src="js/server-info.js"></script>
-    <script type="text/javascript" src="js/request.js"></script>
+    <script type="text/javascript" src="js/fission-request.js"></script>
     <script type="text/javascript" src="js/authorization.js"></script>
     <script type="text/javascript" src="js/tab.js"></script>
-    <script type="text/javascript" src="js/agenda-status.js"></script>
+    <script type="text/javascript" src="js/ui.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
+
+    <!-- add content page scripts -->
+    <script type="text/javascript" src="js/content/data-management.js"></script>
+    <script type="text/javascript" src="js/content/progress.js"></script>
+
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js" language="JavaScript"></script>
     <script src="js/liquidFillGauge.js" language="JavaScript"></script>
-    <style>
-        .liquidFillGaugeText {
-            font-family: Helvetica;
-            font-weight: bold;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
-    <style>
-    h1, h2, h3, h4, h5, h6, .site-title {
-    font-family: 'Open Sans', sans-serif;
-    }
-    body.site {
-    border-top: 3px solid #f28ef2;
-    background-color: #3f7db8;
-    }
-    .nav-list > .active > a,
-    .nav-list > .active > a:hover,
-    .dropdown-menu li > a:hover,
-    .dropdown-menu .active > a,
-    .dropdown-menu .active > a:hover,
-    .nav-pills > .active > a,
-    .nav-pills > .active > a:hover,
-    .btn-primary {
-    background: #f28ef2;
-    }
-    </style>
 </head>
 <body>
 <!-- Body -->

@@ -8,76 +8,125 @@ const operationStatusColors = {
 
 const operationFailedColor = "#CC2222";
 
-function processAgendaStatusRequest(e) {
-    var targetServerIndex = $("#target_server").val();
-    var server = serverInfo[targetServerIndex];
+function showAgendaStatusList(event){
     var endpoint = endpointsByName["Agenda Progress"];
-    var fieldsValue = "id,agendaId,percentComplete,attemptsCompleted,maximumAttempts,processingState,processingStateMessage,cid";
-    performRequest(
-            "GET",
-            // getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
-            getQueryURL(server, endpoint, "byid", "", 20, fieldsValue),
-            null,
-            function(response) {
-                $("#agendaStatusArea").val(JSON.stringify(response, null, 2));
-                $("#agendaStatusArea").val($("#agendaStatusArea").val() + "more stuff");
-                buildAgendaStatusTable(response);
+    var server = getServer();
+
+    toggleSpinner(true);
+
+    processAuthorizeRequest(event,
+            server,
+            function(event){
+                var queryElement = document.getElementById("get_query_type");
+                var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
+                var queryValue = getQueryValue("get_query_value");
+                var limitValue = getQueryValue("get_limit_value");
+
+                processServiceRequest(
+                        "GET",
+                        getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
+                        null,
+                        function(response){
+                            $("#response").val(JSON.stringify(response, null, 2));
+                            buildAgendaStatusTableNew(response);
+                            toggleSpinner(false);
+                        },
+                        function(error){
+                            toggleSpinner(false);
+                        });
+            },
+            function(error){
+                toggleSpinner(false);
             }
     );
 }
 
-function buildAgendaStatusTable(response) {
+function buildAgendaStatusTableNew(response) {
     var tableText = "";
     if(response.errorResponse != null)
     {
         $("#agendaStatusTable").innerHTML = tableText;
         return;
     }
-    tableText += "<table>";
-    tableText += "<tr>";
-    tableText += "<td valign=\"top\"><table border='1' style='border-collapse:collapse'>";
-    tableText += "<tr><td>Agenda</td><td>State</td><td>Message</td><td>Attempts Completed</td><td>CID</td></tr>";
+    tableText += "<table class=\"table-bordered\">";
+    tableText += "<thead><tr><th>Agenda</th><th>State</th><th>Message</th><th>Attempts Completed</th><th>CID</th></tr></thead>";
+    tableText += "<tbody>";
     response["all"].forEach(function (agendaProgress, index) {
         tableText += "<tr>"
-            //+ addTd(agendaProgress.agendaId)
-            + addTd("<a onClick=\"requestAgendaNodeViewUpdate(\'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
+                //+ addTd(agendaProgress.agendaId)
+                + addTd("<a onClick=\"requestAgendaNodeViewUpdateNew(event, \'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
                         + " hand;\">" + agendaProgress.agendaId + "</a>")
-            + addTd(agendaProgress.processingState)
-            + addTd(agendaProgress.processingStateMessage)
-            + addTd(defined(agendaProgress.attemptsCompleted) ? agendaProgress.attemptsCompleted : "0")
-            + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
-            + "</tr>";
+                + addTd(agendaProgress.processingState)
+                + addTd(agendaProgress.processingStateMessage)
+                + addTd(defined(agendaProgress.attemptsCompleted) ? agendaProgress.attemptsCompleted : "0")
+                + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
+                + "</tr>";
     });
-    tableText += "</table></td>";
-    //$("agendaStatusTable").innerHTML = tableText;
-    document.getElementById("agendaStatusTable").innerHTML = tableText;
+    tableText += "</tbody></table>";
+    $("#agendaStatusTable").html(tableText);
 }
 
-function addTd(text) {
-    return "<td>" + text + "</td>";
-}
-
-function requestAgendaNodeViewUpdate(agendaId, agendaProgressId) {
-    var targetServerIndex = $("#target_server").val();
-    var server = serverInfo[targetServerIndex];
-    performRequest(
-            "GET",
-            getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
-            null,
-            function(response) {
-                var agenda = response["all"][0];
-                // TODO: would like to do this request at the same time...
-                performRequest(
-                        "GET",
-                        getQueryURL(server, endpointsByName["Agenda Progress"], "byid", agendaProgressId, 1, ""),
-                        null,
-                        function(response) {
-                            var agendaProgress = response["all"][0];
-                            setupAgendaNetwork(agenda, agendaProgress);
-                        }
-                );
-            }
+function requestAgendaNodeViewUpdateNew(event, agendaId, agendaProgressId) {
+    var server = getServer();
+    toggleSpinner(true);
+    processAuthorizeRequest(event,
+        getServer(),
+        processServiceRequest(
+                "GET",
+                getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
+                null,
+                function(response) {
+                    var agenda = response["all"][0];
+                    // TODO: would like to do this request at the same time...
+                    processServiceRequest(
+                            "GET",
+                            getQueryURL(server, endpointsByName["Agenda Progress"], "byid", agendaProgressId, 1, ""),
+                            null,
+                            function(response) {
+                                var agendaProgress = response["all"][0];
+                                setupAgendaNetwork(agenda, agendaProgress);
+                                writeSingleAgendaProgressTable(response);
+                                switchToSingleAgendaView(agendaId);
+                                toggleSpinner(false);
+                            }
+                    );
+                },
+                function (error) {
+                    toggleSpinner(false);
+                }
+        ),
+        function (error) {
+            toggleSpinner(false);
+        }
     );
+}
+
+function switchToSingleAgendaView(agendaId){
+    $("#singleAgendaTitle").html("<p class=\"topic-header\">Agenda</p><p>" + agendaId +"</p>");
+    updateViewState(true);
+}
+
+function updateViewState(showSingleAgenda){
+    $("#singleAgendaView").toggle(showSingleAgenda);
+    $("#mynetwork").toggle(showSingleAgenda);
+    $("#agendaStatusView").toggle(!showSingleAgenda);
+}
+
+function writeSingleAgendaProgressTable(response)
+{
+    var tableText = "";
+    if(response.errorResponse != null) return;
+    response["all"].forEach(function (item, index) {
+        tableText += "<table class=\"table-bordered\">";
+        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th></tr></thead>";
+        tableText += "<tbody>";
+        item.operationProgress.forEach(function(opProgress, progressIndex){
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
+        });
+        tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
+        tableText += "</tbody></table>";
+    });
+    document.getElementById("progressTable").innerHTML = tableText;
 }
 
 function setupAgendaNetwork(agenda, agendaProgress) {
@@ -199,8 +248,8 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     const root = tree(treeData[0]);
     root.each(d => {
         if (d.x > x1) x1 = d.x;
-        if (d.x < x0) x0 = d.x;
-    });
+    if (d.x < x0) x0 = d.x;
+});
 
     // wipte the existing render
     $("#mynetwork").empty();
@@ -226,7 +275,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .join("path")
             .attr("d", d3.linkHorizontal()
                     .x(d => d.y)
-                    .y(d => d.x));
+            .y(d => d.x));
 
     const node = g.append("g")
             .attr("stroke-linejoin", "round")
@@ -239,7 +288,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     node.append("g")
             .attr("class", "nodes")
             .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
-            .attr("transform", `translate(-25,-25)`);
+.attr("transform", `translate(-25,-25)`);
 
     var text = node.append("text")
             .attr("dy", "25")
@@ -247,7 +296,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             // .attr("x", d => d.children ? -6 : 6)
             .attr("text-anchor", "middle")
             .text(d => d.data.name)
-            .clone(true).lower()
+.clone(true).lower()
             .attr("stroke", "white");
 }
 
@@ -295,7 +344,7 @@ function buildOperationDependencyEdges(operationEdges, operation) {
         if(defined(operation.params.dependsOn))
         {
             operation.params.dependsOn.split(",").forEach(function(dependencyName, index){
-               dependencies[dependencyName] = true;
+                dependencies[dependencyName] = true;
             });
         }
 
@@ -319,8 +368,8 @@ function buildOperationDependencyEdges(operationEdges, operation) {
 
 // regex learning...
 /**
-function doStuff()
-{
+ function doStuff()
+ {
     //let operationReferenceRegex = new RegExp("(@<(.+?)(::(.+?))?>)")
     var sample = "@<this::/path>";
     var result1 = sample.matchAll(operationReferenceRegex);
@@ -336,7 +385,7 @@ function doStuff()
         console.log(match);
     };
 }
-doStuff();
+ doStuff();
  */
 
 function seekDependencies(dependencies, obj) {
@@ -357,10 +406,6 @@ function seekDependencies(dependencies, obj) {
             seekDependencies(dependencies, obj[field]);
         }
     });
-}
-
-function defined(variable) {
-    return (typeof variable !== 'undefined');
 }
 
 function getChildren(parentName, nodeMap, depthMap, dependencies, depth) {
