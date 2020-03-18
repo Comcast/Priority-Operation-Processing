@@ -95,6 +95,10 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             buildOperationNode(operationNodes, operation, progressMap[operation.name]);
             buildOperationDependencyEdges(operationEdges, operation);
         });
+    } else {
+        $("#mynetwork").empty();
+        alert( "No agenda found.");
+        return;
     }
 
     var dependencyMap = new Map();
