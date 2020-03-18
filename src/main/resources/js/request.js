@@ -106,7 +106,8 @@ function processRequestNew(e) {
 
     var targetServerIndex = $("#target_server").val();
     var server = serverInfo[targetServerIndex];
-    var endpoint = endpointsByName[requestEndpointName];
+    var targetEndpointIndex = $("#target_endpoint").val();
+    var endpoint = endpoints[targetEndpointIndex];
     var username = $("#modlgn-username").val();
     var password = $("#modlgn-passwd").val();
 
