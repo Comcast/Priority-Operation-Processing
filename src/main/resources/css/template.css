@@ -3412,10 +3412,10 @@ input[type="submit"].btn.btn-mini {
     height: 250px;
     width: auto;
 }
-#toggle:checked ~ label::before {
+#toggle:checked ~ expand-label::before {
     content: "-";
 }
-label::before {
+.expand-label::before {
     font-family: Consolas, monaco, monospace;
     font-weight: bold;
     font-size: 15px;

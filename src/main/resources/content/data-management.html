@@ -70,11 +70,13 @@
     </table>
 </div>
 
-<div>
-    <label for="response">Response</label>
-    <textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
+<div class="expandable">
+    <input id="toggle" type="checkbox" checked hidden>
+    <label for="toggle" class="expand-label">SHOW RESPONSE</label>
+    <div id="expand">
+        <textarea id="response" name="response" style="width:100%;height:100%;"></textarea>
+    </div>
 </div>
-
 <script>
     // Get the element with id="defaultOpen" and click on it, this sets GET pane to selected
     document.getElementById("defaultOpen").click();
