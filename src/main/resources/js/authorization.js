@@ -1,6 +1,11 @@
 // TODO: these need to reset!
 var g_idmToken = "";
 var g_idmTokenExpireUTC = 0;
+var g_onAuthorizationCallback = null;
+
+function registerOnAuthorizationCallback(callback){
+    g_onAuthorizationCallback = callback;
+}
 
 function isAuthorizationRequired(){
     return new Date().getTime() > g_idmTokenExpireUTC;
@@ -40,8 +45,12 @@ function performAuthorizeRequest(idmURL, username, password, cid, successCallbac
 
             success: function (idmResponse) {
                 //console.log(idmResponse);
+                if(g_onAuthorizationCallback != null)
+                    g_onAuthorizationCallback(idmResponse);
                 if(idmResponse.isException === true){
                     alert(idmResponse.description);
+                    if(errorCallback != null)
+                        errorCallback(idmResponse);
                 }
                 else{
                     updateTokenInfo(idmResponse);
@@ -49,6 +58,8 @@ function performAuthorizeRequest(idmURL, username, password, cid, successCallbac
                 }
             },
             error: function (error) {
+                if(g_onAuthorizationCallback != null)
+                    g_onAuthorizationCallback(null);
                 errorCallback(error);
             }
         });
