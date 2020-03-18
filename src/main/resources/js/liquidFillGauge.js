@@ -326,8 +326,11 @@ function loadLiquidFillGauge(elementId, value, config) {
     return new GaugeUpdater();
 }
 
-function loadLiquidFillGaugeSVG(id, color, percentComplete) {
+function loadLiquidFillGaugeSVG(node) { //id, color, percentComplete
     var config = liquidFillGaugeDefaultSettings();
+    var id = node.id;
+    var color = node.color;
+    var percentComplete = node.percentComplete;
     config.waveColor = color;
     config.circleColor = color;
     value = percentComplete;

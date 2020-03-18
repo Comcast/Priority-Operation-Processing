@@ -209,7 +209,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
 
     let tree = data => {
         const root = d3.hierarchy(data);
-        root.dx = 10;
+        root.dx = 50;
         root.dy = width / (root.height + 1);
         return d3.tree().nodeSize([root.dx, root.dy])(root);
     };
@@ -217,6 +217,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     //draw the tree
     let x0 = Infinity;
     let x1 = -x0;
+    //todo - if multiple roots, need to handle. or add a 'total' with overall progress.
     const root = tree(treeData[0]);
     root.each(d => {
         if (d.x > x1) x1 = d.x;
@@ -224,12 +225,12 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     });
 
     const svg = d3.select("#mynetwork").append("svg")
-            .attr("viewBox", [0, 0, width, x1 - x0 + root.dx]);
+            .attr("viewBox", [0, 0, width, (x1 - x0 + root.dx) * 2]);
 
     const g = svg.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
-            .attr("transform", `translate(${root.dy / 2},${(root.dx - x0)})`);
+            .attr("transform", `translate(${root.dy / 3},${(root.dx - x0)})`);
 
     var links = root.links();
 
@@ -253,14 +254,20 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .join("g")
             .attr("transform", d => `translate(${d.y},${d.x})`);
 
-    node.append("circle")
-            .attr("fill", d => nodeMap.get(d.data.name).color)
-            .attr("r", 2.5);
+    // node.append("circle")
+    //         .attr("fill", d => nodeMap.get(d.data.name).color)
+    //         .attr("r", 2.5);
+    node.append("g")
+            .attr("class", "nodes")
+            .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
+            .attr("transform", `translate(-25,-25)`);
+
 
     node.append("text")
-            .attr("dy", "0.31em")
+            .attr("dy", "25")
+            .attr("dx", "5")
             .attr("x", d => d.children ? -6 : 6)
-            .attr("text-anchor", d => d.children ? "end" : "start")
+            .attr("text-anchor", "middle")
             .text(d => d.data.name)
             .clone(true).lower()
             .attr("stroke", "white");
