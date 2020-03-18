@@ -13,7 +13,7 @@
         <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
         <br/>
         <div>
-            <input type="submit" value="Submit Request" name="request_button" onclick="doThings(event);" class="btn btn-primary submit-button"/>
+            <input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/>
             <div style="margin-left: 20px;height: 40px;width: 40px">
                 <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
             </div>
@@ -21,38 +21,104 @@
     </div>
 </div>
 
-<div id="agendaStatusTable"></div>
-<label for="response">Response</label>
-<textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
+<div id="singleAgendaView">
+    <a onClick="updateViewState(false);">Return to Agenda List</a>
 <div id="mynetwork"></div>
+</div>
+
+<div id="agendaStatusView">
+<div id="agendaStatusTable"></div>
+</div>
+
+<label for="response">Response(TODO: add a button to toggle the response text area)</label>
+<textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
 
 <script>
-    function doThings(event){
-        var targetServerIndex = $("#target_server").val();
-        var server = serverInfo[targetServerIndex];
-        var endpoint = endpointsByName["Agenda Progress"];
+function showAgendaStatusList(event){
+    var targetServerIndex = $("#target_server").val();
+    var server = serverInfo[targetServerIndex];
+    var endpoint = endpointsByName["Agenda Progress"];
 
-        processAuthorizedRequest(event,
-                server,
-                endpoint,
-                function(event){
-                    var queryElement = document.getElementById("get_query_type");
-                    var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
-                    var queryValue = getQueryValue("get_query_value");
-                    var limitValue = getQueryValue("get_limit_value");
+    processAuthorizedRequest(event,
+            server,
+            endpoint,
+            function(event){
+                var queryElement = document.getElementById("get_query_type");
+                var querySelectedType = queryElement.options[queryElement.selectedIndex].value;
+                var queryValue = getQueryValue("get_query_value");
+                var limitValue = getQueryValue("get_limit_value");
 
-                    performBasicRequest(
-                            "GET",
-                            getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
-                            null,
-                            function(response){
-                                $("#response").val(JSON.stringify(response, null, 2));
-                                buildAgendaStatusTable(response);
-                            });
-                },
-                function(error){
+                performBasicRequest(
+                        "GET",
+                        getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
+                        null,
+                        function(response){
+                            $("#response").val(JSON.stringify(response, null, 2));
+                            buildAgendaStatusTableNew(response);
+                        });
+            },
+            function(error){
 
-                }
-        );
+            }
+    );
+}
+
+function buildAgendaStatusTableNew(response) {
+    var tableText = "";
+    if(response.errorResponse != null)
+    {
+        $("#agendaStatusTable").innerHTML = tableText;
+        return;
     }
+    tableText += "<table>";
+    tableText += "<tr>";
+    tableText += "<td valign=\"top\"><table border='1' style='border-collapse:collapse'>";
+    tableText += "<tr><td>Agenda</td><td>State</td><td>Message</td><td>Attempts Completed</td><td>CID</td></tr>";
+    response["all"].forEach(function (agendaProgress, index) {
+        tableText += "<tr>"
+                //+ addTd(agendaProgress.agendaId)
+                + addTd("<a onClick=\"requestAgendaNodeViewUpdateNew(\'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
+                        + " hand;\">" + agendaProgress.agendaId + "</a>")
+                + addTd(agendaProgress.processingState)
+                + addTd(agendaProgress.processingStateMessage)
+                + addTd(defined(agendaProgress.attemptsCompleted) ? agendaProgress.attemptsCompleted : "0")
+                + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
+                + "</tr>";
+    });
+    tableText += "</table></td>";
+    //$("agendaStatusTable").innerHTML = tableText;
+    document.getElementById("agendaStatusTable").innerHTML = tableText;
+}
+
+function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
+    var targetServerIndex = $("#target_server").val();
+    var server = serverInfo[targetServerIndex];
+    performRequest(
+            "GET",
+            getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
+            null,
+            function(response) {
+                var agenda = response["all"][0];
+                // TODO: would like to do this request at the same time...
+                performRequest(
+                        "GET",
+                        getQueryURL(server, endpointsByName["Agenda Progress"], "byid", agendaProgressId, 1, ""),
+                        null,
+                        function(response) {
+                            var agendaProgress = response["all"][0];
+                            setupAgendaNetwork(agenda, agendaProgress);
+                            updateViewState(true);
+                        }
+                );
+            }
+    );
+}
+
+function updateViewState(showSingleAgenda){
+    $("#singleAgendaView").css('visibility', showSingleAgenda ? 'visible' : 'hidden');
+    $("#agendaStatusView").css('visibility', showSingleAgenda ? 'hidden' : 'visible');
+}
+
+updateViewState(false);
+
 </script>
