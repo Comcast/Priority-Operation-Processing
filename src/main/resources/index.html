@@ -15,8 +15,12 @@
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js" language="JavaScript"></script>
     <script src="js/liquidFillGauge.js" language="JavaScript"></script>
+    <script src="js/map.js" language="JavaScript"></script>
     <style>
-        .liquidFillGaugeText { font-family: Helvetica; font-weight: bold; }
+        .liquidFillGaugeText {
+            font-family: Helvetica;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -34,8 +38,9 @@
                 <select name="target_server" id="target_server">
                     <script>
                         serverInfo.forEach(addServerSelectOption);
+
                         function addServerSelectOption(item, index) {
-                            document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                            document.write("<option value=\"" + index + "\">" + item.name + "</option>")
                         }
                     </script>
                 </select>
@@ -44,10 +49,12 @@
                 <hr>
 
                 <label for="mpx_username"><b>Username *</b></label>
-                <input id="mpx_username" placeholder="Enter Username" name="mpx_username" onchange="resetTokenInfo()" required>
+                <input id="mpx_username" placeholder="Enter Username" name="mpx_username" onchange="resetTokenInfo()"
+                       required>
 
                 <label for="mpx_password"><b>Password *</b></label>
-                <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password" onchange="resetTokenInfo()" required>
+                <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password"
+                       onchange="resetTokenInfo()" required>
 
                 <!-- Hiding for now (jsut confuses people, but one day might be useful) -->
                 <label hidden for="mpx_account"><b>Account ID</b></label>
@@ -55,11 +62,12 @@
 
                 <hr>
                 <label for="target_endpoint"><b>Endpoint</b></label>
-                <select name="target_endpoint"  id="target_endpoint">
+                <select name="target_endpoint" id="target_endpoint">
                     <script>
                         endpoints.forEach(addEndpointSelectOption);
+
                         function addEndpointSelectOption(item, index) {
-                            document.write("<option value=\""+ index +"\">" + item.name + "</option>")
+                            document.write("<option value=\"" + index + "\">" + item.name + "</option>")
                         }
                     </script>
                 </select>
@@ -110,29 +118,31 @@
     <table>
         <tr>
             <td>
-                <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)"/>
+                <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)" />
             </td>
             <td>
                 <div style="margin-left: 20px;height: 40px;width: 40px">
-                <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
+                    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate"
+                         style="display: none;">
                 </div>
             </td>
         </tr>
     </table>
 </div>
 
-<div>
+<div hidden>
     <label for="response">Response</label>
     <div id="progressTable"></div>
     <textarea id="response" name="response" class="response" rows="20"></textarea>
 </div>
 
-<div class="container">
+<div hidden class="container">
     <pre id="json-renderer"></pre>
 </div>
 
 <table>
-    <input type="submit" value="Populate Agenda Status" name="populate_agenda_status_table" onclick="processAgendaStatusRequest(event)"/>
+    <input type="submit" value="Populate Agenda Status" name="populate_agenda_status_table"
+           onclick="processAgendaStatusRequest(event)" />
     <div id="agendaStatusTable"></div>
     <textarea id="agendaStatusArea" name="agendaStatusArea" class="response" rows="20"></textarea>
 
@@ -144,6 +154,7 @@
 <script>
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
+    doStuff();
 </script>
 </html>
 
