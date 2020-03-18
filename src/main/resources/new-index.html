@@ -24,9 +24,6 @@
     border-top: 3px solid #f28ef2;
     background-color: #3f7db8;
     }
-    a {
-    color: #f28ef2;
-    }
     .nav-list > .active > a,
     .nav-list > .active > a:hover,
     .dropdown-menu li > a:hover,
@@ -42,57 +39,37 @@
 <body>
 <!-- Body -->
 <div class="body" id="top">
-    <div class="container">
-        <!-- Header -->
-        <div class="row-fluid">
-            <div id="topstuff" class="span3">
-                <div class="header"><a href="/"><img src="images/fission_logo.png" alt="fission"/></a></div>
-
-                <div class="well _menu">
-                    <h3 class="page-header">Menu</h3>
-                    <ul class="nav">
-                        <li class="nav-header">Welcome</li>
-                    </ul>
-                    <ul class="nav">
-                        <li class="nav-header">Progress</li>
-                        <ul class="nav-list divider">
-                            <li>All Agendas</li>
-                            <li>Agenda</li>
-                        </ul>
-                    </ul>
-
-                    <ul class="nav">
-                        <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="html-login" class="well ">
-                    <div class="userdata">
-                        <script>
-                            $(function(){
-                                $("#html-login").load("content/login.html");
-                            });
-                        </script>
-                    </div>
+    <!-- Header -->
+    <div class="row-fluid">
+        <div id="topstuff" class="span2">
+            <div class="header"><a href="/"><img src="images/fission_logo.png" alt="fission"/></a></div>
+            <div class="well _menu">
+                <h3 class="topic-header">MENU</h3>
+                <ul class="nav">
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('welcome');">Welcome</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('progress');">Progress</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a></li>
+                </ul>
+            </div>
+            <div id="html-login" class="well ">
+                <div class="userdata">
+                    <script>
+                        $(function(){
+                            $("#html-login").load("content/login.html");
+                        });
+                    </script>
                 </div>
             </div>
-            <!-- End Right Sidebar -->
-            <main id="content" role="main" class="span9">
-                <h3 class="topic-header">testheader</h3>
-                <!-- Begin Content -->
-                <div id="theContent"></div>
+        </div>
+        <!-- End Right Sidebar -->
+        <div id="content" class="span9">
+            <!-- Begin Content -->
+            <div id="theContent"></div>
                 <!-- End Content -->
-            </main>
+            </div>
         </div>
     </div>
 </div>
-
-<!-- All Agendas -->
-<script>
-    function loadAllAgendasInterface() {
-        $("#theContent").load("content/allagendas.html");
-    }
-</script>
 
 <script>
     function loadRequestInterface(menuitem){
@@ -100,6 +77,14 @@
             if (menuitem == "data")
             {
                 $("#theContent").load("content/crud.html");
+            }
+            else if(menuitem == "progress")
+            {
+                $("#theContent").load("content/allagendas.html");
+            }
+            else if(menuitem == "welcome")
+            {
+                $("#theContent").load("overview/Fission__Specifications.html");
             }
         });
     }

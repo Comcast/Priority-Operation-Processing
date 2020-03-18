@@ -1,13 +1,18 @@
-<div class="topic-header">
-    <label for="target_endpoint" class="topic-header"><b>Endpoint</b></label>
-    <select name="target_endpoint"  id="target_endpoint">
-        <script>
-            endpoints.forEach(addEndpointSelectOption);
-            function addEndpointSelectOption(item, index) {
-                $('#target_endpoint').append("<option value=\""+ index +"\">" + item.name + "</option>")
-            }
-        </script>
-    </select>
+<div class="well-small ">
+    <div>
+        <h3 class="topic-header">DATA MANAGEMENT</h3>
+    </div>
+    <div class="sub-topic-header">
+        <label for="target_endpoint" class="sub-topic-header">Endpoint: </label>
+        <select name="target_endpoint"  id="target_endpoint" class="dropdown-query">
+            <script>
+                endpoints.forEach(addEndpointSelectOption);
+                function addEndpointSelectOption(item, index) {
+                    $('#target_endpoint').append("<option value=\""+ index +"\">" + item.name + "</option>")
+                }
+            </script>
+        </select>
+    </div>
 </div>
 <div class="page-header">
     <div class="tab">
@@ -18,7 +23,7 @@
     </div>
 </div>
 <div id="GET" class="tabcontent">
-    <select name="get_query_type" id="get_query_type">
+    <select name="get_query_type" id="get_query_type" class="dropdown-query">
         <option value="byId">byId</option>
         <option value="bycid">byCid</option>
         <option value="bylinkId">byLinkId</option>
@@ -26,9 +31,11 @@
         <option value="other">other</option>
     </select>
     <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
-    <label for="get_limit_value">Limit</label>
-    <input id="get_limit_value" name="get_limit_value" class="input-small">
-    <label for="get_fields_value">Fields</label>
+    <br/>
+    <label for="get_limit_value" class="sub-topic-header">Limit:</label>
+    <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
+    <br/>
+    <label for="get_fields_value" class="sub-topic-header">Fields: </label>
     <input id="get_fields_value" name="get_fields_value" class="input-small">
 </div>
 
@@ -44,7 +51,8 @@
     </div>
 </div>
 <div id="DELETE" class="tabcontent">
-    Delete Id: <input id="delete_query_value" name="delete_query_value" class="input-large" size="180" required>
+    <label for="delete_query_value" class="sub-topic-header">ID: </label>
+    <input id="delete_query_value" name="delete_query_value" class="input-large" size="180" required>
 </div>
 
 <div>

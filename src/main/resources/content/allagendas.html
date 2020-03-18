@@ -1,27 +1,24 @@
-<select name="get_query_type" id="get_query_type">
-    <option value="byId">byId</option>
-    <option value="bycid">byCid</option>
-    <option value="bylinkId">byLinkId</option>
-    <option value="byresourcePoolId">byResourcePoolId</option>
-    <option value="other">other</option>
-</select>
-<input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
-<label for="get_limit_value">Limit</label>
-<input id="get_limit_value" name="get_limit_value" class="input-small">
-
-<div>
-    <table>
-        <tr>
-            <td>
-                <input type="submit" value="Submit Request" name="request_button" onclick="doThings(event);" class="btn btn-primary submit-button"/>
-            </td>
-            <td>
-                <div style="margin-left: 20px;height: 40px;width: 40px">
-                    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
-                </div>
-            </td>
-        </tr>
-    </table>
+<div class="well-small ">
+    <h3 class="topic-header">ALL AGENDAS</h3>
+    <div class="sub-topic-header">
+        <select name="get_query_type" id="get_query_type" class="dropdown-query">
+            <option value="byId">byId</option>
+            <option value="bycid">byCid</option>
+            <option value="bylinkId">byLinkId</option>
+            <option value="byresourcePoolId">byResourcePoolId</option>
+            <option value="other">other</option>
+        </select>
+        <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
+        <label for="get_limit_value" class="sub-topic-header">Limit: </label>
+        <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
+        <br/>
+        <div>
+            <input type="submit" value="Submit Request" name="request_button" onclick="doThings(event);" class="btn btn-primary submit-button"/>
+            <div style="margin-left: 20px;height: 40px;width: 40px">
+                <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="agendaStatusTable"></div>
