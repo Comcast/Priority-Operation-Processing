@@ -300,7 +300,7 @@ function writeAgendaProgressTable(response)
     tableText += "<tr>";
     response["all"].forEach(function (item, index) {
         tableText += "<td valign=\"top\"><table border='1' style='border-collapse:collapse'>";
-        tableText += "<tr><td>Operation</td><td>ProcessingState</td><td>ProcessingStateMessage</td></tr>";
+        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th></tr></thead>";
         item.operationProgress.forEach(function(opProgress, progressIndex){
             tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
         });
@@ -309,5 +309,21 @@ function writeAgendaProgressTable(response)
     });
     tableText += "</tr>";
     tableText += "</table>";
+    document.getElementById("progressTable").innerHTML = tableText;
+}
+function writeSingleAgendaProgressTable(response)
+{
+    var tableText = "";
+    if(response.errorResponse != null) return;
+    response["all"].forEach(function (item, index) {
+        tableText += "<table class=\"table-bordered\">";
+        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th></tr></thead>";
+        tableText += "<tbody>";
+        item.operationProgress.forEach(function(opProgress, progressIndex){
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
+        });
+        tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
+        tableText += "</tbody></table>";
+    });
     document.getElementById("progressTable").innerHTML = tableText;
 }
