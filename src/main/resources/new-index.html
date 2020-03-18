@@ -58,6 +58,7 @@
                 <ul class="nav">
                     <li class="nav-header"><a onClick=" +loadRequestInterface('welcome');">Welcome</a></li>
                     <li class="nav-header"><a onClick=" +loadRequestInterface('progress');">Progress</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('submission');">Submission</a></li>
                     <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a></li>
                 </ul>
             </div>
@@ -95,6 +96,10 @@
             else if(menuitem == "welcome")
             {
                 $("#theContent").load("overview/Fission__Specifications.html");
+            }
+            else if(menuitem == "submission")
+            {
+                $("#theContent").load("content/submission.html");
             }
         });
     }
