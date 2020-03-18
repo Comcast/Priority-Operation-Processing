@@ -21,7 +21,6 @@
                     <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
                 </div>
             </td>
-
             </tr></table>
         </div>
     </div>
@@ -36,11 +35,16 @@
 </div>
 
 <div id="agendaStatusView">
-<div id="agendaStatusTable"></div>
+    <div id="agendaStatusTable" class="table-bordered"></div>
 </div>
 
-<label for="response">Response(TODO: add a button to toggle the response text area)</label>
-<textarea id="response" name="response" class="input-block-level" rows="20"></textarea>
+<div class="expandable">
+    <input id="toggle" type="checkbox" hidden>
+    <label for="toggle">SHOW RESPONSE</label>
+    <div id="expand">
+        <textarea id="response" name="response" style="width:100%;height:100%;"></textarea>
+    </div>
+</div>
 
 <script>
 function showAgendaStatusList(event){
@@ -85,10 +89,9 @@ function buildAgendaStatusTableNew(response) {
         $("#agendaStatusTable").innerHTML = tableText;
         return;
     }
-    tableText += "<table>";
-    tableText += "<tr>";
-    tableText += "<td valign=\"top\"><table border='1' style='border-collapse:collapse'>";
-    tableText += "<tr><td>Agenda</td><td>State</td><td>Message</td><td>Attempts Completed</td><td>CID</td></tr>";
+    tableText += "<table class=\"table-bordered\">";
+    tableText += "<thead><tr><th>Agenda</th><th>State</th><th>Message</th><th>Attempts Completed</th><th>CID</th></tr></thead>";
+    tableText += "<tbody>";
     response["all"].forEach(function (agendaProgress, index) {
         tableText += "<tr>"
                 //+ addTd(agendaProgress.agendaId)
@@ -100,7 +103,7 @@ function buildAgendaStatusTableNew(response) {
                 + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
                 + "</tr>";
     });
-    tableText += "</table></td>";
+    tableText += "</tbody></table>";
     $("#agendaStatusTable").html(tableText);
 }
 
