@@ -1,3 +1,14 @@
+<div class="topic-header">
+    <label for="target_endpoint" class="topic-header"><b>Endpoint</b></label>
+    <select name="target_endpoint"  id="target_endpoint">
+        <script>
+            endpoints.forEach(addEndpointSelectOption);
+            function addEndpointSelectOption(item, index) {
+                $('#target_endpoint').append("<option value=\""+ index +"\">" + item.name + "</option>")
+            }
+        </script>
+    </select>
+</div>
 <div class="page-header">
     <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'GET')" id="defaultOpen">GET</button>

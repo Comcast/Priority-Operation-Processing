@@ -7099,9 +7099,10 @@ body.site.fluid {
 }
 .topic-header{
     color: #f28ef2;
-    margin-bottom: 10px;
     font-size: 18px;
-    line-height: 20px;
+    display: inline-block;
+    margin-bottom: 4px;
+    margin-top: 10px;
 }
 .header .finder {
     margin-top: 14px;

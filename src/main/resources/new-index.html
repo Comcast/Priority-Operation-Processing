@@ -39,43 +39,27 @@
     }
     </style>
 </head>
-<body class="site com_content view-featured no-layout no-task itemid-101">
+<body>
 <!-- Body -->
 <div class="body" id="top">
     <div class="container">
         <!-- Header -->
-        <header class="header" role="banner">
-            <div class="row-fluid">
-                <div id="topstuff" class="span5">
-                    <a class="brand pull-left" href="/"><img src="images/fission_logo.png" alt="fission" width="50%"/></a>
-                </div>
-            </div>
-        </header>
         <div class="row-fluid">
-            <div id="menu-side" class="span3">
+            <div id="topstuff" class="span3">
+                <div class="header"><a href="/"><img src="images/fission_logo.png" alt="fission"/></a></div>
+
                 <div class="well _menu">
                     <h3 class="page-header">Menu</h3>
                     <ul class="nav">
                         <li class="nav-header">Welcome</li>
                     </ul>
                     <ul class="nav">
-                        <li class="nav-header">Progress</li>
-                        <ul class="nav-list divider">
-                            <li>All Agendas</li>
-                            <li>Agenda</li>
-                        </ul>
+                        <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a>
+                        </li>
                     </ul>
-
                     <ul class="nav">
-                        <li class="nav-header">Data Management</li>
-                        <ul class="nav-list divider">
-                            <script>
-                                endpoints.forEach(addEndpointSelectOption);
-                                function addEndpointSelectOption(item, index) {
-                                    document.write("<li>\<a onClick=\"loadRequestInterface(\'" + item.name + "\');\">"+ item.name +"</a></li>")
-                                }
-                            </script>
-                        </ul>
+                        <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a>
+                        </li>
                     </ul>
                 </div>
                 <div id="html-login" class="well ">
@@ -90,7 +74,6 @@
             </div>
             <!-- End Right Sidebar -->
             <main id="content" role="main" class="span9">
-                <h3 class="topic-header">testheader</h3>
                 <!-- Begin Content -->
                 <div id="theContent"></div>
                 <!-- End Content -->
@@ -100,13 +83,13 @@
 </div>
 
 <script>
-    var requestEndpointName = "";
-    function loadRequestInterface(endpointName){
-        $(function(){
-            $("#theContent").load("content/crud.html");
+    function loadRequestInterface(menuitem){
+        $(function() {
+            if (menuitem == "data")
+            {
+                $("#theContent").load("content/crud.html");
+            }
         });
-        // this is gross
-        requestEndpointName = endpointName;
     }
 </script>
 
