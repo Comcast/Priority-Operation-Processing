@@ -15,6 +15,7 @@
     <script type="text/javascript" src="js/request.js"></script>
     <script type="text/javascript" src="js/authorization.js"></script>
     <script type="text/javascript" src="js/tab.js"></script>
+    <script type="text/javascript" src="js/agenda-status.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
     <style>
     h1, h2, h3, h4, h5, h6, .site-title {
@@ -61,7 +62,7 @@
                     <ul class="nav">
                         <li class="nav-header">Progress</li>
                         <ul class="nav-list divider">
-                            <li>All Agendas</li>
+                            <li><a onclick="loadAllAgendasInterface();">All Agendas</a></li>
                             <li>Agenda</li>
                         </ul>
                     </ul>
@@ -98,6 +99,13 @@
         </div>
     </div>
 </div>
+
+<!-- All Agendas -->
+<script>
+    function loadAllAgendasInterface() {
+        $("#theContent").load("content/allagendas.html");
+    }
+</script>
 
 <script>
     var requestEndpointName = "";
