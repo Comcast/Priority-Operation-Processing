@@ -15,7 +15,7 @@ function processAgendaStatusRequest(e) {
     var fieldsValue = "id,agendaId,percentComplete,attemptsCompleted,maximumAttempts,processingState,processingStateMessage,cid";
     performRequest(
             "GET",
-            //getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
+            // getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
             getQueryURL(server, endpoint, "byid", "", 20, fieldsValue),
             null,
             function(response) {
@@ -85,37 +85,161 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     var operationEdges = new Array();
 
     var progressMap = {};
-    agendaProgress.operationProgress.forEach(function(opProgress, index){
+    agendaProgress.operationProgress.forEach(function (opProgress, index) {
         progressMap[opProgress.operation] = opProgress;
     });
 
-    agenda["operations"].forEach(function (operation, index) {
-        buildOperationNode(operationNodes, operation, progressMap[operation.name]);
-        buildOperationDependencyEdges(operationEdges, operation);
+    if (agenda["operations"])
+    {
+        agenda["operations"].forEach(function (operation, index) {
+            buildOperationNode(operationNodes, operation, progressMap[operation.name]);
+            buildOperationDependencyEdges(operationEdges, operation);
+        });
+    }
+
+    var dependencyMap = new Map();
+
+    // build a map of direct dependencies
+    operationEdges.forEach(function (edge, index) {
+        var existing = dependencyMap.get(edge.to);
+        if(!existing) {
+            existing = new Set();
+            dependencyMap.set(edge.to, existing);
+        }
+        existing.add(edge.from);
     });
-    // create an array with nodes
-    var nodes = new vis.DataSet(operationNodes);
-    // create an array with edges
-    var edges = new vis.DataSet(operationEdges);
-    // create a network
-    var container = document.getElementById('mynetwork');
-    var data = {
-        nodes: nodes,
-        edges: edges
+
+    //hack: add all parents edges, poorly
+    for (let step = 0; step < operationEdges.length; step++) {
+        operationEdges.forEach(function (edge, index) {
+            var existing = dependencyMap.get(edge.to);
+            var parent = dependencyMap.get(edge.from);
+            if(parent)
+            {
+                parent.forEach(existing.add, existing);
+            }
+        });
+    }
+
+    //now all contain full dependencies to top, so if we remove parents deps, we end up with only unique
+    dependencyMap.forEach(function (value, key, map)
+    {
+        var allParents = new Set();
+        value.forEach(function (value1, value2, set) {
+            var parent = dependencyMap.get(value1);
+            if (parent)
+            {
+                parent.forEach(allParents.add, allParents);
+            }
+        });
+
+        allParents.forEach(value.delete, value);
+    });
+
+    //finally remove edges not in it.
+    var minimizedEdges = new Array();
+    operationEdges.forEach(function (edge, index) {
+        if(dependencyMap.get(edge.to).has(edge.from)) {
+            minimizedEdges.push(edge);
+        }
+    });
+
+    // now we're going to find each nodes max distance to root.
+    var depthMap = new Map();
+    var nodeMap = new Map();
+    var nodeDepthMap = new Map();
+
+    operationNodes.forEach(function (node, index) {
+        var depth = getDepth(node.id, dependencyMap, depthMap, 0);
+        var existing = depthMap.get(depth);
+        if (!existing)
+        {
+            existing = new Set();
+            depthMap.set(depth, existing);
+        }
+        existing.add(node.id);
+        nodeDepthMap.set(node.id, depth);
+        nodeMap.set(node.id, node);
+    });
+
+    //now we build a tree of depths
+    var treeData = new Array();
+    var nodes = depthMap.get(0);
+    var shrinkingNodeMap = new Map(nodeMap);
+    nodes.forEach(function (value, value2, set) {
+        var treeNode = {
+            name: value,
+            parent: null,
+            color: nodeMap.get(value).color,
+            children: getChildren(value, shrinkingNodeMap, depthMap, dependencyMap, 1)
+        };
+        treeData.push(treeNode);
+    });
+
+    var width = 954;
+
+    let tree = data => {
+        const root = d3.hierarchy(data);
+        root.dx = 50;
+        root.dy = width / (root.height + 1);
+        return d3.tree().nodeSize([root.dx, root.dy])(root);
     };
-    var options ={
-        layout: {
-            hierarchical: {
-                direction: "LR",
-                sortMethod: "directed"
-            }
-        },
-        physics: {
-            hierarchicalRepulsion: {
-                avoidOverlap: 1
-            }
-        }};
-    var network = new vis.Network(container, data, options);
+
+    //draw the tree
+    let x0 = Infinity;
+    let x1 = -x0;
+    //todo - if multiple roots, need to handle. or add a 'total' with overall progress.
+    const root = tree(treeData[0]);
+    root.each(d => {
+        if (d.x > x1) x1 = d.x;
+        if (d.x < x0) x0 = d.x;
+    });
+
+    // instead of append, need to clear, else multiclicks means multipics
+    const svg = d3.select("#mynetwork").append("svg")
+            .attr("viewBox", [0, 0, width, (x1 - x0 + root.dx) * 2]);
+
+    const g = svg.append("g")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 10)
+            .attr("transform", `translate(${root.dy / 3},${(root.dx - x0)})`);
+
+    var links = root.links();
+
+    //todo - should really link from the dependencies, not from tree links.
+    const link = g.append("g")
+            .attr("fill", "none")
+            .attr("stroke", "#555")
+            .attr("stroke-opacity", 0.4)
+            .attr("stroke-width", 1.5)
+            .selectAll("path")
+            .data(root.links())
+            .join("path")
+            .attr("d", d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x));
+
+    const node = g.append("g")
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-width", 3)
+            .selectAll("g")
+            .data(root.descendants())
+            .join("g")
+            .attr("transform", d => `translate(${d.y},${d.x})`);
+
+    node.append("g")
+            .attr("class", "nodes")
+            .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
+            .attr("transform", `translate(-25,-25)`);
+
+    node.append("text")
+            .attr("dy", "25")
+            .attr("dx", "5")
+            .attr("x", d => d.children ? -6 : 6)
+            .attr("text-anchor", "middle")
+            .text(d => d.data.name)
+            .clone(true).lower()
+            .attr("stroke", "white");
 }
 
 function buildOperationNode(operationNodes, operation, operationProgress) {
@@ -130,9 +254,20 @@ function buildOperationNode(operationNodes, operation, operationProgress) {
         if(operationProgress.processingState === "COMPLETE"
                 && defined(operationProgress.processingStateMessage) &&
                 operationProgress.processingStateMessage === "failed")
+        {
             operationNode.color = operationFailedColor;
+        }
         else
+        {
             operationNode.color = operationStatusColors[operationProgress.processingState];
+        }
+    }
+    if(defined(operationProgress.percentComplete)) {
+        operationNode.percentComplete = operationProgress.percentComplete;
+    } else if (defined(operationProgress.processingState) && operationProgress.processingState === "COMPLETE") {
+        operationNode.percentComplete = 100;
+    } else {
+        operationNode.percentComplete = 0;
     }
 
     operationNodes.push(operationNode);
@@ -164,9 +299,13 @@ function buildOperationDependencyEdges(operationEdges, operation) {
 
     for(const dependencyName of Object.keys(dependencies)) {
         operationEdges.push({
-            from: dependencyName, to: operation.name, arrows: {to: { enabled: true, type: "arrow" }}
+            from: dependencyName,
+            to: operation.name,
+            arrows: {to: { enabled: true, type: "arrow" }},
+            source:dependencyName,
+            target: operation.name
         })
-    };
+    }
 }
 
 // regex learning...
@@ -194,8 +333,8 @@ doStuff();
 function seekDependencies(dependencies, obj) {
     Object.keys(obj).forEach(function(field, index){
         if(typeof obj[field] === 'string') {
-            var mathces = obj[field].matchAll(operationReferenceRegex);
-            for(const match of mathces){
+            var matches = obj[field].matchAll(operationReferenceRegex);
+            for(const match of matches){
                 if(match.length > 1){
                     var reference = match[1];
                     if(reference !== "fission.agendaId"
@@ -213,4 +352,49 @@ function seekDependencies(dependencies, obj) {
 
 function defined(variable) {
     return (typeof variable !== 'undefined');
+}
+
+function getChildren(parentName, nodeMap, depthMap, dependencies, depth) {
+    var tree = new Array();
+    var potentialNames = depthMap.get(depth);
+
+    if(!potentialNames) {
+        return null;
+    }
+    potentialNames.forEach(function (value, value2, set) {
+        var deps = dependencies.get(value);
+        //if its a dep, and not already accounted for, we add it
+        if(deps.has(parentName) && nodeMap.has(value)) {
+            var treeNode = {
+                name: value,
+                parent: parentName,
+                color: nodeMap.get(value).color,
+                children: getChildren(value, nodeMap, depthMap, dependencies, depth+1)
+            };
+            nodeMap.delete(value);
+            tree.push(treeNode);
+        }
+    });
+    return tree;
+}
+
+function getDepth(nodeId, dependencyMap, depthMap, depth) {
+    var dependencies = dependencyMap.get(nodeId);
+    if (!dependencies)
+    {
+        return depth;
+    }
+    var maxDepth = 0;
+    dependencies.forEach(function (value, value2, set) {
+        var depth = depthMap.get(value);
+        if (!depth)
+        {
+            depth = getDepth(value, dependencyMap, depthMap, depth);
+        }
+        if (depth > maxDepth)
+        {
+            maxDepth = depth;
+        }
+    });
+    return maxDepth + 1;
 }
