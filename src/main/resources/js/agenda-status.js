@@ -95,6 +95,10 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             buildOperationNode(operationNodes, operation, progressMap[operation.name]);
             buildOperationDependencyEdges(operationEdges, operation);
         });
+    } else {
+        $("#mynetwork").empty();
+        alert( "No agenda found.");
+        return;
     }
 
     var dependencyMap = new Map();
@@ -165,6 +169,9 @@ function setupAgendaNetwork(agenda, agendaProgress) {
     //now we build a tree of depths
     var treeData = new Array();
     var nodes = depthMap.get(0);
+    if (!nodes) {
+        nodes = new Set();
+    }
     var shrinkingNodeMap = new Map(nodeMap);
     nodes.forEach(function (value, value2, set) {
         var treeNode = {
