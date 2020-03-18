@@ -89,7 +89,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         progressMap[opProgress.operation] = opProgress;
     });
 
-    if (agenda["operations"])
+    if (agenda && agenda["operations"])
     {
         agenda["operations"].forEach(function (operation, index) {
             buildOperationNode(operationNodes, operation, progressMap[operation.name]);
