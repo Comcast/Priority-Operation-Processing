@@ -15,8 +15,8 @@ function processAgendaStatusRequest(e) {
     var fieldsValue = "id,agendaId,percentComplete,attemptsCompleted,maximumAttempts,processingState,processingStateMessage,cid";
     performRequest(
             "GET",
-            getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
-            // getQueryURL(server, endpoint, "byid", "", 20, fieldsValue),
+            // getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
+            getQueryURL(server, endpoint, "byid", "", 20, fieldsValue),
             null,
             function(response) {
                 $("#agendaStatusArea").val(JSON.stringify(response, null, 2));
@@ -144,33 +144,6 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         }
     });
 
-    // using visjs
-    ////////
-    // // create an array with nodes
-    // var nodes = new vis.DataSet(operationNodes);
-    // // create an array with edges
-    // var edges = new vis.DataSet(minimizedEdges);
-    // create a network
-    // var container = document.getElementById('mynetwork');
-
-    // var data = {
-    //     nodes: nodes,
-    //     edges: edges
-    // };
-    // var options ={
-    //     layout: {
-    //         hierarchical: {
-    //             direction: "LR",
-    //             sortMethod: "directed"
-    //         }
-    //     },
-    //     physics: {
-    //         hierarchicalRepulsion: {
-    //             avoidOverlap: 1
-    //         }
-    //     }};
-    // var network = new vis.Network(container, data, options);
-
     // now we're going to find each nodes max distance to root.
     var depthMap = new Map();
     var nodeMap = new Map();
@@ -203,8 +176,6 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         treeData.push(treeNode);
     });
 
-    // console.log(JSON.stringify(tree));
-
     var width = 954;
 
     let tree = data => {
@@ -224,6 +195,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         if (d.x < x0) x0 = d.x;
     });
 
+    // instead of append, need to clear, else multiclicks means multipics
     const svg = d3.select("#mynetwork").append("svg")
             .attr("viewBox", [0, 0, width, (x1 - x0 + root.dx) * 2]);
 
@@ -234,6 +206,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
 
     var links = root.links();
 
+    //todo - should really link from the dependencies, not from tree links.
     const link = g.append("g")
             .attr("fill", "none")
             .attr("stroke", "#555")
@@ -254,14 +227,10 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .join("g")
             .attr("transform", d => `translate(${d.y},${d.x})`);
 
-    // node.append("circle")
-    //         .attr("fill", d => nodeMap.get(d.data.name).color)
-    //         .attr("r", 2.5);
     node.append("g")
             .attr("class", "nodes")
             .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
             .attr("transform", `translate(-25,-25)`);
-
 
     node.append("text")
             .attr("dy", "25")
@@ -271,112 +240,6 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .text(d => d.data.name)
             .clone(true).lower()
             .attr("stroke", "white");
-
-    // var width = 800;
-    // var height = 800;
-    // var margin = {
-    //     top: 30,
-    //     right: 80,
-    //     bottom: 30,
-    //     left: 30
-    // };
-    //
-    // var container = d3.select("#mynetwork");
-    // const svg = container
-    //         .append("svg")
-    //         .attr("width", width + margin.left + margin.right)
-    //         .attr("height", height + margin.top + margin.bottom)
-    //         .append("g")
-    //         .attr("transform", `translate(${margin.left},${margin.top})`);
-    //
-    //
-    //
-    //
-    // const dataset =  {
-    //     nodes: operationNodes,
-    //     links: minimizedEdges
-    // };
-    //
-    // console.log(JSON.stringify(dataset));
-    //
-    // var simulation = d3.forceSimulation()
-    //         .force('charge', d3.forceManyBody().strength(-900))
-    //         .force('center', d3.forceCenter(width / 2, height / 2));
-    //
-    // // Initialize the links
-    // const link = svg.append("g")
-    //         .attr("class", "links")
-    //         .selectAll("line")
-    //         .data(dataset.links)
-    //         .enter().append("line")
-    //         .attr("stroke-width", 2)
-    //         .attr("stroke", "black");
-    //
-    // // Initialize the nodes
-    // const node = svg.append("g")
-    //         .attr("class", "nodes")
-    //         .selectAll("circle")
-    //         .data(dataset.nodes)
-    //         .enter()
-    //         .append(d => loadLiquidFillGaugeSVG(d.id, d.color, d.percentComplete).node())
-    //         .call(d3.drag()
-    //                 .on("start", dragstarted)
-    //                 .on("drag", dragged)
-    //                 .on("end", dragended)
-    //         );
-    //
-    // // Text to nodes
-    // const text = svg.append("g")
-    //         .attr("class", "text")
-    //         .selectAll("text")
-    //         .data(dataset.nodes)
-    //         .enter().append("text")
-    //         .text(d => d.id);
-    //
-    // //Listen for tick events to render the nodes as they update in your Canvas or SVG.
-    // simulation
-    //         .nodes(dataset.nodes)//sets the simulation’s nodes to the specified array of objects, initializing their positions and velocities, and then re-initializes any bound forces;
-    //         .on("tick", ticked);//use simulation.on to listen for tick events as the simulation runs.
-    //
-    // simulation.force("link", d3.forceLink()
-    //         .id(function(d) { return d.id; })
-    //         .links(dataset.links).distance(80));
-    //
-    // // This function is run at each iteration of the force algorithm, updating the nodes position (the nodes data array is directly manipulated).
-    // function ticked() {
-    //     link.attr("x1", d => d.source.x)
-    //             .attr("y1", d => d.source.y)
-    //             .attr("x2", d => d.target.x)
-    //             .attr("y2", d => d.target.y);
-    //
-    //     node.attr("transform", d => 'translate(' + (d.x-25) + ',' + (d.y-35) + ')');
-    //
-    //     text.attr("x", d => d.x - 5) //position of the lower left point of the text
-    //             .attr("y", d => d.y + 5); //position of the lower left point of the text
-    // }
-    //
-    // //When the drag gesture starts, the targeted node is fixed to the pointer
-    // //The simulation is temporarily “heated” during interaction by setting the target alpha to a non-zero value.
-    // function dragstarted(d) {
-    //     if (!d3.event.active) simulation.alphaTarget(0.3).restart();//sets the current target alpha to the specified number in the range [0,1].
-    //     d.fy = d.y; //fx - the node’s fixed x-position. Original is null.
-    //     d.fx = d.x; //fy - the node’s fixed y-position. Original is null.
-    // }
-    //
-    // //When the drag gesture starts, the targeted node is fixed to the pointer
-    // function dragged(d) {
-    //     d.fx = d3.event.x;
-    //     d.fy = d3.event.y;
-    // }
-    //
-    // //the targeted node is released when the gesture ends
-    // function dragended(d) {
-    //     if (!d3.event.active) simulation.alphaTarget(0);
-    //     d.fx = null;
-    //     d.fy = null;
-    //
-    //     console.log("dataset after dragged is ...",dataset);
-    // }
 }
 
 function buildOperationNode(operationNodes, operation, operationProgress) {
