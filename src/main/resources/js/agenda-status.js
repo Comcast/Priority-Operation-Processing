@@ -15,7 +15,7 @@ function processAgendaStatusRequest(e) {
     var fieldsValue = "id,agendaId,percentComplete,attemptsCompleted,maximumAttempts,processingState,processingStateMessage,cid";
     performRequest(
             "GET",
-            //getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
+            // getQueryURL(server, endpoint, "byid", "6feff642-93db-404b-952e-21f1161e1f29", 20, fieldsValue),
             getQueryURL(server, endpoint, "byid", "", 20, fieldsValue),
             null,
             function(response) {
@@ -93,29 +93,181 @@ function setupAgendaNetwork(agenda, agendaProgress) {
         buildOperationNode(operationNodes, operation, progressMap[operation.name]);
         buildOperationDependencyEdges(operationEdges, operation);
     });
-    // create an array with nodes
-    var nodes = new vis.DataSet(operationNodes);
-    // create an array with edges
-    var edges = new vis.DataSet(operationEdges);
+
+    var dependencyMap = new Map();
+
+    // build a map of direct dependencies
+    operationEdges.forEach(function (edge, index) {
+        var existing = dependencyMap.get(edge.to);
+        if(!existing) {
+            existing = new Set();
+            dependencyMap.set(edge.to, existing);
+        }
+        existing.add(edge.from);
+    });
+
+    //hack: add all parents edges, poorly
+    for (let step = 0; step < operationEdges.length; step++) {
+        operationEdges.forEach(function (edge, index) {
+            var existing = dependencyMap.get(edge.to);
+            var parent = dependencyMap.get(edge.from);
+            if(parent)
+            {
+                parent.forEach(existing.add, existing);
+            }
+        });
+    }
+
+    //now all contain full dependencies to top, so if we remove parents deps, we end up with only unique
+    dependencyMap.forEach(function (value, key, map)
+    {
+        var allParents = new Set();
+        value.forEach(function (value1, value2, set) {
+            var parent = dependencyMap.get(value1);
+            if (parent)
+            {
+                parent.forEach(allParents.add, allParents);
+            }
+        });
+
+        allParents.forEach(value.delete, value);
+    });
+
+    //finally remove edges not in it.
+    var minimizedEdges = new Array();
+    operationEdges.forEach(function (edge, index) {
+        if(dependencyMap.get(edge.to).has(edge.from)) {
+            minimizedEdges.push(edge);
+        }
+    });
+
+    // using visjs
+    ////////
+    // // create an array with nodes
+    // var nodes = new vis.DataSet(operationNodes);
+    // // create an array with edges
+    // var edges = new vis.DataSet(minimizedEdges);
     // create a network
-    var container = document.getElementById('mynetwork');
-    var data = {
-        nodes: nodes,
-        edges: edges
+    // var container = document.getElementById('mynetwork');
+
+    // var data = {
+    //     nodes: nodes,
+    //     edges: edges
+    // };
+    // var options ={
+    //     layout: {
+    //         hierarchical: {
+    //             direction: "LR",
+    //             sortMethod: "directed"
+    //         }
+    //     },
+    //     physics: {
+    //         hierarchicalRepulsion: {
+    //             avoidOverlap: 1
+    //         }
+    //     }};
+    // var network = new vis.Network(container, data, options);
+
+
+    var width = 800;
+    var height = 800;
+    var margin = {
+        top: 30,
+        right: 80,
+        bottom: 30,
+        left: 30
     };
-    var options ={
-        layout: {
-            hierarchical: {
-                direction: "LR",
-                sortMethod: "directed"
-            }
-        },
-        physics: {
-            hierarchicalRepulsion: {
-                avoidOverlap: 1
-            }
-        }};
-    var network = new vis.Network(container, data, options);
+
+    var container = d3.select("#mynetwork");
+    const svg = container
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const dataset =  {
+        nodes: operationNodes,
+        links: minimizedEdges
+    };
+    var simulation = d3.forceSimulation()
+            .force('charge', d3.forceManyBody().strength(-900))
+            .force('center', d3.forceCenter(width / 2, height / 2));
+
+    // Initialize the links
+    const link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(dataset.links)
+            .enter().append("line")
+            .attr("stroke-width", 2)
+            .attr("stroke", "black");
+
+    // Initialize the nodes
+    const node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(dataset.nodes)
+            .enter()
+            .append(d => loadLiquidFillGaugeSVG(d.id, d.color, d.percentComplete).node())
+            .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended)
+            );
+
+    // Text to nodes
+    const text = svg.append("g")
+            .attr("class", "text")
+            .selectAll("text")
+            .data(dataset.nodes)
+            .enter().append("text")
+            .text(d => d.id);
+
+    //Listen for tick events to render the nodes as they update in your Canvas or SVG.
+    simulation
+            .nodes(dataset.nodes)//sets the simulation’s nodes to the specified array of objects, initializing their positions and velocities, and then re-initializes any bound forces;
+            .on("tick", ticked);//use simulation.on to listen for tick events as the simulation runs.
+
+    simulation.force("link", d3.forceLink()
+            .id(function(d) { return d.id; })
+            .links(dataset.links).distance(80));
+
+    // This function is run at each iteration of the force algorithm, updating the nodes position (the nodes data array is directly manipulated).
+    function ticked() {
+        link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+        node.attr("transform", d => 'translate(' + (d.x-25) + ',' + (d.y-35) + ')');
+
+        text.attr("x", d => d.x - 5) //position of the lower left point of the text
+                .attr("y", d => d.y + 5); //position of the lower left point of the text
+    }
+
+    //When the drag gesture starts, the targeted node is fixed to the pointer
+    //The simulation is temporarily “heated” during interaction by setting the target alpha to a non-zero value.
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();//sets the current target alpha to the specified number in the range [0,1].
+        d.fy = d.y; //fx - the node’s fixed x-position. Original is null.
+        d.fx = d.x; //fy - the node’s fixed y-position. Original is null.
+    }
+
+    //When the drag gesture starts, the targeted node is fixed to the pointer
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    //the targeted node is released when the gesture ends
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+
+        console.log("dataset after dragged is ...",dataset);
+    }
 }
 
 function buildOperationNode(operationNodes, operation, operationProgress) {
@@ -130,9 +282,20 @@ function buildOperationNode(operationNodes, operation, operationProgress) {
         if(operationProgress.processingState === "COMPLETE"
                 && defined(operationProgress.processingStateMessage) &&
                 operationProgress.processingStateMessage === "failed")
+        {
             operationNode.color = operationFailedColor;
+        }
         else
+        {
             operationNode.color = operationStatusColors[operationProgress.processingState];
+        }
+    }
+    if(defined(operationProgress.percentComplete)) {
+        operationNode.percentComplete = operationProgress.percentComplete;
+    } else if (defined(operationProgress.processingState) && operationProgress.processingState === "COMPLETE") {
+        operationNode.percentComplete = 100;
+    } else {
+        operationNode.percentComplete = 0;
     }
 
     operationNodes.push(operationNode);
@@ -164,9 +327,13 @@ function buildOperationDependencyEdges(operationEdges, operation) {
 
     for(const dependencyName of Object.keys(dependencies)) {
         operationEdges.push({
-            from: dependencyName, to: operation.name, arrows: {to: { enabled: true, type: "arrow" }}
+            from: dependencyName,
+            to: operation.name,
+            arrows: {to: { enabled: true, type: "arrow" }},
+            source:dependencyName,
+            target: operation.name
         })
-    };
+    }
 }
 
 // regex learning...
@@ -194,8 +361,8 @@ doStuff();
 function seekDependencies(dependencies, obj) {
     Object.keys(obj).forEach(function(field, index){
         if(typeof obj[field] === 'string') {
-            var mathces = obj[field].matchAll(operationReferenceRegex);
-            for(const match of mathces){
+            var matches = obj[field].matchAll(operationReferenceRegex);
+            for(const match of matches){
                 if(match.length > 1){
                     var reference = match[1];
                     if(reference !== "fission.agendaId"
