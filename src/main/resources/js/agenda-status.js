@@ -234,10 +234,10 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
             .attr("transform", `translate(-25,-25)`);
 
-    node.append("text")
+    var text = node.append("text")
             .attr("dy", "25")
-            .attr("dx", "5")
-            .attr("x", d => d.children ? -6 : 6)
+            // .attr("dx", "5")
+            // .attr("x", d => d.children ? -6 : 6)
             .attr("text-anchor", "middle")
             .text(d => d.data.name)
             .clone(true).lower()
