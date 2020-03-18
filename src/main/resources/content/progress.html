@@ -13,10 +13,16 @@
         <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
         <br/>
         <div>
-            <input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/>
-            <div style="margin-left: 20px;height: 40px;width: 40px">
-                <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
-            </div>
+            TODO: this is performing an AgendaProgress lookup so the query lookup is slightly awkward but we could do byagendaId in javascript if necessary<br>
+            <table><td>
+            <td><input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/></td>
+            <td align="left">
+                <div style="margin-left: 20px;height: 40px;width: 40px">
+                    <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
+                </div>
+            </td>
+
+            </tr></table>
         </div>
     </div>
 </div>
@@ -42,6 +48,8 @@ function showAgendaStatusList(event){
     var server = serverInfo[targetServerIndex];
     var endpoint = endpointsByName["Agenda Progress"];
 
+    toggleSpinner(true);
+
     processAuthorizedRequest(event,
             server,
             endpoint,
@@ -58,10 +66,14 @@ function showAgendaStatusList(event){
                         function(response){
                             $("#response").val(JSON.stringify(response, null, 2));
                             buildAgendaStatusTableNew(response);
+                            toggleSpinner(false);
+                        },
+                        function(error){
+                            toggleSpinner(false);
                         });
             },
             function(error){
-
+                toggleSpinner(false);
             }
     );
 }
@@ -95,6 +107,7 @@ function buildAgendaStatusTableNew(response) {
 function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
     var targetServerIndex = $("#target_server").val();
     var server = serverInfo[targetServerIndex];
+    toggleSpinner(true);
     performRequest(
             "GET",
             getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
@@ -123,9 +136,6 @@ function switchToSingleAgendaView(agendaId){
 }
 
 function updateViewState(showSingleAgenda){
-//    $("#singleAgendaView").css('visibility', showSingleAgenda ? 'visible' : 'hidden');
-//    $("#agendaStatusView").css('visibility', showSingleAgenda ? 'hidden' : 'visible');
-
     $("#singleAgendaView").toggle(showSingleAgenda);
     $("#mynetwork").toggle(showSingleAgenda);
     $("#agendaStatusView").toggle(!showSingleAgenda);

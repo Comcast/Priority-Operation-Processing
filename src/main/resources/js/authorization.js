@@ -45,7 +45,7 @@ function performAuthorizeRequest(idmURL, username, password, cid, successCallbac
                 }
                 else{
                     updateTokenInfo(idmResponse);
-                    successCallback();
+                    successCallback(idmResponse);
                 }
             },
             error: function (error) {

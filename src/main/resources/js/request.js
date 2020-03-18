@@ -43,26 +43,24 @@ function processAuthorizedRequest(e, server, endpoint, successCallback, failCall
     if(!validateCredentialInputs())
         return;
 
-    toggleSpinner(true);
-
     regenerateCid();
 
     var username = $("#modlgn-username").val();
     var password = $("#modlgn-passwd").val();
 
     performAuthorizeRequest(server.endpointIDMURL, username, password, g_requestCid,
-            function(){
-                successCallback();
-                toggleSpinner(false);
+            function(idmResponse){
+                if(successCallback != null)
+                    successCallback(idmResponse);
             },
             function(error){
                 console.log(error);
-                toggleSpinner(false);
-                failCallback();
+                if(failCallback != null)
+                    failCallback(error);
             });
 }
 
-function performBasicRequest(httpVerb, url, data, successFunction){
+function performBasicRequest(httpVerb, url, data, successCallback, failCallback){
     $.ajax({
         type: httpVerb,
         url: url,
@@ -76,10 +74,12 @@ function performBasicRequest(httpVerb, url, data, successFunction){
             'X-thePlatform-cid': g_requestCid
         },
         success: function (response) {
-            if(successFunction != null)
-                successFunction(response);
+            if(successCallback != null)
+                successCallback(response);
         },
         error: function (response) {
+            if(failCallback != null)
+                failCallback(response)
             resetTokenInfo();
             alert("Unsuccessful CID '" + g_requestCid +"' -- Identity token has been reset. Please try the request again.");
         }
