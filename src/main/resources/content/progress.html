@@ -28,10 +28,10 @@
 
 <div id="singleAgendaView">
     <div id="singleAgendaTitle"></div>
+    <div id="progressTable" class="table-bordered"></div>
     <a onClick="updateViewState(false);">Return to Agenda List</a>
     <!--TODO  when toggled on the height of the network view ends up super small (aka invisible) so this div needs some tuning... not a fixed height! -->
     <div id="mynetwork" style="overflow: scroll; height: 400px;"></div>
-    <div id="progressTable"></div>
 </div>
 
 <div id="agendaStatusView">
@@ -40,7 +40,7 @@
 
 <div class="expandable">
     <input id="toggle" type="checkbox" hidden>
-    <label for="toggle">SHOW RESPONSE</label>
+    <label for="toggle" class="expand-label">SHOW RESPONSE</label>
     <div id="expand">
         <textarea id="response" name="response" style="width:100%;height:100%;"></textarea>
     </div>
@@ -125,7 +125,7 @@ function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
                         function(response) {
                             var agendaProgress = response["all"][0];
                             setupAgendaNetwork(agenda, agendaProgress);
-                            writeAgendaProgressTable(response);
+                            writeSingleAgendaProgressTable(response);
                             switchToSingleAgendaView(agendaId);
                         }
                 );
@@ -134,7 +134,7 @@ function requestAgendaNodeViewUpdateNew(agendaId, agendaProgressId) {
 }
 
 function switchToSingleAgendaView(agendaId){
-    $("#singleAgendaTitle").html("Agenda " + agendaId);
+    $("#singleAgendaTitle").html("<p class=\"topic-header\">Agenda</p><p>" + agendaId +"</p>");
     updateViewState(true);
 }
 
