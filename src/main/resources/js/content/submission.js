@@ -67,15 +67,15 @@ function processIgniteCall(event){
                 getEndpointURL(server, serviceEndpoint),
                 JSON.stringify(igniteRequest),
                 function(response){
-                    $("#response").val(JSON.stringify(response));
+                    $("#response").val(JSON.stringify(response, null, 2));
                 },
                 function(error){
-                    $("#response").val(JSON.stringify(error));
+                    $("#response").val(JSON.stringify(error, null, 2));
                 }
             );
         },
         function(error){
-            $("#response").val(JSON.stringify(error));
+            $("#response").val(JSON.stringify(error, null, 2));
         }
     );
 }
@@ -102,15 +102,15 @@ function processReigniteCall(event){
                     getEndpointURL(server, serviceEndpoint),
                     JSON.stringify(reigniteRequest),
                     function(response){
-                        $("#response").val(JSON.stringify(response));
+                        $("#response").val(JSON.stringify(response, null, 2));
                     },
                     function(error){
-                        $("#response").val(JSON.stringify(error));
+                        $("#response").val(JSON.stringify(error, null, 2));
                     }
             );
         },
         function(error){
-            $("#response").val(JSON.stringify(error));
+            $("#response").val(JSON.stringify(error, null, 2));
         }
     );
 }
