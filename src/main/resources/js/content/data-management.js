@@ -9,7 +9,7 @@ function processCRUDRequest(e) {
     var targetEndpointIndex = $("#target_endpoint").val();
     var endpoint = endpoints[targetEndpointIndex];
 
-    processAuthorizeRequest(
+    makeAuthorizedRequest(
             e,
             server,
             function(){
@@ -71,7 +71,7 @@ function processDELETERequest(server, endpoint){
 }
 
 function performRequest(httpVerb, url, data, successFunction){
-    processServiceRequest(
+    makeServiceRequest(
         httpVerb,
         url,
         data,

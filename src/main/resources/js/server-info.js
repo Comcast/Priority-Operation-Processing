@@ -54,14 +54,30 @@ var endpoints =
             }
         ];
 
+var serviceEndpopints =
+        [
+            {
+                name:"Ignite",
+                path:"agenda/service/ignite"
+            },
+            {
+                name:"Reignite",
+                path:"agenda/service/reignite"
+            }
+        ];
+
 function getEndpointURL(server, endpoint) {
     return server.endpointServerURL + "/" + server.endpointStage + endpointPrefix + endpoint.path;
 }
 
+var serviceEndpointsByName = [];
 var endpointsByName = [];
 
-endpoints.forEach(addEndpointByName);
+// build the reverse lookup maps
+serviceEndpopints.forEach(function (item, index) {
+    serviceEndpointsByName[item.name] = item;
+});
 
-function addEndpointByName(item, index) {
+endpoints.forEach(function (item, index) {
     endpointsByName[item.name] = item;
-}
+});

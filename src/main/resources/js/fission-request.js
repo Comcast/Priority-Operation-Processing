@@ -17,7 +17,10 @@ function validateCredentialInputs(){
     return true;
 }
 
-function processAuthorizeRequest(e, server, successCallback, failCallback) {
+// This method is a wrapper around the idm request (only making the call to identity if necessary)
+// The success callback should be a function to make the underlying request once the token is known to be good.
+// Highly recommend using makeServiceRequest as part of the successCallback
+function makeAuthorizedRequest(e, server, successCallback, failCallback) {
     e.preventDefault();
 
     if(!validateCredentialInputs())
@@ -41,7 +44,7 @@ function processAuthorizeRequest(e, server, successCallback, failCallback) {
 }
 
 // NOTE: This is intended for use as part of a successCallback to processAuthorizedRequest
-function processServiceRequest(httpVerb, url, data, successCallback, failCallback){
+function makeServiceRequest(httpVerb, url, data, successCallback, failCallback){
     $.ajax({
         type: httpVerb,
         url: url,

@@ -1,5 +1,5 @@
 function performLogin(event){
-    processAuthorizeRequest(event, getServer(), null, null);
+    makeAuthorizedRequest(event, getServer(), null, null);
 }
 
 function authorizationChange(idmResponse){

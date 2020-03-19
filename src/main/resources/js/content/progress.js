@@ -16,7 +16,7 @@ function showAgendaStatusList(event){
 
     toggleSpinner(true);
 
-    processAuthorizeRequest(event,
+    makeAuthorizedRequest(event,
             server,
             function(event){
                 var queryElement = document.getElementById("get_query_type");
@@ -24,7 +24,7 @@ function showAgendaStatusList(event){
                 var queryValue = getQueryValue("get_query_value");
                 var limitValue = getQueryValue("get_limit_value");
 
-                processServiceRequest(
+                makeServiceRequest(
                         "GET",
                         getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, ""),
                         null,
@@ -71,16 +71,16 @@ function buildAgendaStatusTable(response) {
 function requestAgendaNodeViewUpdate(event, agendaId, agendaProgressId) {
     var server = getServer();
     toggleSpinner(true);
-    processAuthorizeRequest(event,
+    makeAuthorizedRequest(event,
         getServer(),
-        processServiceRequest(
+        makeServiceRequest(
                 "GET",
                 getQueryURL(server, endpointsByName["Agenda"], "byid", agendaId, 1, ""),
                 null,
                 function(response) {
                     var agenda = response["all"][0];
                     // TODO: would like to do this request at the same time...
-                    processServiceRequest(
+                    makeServiceRequest(
                             "GET",
                             getQueryURL(server, endpointsByName["Agenda Progress"], "byid", agendaProgressId, 1, ""),
                             null,
