@@ -4,6 +4,7 @@
   "customerId": null,
   "updatedTime": null,
   "addedTime": null,
+  "title":null,
   "operations": [
     {
       "payload": {

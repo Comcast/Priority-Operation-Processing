@@ -47,6 +47,9 @@ public class DefaultAgendaFactory implements AgendaFactory
         if(StringUtils.isBlank(generatedAgenda.getCid()))
             generatedAgenda.setCid(cid);
 
+        if(StringUtils.isBlank(generatedAgenda.getTitle()))
+            generatedAgenda.setTitle(agendaTemplate.getTitle());
+
         return generatedAgenda;
     }
 
