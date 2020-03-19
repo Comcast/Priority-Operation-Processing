@@ -9,6 +9,7 @@ public class DefaultEndpointDataObject implements EndpointDataObject, Identified
     private String id;
     private String cid;
     private String customerId;
+    private String title;
     private Date updatedTime;
     private Date addedTime;
 
@@ -34,6 +35,16 @@ public class DefaultEndpointDataObject implements EndpointDataObject, Identified
     public void setCustomerId(String customerId)
     {
         this.customerId = customerId;
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return title;
+    }
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 
     public void setCid(String cid)

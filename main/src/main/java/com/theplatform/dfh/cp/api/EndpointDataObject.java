@@ -14,4 +14,6 @@ public interface EndpointDataObject
 
     public Date getAddedTime();
 
+    public String getTitle();
+
 }
