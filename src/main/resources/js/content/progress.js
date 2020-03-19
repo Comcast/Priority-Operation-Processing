@@ -118,10 +118,20 @@ function writeSingleAgendaProgressTable(response)
     if(response.errorResponse != null) return;
     response["all"].forEach(function (item, index) {
         tableText += "<table class=\"table-bordered\">";
-        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th></tr></thead>";
+        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th><th>Error</th></tr></thead>";
         tableText += "<tbody>";
         item.operationProgress.forEach(function(opProgress, progressIndex){
-            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td></tr>";
+            var errorMessage = "";
+            if(opProgress.diagnosticEvents != null)
+            {
+                errorMessage = "<div class=\"expandable\"><input id=\"toggle\" type=\"checkbox\" hidden>"
+                        +"<label for=\"toggle\" class=\"expand-label\">SHOW ERROR</label>"
+                        +"<div id=\"expand\">"
+                        + "<textarea id=\"response\" name=\"response\" style=\"width:100%;height:100%;\">" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>"
+                        + "</div></div>";
+            }
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td>";
+            tableText +=  "<td>" +errorMessage +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
         tableText += "</tbody></table>";
