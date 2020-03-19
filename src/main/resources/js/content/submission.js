@@ -1,3 +1,6 @@
+// this is a by name object/map
+var g_VisibleAgendaTemplates = {};
+
 function getAgendaTemplates(event){
     var endpoint = endpointsByName["Agenda Template"];
     var server = getServer();
@@ -41,6 +44,3 @@ function addAgendaTemplates(agendaTemplates){
         });
     }
 }
-
-// this is a by name object/map
-var g_VisibleAgendaTemplates = {};

@@ -22,6 +22,7 @@
     <script type="text/javascript" src="js/fission-request.js"></script>
     <script type="text/javascript" src="js/authorization.js"></script>
     <script type="text/javascript" src="js/tab.js"></script>
+    <script type="text/javascript" src="js/div-drag.js"></script>
     <script type="text/javascript" src="js/ui.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/popup.js"></script>
@@ -74,10 +75,12 @@
     </div>
 </div>
 
-<!-- Popup  (2 divs, one for background, one for foreground -->
+<!-- Popup  (2 divs, one for background, one for foreground) -->
 <div id="popup_background">
 </div>
 <div id="popup_window" >
+    <!-- note: the id popup_windowheader is a special name for having a draggable part -->
+    <div id="popup_windowheader">Title Bar (to drag/move)</div>
     <div id="popup_content_container">
         <div id="popup_content">
             Hi there!

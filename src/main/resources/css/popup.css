@@ -13,6 +13,7 @@
     /*default to not visible*/
     display: none;
 }
+
 #popup_window {
     z-index: 200;
     position: absolute;
@@ -24,6 +25,15 @@
     background-color: white;
     /*default to not visible*/
     display: none;
+}
+
+#popup_windowheader {
+    position: relative;
+    top: 10px;
+    left: 3px;
+    right: 3px;
+    border-radius: 30px;
+    background-color: #f28ef2;
 }
 
 #popup_content_container {
