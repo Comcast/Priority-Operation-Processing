@@ -7,8 +7,18 @@ const operationStatusColors = {
 };
 
 const operationFailedColor = "#CC2222";
+const PROGRESS_VIEW = {
+    AGENDAS: 'agendas',
+    SINGLE_AGENDA: 'single_agendas'
+};
+
+const singleAgendaViewData = {
+    agendaId: null,
+    agendaProgressId: null
+};
 
 var currentAgendaProgressObjects = [];
+var currentView = PROGRESS_VIEW.AGENDAS;
 
 function showAgendaStatusList(event){
     var endpoint = endpointsByName["Agenda Progress"];
@@ -69,6 +79,8 @@ function buildAgendaStatusTable(response) {
 }
 
 function requestAgendaNodeViewUpdate(event, agendaId, agendaProgressId) {
+    singleAgendaViewData.agendaId = agendaId;
+    singleAgendaViewData.agendaProgressId = agendaProgressId;
     var server = getServer();
     toggleSpinner(true);
     makeAuthorizedRequest(event,
@@ -112,6 +124,7 @@ function updateViewState(showSingleAgenda){
     $("#singleAgendaView").toggle(showSingleAgenda);
     $("#mynetwork").toggle(showSingleAgenda);
     $("#agendaStatusView").toggle(!showSingleAgenda);
+    currentView = showSingleAgenda ? PROGRESS_VIEW.SINGLE_AGENDA : PROGRESS_VIEW.AGENDAS;
 }
 
 function writeSingleAgendaProgressTable(response)
@@ -475,4 +488,15 @@ function getDepth(nodeId, dependencyMap, depthMap, depth) {
         }
     });
     return maxDepth + 1;
+}
+
+window.setInterval(refreshEvent, 6000);
+
+function refreshEvent(){
+    if(currentView === PROGRESS_VIEW.SINGLE_AGENDA
+            && $("#auto_refresh").prop("checked")) {
+        //console.log("auto refreshing");
+        requestAgendaNodeViewUpdate(new Event("refresh_agenda_progress_timer"), singleAgendaViewData.agendaId, singleAgendaViewData.agendaProgressId);
+    }
+    //console.log("auto refresh ignored...");
 }

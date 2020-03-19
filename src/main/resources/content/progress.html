@@ -1,6 +1,19 @@
 <!-- see js/content/progress.js for the script -->
 <div class="well-small ">
     <h3 class="topic-header">AGENDA PROGRESS</h3>
+</div>
+
+<div id="singleAgendaView">
+    <label for="auto_refresh"  class="sub-topic-header">auto Refresh</label>
+    <input type="checkbox" id="auto_refresh" name="auto_refresh" class="input-xxlarge"/>
+    <div id="singleAgendaTitle"></div>
+    <div id="progressTable" class="table-bordered"></div>
+    <a onClick="updateViewState(false);">Return to Agenda List</a>
+    <!--TODO  when toggled on the height of the network view ends up super small (aka invisible) so this div needs some tuning... not a fixed height! -->
+    <div id="mynetwork" style="overflow: scroll; height: 400px;"></div>
+</div>
+
+<div id="agendaStatusView">
     <div class="sub-topic-header">
         <select name="get_query_type" id="get_query_type" class="dropdown-query">
             <option value="byId">byId</option>
@@ -17,26 +30,15 @@
             <!-- TODO: this is performing an AgendaProgress lookup so the query lookup is slightly awkward but we could do byagendaId in javascript if necessary-->
             <br>
             <table><td>
-            <td><input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/></td>
-            <td align="left">
-                <div style="margin-left: 20px;height: 40px;width: 40px">
-                    <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
-                </div>
-            </td>
-            </tr></table>
+                <td><input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/></td>
+                <td align="left">
+                    <div style="margin-left: 20px;height: 40px;width: 40px">
+                        <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
+                    </div>
+                </td>
+                </tr></table>
         </div>
     </div>
-</div>
-
-<div id="singleAgendaView">
-    <div id="singleAgendaTitle"></div>
-    <div id="progressTable" class="table-bordered"></div>
-    <a onClick="updateViewState(false);">Return to Agenda List</a>
-    <!--TODO  when toggled on the height of the network view ends up super small (aka invisible) so this div needs some tuning... not a fixed height! -->
-    <div id="mynetwork" style="overflow: scroll; height: 400px;"></div>
-</div>
-
-<div id="agendaStatusView">
     <div id="agendaStatusTable" class="table-bordered"></div>
 </div>
 
