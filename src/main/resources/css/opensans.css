@@ -15,3 +15,8 @@ body.site {
 .btn-primary {
     background: #f28ef2;
 }
+
+textarea {
+    /*  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;*/
+    font-family: 'Monaco', monospace;
+}
