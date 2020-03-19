@@ -2,3 +2,38 @@
     <h3 class="topic-header">SUBMISSION</h3>
 </div>
 <p>Add stuff</p>
+<!-- universal spinner... not one per button-- having multiple is just weird and won't play very nice...-->
+<div style="margin-left: 20px;height: 40px;width: 40px">
+    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate" style="display: none;">
+</div>
+
+<h2>Ignite Agenda</h2>
+<div>
+    Template:
+    <select name="ignite_agenda_template_name" id="ignite_agenda_template_name" class="dropdown-query">
+        <!--
+    private String payload;
+    private String agendaTemplateId;
+         -->
+    <br>
+    Payload
+    <textarea id="ignite_payload" class="input-block-level"  name="ignite_payload" rows="10"></textarea>
+    <input type="submit" value="Submit Request" name="request_button" onclick="processIgniteCall(event)" class="btn btn-primary submit-button"/>
+</div>
+
+<h2>Reignite Agenda</h2>
+<!--
+private String agendaId;
+private List<String> params;
+ -->
+<div>
+    AgendaId
+    <input id="reignite_agenda_id" name="reignite_agenda_id" class="input-xxlarge" required>
+    Params (1 per line):
+    <textarea id="reignite_params_to_post" class="input-block-level"  name="params_to_post" rows="10"></textarea>
+    <input type="submit" value="Submit Request" name="request_button" onclick="processReigniteCall(event)" class="btn btn-primary submit-button"/>
+</div>
+
+<script>
+    getAgendaTemplates(new Event('submission_load'));
+</script>
