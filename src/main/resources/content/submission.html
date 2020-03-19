@@ -10,6 +10,7 @@
     <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'IGNITE')" id="igniteOpen">IGNITE</button>
         <button class="tablinks" onclick="openTab(event, 'REIGNITE')">REIGNITE</button>
+        <button class="tablinks" onclick="openTab(event, 'EVALUATE')">EVALUATE</button>
     </div>
 </div>
 <div id="IGNITE" class="tabcontent">
@@ -39,6 +40,23 @@ private String agendaTemplateId;
     </div>
     <div>
         <input type="submit" value="Submit Request" name="request_button" onclick="processReigniteCall(event)" class="btn btn-primary submit-button"/>
+    </div>
+</div>
+
+<div id="EVALUATE" class="tabcontent">
+    <!--
+    private String payload;
+    private String agenda template;
+     -->
+    <label for="eval_payload"  class="sub-topic-header">Payload</label>
+    <textarea id="eval_payload" name="eval_payload" class="input-block-level" rows="10"></textarea>
+
+    <div>
+        <label for="eval_agendatemp"  class="sub-topic-header">Agenda Template</label>
+        <textarea id="eval_agendatemp" class="input-block-level"  name="eval_agendatemp" rows="10"></textarea>
+    </div>
+    <div>
+        <input type="submit" value="Submit Request" name="request_button" onclick="processEvaluationCall(event)" class="btn btn-primary submit-button"/>
     </div>
 </div>
 
