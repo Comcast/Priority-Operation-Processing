@@ -2,7 +2,10 @@ function getAgendaTemplates(event){
     var endpoint = endpointsByName["Agenda Template"];
     var server = getServer();
 
-    toggleSpinner(true);
+    showPopupWithHtml(
+            event,
+            "<img id=\"fission_spinner_temp\" src=\"images/fission.png\" width=\"40px\" height=\"40px\" class=\"rotate\"><br>Loading Agenda Templates...",
+            false);
 
     processAuthorizeRequest(event,
             server,
@@ -15,14 +18,14 @@ function getAgendaTemplates(event){
                             //console.log(JSON.stringify(response, null, 2));
                             //$("#response").val(JSON.stringify(response, null, 2));
                             addAgendaTemplates(response['all']);
-                            toggleSpinner(false);
+                            showPopup(new Event("success"), false);
                         },
                         function(error){
-                            toggleSpinner(false);
+                            showPopup(new Event("error"), false);
                         });
             },
             function(error){
-                toggleSpinner(false);
+                showPopup(new Event("error"), false);
             }
     );
 }

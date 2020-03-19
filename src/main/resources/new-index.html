@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/tab.css">
     <link rel="stylesheet" href="css/rotate.css">
     <link rel="stylesheet" href="css/liquidFillGuage.css">
+    <link rel="stylesheet" href="css/popup.css">
     <link rel="stylesheet" href="css/external/jquery.json-viewer.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
     <link href="css/template.css" rel="stylesheet" />
@@ -23,6 +24,7 @@
     <script type="text/javascript" src="js/tab.js"></script>
     <script type="text/javascript" src="js/ui.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/popup.js"></script>
 
     <!-- add content page scripts -->
     <script type="text/javascript" src="js/content/data-management.js"></script>
@@ -66,6 +68,23 @@
             <div id="theContent"></div>
                 <!-- End Content -->
             </div>
+        </div>
+    <!-- temp for easy testing of popup -->
+        <input type="submit" value="Open Popup" name="popup_open_button" onclick="showPopupWithHtml(event, 'This is a test string!', true);" class="btn btn-primary submit-button"/>
+    </div>
+</div>
+
+<!-- Popup  (2 divs, one for background, one for foreground -->
+<div id="popup_background">
+</div>
+<div id="popup_window" >
+    <div id="popup_content_container">
+        <div id="popup_content">
+            Hi there!
+        </div>
+        <!-- TODO: align to the bottom middle probably so it's consistent location wise -->
+        <div id="popup_close_button_container">
+            <input type="submit" value="Close" name="popup_close_button" onclick="showPopup(event, false);" class="btn btn-primary submit-button"/>
         </div>
     </div>
 </div>

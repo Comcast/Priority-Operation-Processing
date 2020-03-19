@@ -8,6 +8,8 @@ const operationStatusColors = {
 
 const operationFailedColor = "#CC2222";
 
+var currentAgendaProgressObjects = [];
+
 function showAgendaStatusList(event){
     var endpoint = endpointsByName["Agenda Progress"];
     var server = getServer();
@@ -116,12 +118,15 @@ function writeSingleAgendaProgressTable(response)
 {
     var tableText = "";
     if(response.errorResponse != null) return;
-    response["all"].forEach(function (item, index) {
+    currentAgendaProgressObjects = [];
+    response["all"].forEach(function (item, agendaProgressIndex) {
+        currentAgendaProgressObjects.push(item);
         tableText += "<table class=\"table-bordered\">";
         tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th><th>Error</th></tr></thead>";
         tableText += "<tbody>";
-        item.operationProgress.forEach(function(opProgress, progressIndex){
+        item.operationProgress.forEach(function(opProgress, operationProgressIndex){
             var errorMessage = "";
+            var popupButton = "";
             if(opProgress.diagnosticEvents != null)
             {
                 errorMessage = "<div class=\"expandable\"><input id=\"toggle\" type=\"checkbox\" hidden>"
@@ -129,14 +134,23 @@ function writeSingleAgendaProgressTable(response)
                         +"<div id=\"expand\">"
                         + "<textarea id=\"response\" name=\"response\" style=\"width:100%;height:100%;\">" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>"
                         + "</div></div>";
+                popupButton = "<input type=\"submit\" value=\"Show Error\" name=\"show_error_" + opProgress.operation + "\"" +
+                        "onclick=\"showOpProgressError(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" class=\"btn btn-primary submit-button\"/>"
+
             }
             tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td>";
-            tableText +=  "<td>" +errorMessage +"</td></tr>";
+            tableText +=  "<td>" + popupButton + errorMessage +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
         tableText += "</tbody></table>";
     });
     document.getElementById("progressTable").innerHTML = tableText;
+}
+
+function showOpProgressError(event, agendaProgressIndex, operationProgressIndex){
+    var opProgress = currentAgendaProgressObjects[agendaProgressIndex].operationProgress[operationProgressIndex];
+    var textAreaHTML = "<textarea id='response' name='response' style='width:100%;height:100%;'>" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>";
+    showPopupWithHtml(event, textAreaHTML, true);
 }
 
 function setupAgendaNetwork(agenda, agendaProgress) {
