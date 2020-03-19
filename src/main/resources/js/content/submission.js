@@ -1,5 +1,5 @@
-// this is a by name object/map
-var g_VisibleAgendaTemplates = {};
+// this is indexed by the pulldown
+var g_VisibleAgendaTemplates = [];
 
 function getAgendaTemplates(event){
     var endpoint = endpointsByName["Agenda Template"];
@@ -34,12 +34,12 @@ function getAgendaTemplates(event){
 }
 
 function addAgendaTemplates(agendaTemplates){
-    g_VisibleAgendaTemplates = {};
+    g_VisibleAgendaTemplates = [];
     if(agendaTemplates != null)
     {
         var agendaTemplateDropDown = $('#ignite_agenda_template_name');
         agendaTemplates.forEach(function (template, index) {
-            g_VisibleAgendaTemplates[template.title] = template;
+            g_VisibleAgendaTemplates.push(template);
             agendaTemplateDropDown.append("<option value=\""+ index +"\">" + template.title + "</option>")
         });
     }
@@ -50,12 +50,14 @@ function processIgniteCall(event){
     var server = getServer();
     var serviceEndpoint = serviceEndpointsByName["Ignite"];
     var payloadJson = $("#ignite_payload").val();
+    var agendaTemplateName = $("#ignite_agenda_template_name").val();
+    var agendaTemplateId = g_VisibleAgendaTemplates[agendaTemplateName].id;
     if(!verifyJson(payloadJson)){
         return;
     }
     var igniteRequest = {
         payload: payloadJson,
-        agendaTemplateId: null
+        agendaTemplateId: agendaTemplateId
     };
     makeAuthorizedRequest(event,
         server,
@@ -65,15 +67,15 @@ function processIgniteCall(event){
                 getEndpointURL(server, serviceEndpoint),
                 JSON.stringify(igniteRequest),
                 function(response){
-                    console.log(JSON.stringify(response));
+                    $("#response").val(JSON.stringify(response));
                 },
                 function(error){
-                    console.log(JSON.stringify(error));
+                    $("#response").val(JSON.stringify(error));
                 }
             );
         },
         function(error){
-            console.log(JSON.stringify(error));
+            $("#response").val(JSON.stringify(error));
         }
     );
 }
@@ -81,9 +83,16 @@ function processIgniteCall(event){
 function processReigniteCall(event){
     var server = getServer();
     var serviceEndpoint = serviceEndpointsByName["Reignite"];
+    var params = [];
+
+    pushParamValueIfSpecified(params, $("#reignite_reset_operations"), "operationsToReset");
+    pushParamIfChecked(params, $("#reignite_reset_all"), "resetAll");
+    pushParamIfChecked(params, $("#reignite_continue"), "continue");
+    pushParamIfChecked(params, $("#reignite_skip_execution"), "skipExecution");
+
     var reigniteRequest = {
         agendaId: $("#reignite_agenda_id").val(),
-        params: []
+        params: params
     };
     makeAuthorizedRequest(event,
         server,
@@ -93,15 +102,27 @@ function processReigniteCall(event){
                     getEndpointURL(server, serviceEndpoint),
                     JSON.stringify(reigniteRequest),
                     function(response){
-                        console.log(JSON.stringify(response));
+                        $("#response").val(JSON.stringify(response));
                     },
                     function(error){
-                        console.log(JSON.stringify(error));
+                        $("#response").val(JSON.stringify(error));
                     }
             );
         },
         function(error){
-            console.log(JSON.stringify(error));
+            $("#response").val(JSON.stringify(error));
         }
     );
+}
+
+function pushParamValueIfSpecified(params, textbox, paramName){
+    if(textbox.val() !== ""){
+        params.push(paramName + "=" + textbox.val());
+    }
+}
+
+function pushParamIfChecked(params, checkbox, paramName){
+    if(checkbox.prop("checked")){
+        params.push(paramName);
+    }
 }
