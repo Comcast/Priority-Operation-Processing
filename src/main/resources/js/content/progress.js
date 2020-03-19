@@ -149,7 +149,7 @@ function writeSingleAgendaProgressTable(response)
 
 function showOpProgressError(event, agendaProgressIndex, operationProgressIndex){
     var opProgress = currentAgendaProgressObjects[agendaProgressIndex].operationProgress[operationProgressIndex];
-    var textAreaHTML = "<textarea id='response' name='response' style='width:100%;height:100%;'>" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>";
+    var textAreaHTML = "<textarea id='response' name='response' style='width:80%;height:100%;'>" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>";
     showPopupWithHtml(event, textAreaHTML, true);
 }
 
