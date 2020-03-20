@@ -93,13 +93,37 @@
         </div>
     </div>
 </div>
+
+<button class="primary" onclick="handleGetContext()">GET CONTEXT</button>
 <script>
     dragElement(document.getElementById("popup_window"));
 </script>
-<script>
-    var consoleJS = new ConsoleJS();
-    var out = consoleJS.getContext();
-    console.log(out);
+<script type="text/javascript">
+    let consoleJs = new ConsoleJS();
+
+    function handleGetContext() {
+        log("");
+        consoleJs
+                .getContext()
+                .then(e => log(e))
+    .catch(e => log(e));
+    }
+
+    function handleKeepAlive() {
+        log("");
+        consoleJs
+                .keepAlive()
+                .then(e => log(e))
+    .catch(e => log(e));
+    }
+
+    function log(data) {
+        document.getElementById("response").innerHTML = JSON.stringify(
+                data,
+                null,
+                2
+        );
+    }
 </script>
 <script>
     function loadRequestInterface(menuitem){
