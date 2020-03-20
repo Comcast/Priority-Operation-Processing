@@ -17,9 +17,9 @@
 #popup_window {
     z-index: 200;
     position: absolute;
-    top: 50px;
-    left: 50px;
-    width: 400px;
+    top: 100px;
+    right: 50px;
+    width: 800px;
     height: 400px;
     border-radius: 30px;
     background-color: white;
