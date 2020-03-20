@@ -1,11 +1,16 @@
 var g_requestCid = regenerateCid();
 
+var g_ignoreUserPass = false;
+
 function regenerateCid(){
     g_requestCid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     return g_requestCid;
 }
 
 function validateCredentialInputs(){
+    if(g_ignoreUserPass)
+        return true;
+
     if ($("#modlgn-username").val()==="") {
         alert ("Please enter your user id");
         return false;

@@ -97,14 +97,14 @@
     </div>
 </div>
 
-<!--<button class="primary" onclick="handleGetContext()">GET CONTEXT</button> -->
+<!-- <button class="primary" onclick="handleGetContext()">GET CONTEXT</button> -->
 <script>
-    $("#html-login").load("content/login.html");
     // attempt to load token from loom
-    attemptLoomGetContext();
 </script>
 <script>
     dragElement(document.getElementById("popup_window"));
+    // this is weird but delay this execution
+    setTimeout(attemptLoomGetContext, 3000);
 </script>
 <script>
     function loadRequestInterface(menuitem){
