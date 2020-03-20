@@ -146,6 +146,7 @@ function writeSingleAgendaProgressTable(response)
         item.operationProgress.forEach(function(opProgress, operationProgressIndex){
             var errorMessage = "";
             var popupButton = "";
+            var resultPopupButton = "";
             var stateMessage = opProgress.processingStateMessage;
             if(stateMessage == null)
                 stateMessage = "";
@@ -161,11 +162,11 @@ function writeSingleAgendaProgressTable(response)
 
             }
             else if(defined(opProgress.resultPayload) && opProgress.resultPayload != null) {
-                popupButton = "<a value=\"Show Result\" name=\"show_result_" + opProgress.operation + "\"" +
+                resultPopupButton = "<a value=\"Show Result\" name=\"show_result_" + opProgress.operation + "\"" +
                         "onclick=\"showOpProgressResult(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" >Display"
                         + " Result</a>"
             }
-            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + stateMessage + "</td>";
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + " " + resultPopupButton + "</td><td>" + stateMessage + "</td>";
             tableText +=  "<td>" + popupButton + errorMessage +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";

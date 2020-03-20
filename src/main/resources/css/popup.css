@@ -30,10 +30,14 @@
 #popup_windowheader {
     position: relative;
     top: 10px;
-    left: 3px;
-    right: 3px;
+    left: 1%;
+    width: 98%;
+    height: 25px;
     border-radius: 30px;
     background-color: #f28ef2;
+    text-align: center;
+    line-height: 25px;
+    font-size: large;
 }
 
 #popup_content_container {
