@@ -1,13 +1,13 @@
-//"use strict";
-//Object.defineProperty(exports, "__esModule", { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var makeCrossCompatible = function (exported, nameSpace) {
     //Support both browser and node with one build
-    //if (typeof module !== "undefined" && module.exports) {
-  //      module.exports = exported;
-   // }
-   // else if (window) {
+    if (typeof module !== "undefined" && module.exports) {
+       module.exports = exported;
+    }
+    else if (window) {
         window[nameSpace] = exported;
-   // }
+    }
 };
 var ConsoleJS = /** @class */ (function () {
     function ConsoleJS() {
