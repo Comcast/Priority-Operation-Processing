@@ -1,137 +1,142 @@
-<html>
+
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
 <head>
-    <link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <title>Fission</title>
     <link rel="stylesheet" href="css/tab.css">
+    <link rel="stylesheet" href="css/rotate.css">
+    <link rel="stylesheet" href="css/liquidFillGuage.css">
+    <link rel="stylesheet" href="css/popup.css">
     <link rel="stylesheet" href="css/external/jquery.json-viewer.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link href="css/template.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/opensans.css">
+
     <script type="text/javascript" src="js/external/jquery.min-3.3.1.js"></script>
     <script type="text/javascript" src="js/external/jquery.json-viewer.js"></script>
+
+    <!-- general scripts -->
     <script type="text/javascript" src="js/server-info.js"></script>
-    <script type="text/javascript" src="js/request.js"></script>
+    <script type="text/javascript" src="js/fission-request.js"></script>
     <script type="text/javascript" src="js/authorization.js"></script>
     <script type="text/javascript" src="js/tab.js"></script>
+    <script type="text/javascript" src="js/div-drag.js"></script>
+    <script type="text/javascript" src="js/ui.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/popup.js"></script>
+
+    <!-- add content page scripts -->
+    <script type="text/javascript" src="js/content/data-management.js"></script>
+    <script type="text/javascript" src="js/content/progress.js"></script>
+    <script type="text/javascript" src="js/content/login.js"></script>
+    <script type="text/javascript" src="js/content/submission.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js" language="JavaScript"></script>
+    <script src="js/liquidFillGauge.js" language="JavaScript"></script>
+    <!-- mpx Loom Console -->
+    <script type="text/javascript" src="js/loomConsole/console.js"></script>
 </head>
 <body>
-<!--<form id="loginForm">-->
-<!-- NOTE: Everything was in a form, didn't appear to be necessary and messes up things like the tabs anyway -->
-<!--</form>-->
-
-<!-- General Settings -->
-
-<table width="100%">
-    <tr>
-        <td>
-            <div class="container">
-                <label for="target_server"><b>Stack</b></label>
-                <select name="target_server" id="target_server">
-                    <script>
-                        serverInfo.forEach(addServerSelectOption);
-
-                        function addServerSelectOption(item, index) {
-                            document.write("<option value=\"" + index + "\">" + item.name + "</option>")
-                        }
-                    </script>
-                </select>
-                Status: <img src="images/green_status.png" height="20">
-
-                <hr>
-
-                <label for="mpx_username"><b>Username *</b></label>
-                <input id="mpx_username" placeholder="Enter Username" name="mpx_username" onchange="resetTokenInfo()"
-                       required>
-
-                <label for="mpx_password"><b>Password *</b></label>
-                <input id="mpx_password" type="password" placeholder="Enter Password" name="mpx_password"
-                       onchange="resetTokenInfo()" required>
-
-                <!-- Hiding for now (jsut confuses people, but one day might be useful) -->
-                <label hidden for="mpx_account"><b>Account ID</b></label>
-                <input hidden id="mpx_account" placeholder="Account ID" name="mpx_account" required>
-
-                <hr>
-                <label for="target_endpoint"><b>Endpoint</b></label>
-                <select name="target_endpoint" id="target_endpoint">
-                    <script>
-                        endpoints.forEach(addEndpointSelectOption);
-
-                        function addEndpointSelectOption(item, index) {
-                            document.write("<option value=\"" + index + "\">" + item.name + "</option>")
-                        }
-                    </script>
-                </select>
+<!-- Body -->
+<div class="body" id="top">
+    <!-- Header -->
+    <div class="row-fluid">
+        <div id="topstuff" class="span2">
+            <div class="header"><a href="/"><img src="images/fission_logo.png" alt="fission"/></a></div>
+            <div class="well _menu">
+                <h3 class="topic-header">MENU</h3>
+                <ul class="nav">
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('welcome');">Welcome</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('progress');">Progress</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('submission');">Submission</a></li>
+                    <li class="nav-header"><a onClick=" +loadRequestInterface('data');">Data Management</a></li>
+                </ul>
             </div>
-        </td>
-        <td align="right"><img id="fission_logo" src="images/fission_logo.png" height="120"></td>
-    </tr>
-</table>
-
-<div class="tab">
-    <button class="tablinks" onclick="openTab(event, 'GET')" id="defaultOpen">GET</button>
-    <button class="tablinks" onclick="openTab(event, 'POST')">POST</button>
-    <button class="tablinks" onclick="openTab(event, 'PUT')">PUT</button>
-    <button class="tablinks" onclick="openTab(event, 'DELETE')">DELETE</button>
-</div>
-
-<div id="GET" class="tabcontent">
-    <select name="get_query_type" id="get_query_type">
-        <option value="byId">byId</option>
-        <option value="bycid">byCid</option>
-        <option value="bylinkId">byLinkId</option>
-        <option value="byresourcePoolId">byResourcePoolId</option>
-        <option value="other">other</option>
-    </select>
-    <input id="get_query_value" name="get_query_value" size="120" required>
-    <label for="get_limit_value">Limit</label>
-    <input id="get_limit_value" name="get_limit_value" size="5" value="20">
-    <label for="get_fields_value">Fields</label>
-    <input id="get_fields_value" name="get_fields_value" size="40">
-    <input type="checkbox" id="showProgressTable" checked>Show Progress Table (Agenda Progress only)
-</div>
-
-<div id="POST" class="tabcontent">
-    <div>
-        <textarea id="data_to_post" class="submissiondata" name="data_to_post"></textarea>
-    </div>
-</div>
-
-<div id="PUT" class="tabcontent">
-    <div>
-        <textarea id="data_to_put" class="submissiondata" name="data_to_put"></textarea>
-    </div>
-</div>
-<div id="DELETE" class="tabcontent">
-    Delete Id: <input id="delete_query_value" name="delete_query_value" size="120" required>
-</div>
-<div>
-    <table>
-        <tr>
-            <td>
-                <input type="submit" value="Submit Request" name="request_button" onclick="processRequest(event)" />
-            </td>
-            <td>
-                <div style="margin-left: 20px;height: 40px;width: 40px">
-                    <img id="fission_spinner" src="images/fission.png" height="40px" class="rotate"
-                         style="display: none;">
+            <div id="html-login" class="well ">
+                <div class="userdata">
+                    <script>
+                        $(function(){
+                            $("#html-login").load("content/login.html");
+                        });
+                    </script>
                 </div>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <!-- End Right Sidebar -->
+        <div id="content" class="span9">
+            <!-- Begin Content -->
+            <div id="theContent"></div>
+                <!-- End Content -->
+            </div>
+        </div>
+    <!-- temp for easy testing of popup -->
+   <!--     <input type="submit" value="Open Popup" name="popup_open_button" onclick="showPopupWithHtml(event, 'This is a test string!', true);" class="btn btn-primary submit-button"/>
+  -->  </div>
 </div>
 
-<div>
-    <label for="response">Response</label>
-    <div id="progressTable"></div>
-    <textarea id="response" name="response" class="response" rows="20"></textarea>
+<!-- Popup  (2 divs, one for background, one for foreground) -->
+<div id="popup_background">
 </div>
-
-<div class="container">
-    <pre id="json-renderer"></pre>
+<div id="popup_window" >
+    &lt;!&ndash; note: the id popup_windowheader is a special name for having a draggable part &ndash;&gt;
+    <div id="popup_windowheader">Title Bar (to drag/move)</div>
+    <div id="popup_content_container">
+        <div id="popup_content">
+            Hi there!
+        </div>
+        &lt;!&ndash; TODO: align to the bottom middle probably so it's consistent location wise &ndash;&gt;
+        <div id="popup_close_button_container">
+            <input type="submit" value="Close" name="popup_close_button" onclick="showPopup(event, false);" class="btn btn-primary submit-button"/>
+        </div>
+    </div>
 </div>
-
-</body>
-<!-- Load up the default tab (TODO: put into onload method?)-->
 <script>
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    dragElement(document.getElementById("popup_window"));
 </script>
-</html>
+<script>
+    var consoleJS = new ConsoleJS();
+    var out = consoleJS.getContext();
+    console.log(out);
+</script>
+<script>
+    function loadRequestInterface(menuitem){
+        $(function() {
+            if (menuitem == "data")
+            {
+                $("#theContent").load("content/data-management.html");
+            }
+            else if(menuitem == "progress")
+            {
+                $("#theContent").load("content/progress.html");
+            }
+            else if(menuitem == "welcome")
+            {
+                $("#theContent").load("overview/Fission__Specifications.html");
+            }
+            else if(menuitem == "submission")
+            {
+                $("#theContent").load("content/submission.html");
+            }
+        });
+    }
+</script>
 
+<!-- Footer -->
+<footer class="footer" role="contentinfo">
+    <div class="container">
+        <hr />
+        <p class="pull-left">
+            Inspired by Joomla Protostar
+        </p>
+        <p class="pull-right">
+            <a href="#top" id="back-top">
+                Back to Top				</a>
+        </p>
+
+    </div>
+</footer>
+</body>
+</html>
