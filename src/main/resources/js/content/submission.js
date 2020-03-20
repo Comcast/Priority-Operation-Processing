@@ -5,10 +5,7 @@ function getAgendaTemplates(event){
     var endpoint = endpointsByName["Agenda Template"];
     var server = getServer();
 
-    showPopupWithHtml(
-            event,
-            "<img id=\"fission_spinner_temp\" src=\"images/fission.png\" width=\"40px\" height=\"40px\" class=\"rotate\"><br>Loading Agenda Templates...",
-            false);
+    toggleLoading(true);
 
     makeAuthorizedRequest(event,
             server,
@@ -18,19 +15,30 @@ function getAgendaTemplates(event){
                         getQueryURL(server, endpoint, "", "", "", ""),
                         null,
                         function(response){
-                            //console.log(JSON.stringify(response, null, 2));
-                            //$("#response").val(JSON.stringify(response, null, 2));
+                            toggleLoading(false);
                             addAgendaTemplates(response['all']);
-                            showPopup(new Event("success"), false);
                         },
                         function(error){
-                            showPopup(new Event("error"), false);
+                            toggleLoading(false);
+                            showPopupWithHtml(
+                                    new Event("error_get_templates"),
+                                    "Error loading AgendaTemplates",
+                                    JSON.stringify(error, null, 2));
                         });
             },
             function(error){
-                showPopup(new Event("error"), false);
+                toggleLoading(false);
+                showPopupWithHtml(
+                        new Event("error_get_templates"),
+                        "Error loading AgendaTemplates",
+                        JSON.stringify(error, null, 2));
             }
     );
+}
+
+function toggleLoading(loading){
+    $("#loading_templates").toggle(loading);
+    $("#submission_content").toggle(!loading);
 }
 
 function addAgendaTemplates(agendaTemplates){
@@ -59,6 +67,10 @@ function processIgniteCall(event){
         payload: payloadJson,
         agendaTemplateId: agendaTemplateId
     };
+
+    var spinner = $("#fission_spinner_ignite");
+    toggleSpinnerObject(spinner, true);
+
     makeAuthorizedRequest(event,
         server,
         function(response){
@@ -67,14 +79,17 @@ function processIgniteCall(event){
                 getEndpointURL(server, serviceEndpoint),
                 JSON.stringify(igniteRequest),
                 function(response){
+                    toggleSpinnerObject(spinner, false);
                     $("#response").val(JSON.stringify(response, null, 2));
                 },
                 function(error){
+                    toggleSpinnerObject(spinner, false);
                     $("#response").val(JSON.stringify(error, null, 2));
                 }
             );
         },
         function(error){
+            toggleSpinnerObject(spinner, false);
             $("#response").val(JSON.stringify(error, null, 2));
         }
     );
@@ -84,6 +99,9 @@ function processReigniteCall(event){
     var server = getServer();
     var serviceEndpoint = serviceEndpointsByName["Reignite"];
     var params = [];
+
+    var spinner = $("#fission_spinner_reignite");
+    toggleSpinnerObject(spinner, true);
 
     pushParamValueIfSpecified(params, $("#reignite_reset_operations"), "operationsToReset");
     pushParamIfChecked(params, $("#reignite_reset_all"), "resetAll");
@@ -102,14 +120,17 @@ function processReigniteCall(event){
                     getEndpointURL(server, serviceEndpoint),
                     JSON.stringify(reigniteRequest),
                     function(response){
+                        toggleSpinnerObject(spinner, false);
                         $("#response").val(JSON.stringify(response, null, 2));
                     },
                     function(error){
+                        toggleSpinnerObject(spinner, false);
                         $("#response").val(JSON.stringify(error, null, 2));
                     }
             );
         },
         function(error){
+            toggleSpinnerObject(spinner, false);
             $("#response").val(JSON.stringify(error, null, 2));
         }
     );

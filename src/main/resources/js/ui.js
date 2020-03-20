@@ -1,5 +1,8 @@
 function toggleSpinner(enable){
-    var spinner = $("#fission_spinner");
+    toggleSpinnerObject($("#fission_spinner"), enable);
+}
+
+function toggleSpinnerObject(spinner, enable){
     if(!defined(spinner)){
         console.log("fission_spinner not found on page. Unable to toggle.");
         return;

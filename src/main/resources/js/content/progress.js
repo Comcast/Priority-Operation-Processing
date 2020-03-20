@@ -146,22 +146,27 @@ function writeSingleAgendaProgressTable(response)
         item.operationProgress.forEach(function(opProgress, operationProgressIndex){
             var errorMessage = "";
             var popupButton = "";
+            var resultPopupButton = "";
             var stateMessage = opProgress.processingStateMessage;
             if(stateMessage == null)
                 stateMessage = "";
-            if(opProgress.diagnosticEvents != null)
-            {
+            if(defined(opProgress.diagnosticEvents) && opProgress.diagnosticEvents != null) {
                 /*errorMessage = "<div class=\"expandable\"><input id=\"toggle\" type=\"checkbox\" hidden>"
                         +"<label for=\"toggle\" class=\"expand-label\">SHOW ERROR</label>"
                         +"<div id=\"expand\">"
                         + "<textarea id=\"response\" name=\"response\" style=\"width:100%;height:100%;\">" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>"
                         + "</div></div>";*/
-                popupButton = "<a href=\"#\" value=\"Show Error\" name=\"show_error_" + opProgress.operation + "\"" +
+                popupButton = "<a value=\"Show Error\" name=\"show_error_" + opProgress.operation + "\"" +
                         "onclick=\"showOpProgressError(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" >Display"
                         + " Error</a>"
 
             }
-            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + stateMessage + "</td>";
+            else if(defined(opProgress.resultPayload) && opProgress.resultPayload != null) {
+                resultPopupButton = "<a value=\"Show Result\" name=\"show_result_" + opProgress.operation + "\"" +
+                        "onclick=\"showOpProgressResult(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" >Display"
+                        + " Result</a>"
+            }
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + " " + resultPopupButton + "</td><td>" + stateMessage + "</td>";
             tableText +=  "<td>" + popupButton + errorMessage +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
@@ -170,15 +175,30 @@ function writeSingleAgendaProgressTable(response)
     document.getElementById("progressTable").innerHTML = tableText;
 }
 
+function showOpProgressResult(event, agendaProgressIndex, operationProgressIndex){
+    var opProgress = currentAgendaProgressObjects[agendaProgressIndex].operationProgress[operationProgressIndex];
+    showOpProgressPopup(
+            opProgress.operation + " result payload",
+            JSON.stringify(JSON.parse(opProgress.resultPayload), null, 2)
+    );
+}
+
 function showOpProgressError(event, agendaProgressIndex, operationProgressIndex){
     var opProgress = currentAgendaProgressObjects[agendaProgressIndex].operationProgress[operationProgressIndex];
-    var textAreaHTML = "<textarea id='response' name='response' style='width:80%;height:100%;'>" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>";
-    showPopupWithHtml(event, textAreaHTML, true);
+    showOpProgressPopup(
+            opProgress.operation + " error payload",
+            opProgress.diagnosticEvents[0].stackTrace
+    );
+}
+
+function showOpProgressPopup(titleHTML, textareaContent){
+    var textAreaHTML = "<textarea id='response' name='response' rows='15' style='width:95%;height:100%;'>"  + textareaContent +"</textarea>";
+    showPopupWithHtml(event, titleHTML, textAreaHTML, true);
 }
 
 function setupAgendaNetwork(agenda, agendaProgress) {
-    var operationNodes = new Array();
-    var operationEdges = new Array();
+    var operationNodes = [];
+    var operationEdges = [];
 
     var progressMap = {};
     agendaProgress.operationProgress.forEach(function (opProgress, index) {
