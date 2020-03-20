@@ -141,12 +141,11 @@ function writeSingleAgendaProgressTable(response)
     response["all"].forEach(function (item, agendaProgressIndex) {
         currentAgendaProgressObjects.push(item);
         tableText += "<table class=\"table-bordered\">";
-        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th><th>Error</th></tr></thead>";
+        tableText += "<thead><tr><th>Operation</th><th>ProcessingState</th><th>ProcessingStateMessage</th><th>Message</th></tr></thead>";
         tableText += "<tbody>";
         item.operationProgress.forEach(function(opProgress, operationProgressIndex){
             var errorMessage = "";
             var popupButton = "";
-            var resultPopupButton = "";
             var stateMessage = opProgress.processingStateMessage;
             if(stateMessage == null)
                 stateMessage = "";
@@ -162,12 +161,12 @@ function writeSingleAgendaProgressTable(response)
 
             }
             else if(defined(opProgress.resultPayload) && opProgress.resultPayload != null) {
-                resultPopupButton = "<a value=\"Show Result\" name=\"show_result_" + opProgress.operation + "\"" +
+                popupButton = "<a value=\"Show Result\" name=\"show_result_" + opProgress.operation + "\"" +
                         "onclick=\"showOpProgressResult(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" >Display"
                         + " Result</a>"
             }
-            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + " " + resultPopupButton + "</td><td>" + stateMessage + "</td>";
-            tableText +=  "<td>" + popupButton + errorMessage +"</td></tr>";
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState  +"</td><td>" + stateMessage + "</td>";
+            tableText +=  "<td>" + popupButton +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";
         tableText += "</tbody></table>";
