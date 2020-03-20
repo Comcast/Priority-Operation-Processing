@@ -24,21 +24,36 @@
         <button class="tablinks" onclick="openTab(event, 'DELETE')">DELETE</button>
     </div>
 </div>
-<div id="GET" class="tabcontent">
-    <select name="get_query_type" id="get_query_type" class="dropdown-query">
-        <option value="byId">byId</option>
-        <option value="bycid">byCid</option>
-        <option value="bylinkId">byLinkId</option>
-        <option value="byresourcePoolId">byResourcePoolId</option>
-        <option value="other">other</option>
-    </select>
-    <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
-    <br/>
-    <label for="get_limit_value" class="sub-topic-header">Limit:</label>
-    <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
-    <br/>
-    <label for="get_fields_value" class="sub-topic-header">Fields: </label>
-    <input id="get_fields_value" name="get_fields_value" class="input-small">
+<div id="GET">
+    <table border="1"><tr><td>
+        <select name="get_query_type" id="get_query_type" class="dropdown-query">
+            <option value="byId">byId</option>
+            <option value="bycid">byCid</option>
+            <option value="bycustomerId">byCustomerId</option>
+            <option value="bylinkId">byLinkId</option>
+            <option value="byresourcePoolId">byResourcePoolId</option>
+            <option value="bytitle">byTitle</option>
+            <option value="other">other</option>
+        </select>
+    </td><td>
+        <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
+    </td></tr>
+        <tr><td>
+            <label for="get_limit_value" class="sub-topic-header">Limit:</label>
+        </td>
+            <td>
+                <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="get_fields_value" class="sub-topic-header">Fields: </label>
+            </td>
+            <td>
+                <input id="get_fields_value" name="get_fields_value" class="input-small">
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div id="POST" class="tabcontent">

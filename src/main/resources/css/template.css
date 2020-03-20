@@ -787,6 +787,7 @@ textarea {
 
 .dropdown-query {
     width: 150px;
+    position: relative;
 }
 label {
     display: block;
@@ -880,10 +881,10 @@ input[type="color"]:focus,
 }
 input[type="radio"],
 input[type="checkbox"] {
-    margin: 4px 0 0;
+    *margin: 4px 0 0;
     *margin-top: 0;
-    margin-top: 1px \9;
-    line-height: normal;
+    *margin-top: 1px \9;
+    *line-height: normal;
 }
 input[type="file"],
 input[type="image"],
@@ -3430,7 +3431,6 @@ input[type="submit"].btn.btn-mini {
 }
 #expand {
     height: 0px;
-    overflow: hidden;
     transition: height 0.5s;
     color: #FFF;
 }

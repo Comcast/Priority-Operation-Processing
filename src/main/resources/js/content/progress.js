@@ -61,15 +61,21 @@ function buildAgendaStatusTable(response) {
         return;
     }
     tableText += "<table class=\"table-bordered\">";
-    tableText += "<thead><tr><th>Agenda</th><th>State</th><th>Message</th><th>Attempts Completed</th><th>CID</th></tr></thead>";
+    tableText += "<thead><tr><th>Title</th><th>Agenda</th><th>State</th><th>Message</th><th>Attempts Completed</th><th>CID</th></tr></thead>";
     tableText += "<tbody>";
     response["all"].forEach(function (agendaProgress, index) {
+        var stateMessage = agendaProgress.processingStateMessage;
+        if(agendaProgress == null || agendaProgress.processingStateMessage == null)
+            stateMessage = "";
+        var title = agendaProgress.title;
+        if(title == null)
+            title = "";
         tableText += "<tr>"
-                //+ addTd(agendaProgress.agendaId)
+                + addTd(title)
                 + addTd("<a onClick=\"requestAgendaNodeViewUpdate(event, \'" + agendaProgress.agendaId + "\', \'" + agendaProgress.id + "\');\" style=\"cursor: pointer; cursor:"
                         + " hand;\">" + agendaProgress.agendaId + "</a>")
                 + addTd(agendaProgress.processingState)
-                + addTd(agendaProgress.processingStateMessage)
+                + addTd(stateMessage)
                 + addTd(defined(agendaProgress.attemptsCompleted) ? agendaProgress.attemptsCompleted : "0")
                 + addTd(defined(agendaProgress.cid) ? agendaProgress.cid : "unset")
                 + "</tr>";
@@ -140,18 +146,22 @@ function writeSingleAgendaProgressTable(response)
         item.operationProgress.forEach(function(opProgress, operationProgressIndex){
             var errorMessage = "";
             var popupButton = "";
+            var stateMessage = opProgress.processingStateMessage;
+            if(stateMessage == null)
+                stateMessage = "";
             if(opProgress.diagnosticEvents != null)
             {
-                errorMessage = "<div class=\"expandable\"><input id=\"toggle\" type=\"checkbox\" hidden>"
+                /*errorMessage = "<div class=\"expandable\"><input id=\"toggle\" type=\"checkbox\" hidden>"
                         +"<label for=\"toggle\" class=\"expand-label\">SHOW ERROR</label>"
                         +"<div id=\"expand\">"
                         + "<textarea id=\"response\" name=\"response\" style=\"width:100%;height:100%;\">" +opProgress.diagnosticEvents[0].stackTrace +"</textarea>"
-                        + "</div></div>";
-                popupButton = "<input type=\"submit\" value=\"Show Error\" name=\"show_error_" + opProgress.operation + "\"" +
-                        "onclick=\"showOpProgressError(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" class=\"btn btn-primary submit-button\"/>"
+                        + "</div></div>";*/
+                popupButton = "<a href=\"#\" value=\"Show Error\" name=\"show_error_" + opProgress.operation + "\"" +
+                        "onclick=\"showOpProgressError(event," + agendaProgressIndex + "," + operationProgressIndex + ", true);\" >Display"
+                        + " Error</a>"
 
             }
-            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + opProgress.processingStateMessage + "</td>";
+            tableText += "<tr><td>" + opProgress.operation + "</td><td>" + opProgress.processingState + "</td><td>" + stateMessage + "</td>";
             tableText +=  "<td>" + popupButton + errorMessage +"</td></tr>";
         });
         tableText += "<tr><td>Overall Status</td><td>" + item.processingState + "</td><td>" + item.processingStateMessage + "(" + item.percentComplete + ")</td></tr>";

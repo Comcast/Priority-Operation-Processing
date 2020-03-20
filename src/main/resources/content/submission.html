@@ -34,22 +34,22 @@ private String agendaTemplateId;
      -->
     <label for="reignite_agenda_id"  class="sub-topic-header">Agenda Id</label>
     <input id="reignite_agenda_id" name="reignite_agenda_id" class="input-xxlarge" required/>
-
-    <br>Options: (default is to reset all operations)<br>
-
-    <label for="reignite_reset_operations"  class="sub-topic-header">Operations to reset (comma separated)</label>
-    <input id="reignite_reset_operations" name="reignite_reset_operations" class="input-xxlarge" required/>
-    <br>
+    <br/>
+    <label for="reignite_reset_operations"  class="sub-topic-header">Reset Operations</label>
+    <input id="reignite_reset_operations" name="reignite_reset_operations" class="input-large" placeholder="ie: analysis,encode"/>
+    <br/>
     <label for="reignite_reset_all"  class="sub-topic-header">Reset All</label>
-    <input type="checkbox" id="reignite_reset_all" name="reignite_reset_all" class="input-xxlarge" required/>
+    <input type="checkbox" id="reignite_reset_all" name="reignite_reset_all" class="input-xxlarge"/>
+    <br/>
+    <label for="reignite_continue"  class="sub-topic-header">Run</label>
+    <input type="checkbox" id="reignite_continue" name="reignite_continue" class="input-xxlarge" required checked/><!--
     <br>
-    <label for="reignite_continue"  class="sub-topic-header">Continue (just resubmit and let execution continue)</label>
-    <input type="checkbox" id="reignite_continue" name="reignite_continue" class="input-xxlarge" required/>
-    <br>
-    <label for="reignite_skip_execution"  class="sub-topic-header">Skip Execution (will only reset, not run)</label>
-    <input type="checkbox" id="reignite_skip_execution" name="reignite_skip_execution" class="input-xxlarge" required/>
+    <label for="reignite_skip_execution"  class="sub-topic-header">Reset, No Execution</label>
+    <input type="checkbox" id="reignite_skip_execution" name="reignite_skip_execution" class="input-xxlarge" required/>-->
     <div>
+        <br/>
         <input type="submit" value="Submit Request" name="request_button" onclick="processReigniteCall(event)" class="btn btn-primary submit-button"/>
+        <br/>* <i>Default behavior resets all operations</i>
     </div>
 </div>
 

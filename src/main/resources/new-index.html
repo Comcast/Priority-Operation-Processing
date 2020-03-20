@@ -36,6 +36,8 @@
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js" language="JavaScript"></script>
     <script src="js/liquidFillGauge.js" language="JavaScript"></script>
+    <!-- mpx Loom Console -->
+    <script type="text/javascript" src="js/loomConsole/console.js"></script>
 </head>
 <body>
 <!-- Body -->
@@ -71,21 +73,21 @@
             </div>
         </div>
     <!-- temp for easy testing of popup -->
-        <input type="submit" value="Open Popup" name="popup_open_button" onclick="showPopupWithHtml(event, 'This is a test string!', true);" class="btn btn-primary submit-button"/>
-    </div>
+   <!--     <input type="submit" value="Open Popup" name="popup_open_button" onclick="showPopupWithHtml(event, 'This is a test string!', true);" class="btn btn-primary submit-button"/>
+  -->  </div>
 </div>
 
 <!-- Popup  (2 divs, one for background, one for foreground) -->
 <div id="popup_background">
 </div>
 <div id="popup_window" >
-    <!-- note: the id popup_windowheader is a special name for having a draggable part -->
+    &lt;!&ndash; note: the id popup_windowheader is a special name for having a draggable part &ndash;&gt;
     <div id="popup_windowheader">Title Bar (to drag/move)</div>
     <div id="popup_content_container">
         <div id="popup_content">
             Hi there!
         </div>
-        <!-- TODO: align to the bottom middle probably so it's consistent location wise -->
+        &lt;!&ndash; TODO: align to the bottom middle probably so it's consistent location wise &ndash;&gt;
         <div id="popup_close_button_container">
             <input type="submit" value="Close" name="popup_close_button" onclick="showPopup(event, false);" class="btn btn-primary submit-button"/>
         </div>
@@ -94,7 +96,11 @@
 <script>
     dragElement(document.getElementById("popup_window"));
 </script>
-
+<script>
+    var consoleJS = new ConsoleJS();
+    var out = consoleJS.getContext();
+    console.log(out);
+</script>
 <script>
     function loadRequestInterface(menuitem){
         $(function() {
