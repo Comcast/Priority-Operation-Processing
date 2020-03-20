@@ -106,7 +106,7 @@ function requestAgendaNodeViewUpdate(event, agendaId, agendaProgressId) {
                                 var agendaProgress = response["all"][0];
                                 setupAgendaNetwork(agenda, agendaProgress);
                                 writeSingleAgendaProgressTable(response);
-                                switchToSingleAgendaView(agendaId);
+                                switchToSingleAgendaView(agendaId, agendaProgressId);
                                 toggleSpinner(false);
                             }
                     );
@@ -121,8 +121,8 @@ function requestAgendaNodeViewUpdate(event, agendaId, agendaProgressId) {
     );
 }
 
-function switchToSingleAgendaView(agendaId){
-    $("#singleAgendaTitle").html("<p class=\"topic-header\">Agenda</p><p>" + agendaId +"</p>");
+function switchToSingleAgendaView(agendaId, agendaProgressId){
+    $("#singleAgendaTitle").html("<p class=\"topic-header\">Agenda</p><p>" + agendaId +" (ProgressId: " + agendaProgressId + " )</p>");
     updateViewState(true);
 }
 
