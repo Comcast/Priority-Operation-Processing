@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+//Object.defineProperty(exports, "__esModule", { value: true });
 var makeCrossCompatible = function (exported, nameSpace) {
     //Support both browser and node with one build
     if (typeof module !== "undefined" && module.exports) {
@@ -64,6 +64,6 @@ var ConsoleJS = /** @class */ (function () {
     ConsoleJS.isEmbedded = function () { return top !== self || window.opener; };
     return ConsoleJS;
 }());
-exports.default = ConsoleJS;
+//exports.default = ConsoleJS;
 makeCrossCompatible(ConsoleJS, "ConsoleJS");
 //# sourceMappingURL=console.js.map

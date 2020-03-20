@@ -17,6 +17,9 @@
     <script type="text/javascript" src="js/external/jquery.min-3.3.1.js"></script>
     <script type="text/javascript" src="js/external/jquery.json-viewer.js"></script>
 
+    <!-- mpx Loom Console -->
+    <script type="text/javascript" src="js/loomConsole/console.js"></script>
+
     <!-- general scripts -->
     <script type="text/javascript" src="js/server-info.js"></script>
     <script type="text/javascript" src="js/fission-request.js"></script>
@@ -26,6 +29,7 @@
     <script type="text/javascript" src="js/ui.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/popup.js"></script>
+    <script type="text/javascript" src="js/loom-access.js"></script>
 
     <!-- add content page scripts -->
     <script type="text/javascript" src="js/content/data-management.js"></script>
@@ -36,8 +40,6 @@
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js" language="JavaScript"></script>
     <script src="js/liquidFillGauge.js" language="JavaScript"></script>
-    <!-- mpx Loom Console -->
-    <script type="text/javascript" src="js/loomConsole/console.js"></script>
 </head>
 <body>
 <!-- Body -->
@@ -45,7 +47,7 @@
     <!-- Header -->
     <div class="row-fluid">
         <div id="topstuff" class="span2">
-            <div class="header"><a href="/"><img src="images/fission_logo.png" alt="fission"/></a></div>
+            <div class="header"><a href="/"><img id="fission_main_logo" src="images/fission_logo.png" alt="fission"/></a></div>
             <div class="well _menu">
                 <h3 class="topic-header">MENU</h3>
                 <ul class="nav">
@@ -95,36 +97,14 @@
     </div>
 </div>
 
-<button class="primary" onclick="handleGetContext()">GET CONTEXT</button>
+<!--<button class="primary" onclick="handleGetContext()">GET CONTEXT</button> -->
+<script>
+    $("#html-login").load("content/login.html");
+    // attempt to load token from loom
+    attemptLoomGetContext();
+</script>
 <script>
     dragElement(document.getElementById("popup_window"));
-</script>
-<script type="text/javascript">
-    let consoleJs = new ConsoleJS();
-
-    function handleGetContext() {
-        log("");
-        consoleJs
-                .getContext()
-                .then(e => log(e))
-    .catch(e => log(e));
-    }
-
-    function handleKeepAlive() {
-        log("");
-        consoleJs
-                .keepAlive()
-                .then(e => log(e))
-    .catch(e => log(e));
-    }
-
-    function log(data) {
-        document.getElementById("response").innerHTML = JSON.stringify(
-                data,
-                null,
-                2
-        );
-    }
 </script>
 <script>
     function loadRequestInterface(menuitem){

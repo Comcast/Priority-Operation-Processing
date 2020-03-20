@@ -1,4 +1,5 @@
 var g_requestCid = regenerateCid();
+var g_ignoreUserPass = false;
 
 function getQueryURL(server, endpoint, querySelectedType, queryValue, limitValue, fieldsValue)
 {
@@ -261,6 +262,9 @@ function verifyJson(json)
 }
 
 function validateCredentialInputs(){
+    if(g_ignoreUserPass)
+        return true;
+
     if ($("#mpx_username").val()=="") {
         alert ("Please enter your user id");
         return false;
