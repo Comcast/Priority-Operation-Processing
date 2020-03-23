@@ -1,6 +1,7 @@
 package com.theplatform.dfh.cp.handler.executor.impl.progress.agenda;
 
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.BaseReporterThread;
@@ -113,6 +114,7 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
                         operationProgressToReport.add(operationProgress);
                         break;
                     case COMPLETE:
+                        processCompleteOperationProgress(operationProgress);
                         completedProgressOperationCount++;
                         operationProgressToReport.removeIf(op -> StringUtils.equals(operationProgress.getOperation(), op.getOperation()));
                         operationProgressToReport.add(operationProgress);
@@ -126,6 +128,15 @@ public class AgendaProgressThread extends BaseReporterThread<AgendaProgressThrea
         overallProgressPercentComplete = calculatePercentComplete(completedProgressOperationCount, totalProgressOperationCount, incompleteOperationPercentTotal);
 
         operationProgressRetrieversToRemove.forEach(opr -> operationProgressProviders.remove(opr));
+    }
+
+    protected void processCompleteOperationProgress(OperationProgress operationProgress)
+    {
+        // complete + succeeded is always pushed to 100%
+        if(StringUtils.equalsIgnoreCase(CompleteStateMessage.SUCCEEDED.toString(), operationProgress.getProcessingStateMessage()))
+        {
+            operationProgress.setPercentComplete(100d);
+        }
     }
 
     // if this becomes any more complex break it into its own class
