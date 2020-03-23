@@ -16,6 +16,7 @@ public class EndpointObjectGenerator
         operationProgress.setProcessingState(ProcessingState.WAITING);
         operationProgress.setOperation(operation.getName());
         operationProgress.setCid(agenda.getCid());
+        operationProgress.setPercentComplete(0d);
         operationProgress.setId(OperationProgress.generateId(agenda.getProgressId(), operation.getName()));
 
         if (operation.getParams() != null)

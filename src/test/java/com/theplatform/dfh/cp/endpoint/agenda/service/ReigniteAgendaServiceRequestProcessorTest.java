@@ -9,9 +9,10 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.api.progress.WaitingStateMessage;
 import com.theplatform.dfh.cp.endpoint.TestUtil;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.reset.ProgressResetProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.reset.ProgressResetResult;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
@@ -28,6 +29,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -51,6 +53,8 @@ public class ReigniteAgendaServiceRequestProcessorTest
     private ObjectPersister<ReadyAgenda> mockReadyAgendaPersister;
     private ObjectPersister<Insight> mockInsightPersister;
     private ObjectPersister<Customer> mockCustomerPersister;
+    private ProgressResetProcessor mockProgressResetProcessor;
+    private ProgressResetResult progressResetResult;
 
     @BeforeMethod
     public void setup()
@@ -63,6 +67,10 @@ public class ReigniteAgendaServiceRequestProcessorTest
 
         mockRequestProcessorFactory = mock(RequestProcessorFactory.class);
 
+        progressResetResult = new ProgressResetResult();
+        mockProgressResetProcessor = mock(ProgressResetProcessor.class);
+        doReturn(progressResetResult).when(mockProgressResetProcessor).resetProgress(any(), any(), any());
+
         mockAgendaRequestProcessor = mock(AgendaRequestProcessor.class);
         mockAgendaProgressRequestProcessor = mock(AgendaProgressRequestProcessor.class);
         mockReadyAgendaPersister = mock(ObjectPersister.class);
@@ -74,6 +82,7 @@ public class ReigniteAgendaServiceRequestProcessorTest
 
         requestProcessor = new ReigniteAgendaServiceRequestProcessor(mock(ObjectPersister.class), mock(ObjectPersister.class), mock(ObjectPersister.class),
             mockReadyAgendaPersister, mockInsightPersister, mockCustomerPersister);
+        requestProcessor.setProgressResetProcessor(mockProgressResetProcessor);
         requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
     }
 
@@ -83,6 +92,9 @@ public class ReigniteAgendaServiceRequestProcessorTest
         reigniteAgendaRequest.setParams(Collections.singletonList(ReigniteAgendaParameter.RESET_ALL.getParameterName()));
 
         doReturn(TestUtil.createDataObjectResponse(agenda)).when(mockAgendaRequestProcessor).handleGET(any());
+
+        progressResetResult.setOperationsToReset(new HashSet<>());
+        progressResetResult.setOperationsToDelete(new HashSet<>());
 
         AgendaProgress agendaProgress = TestUtil.createAgendaProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.name());
         agendaProgress.setOperationProgress(new OperationProgress[] {
@@ -97,17 +109,6 @@ public class ReigniteAgendaServiceRequestProcessorTest
         requestProcessor.processPOST(new DefaultServiceRequest<>(reigniteAgendaRequest));
         verify(mockAgendaProgressRequestProcessor, times(1)).handlePUT(any());
         verify(mockReadyAgendaPersister, times(1)).persist(any());
-
-        // AgendaProgress checks
-        Assert.assertEquals(agendaProgress.getProcessingState(), ProcessingState.WAITING);
-        Assert.assertEquals(agendaProgress.getProcessingStateMessage(), WaitingStateMessage.PENDING.toString());
-
-        // OperationProgress checks
-        for (OperationProgress operationProgress : agendaProgress.getOperationProgress())
-        {
-            Assert.assertEquals(operationProgress.getProcessingState(), ProcessingState.WAITING);
-            Assert.assertEquals(operationProgress.getProcessingStateMessage(), WaitingStateMessage.PENDING.toString());
-        }
     }
 
     @Test

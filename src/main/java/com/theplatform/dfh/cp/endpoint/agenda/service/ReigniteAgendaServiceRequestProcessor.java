@@ -1,18 +1,20 @@
 package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.reset.ProgressResetProcessor;
+import com.theplatform.dfh.cp.endpoint.agenda.service.reset.ProgressResetResult;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.NoOpVisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
+import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataObjectRetriever;
 import com.theplatform.dfh.cp.endpoint.util.ServiceDataRequestResult;
@@ -36,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Processor for the retry/rerun/reignite  method for running an agenda that was already run before.
@@ -87,6 +91,8 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         agendaProgressRequestProcessor.setVisibilityFilter(VisibilityMethod.GET, new NoOpVisibilityFilter<>());
         agendaProgressRequestProcessor.setVisibilityFilter(VisibilityMethod.PUT, new NoOpVisibilityFilter<>());
 
+        // TODO: Reignite may require the insight lookup to determine visibility (as this could be used by services or direct users)
+
         // Get the Agenda
         ServiceDataRequestResult<Agenda, ReigniteAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest, agendaRequestProcessor, reigniteAgendaRequest.getAgendaId(), Agenda.class);
@@ -102,9 +108,10 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         AgendaProgress agendaProgress = agendaProgressRequestResult.getDataObjectResponse().getFirst();
 
         // Reset the progress (as specified)
-        progressResetProcessor.resetProgress(agendaProgress, reigniteAgendaRequest, agendaRetryParams);
+        ProgressResetResult progressResetResult = progressResetProcessor.resetProgress(agenda, agendaProgress, agendaRetryParams);
 
-        // Update the AgendaProgress and OperationProgress
+        ///
+        // Update the AgendaProgress (and OperationProgress)
         try
         {
             // Updating the AgendaProgress internally updates the OperationProgress
@@ -121,6 +128,54 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
                 new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
         }
 
+        if(progressResetResult.getOperationsToDelete().size() > 0)
+        {
+            ///
+            // Delete any operations as necessary (its op generator was reset)
+            try
+            {
+                agendaRequestProcessor.setVisibilityFilter(VisibilityMethod.PUT, new NoOpVisibilityFilter<>());
+                DataObjectResponse<Agenda> updateAgendaResponse =
+                    agendaRequestProcessor.handlePUT(new DefaultDataObjectRequest<>(
+                        null, agenda.getId(), createAgendaWithRemovedOperations(agenda, progressResetResult.getOperationsToDelete())));
+                if(updateAgendaResponse.isError())
+                    return createReigniteAgendaResponse(serviceRequest, updateAgendaResponse.getErrorResponse(), "Failed to update Agenda.");
+
+            }
+            catch (Exception e)
+            {
+                logger.error("Failed to remove operation progress due to progress reset. Agenda will not execute.", e);
+                return createReigniteAgendaResponse(serviceRequest, ErrorResponseFactory.runtimeServiceException(
+                    new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
+            }
+
+            ///
+            // Delete any operation progress as necessary (its op generator was reset)
+            try
+            {
+                OperationProgressRequestProcessor operationProgressRequestProcessor =
+                    requestProcessorFactory.createOperationProgressRequestProcessor(operationProgressPersister);
+                // no special visibility required after the Agenda is known to be visible
+                operationProgressRequestProcessor.setVisibilityFilter(VisibilityMethod.DELETE, new NoOpVisibilityFilter<>());
+
+
+                for (String opName : progressResetResult.getOperationsToDelete())
+                {
+                    DataObjectResponse<OperationProgress> operationProgressResponse =
+                        operationProgressRequestProcessor.handleDELETE(new DefaultDataObjectRequest<>(
+                            null, OperationProgress.generateId(agendaProgress.getId(), opName), null));
+                    if(operationProgressResponse.isError())
+                        return createReigniteAgendaResponse(serviceRequest, operationProgressResponse.getErrorResponse(), "Failed to delete OperationProgress.");
+                }
+            }
+            catch (Exception e)
+            {
+                logger.error("Failed to remove operation progress due to progress reset. Agenda will not execute.", e);
+                return createReigniteAgendaResponse(serviceRequest, ErrorResponseFactory.runtimeServiceException(
+                    new RuntimeServiceException("Failed to update progress for reset.", e, 500), serviceRequest.getCID()), null);
+            }
+        }
+
         boolean skipExecution = agendaRetryParams.containsKey(ReigniteAgendaParameter.SKIP_EXECUTION)
             || (agenda.getParams() != null && agenda.getParams().containsKey(GeneralParamKey.doNotRun));
 
@@ -135,6 +190,19 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         }
 
         return createReigniteAgendaResponse(serviceRequest, null, null);
+    }
+
+    private Agenda createAgendaWithRemovedOperations(Agenda currentAgenda, Set<String> deletedOperations)
+    {
+        Agenda agenda = new Agenda();
+        agenda.setId(currentAgenda.getId());
+        agenda.setCustomerId(currentAgenda.getCustomerId());
+        agenda.setOperations(
+            currentAgenda.getOperations().stream()
+                .filter(op ->!deletedOperations.contains(op.getName()))
+                .collect(Collectors.toList())
+        );
+        return agenda;
     }
 
     private DataObjectResponse<ReadyAgenda> persistReadyAgenda(String insightId, String agendaId, String customerId, String cid)
