@@ -80,6 +80,12 @@ public class PersistentAgenda extends Agenda
     }
 
     @Override
+    public String getTitle()
+    {
+        return super.getTitle();
+    }
+
+    @Override
     public String getCid()
     {
         return super.getCid();

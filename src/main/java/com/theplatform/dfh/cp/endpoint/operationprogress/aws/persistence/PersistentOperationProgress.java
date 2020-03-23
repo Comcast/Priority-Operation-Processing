@@ -136,6 +136,12 @@ public class PersistentOperationProgress extends OperationProgress
     }
 
     @Override
+    public String getTitle()
+    {
+        return super.getTitle();
+    }
+
+    @Override
     public String getCid()
     {
         return super.getCid();
