@@ -7,7 +7,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.modules.persistence</groupId>
+    <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-persistence-impl</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
@@ -22,7 +22,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
             <scope>provided</scope>

@@ -7,7 +7,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.modules.persistence</groupId>
+    <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-persistence-impl-dynamodb</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
@@ -15,7 +15,7 @@
 
     <properties>
         <persistence-api.version>1.0.3</persistence-api.version>
-        <persistence-impl.version>1.0.2</persistence-impl.version>
+        <persistence-impl.version>1.0.3</persistence-impl.version>
         <fission-object-api.version>1.0.1</fission-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <fission-compression.version>1.0.1</fission-compression.version>
@@ -31,7 +31,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
             <scope>provided</scope>
@@ -44,13 +44,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.modules.compression</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-compression</artifactId>
             <version>${fission-compression.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-impl</artifactId>
             <version>${persistence-impl.version}</version>
         </dependency>

@@ -45,7 +45,7 @@
             <version>${fission-version-info.version}</version>
         </dependency>
 <!--        <dependency>-->
-<!--            <groupId>com.comcast.fission.modules.http</groupId>-->
+<!--            <groupId>com.comcast.fission.module</groupId>-->
 <!--            <artifactId>fission-http-idm</artifactId>-->
 <!--            <version>${idm-http.version}</version>-->
 <!--        </dependency>-->

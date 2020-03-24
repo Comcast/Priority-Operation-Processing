@@ -16,8 +16,8 @@
     <properties>
         <json-helper.version>1.0.2</json-helper.version>
         <endpoint-api.version>1.0.3</endpoint-api.version>
-        <http-utils.version>1.0.0</http-utils.version>
-        <http-api.version>1.0.1</http-api.version>
+        <http-utils.version>1.0.2</http-utils.version>
+        <http-api.version>1.0.2</http-api.version>
         <fission-api.version>1.0.3</fission-api.version>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
         <jackson.version>2.10.2</jackson.version>
@@ -25,7 +25,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.cp</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
@@ -35,12 +35,12 @@
             <version>${endpoint-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.http</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-http-util</artifactId>
             <version>${http-utils.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.http</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-http-api</artifactId>
             <version>${http-api.version}</version>
         </dependency>
@@ -53,7 +53,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
             <version>${fission-persistence-api.version}</version>
             <scope>provided</scope>

@@ -15,7 +15,7 @@
     <name>Kubernetes Client Parent Project</name>
 
     <modules>
-        <module>api/main</module>
-        <module>fabric8/main</module>
+        <module>api</module>
+        <module>fabric8</module>
     </modules>
 </project>

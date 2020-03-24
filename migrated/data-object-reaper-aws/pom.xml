@@ -48,7 +48,7 @@
             <version>${fission-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-impl-dynamodb</artifactId>
             <version>${fission-dynamodb.version}</version>
         </dependency>
