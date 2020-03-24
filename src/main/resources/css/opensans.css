@@ -1,0 +1,22 @@
+h1, h2, h3, h4, h5, h6, .site-title {
+    font-family: 'Open Sans', sans-serif;
+}
+body.site {
+    border-top: 3px solid #f28ef2;
+    background-color: #3f7db8;
+}
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.dropdown-menu li > a:hover,
+.dropdown-menu .active > a,
+.dropdown-menu .active > a:hover,
+.nav-pills > .active > a,
+.nav-pills > .active > a:hover,
+.btn-primary {
+    background: #f28ef2;
+}
+
+textarea {
+    /*  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;*/
+    font-family: 'Monaco', monospace;
+}
