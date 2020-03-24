@@ -19,7 +19,7 @@
         <queue-api.version>1.0.2</queue-api.version>
         <queue-sqs-api.version>1.0.1</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <fission-object-api.version>1.0.1</fission-object-api.version>
+        <fission-object-api.version>1.0.2</fission-object-api.version>
     </properties>
     
     <dependencies>

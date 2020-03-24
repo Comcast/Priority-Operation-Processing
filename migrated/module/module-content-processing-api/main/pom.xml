@@ -16,7 +16,7 @@
     <properties>
         <jackson.version>2.10.2</jackson.version>
         <commons-io.version>2.6</commons-io.version>
-        <fission-object-api.version>1.0.1</fission-object-api.version>
+        <fission-object-api.version>1.0.2</fission-object-api.version>
     </properties>
     
     <dependencies>

@@ -16,7 +16,7 @@
     <properties>
         <persistence-api.version>1.0.3</persistence-api.version>
         <persistence-impl.version>1.0.3</persistence-impl.version>
-        <fission-object-api.version>1.0.1</fission-object-api.version>
+        <fission-object-api.version>1.0.2</fission-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <fission-compression.version>1.0.1</fission-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
