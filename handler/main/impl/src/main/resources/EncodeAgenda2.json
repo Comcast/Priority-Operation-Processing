@@ -1,0 +1,72 @@
+{
+  "id": "theAgenda",
+  "params": {
+    "param.1": "one",
+    "param.2": "two"
+  },
+  "operations": [
+    {
+      "payload": {
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/immortals_trailerHigh.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          }
+        ],
+        "outputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/dfh_puller/immortals_trailerHigh_video_0.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {},
+            "outputStreamRefs": null
+          }
+        ],
+        "params": {
+          "source_streams": [
+            0
+          ]
+        }
+      },
+      "type": "encode",
+      "id": "kim.is.awesome.2",
+      "name": "ffmpeg.demux.video.0"
+    },
+    {
+      "payload": {
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/immortals_trailerHigh.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          }
+        ],
+        "outputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/dfh_puller/immortals_trailerHigh_audio_1.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {},
+            "outputStreamRefs": null
+          }
+        ],
+        "params": {
+          "source_streams": [
+            1
+          ]
+        }
+      },
+      "type": "encode",
+      "id": "kim.is.awesome.3",
+      "name": "ffmpeg.demux.audio.1"
+    }
+  ]
+}
+

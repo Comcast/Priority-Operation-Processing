@@ -1,0 +1,17 @@
+agendaProviderUrl: 'https://fission.test.aort.theplatform.com/dev/dfh/idm/resourcepool/service'
+identityUrl: 'http://identity.auth.test.corp.theplatform.com/idm'
+username: 'service/dfh-puller@comcast.com'
+encryptedPassword: 'S3Y5+lF5RjG23wiV36Jb0VtOIxN+8EAcV6TipvvXnlI='
+
+pullWait: 10
+insightId: '599f2241-3877-4301-b3d2-aa7e4274e421'
+
+agendaRequestCount: 1
+#localAgendaRelativePath: '/Agenda.json'
+#logging:
+#  level: INFO
+#  loggers:
+#    org.eclipse.jetty: WARN
+#    io.dropwizard: WARN
+#    org.apache.http: WARN
+#    io.fabric8.kubernetes.client.Config: WARN

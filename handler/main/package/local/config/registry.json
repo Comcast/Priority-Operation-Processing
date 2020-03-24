@@ -1,0 +1,23 @@
+{
+  "basePodConfig": {
+    "memoryRequestCount": "1000m",
+    "cpuMinRequestCount": "1000m",
+    "cpuMaxRequestCount": "1000m",
+    "podScheduledTimeoutMs": 600000,
+    "reapCompletedPods": true,
+    "pullAlways": true
+  },
+  "executor": {
+    "configMapName": "lab-main-t-aor-fhexec-t01",
+    "podConfig": {
+      "imageName": "docker-lab.repo.theplatform.com/fhexec:1.0.2",
+      "namePrefix": "dfh-exec",
+      "configMapDetails": {
+        "mapKeyPaths":[
+          { "key": "external-properties", "path": "external.properties"},
+          { "key": "registry-json", "path": "registry.json"}
+        ]
+      }
+    }
+  }
+}
