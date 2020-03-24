@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.handler</groupId>
     <artifactId>fission-handler-pod-reaper-impl</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Handler Pod Reaper Impl</name>
 

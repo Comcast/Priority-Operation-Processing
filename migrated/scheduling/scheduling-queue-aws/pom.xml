@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.scheduling</groupId>
     <artifactId>fission-scheduling-queue-aws</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Scheduling Queue Monitor AWS compatible zip package suitable for Lambda</name>
 

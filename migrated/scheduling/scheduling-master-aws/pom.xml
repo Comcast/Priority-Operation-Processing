@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.scheduling</groupId>
     <artifactId>fission-scheduling-master-aws</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Master Scheduler AWS compatible zip package suitable for Lambda</name>
 

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.comcast.fission.handler</groupId>
         <artifactId>fission-handler-executor-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <name>Executor Handler Package</name>
 
     <properties>
-        <application.version>1.0.3-SNAPSHOT</application.version>
+        <application.version>1.0.3</application.version>
     </properties>
 
     <dependencies>
