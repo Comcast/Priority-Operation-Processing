@@ -17,12 +17,10 @@ import com.theplatform.dfh.cp.handler.executor.impl.resident.generator.UpdateAge
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.KubernetesShutdownProcessor;
 import com.theplatform.dfh.cp.handler.executor.impl.shutdown.ShutdownProcessor;
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
-import com.theplatform.dfh.cp.handler.util.http.impl.exception.HttpRequestHandlerException;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPClientConfig;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,8 +152,9 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         }
     }
 
-    protected IDMHTTPUrlConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever)
+    protected HttpURLConnectionFactory createIDMHTTPUrlConnectionFactory(FieldRetriever propertyRetriever)
     {
+        /** TODO: config use on the no auth factory would be nice...
         IDMHTTPClientConfig httpConfig = new IDMHTTPClientConfig();
         httpConfig.setIdentityUrl(propertyRetriever.getField(IDM_URL_FIELD));
         httpConfig.setUsername(propertyRetriever.getField(IDM_USER));
@@ -171,6 +170,8 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 
         return new IDMHTTPUrlConnectionFactory(httpConfig)
             .setCid(retrieveCID());
+         */
+        return new NoAuthHTTPUrlConnectionFactory();
     }
 
     public void setResourcePoolServiceClientFactory(ResourcePoolServiceClientFactory resourcePoolServiceClientFactory)

@@ -7,13 +7,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.comcast.fission.handler</groupId>
     <artifactId>fission-handler-executor-api</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>Executor Handler API</name>
 
     <properties>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3</cp-api.version>
     </properties>
     
     <dependencies>

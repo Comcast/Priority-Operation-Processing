@@ -4,8 +4,7 @@ import com.theplatform.dfh.cp.handler.puller.impl.PullerApp;
 import com.theplatform.dfh.cp.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPClientConfig;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +48,7 @@ public class PullerResourcePoolServiceClientFactory
         logger.debug("AgendaClientFactory: URL: [" + pullerConfig.getIdentityUrl() +
             "], Username: [" + pullerConfig.getUsername());
 
+        /** TODO: the NoAuthFactory should support the proxy+config stuff
         IDMHTTPClientConfig idmhttpClientConfig = new IDMHTTPClientConfig();
         idmhttpClientConfig.setIdentityUrl(pullerConfig.getIdentityUrl());
         idmhttpClientConfig.setUsername(pullerConfig.getUsername());
@@ -76,6 +76,9 @@ public class PullerResourcePoolServiceClientFactory
 
         return resourcePoolServiceClientFactory.create(pullerConfig.getAgendaProviderUrl(),
             new IDMHTTPUrlConnectionFactory(idmhttpClientConfig));
+        **/
+        return resourcePoolServiceClientFactory.create(pullerConfig.getAgendaProviderUrl(),
+            new NoAuthHTTPUrlConnectionFactory());
     }
 
     public PullerResourcePoolServiceClientFactory setPullerConfig(PullerConfig pullerConfig)
