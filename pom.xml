@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.handler</groupId>
+    <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Content Processing Handler Kubernetes</name>
+
+    <properties>
+        <dfh-fabric8-kube-client.version>1.0.2</dfh-fabric8-kube-client.version>
+        <handler-base.version>1.0.3-SNAPSHOT</handler-base.version>
+        <dfh-monitor.version>1.0.0</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.0</dfh-monitor-graphite.version>
+        <dfh-monitor-bananas.version>1.0.0</dfh-monitor-bananas.version>
+        <dfh-compression.version>1.0.0</dfh-compression.version>
+        <cp-api.version>1.0.2</cp-api.version>
+        <jackson.version>2.10.2</jackson.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.compression</groupId>
+            <artifactId>pl-dfh-compression</artifactId>
+            <version>${dfh-compression.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
+            <version>${dfh-fabric8-kube-client.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <version>${handler-base.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- monitoring -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
+            <version>${dfh-monitor.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
+            <version>${dfh-monitor-graphite.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-bananas</artifactId>
+            <version>${dfh-monitor-bananas.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

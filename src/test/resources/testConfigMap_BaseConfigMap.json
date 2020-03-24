@@ -1,0 +1,27 @@
+{
+  "basePodConfig": {
+    "memoryRequestCount": "1000m",
+    "cpuMinRequestCount": "1000m",
+    "cpuMaxRequestCount": "1000m",
+    "podScheduledTimeoutMs": 600000,
+    "reapCompletedPods": true,
+    "pullAlways": true,
+    "configMapSettings": [
+      {
+        "volumeName":"config-volume-ex",
+        "volumeMountPath":"/configex",
+        "mapKeyPaths":[
+          { "key": "X", "path": "Y"}
+        ]
+      }
+    ]
+  },
+
+  "analysis": {
+    "configMapName": "lab-main-t-aor-fhami-t01",
+    "podConfig": {
+      "imageName": "docker-lab.repo.theplatform.com/fhami:1.0.0",
+      "namePrefix": "dfh-analysis"
+    }
+  }
+}
