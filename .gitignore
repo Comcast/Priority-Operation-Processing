@@ -1,7 +1,0 @@
-*.log
-.gitignore
-target/
-*.iml
-.idea/
-.DS_Store
-._*
