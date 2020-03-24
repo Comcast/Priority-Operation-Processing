@@ -17,7 +17,6 @@
     <modules>
         <module>handler-sample-api</module>
         <module>handler-sample-impl</module>
-        <module>handler-sample-test</module>
     </modules>
 
 </project>

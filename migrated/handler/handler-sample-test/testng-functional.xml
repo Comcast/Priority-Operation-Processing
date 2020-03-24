@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Live test data objects cleanup" configfailurepolicy="continue">
-
-    <test verbose="1" name="Sample Handler Functional">
-        <packages>
-            <package name="com.theplatform.dfh.cp.handler.sample.test.*" />
-        </packages>
-    </test>
-</suite>
