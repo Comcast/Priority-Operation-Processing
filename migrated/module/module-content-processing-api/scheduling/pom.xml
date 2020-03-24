@@ -19,7 +19,7 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission</groupId>
+            <groupId>com.comcast.fission.object</groupId>
             <artifactId>fission-object-api</artifactId>
             <version>${fission-object-api.version}</version>
         </dependency>
