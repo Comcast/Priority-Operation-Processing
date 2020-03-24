@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+    <artifactId>pl-dfh-cp-endpoint-client</artifactId>
+    <version>1.0.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>DFH Endpoint Client implementation</name>
+
+    <properties>
+        <json-helper.version>1.0.2-SNAPSHOT</json-helper.version>
+        <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
+        <http-utils.version>1.0.0</http-utils.version>
+        <http-api.version>1.0.1</http-api.version>
+        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
+        <cp-persistence-api.version>1.0.2</cp-persistence-api.version>
+        <jackson.version>2.10.2</jackson.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <version>${json-helper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
+            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+            <version>${endpoint-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.http</groupId>
+            <artifactId>pl-dfh-http-util</artifactId>
+            <version>${http-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.http</groupId>
+            <artifactId>pl-dfh-http-api</artifactId>
+            <version>${http-api.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.modules.persistence</groupId>
+            <artifactId>pl-dfh-persistence-api</artifactId>
+            <version>${cp-persistence-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
