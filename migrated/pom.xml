@@ -24,10 +24,10 @@
         <module>agenda-reclaimer-aws</module>
         <module>dfh-module-object-api</module>
         <module>data-object-reaper-aws</module>
+        <module>module</module>
         <module>web-ui</module>
         <module>endpoint</module>
         <module>handler</module>
-        <module>module</module>
     </modules>
 
     <build>
