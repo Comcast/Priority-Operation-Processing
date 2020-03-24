@@ -16,11 +16,10 @@ import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
-import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByInsightIdCustomerId;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.aws.sqs.AmazonSQSClientFactoryImpl;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSItemQueueFactory;
@@ -29,7 +28,6 @@ import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFa
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 import com.theplatform.dfh.scheduling.aws.persistence.PersistentReadyAgendaConverter;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
-import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,9 +177,12 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         String user = getEnvironmentVar(ENV_IDM_USER);
         String encryptedPass = environmentLookupUtils.getEncryptedVarFromEnvironment(ENV_IDM_ENCRYPTED_PASS);
 
+        /** prior used a different client
         EncryptedAuthenticationClient encryptedAuthenticationClient = new EncryptedAuthenticationClient(identityUrl, user, encryptedPass, null);
 
         return new IDMHTTPUrlConnectionFactory(encryptedAuthenticationClient);
+         **/
+        return new NoAuthHTTPUrlConnectionFactory();
     }
 
     public void setEnvironmentFacade(EnvironmentFacade environmentFacade)
