@@ -16,8 +16,8 @@
     <properties>
     </properties>
     <modules>
-        <module>api/main</module>
-        <module>impl/main</module>
+        <module>api</module>
+        <module>impl</module>
         <module>aws</module>
     </modules>
 </project>

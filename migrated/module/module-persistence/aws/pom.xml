@@ -16,6 +16,6 @@
     <properties>
     </properties>
     <modules>
-        <module>dynamodb/main</module>
+        <module>dynamodb</module>
     </modules>
 </project>
