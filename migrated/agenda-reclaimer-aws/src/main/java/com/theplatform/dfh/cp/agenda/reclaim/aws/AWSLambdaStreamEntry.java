@@ -48,7 +48,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         AWSReclaimerConfig reclaimerConfig;
         try
