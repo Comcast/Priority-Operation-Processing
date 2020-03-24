@@ -97,8 +97,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-version-info</artifactId>
+            <groupId>com.theplatform.dfh.modules.version</groupId>
+            <artifactId>pl-dfh-module-version-info</artifactId>
             <version>${fission-version-info.version}</version>
         </dependency>
 
