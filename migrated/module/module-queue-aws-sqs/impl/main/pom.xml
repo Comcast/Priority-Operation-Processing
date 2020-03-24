@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.modules.queue</groupId>
-    <artifactId>pl-dfh-modules-queue-aws-sqs-impl</artifactId>
+    <groupId>com.comcast.fission.modules.queue</groupId>
+    <artifactId>module-queue-aws-sqs-impl</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>DFH Queue AWS SQS Impl</name>
@@ -19,24 +19,24 @@
         <queue-api.version>1.0.1</queue-api.version>
         <queue-sqs-api.version>1.0.0</queue-sqs-api.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <dfh-object-api.version>1.0.1</dfh-object-api.version>
+        <fission-object-api.version>1.0.1</fission-object-api.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.queue</groupId>
-            <artifactId>pl-dfh-modules-queue-api</artifactId>
+            <groupId>com.comcast.fission.modules.queue</groupId>
+            <artifactId>module-queue-api</artifactId>
             <version>${queue-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.queue</groupId>
-            <artifactId>pl-dfh-modules-queue-aws-sqs-api</artifactId>
+            <groupId>com.comcast.fission.modules.queue</groupId>
+            <artifactId>module-queue-aws-sqs-api</artifactId>
             <version>${queue-sqs-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.object</groupId>
-            <artifactId>pl-dfh-object-api</artifactId>
-            <version>${dfh-object-api.version}</version>
+            <groupId>com.comcast.fission.object</groupId>
+            <artifactId>fission-object-api</artifactId>
+            <version>${fission-object-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->

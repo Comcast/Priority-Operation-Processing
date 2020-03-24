@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-    <artifactId>pl-dfh-cp-endpoint-impl-aws</artifactId>
+    <groupId>com.comcast.fission.endpoint</groupId>
+    <artifactId>fission-endpoint-impl-aws</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Endpoint AWS Impl compatible zip package suitable for Lambda</name>
@@ -16,29 +16,29 @@
     <properties>
         <aws.java.jdk>1.11.451</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <dfh-persistence-aws-dynamodb.version>1.0.2</dfh-persistence-aws-dynamodb.version>
-        <dfh-module-queue-aws-sqs.version>1.0.2</dfh-module-queue-aws-sqs.version>
-        <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
+        <fission-persistence-aws-dynamodb.version>1.0.2</fission-persistence-aws-dynamodb.version>
+        <fission-module-queue-aws-sqs.version>1.0.2</fission-module-queue-aws-sqs.version>
+        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
         <endpoint-base-aws.version>1.0.2-SNAPSHOT</endpoint-base-aws.version>
-        <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
+        <fission-http-idm.version>1.0.1</fission-http-idm.version>
         <endpoint-impl.version>1.0.1-SNAPSHOT</endpoint-impl.version>
         <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
-        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
-        <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
-        <persistence-api.version>1.0.2</persistence-api.version>
+        <fission-api.version>1.0.3-SNAPSHOT</fission-api.version>
+        <fission-http-idm.version>1.0.1</fission-http-idm.version>
+        <persistence-api.version>1.0.3-SNAPSHOT</persistence-api.version>
         <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>
         <!-- Endpoint implementation modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-impl</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-impl</artifactId>
             <version>${endpoint-impl.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-api</artifactId>
             <version>${endpoint-api.version}</version>
         </dependency>
 
@@ -61,41 +61,41 @@
 
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-base-aws</artifactId>
             <version>${endpoint-base-aws.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.comcast.fission.modules.http</groupId>-->
+<!--            <artifactId>fission-http-idm</artifactId>-->
+<!--            <version>${fission-http-idm.version}</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.theplatform.dfh.modules.http</groupId>
-            <artifactId>pl-dfh-http-idm</artifactId>
-            <version>${dfh-http-idm.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-persistence-impl-dynamodb</artifactId>
+            <version>${fission-persistence-aws-dynamodb.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
-            <version>${dfh-persistence-aws-dynamodb.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>module-queue-aws-sqs-impl</artifactId>
+            <version>${fission-module-queue-aws-sqs.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.queue</groupId>
-            <artifactId>pl-dfh-modules-queue-aws-sqs-impl</artifactId>
-            <version>${dfh-module-queue-aws-sqs.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
-            <version>${dfh-module-version-info.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>module-version-info</artifactId>
+            <version>${fission-module-version-info.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-api</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -133,22 +133,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.theplatform.plugins</groupId>
-                <artifactId>buildproperty-plugin</artifactId>
-                <configuration>
-                    <service>true</service>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>buildprops</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>plbuild-properties</goal>
                         </goals>
                     </execution>
                 </executions>

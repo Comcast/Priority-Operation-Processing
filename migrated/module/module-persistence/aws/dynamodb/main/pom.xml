@@ -1,38 +1,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.modules.persistence</groupId>
-    <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
+    <groupId>com.comcast.fission.modules.persistence</groupId>
+    <artifactId>fission-persistence-impl-dynamodb</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Persistence AWS DynamoDB</name>
 
     <properties>
-        <persistence-api.version>1.0.2</persistence-api.version>
+        <persistence-api.version>1.0.3-SNAPSHOT</persistence-api.version>
         <persistence-impl.version>1.0.2</persistence-impl.version>
-        <dfh-object-api.version>1.0.1</dfh-object-api.version>
+        <fission-object-api.version>1.0.1</fission-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
-        <dfh-compression.version>1.0.0</dfh-compression.version>
+        <fission-compression.version>1.0.1-SNAPSHOT</fission-compression.version>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
         <apache.commons.lang3>3.9</apache.commons.lang3>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.object</groupId>
-            <artifactId>pl-dfh-object-api</artifactId>
-            <version>${dfh-object-api.version}</version>
+            <groupId>com.comcast.fission.object</groupId>
+            <artifactId>fission-object-api</artifactId>
+            <version>${fission-object-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-api</artifactId>
+            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <artifactId>fission-persistence-api</artifactId>
             <version>${persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -44,14 +44,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.modules.compression</groupId>
-            <artifactId>pl-dfh-compression</artifactId>
-            <version>${dfh-compression.version}</version>
+            <groupId>com.comcast.fission.modules.compression</groupId>
+            <artifactId>fission-compression</artifactId>
+            <version>${fission-compression.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-impl</artifactId>
+            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <artifactId>fission-persistence-impl</artifactId>
             <version>${persistence-impl.version}</version>
         </dependency>
 

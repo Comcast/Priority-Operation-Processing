@@ -1,15 +1,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.4</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.progress.web</groupId>
-    <artifactId>pl-dfh-cp-progress-web</artifactId>
+    <groupId>com.comcast.fission.web</groupId>
+    <artifactId>fission-progress-web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Content Processing Facility API</name>
@@ -21,7 +21,7 @@
         <fasterxml.jackson.core.databind.version>2.10.2</fasterxml.jackson.core.databind.version>
         <commons-io.version>2.6</commons-io.version>
         <!-- todo remove unnecessary api classes -->
-        <cp-api.version>1.0.0-SNAPSHOT</cp-api.version>
+        <fission-api.version>1.0.0-SNAPSHOT</fission-api.version>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
     </properties>
@@ -36,9 +36,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -91,7 +91,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptor>src/main/resources/assembly/bin.xml</descriptor>
-                    <finalName>pl-dfh-cp-progress-web-${pom.version}</finalName>
+                    <finalName>fission-progress-web-${pom.version}</finalName>
                 </configuration>
                 <executions>
                     <execution>

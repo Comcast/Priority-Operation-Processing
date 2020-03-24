@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.theplatform</groupId>
-        <artifactId>theplatform</artifactId>
-        <version>5.0.2</version>
-        <relativePath></relativePath>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
-    <groupId>com.comcast.cts</groupId>
+    <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-module-queue-aws-sqs-base</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>

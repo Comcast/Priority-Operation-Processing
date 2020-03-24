@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-    <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
+    <groupId>com.comcast.fission.endpoint</groupId>
+    <artifactId>fission-endpoint-base-aws</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Base AWS Endpoint</name>
@@ -16,11 +16,11 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
-        <dfh-persistence-api.version>1.0.2</dfh-persistence-api.version>
-        <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
-        <cp-endpoint-base.version>1.0.1</cp-endpoint-base.version>
-        <cp-endpoint-api.version>1.0.3-SNAPSHOT</cp-endpoint-api.version>
+        <fission-api.version>1.0.3-SNAPSHOT</fission-api.version>
+        <fission-persistence-api.version>1.0.3-SNAPSHOT</fission-persistence-api.version>
+        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
+        <fission-endpoint-base.version>1.0.2-SNAPSHOT</fission-endpoint-base.version>
+        <fission-endpoint-api.version>1.0.3-SNAPSHOT</fission-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
@@ -67,20 +67,20 @@
         </dependency>
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-base</artifactId>
-            <version>${cp-endpoint-base.version}</version>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-base</artifactId>
+            <version>${fission-endpoint-base.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
-            <version>${cp-endpoint-api.version}</version>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-api</artifactId>
+            <version>${fission-endpoint-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-api</artifactId>
-            <version>${dfh-persistence-api.version}</version>
+            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <artifactId>fission-persistence-api</artifactId>
+            <version>${fission-persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -90,16 +90,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
-            <version>${dfh-module-version-info.version}</version>
+            <groupId>com.comcast.fission.modules.version</groupId>
+            <artifactId>module-version-info</artifactId>
+            <version>${fission-module-version-info.version}</version>
         </dependency>
 
         <!-- Test dependencies -->

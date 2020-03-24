@@ -5,26 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
-    <groupId>com.theplatform.dfh.cp</groupId>
-    <artifactId>pl-dfh-command-builder-fission</artifactId>
+    <groupId>com.comcast.fission.module</groupId>
+    <artifactId>fission-command-builder-fission</artifactId>
     <version>1.0.1-SNAPSHOT</version>
 
 
     <properties>
         <testng.version>6.9.10</testng.version>
-        <dfh-command-builder.version>1.1.3</dfh-command-builder.version>
+        <fission-command-builder.version>1.1.3</fission-command-builder.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-command-builder</artifactId>
-            <version>${dfh-command-builder.version}</version>
+            <groupId>com.comcast.fission.cp</groupId>
+            <artifactId>fission-command-builder</artifactId>
+            <version>${fission-command-builder.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--testing-->

@@ -1,42 +1,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-    <artifactId>pl-dfh-cp-endpoint-base</artifactId>
+    <groupId>com.comcast.fission.endpoint</groupId>
+    <artifactId>fission-endpoint-base</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>TransformRequest endpoint implementation</name>
 
     <properties>
-        <dfh-persistence-api.version>1.0.2</dfh-persistence-api.version>
-        <cp-api.version>1.0.3-SNAPSHOT</cp-api.version>
+        <fission-persistence-api.version>1.0.3-SNAPSHOT</fission-persistence-api.version>
+        <fission-api.version>1.0.3-SNAPSHOT</fission-api.version>
         <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
         <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-api</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-api</artifactId>
             <version>${endpoint-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-api</artifactId>
-            <version>${dfh-persistence-api.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-persistence-api</artifactId>
+            <version>${fission-persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
 

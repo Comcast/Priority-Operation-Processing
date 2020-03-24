@@ -1,26 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-base</artifactId>
+    <groupId>com.comcast.fission.module</groupId>
+    <artifactId>fission-handler-base</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Base</name>
 
     <properties>
         <json-helper.version>1.0.1</json-helper.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <fission-api.version>1.0.2</fission-api.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
+        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
         <jackson.databind.version>2.10.2</jackson.databind.version>
         <jackson.version>2.7.4</jackson.version>
     </properties>
@@ -32,8 +32,8 @@
             <version>${commons-cli.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
         <dependency>
@@ -42,9 +42,9 @@
             <version>${failsafe.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
-            <version>${cp-api.version}</version>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -59,9 +59,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
-            <version>${dfh-module-version-info.version}</version>
+            <groupId>com.comcast.fission.modules.version</groupId>
+            <artifactId>module-version-info</artifactId>
+            <version>${fission-module-version-info.version}</version>
         </dependency>
 
         <!-- Logging -->
