@@ -25,6 +25,7 @@
         <module>dfh-module-object-api</module>
         <module>data-object-reaper-aws</module>
         <module>module</module>
+        <module>scheduling</module>
         <module>web-ui</module>
         <module>endpoint</module>
         <module>handler</module>
