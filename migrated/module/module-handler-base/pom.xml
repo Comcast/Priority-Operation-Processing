@@ -20,7 +20,7 @@
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
+        <fission-version-info.version>1.0.0</fission-version-info.version>
         <jackson.databind.version>2.10.2</jackson.databind.version>
         <jackson.version>2.7.4</jackson.version>
     </properties>
@@ -59,9 +59,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.modules.version</groupId>
-            <artifactId>module-version-info</artifactId>
-            <version>${fission-module-version-info.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
+            <version>${fission-version-info.version}</version>
         </dependency>
 
         <!-- Logging -->

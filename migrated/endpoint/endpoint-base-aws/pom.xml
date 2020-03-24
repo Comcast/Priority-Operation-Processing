@@ -18,7 +18,7 @@
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <fission-api.version>1.0.3</fission-api.version>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
-        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
+        <fission-version-info.version>1.0.0</fission-version-info.version>
         <fission-endpoint-base.version>1.0.2</fission-endpoint-base.version>
         <fission-endpoint-api.version>1.0.3</fission-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
@@ -78,7 +78,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
             <version>${fission-persistence-api.version}</version>
             <scope>provided</scope>
@@ -97,9 +97,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.modules.version</groupId>
-            <artifactId>module-version-info</artifactId>
-            <version>${fission-module-version-info.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
+            <version>${fission-version-info.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
