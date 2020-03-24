@@ -1,0 +1,35 @@
+{
+  "someitem":
+  {
+    "field1":{
+      "stats":
+      {
+        "encodeTime":4560
+      }
+    },
+    "field2":{
+      "streamProperties":
+      {
+        "width":720,
+        "height":480
+      }
+    },
+    "field3":[
+      {
+        "streamProperties": {
+          "width": 720,
+          "height": 480
+        }
+      },
+      "someText",
+      {
+        "nested": {
+          "stats": {
+            "encodeTime": 4560
+          }
+        }
+      },
+      4
+    ]
+  }
+}
