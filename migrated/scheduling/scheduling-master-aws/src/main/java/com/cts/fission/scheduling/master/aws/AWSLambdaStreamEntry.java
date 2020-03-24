@@ -14,9 +14,8 @@ import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
+import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
-import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,9 +157,12 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         String user = getEnvironmentVar(ENV_IDM_USER);
         String encryptedPass = environmentLookupUtils.getEncryptedVarFromEnvironment(ENV_IDM_ENCRYPTED_PASS);
 
+        /**
         EncryptedAuthenticationClient encryptedAuthenticationClient = new EncryptedAuthenticationClient(identityUrl, user, encryptedPass, null);
 
         return new IDMHTTPUrlConnectionFactory(encryptedAuthenticationClient);
+         **/
+        return new NoAuthHTTPUrlConnectionFactory();
     }
 
     public AWSLambdaStreamEntry setAwsLambdaFactory(AWSLambdaFactory awsLambdaFactory)

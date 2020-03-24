@@ -16,9 +16,9 @@
     <properties>
         <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
         <handler-base.version>1.0.3</handler-base.version>
-        <fission-monitor.version>1.0.0</fission-monitor.version>
-        <fission-monitor-graphite.version>1.0.0</fission-monitor-graphite.version>
-        <fission-monitor-bananas.version>1.0.0</fission-monitor-bananas.version>
+        <fission-monitor.version>1.0.1-SNAPSHOT</fission-monitor.version>
+        <fission-monitor-graphite.version>1.0.1-SNAPSHOT</fission-monitor-graphite.version>
+        <fission-monitor-bananas.version>1.0.1-SNAPSHOT</fission-monitor-bananas.version>
         <fission-compression.version>1.0.1</fission-compression.version>
         <fission-api.version>1.0.3</fission-api.version>
         <jackson.version>2.10.2</jackson.version>
@@ -62,20 +62,20 @@
         </dependency>
         <!-- monitoring -->
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor</artifactId>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
             <version>${fission-monitor.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor-graphite</artifactId>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
             <version>${fission-monitor-graphite.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor-bananas</artifactId>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-bananas</artifactId>
             <version>${fission-monitor-bananas.version}</version>
             <scope>provided</scope>
         </dependency>

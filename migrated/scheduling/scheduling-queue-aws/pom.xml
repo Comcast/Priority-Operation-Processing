@@ -15,18 +15,18 @@
 
     <properties>
         <jackson.version>2.10.2</jackson.version>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.3</cp-api.version>
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
-        <scheduling-queue-impl.version>1.0.0</scheduling-queue-impl.version>
+        <scheduling-queue-impl.version>1.0.1</scheduling-queue-impl.version>
         <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
-        <dfh-module-queue-aws-sqs.version>1.0.2</dfh-module-queue-aws-sqs.version>
-        <dfh-persistence-aws-dynamodb.version>1.0.1</dfh-persistence-aws-dynamodb.version>
-        <dfh-aws-base-endpoint.version>1.0.1</dfh-aws-base-endpoint.version>
+        <dfh-module-queue-aws-sqs.version>1.0.3</dfh-module-queue-aws-sqs.version>
+        <dfh-persistence-aws-dynamodb.version>1.0.3</dfh-persistence-aws-dynamodb.version>
+        <dfh-aws-base-endpoint.version>1.0.2</dfh-aws-base-endpoint.version>
         <idm-http.version>1.0.1</idm-http.version>
         <commons-http-client.version>3.1</commons-http-client.version>
-        <endpoint-impl-aws.version>1.0.0</endpoint-impl-aws.version>
+        <endpoint-impl-aws.version>1.0.1</endpoint-impl-aws.version>
     </properties>
 
     <dependencies>
@@ -42,24 +42,19 @@
             <version>${scheduling-queue-impl.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.version</groupId>
-            <artifactId>fission-module-version-info</artifactId>
+            <groupId>com.theplatform.dfh.modules.version</groupId>
+            <artifactId>pl-dfh-module-version-info</artifactId>
             <version>${dfh-module-version-info.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.queue</groupId>
-            <artifactId>fission-modules-queue-aws-sqs-impl</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>module-queue-aws-sqs-impl</artifactId>
             <version>${dfh-module-queue-aws-sqs.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-impl-dynamodb</artifactId>
             <version>${dfh-persistence-aws-dynamodb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comcast.fission.modules.http</groupId>
-            <artifactId>fission-http-idm</artifactId>
-            <version>${idm-http.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>

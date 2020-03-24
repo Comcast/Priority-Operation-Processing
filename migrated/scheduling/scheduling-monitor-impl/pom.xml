@@ -14,24 +14,24 @@
     <name>Scheduling Monitor implementation</name>
 
     <properties>
-        <scheduling-api.version>1.0.0</scheduling-api.version>
-        <persistent-api.version>1.0.2</persistent-api.version>
-        <queue-api.version>1.0.1</queue-api.version>
-        <endpoint-client.version>1.0.2</endpoint-client.version>
-        <cp-api.version>1.0.2</cp-api.version>
-        <dfh-monitor.version>1.0.0</dfh-monitor.version>
-        <dfh-monitor-graphite.version>1.0.0</dfh-monitor-graphite.version>
+        <scheduling-api.version>1.0.2</scheduling-api.version>
+        <persistent-api.version>1.0.3</persistent-api.version>
+        <queue-api.version>1.0.2</queue-api.version>
+        <endpoint-client.version>1.0.3</endpoint-client.version>
+        <cp-api.version>1.0.3</cp-api.version>
+        <dfh-monitor.version>1.0.1-SNAPSHOT</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.1-SNAPSHOT</dfh-monitor-graphite.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.cp</groupId>
-            <artifactId>fission-monitor</artifactId>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
             <version>${dfh-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.cp</groupId>
-            <artifactId>fission-monitor-graphite</artifactId>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
             <version>${dfh-monitor-graphite.version}</version>
         </dependency>
         <dependency>
@@ -40,17 +40,17 @@
             <version>${endpoint-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
             <version>${persistent-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.modules.queue</groupId>
-            <artifactId>fission-modules-queue-api</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-queue-api</artifactId>
             <version>${queue-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.scheduling.api</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-scheduling-api</artifactId>
             <version>${scheduling-api.version}</version>
         </dependency>

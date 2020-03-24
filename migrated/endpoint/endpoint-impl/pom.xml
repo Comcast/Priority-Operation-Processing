@@ -55,7 +55,7 @@
             <version>${fission-queue-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.scheduling.api</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-scheduling-api</artifactId>
             <version>${fission-scheduling-api.version}</version>
         </dependency>
@@ -75,26 +75,6 @@
             <version>${fission-endpoint-client.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-util-http-api</artifactId>
-            <version>${http-request-handler-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-analysis-mediainfo-api</artifactId>
-            <version>${mediainfo-handler-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-filter-accelerate-api</artifactId>
-            <version>${accelerate-filter-handler-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-filter-ldap-api</artifactId>
-            <version>${ldap-filter-api.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
             <artifactId>fission-api</artifactId>

@@ -8,9 +8,7 @@ import com.cts.fission.scheduling.master.aws.AWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
-import com.theplatform.dfh.http.idm.IDMHTTPUrlConnectionFactory;
-import com.theplatform.module.authentication.client.EncryptedAuthenticationClient;
-import com.theplatform.module.crypto.aes.PasswordAes;
+import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -28,9 +26,6 @@ public class AWSLambdaStreamEntryLiveTest
     {
         final String STAGE_ID = "dev";
         final Map<String, String> envVars = new HashMap<>();
-        envVars.put(AWSLambdaStreamEntry.ENV_IDM_USER, "admin@theplatform.com");
-        envVars.put(AWSLambdaStreamEntry.ENV_IDM_ENCRYPTED_PASS, new PasswordAes().encrypt("<<REPLACE THIS>>"));
-        envVars.put(AWSLambdaStreamEntry.ENV_IDENTITY_URL, "http://identity.auth.test.corp.theplatform.com/idm");
         envVars.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://g9solclg15.execute-api.us-west-2.amazonaws.com");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
@@ -56,12 +51,7 @@ public class AWSLambdaStreamEntryLiveTest
 
         new AWSLambdaStreamEntry(
                 new AWSLambdaFactory(new ProfileCredentialsProvider("lab_DFH")).setRegion(Regions.US_WEST_2),
-                new HttpObjectClientFactory(new IDMHTTPUrlConnectionFactory(new EncryptedAuthenticationClient(
-                    envVars.get(AWSLambdaStreamEntry.ENV_IDENTITY_URL),
-                    envVars.get(AWSLambdaStreamEntry.ENV_IDM_USER),
-                    envVars.get(AWSLambdaStreamEntry.ENV_IDM_ENCRYPTED_PASS),
-                    null
-                )))
+                new HttpObjectClientFactory(new NoAuthHTTPUrlConnectionFactory())
             )
             .setEnvironmentFacade(environmentFacade)
             .setEnvironmentLookupUtils(environmentLookupUtils)
