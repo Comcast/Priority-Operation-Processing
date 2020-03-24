@@ -1,0 +1,22 @@
+{
+  "id": "theAgenda",
+  "params": {
+    "param.1": "one",
+    "param.2": "two"
+  },
+  "operations": [
+    {
+      "id": "01",
+      "name": "analysis.1",
+      "type": "analysis",
+      "payload": {
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/00090041-My_Stop_Motion_Movie_1.mp4"
+          }
+        ]
+      }
+    }
+  ]
+}

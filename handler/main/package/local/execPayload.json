@@ -1,0 +1,157 @@
+{
+  "operations": [
+    {
+      "payload": {
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/dfh_kube_test_input.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          }
+        ],
+        "outputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/demux/t_coolestdog_small-2018-10-10-14-52-23-XCAvz_video_0.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {},
+            "outputStreamRefs": null
+          }
+        ],
+        "params": {
+          "source_streams": [
+            0
+          ]
+        }
+      },
+      "type": "encode",
+      "id": "cf6bd8e5-a3e8-4f07-8ea1-c5f3150baa2a",
+      "name": "ffmpeg.demux.video.0",
+      "params": null
+    },
+    {
+      "payload": {
+        "inputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/dfh_kube_test_input.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          }
+        ],
+        "outputs": [
+          {
+            "type": "mezzanine",
+            "url": "/testFiles/demux/t_coolestdog_small-2018-10-10-14-52-23-XCAvz_audio_1.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {},
+            "outputStreamRefs": null
+          }
+        ],
+        "params": {
+          "source_streams": [
+            1
+          ]
+        }
+      },
+      "type": "encode",
+      "id": "9510304b-8177-48a5-9205-30d3dfbb9677",
+      "name": "ffmpeg.demux.audio.1",
+      "params": null
+    },
+    {
+      "payload": {
+        "inputs": [
+          {
+            "type": "UNKNOWN",
+            "url": "/testFiles/demux/t_coolestdog_small-2018-10-10-14-52-23-XCAvz_audio_1.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          },
+          {
+            "type": "UNKNOWN",
+            "url": "/testFiles/demux/t_coolestdog_small-2018-10-10-14-52-23-XCAvz_video_0.mp4",
+            "label": null,
+            "credentials": {},
+            "params": {}
+          }
+        ],
+        "outputs": [
+          {
+            "type": "UNKNOWN",
+            "url": "/testFiles/demux/tim_test/coolestdog_small-2018-10-10-14-52-23-XCAvz.m3u8",
+            "label": null,
+            "credentials": {
+              "username": "contentowner"
+            },
+            "params": {
+              "protectionScheme": "none"
+            },
+            "outputStreamRefs": null
+          }
+        ],
+        "input_streams": {
+          "video": [
+            {
+              "type": "video",
+              "params": {
+                "level": "3",
+                "framerate": 29.97,
+                "cabac": true,
+                "chromaSubsampling": "4:2:0",
+                "profile": "High",
+                "streamSize": 5500297,
+                "bitrate": 699968,
+                "displayAspectRatio": "4:3",
+                "colorSpace": "YUV",
+                "duration": 62996,
+                "codec": "AVC",
+                "width": 512,
+                "id": "1",
+                "scanType": "Progressive",
+                "bufferSize": 12000000,
+                "height": 384
+              },
+              "inputRef": "/inputs/1"
+            }
+          ],
+          "audio": [
+            {
+              "type": "audio",
+              "params": {
+                "duration": 63104,
+                "codec": "AAC LC-SBR",
+                "channels": 2,
+                "profile": "HE-AAC / LC",
+                "format": "AAC",
+                "samplingRate": 48000,
+                "streamSize": 620267,
+                "bitrate": 78634,
+                "language": "eng",
+                "id": "2"
+              },
+              "inputRef": "/inputs/0"
+            }
+          ],
+          "text": null,
+          "image": null
+        }
+      },
+      "type": "package",
+      "id": "5f1110c7-9142-49fb-99f8-780185ba8f9e",
+      "name": "mp4split.package.1539208392832",
+      "params": null
+    }
+  ],
+  "params": {
+    "progressId": "fa41d435-5352-4a4a-8980-6e11e62ba739"
+  },
+  "id": null,
+  "jobId": "7fd074ff-e24f-4a41-9c25-2b019deba626"
+}

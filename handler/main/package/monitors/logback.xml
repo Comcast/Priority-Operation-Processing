@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <property file="/app/config/external.properties" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d s=${logback.sourcetype} ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%n</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="syslogServiceAppender" class="com.cts.modules.logging.MillisSyslogAppender">
+        <filter class="com.theplatform.module.logging.extension.logback.filter.LevelMatchFilter" />
+        <syslogHost>syslog.logging</syslogHost>
+        <facility>local0</facility>
+        <port>514</port>
+
+        <throwableExcluded>true</throwableExcluded>
+        <suffixPattern>fhexec {"index": "service", "ccds_cluster_title": "${ccds-coordinates}", "type": "fhexec-service", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p [%t] %c: %replace(%replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
+    </appender>
+
+    <appender name="asyncLogAppender" class="com.theplatform.module.logging.extension.logback.appender.AsyncAppender">
+        <appender-ref ref="syslogServiceAppender" />
+    </appender>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="httpclient.wire.header" level="ERROR" />
+    <logger name="com.theplatform.web.marshalling" level="ERROR" />
+    <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="asyncLogAppender" />
+    </root>
+
+</configuration>

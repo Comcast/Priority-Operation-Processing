@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.theplatform</groupId>
+        <artifactId>theplatform</artifactId>
+        <version>5.0.2</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.handler</groupId>
+    <artifactId>pl-dfh-cp-handler-executor-package</artifactId>
+    <version>${application.version}</version>
+    <packaging>pom</packaging>
+    <name>Executor Handler Package</name>
+
+    <properties>
+        <application.version>1.0.3-SNAPSHOT</application.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-executor-impl</artifactId>
+            <version>${application.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                sleep 2000
+                                log.info('{}', '\n\n#\n#\n####\n#\n#\n use run.sh to build and run in docker or just dockerRun.sh if you already have an image.\n#\n#\n####\n')
+                                sleep 2000
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.theplatform.maven.plugins</groupId>
+                <artifactId>docker-image-plugin</artifactId>
+                <version>1.0.1</version>
+                <configuration>
+                    <ccdsService>fhexec</ccdsService>
+                    <applicationType>application</applicationType>
+                    <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
+                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>
+                    <appMainClass>com.theplatform.dfh.cp.handler.executor.impl.HandlerEntryPoint</appMainClass>
+                </configuration>
+                <!-- bind to build phases because Maven doesn't -->
+                <executions>
+                    <execution>
+                        <id>clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>build</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.18</version>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>${java.signature.artifactId}</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dockerLabDefault</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!env.DOCKER_LAB</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
+            </properties>
+        </profile>
+        <profile>
+            <id>dockerProdDefault</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!env.DOCKER_PROD</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <env.DOCKER_PROD>docker-prod.repo.theplatform.com</env.DOCKER_PROD>
+            </properties>
+        </profile>
+    </profiles>
+</project>
+
+
