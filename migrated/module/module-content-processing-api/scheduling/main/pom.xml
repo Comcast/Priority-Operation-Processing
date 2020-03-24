@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.scheduling.api</groupId>
     <artifactId>fission-scheduling-api</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Content Processing Scheduling API</name>
 

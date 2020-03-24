@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-http-api</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>API for HTTP connectivity</name>
 

@@ -9,12 +9,12 @@
 
     <groupId>com.comcast.fission.modules.persistence</groupId>
     <artifactId>fission-persistence-impl</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>Persistence impl</name>
 
     <properties>
-        <persistence-api.version>1.0.3-SNAPSHOT</persistence-api.version>
+        <persistence-api.version>1.0.3</persistence-api.version>
         <fission-object-api.version>1.0.1</fission-object-api.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>

@@ -12,7 +12,7 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-command-builder-fission</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
 
     <properties>

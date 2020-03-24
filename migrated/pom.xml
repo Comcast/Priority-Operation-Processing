@@ -16,6 +16,7 @@
         <assertj.version>3.12.2</assertj.version>
         <logback.version>1.1.3</logback.version>
         <slf4j-api.version>1.7.13</slf4j-api.version>
+        <jackson.databind.version>2.10.2</jackson.databind.version>
     </properties>
 
     <modules>
@@ -28,9 +29,9 @@
         <module>endpoint/endpoint-impl-aws</module>
         <module>endpoint/endpoint-impl-client</module>
         <module>web-ui</module>
-<!--        <module>handler/handler-sample-api</module>-->
-<!--        <module>handler/handler-sample-impl</module>-->
-<!--        <module>handler/handler-sample-test</module>-->
+        <module>handler/handler-sample-api</module>
+        <module>handler/handler-sample-impl</module>
+        <module>handler/handler-sample-test</module>
         <module>module/module-command-builder</module>
         <module>module/module-compression</module>
         <module>module/module-content-processing-api</module>

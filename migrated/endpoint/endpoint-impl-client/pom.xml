@@ -9,17 +9,17 @@
 
     <groupId>com.comcast.fission.endpoint</groupId>
     <artifactId>fission-endpoint-client</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>DFH Endpoint Client implementation</name>
 
     <properties>
-        <json-helper.version>1.0.2-SNAPSHOT</json-helper.version>
-        <endpoint-api.version>1.0.3-SNAPSHOT</endpoint-api.version>
+        <json-helper.version>1.0.2</json-helper.version>
+        <endpoint-api.version>1.0.3</endpoint-api.version>
         <http-utils.version>1.0.0</http-utils.version>
         <http-api.version>1.0.1</http-api.version>
-        <fission-api.version>1.0.3-SNAPSHOT</fission-api.version>
-        <fission-persistence-api.version>1.0.3-SNAPSHOT</fission-persistence-api.version>
+        <fission-api.version>1.0.3</fission-api.version>
+        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
         <jackson.version>2.10.2</jackson.version>
     </properties>
 

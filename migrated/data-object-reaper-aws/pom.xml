@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.reaper</groupId>
     <artifactId>fission-data-object-reaper-aws</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Data object reaper AWS compatible zip package suitable for Lambda</name>
 
@@ -18,8 +18,8 @@
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
         <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
-        <fission-aws-base-endpoint.version>1.0.2-SNAPSHOT</fission-aws-base-endpoint.version>
-        <fission-api.version>1.0.2</fission-api.version>
+        <fission-aws-base-endpoint.version>1.0.2</fission-aws-base-endpoint.version>
+        <fission-api.version>1.0.3</fission-api.version>
         <fission-producer-consumer-util>1.0.1</fission-producer-consumer-util>
         <fission-dynamodb.version>1.0.1</fission-dynamodb.version>
         <jackson.version>2.10.2</jackson.version>

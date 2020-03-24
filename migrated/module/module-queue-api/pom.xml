@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.comcast.fission.module</groupId>
-    <artifactId>module-queue-api</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <artifactId>fission-queue-api</artifactId>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>DFH Queue API</name>
 

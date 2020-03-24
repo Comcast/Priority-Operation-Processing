@@ -9,18 +9,18 @@
 
     <groupId>com.comcast.fission.endpoint</groupId>
     <artifactId>fission-endpoint-base-aws</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Base AWS Endpoint</name>
 
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <fission-api.version>1.0.3-SNAPSHOT</fission-api.version>
-        <fission-persistence-api.version>1.0.3-SNAPSHOT</fission-persistence-api.version>
+        <fission-api.version>1.0.3</fission-api.version>
+        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
         <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
-        <fission-endpoint-base.version>1.0.2-SNAPSHOT</fission-endpoint-base.version>
-        <fission-endpoint-api.version>1.0.3-SNAPSHOT</fission-endpoint-api.version>
+        <fission-endpoint-base.version>1.0.2</fission-endpoint-base.version>
+        <fission-endpoint-api.version>1.0.3</fission-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
