@@ -9,7 +9,6 @@ import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.module.crypto.aes.PasswordAes;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -28,7 +27,6 @@ public class AWSLambdaStreamEntryTest
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String AGENDA_PROGRESS_ENDPOINT_URL = "http://127.0.0.1";
     private static final String DEFAULT_ENV_VAR_VALUE = "default";
-    private final String DEFAULT_ENCRYPTED_ENV_VAR_VALUE = new PasswordAes().encrypt("test");
 
     private EnvironmentLookupUtils mockEnvironmentLookupUtils ;
     private EnvironmentFacade mockEnvironmentFacade;
@@ -47,7 +45,7 @@ public class AWSLambdaStreamEntryTest
         mockAgendaReclaimer = mock(AgendaReclaimer.class);
 
         doReturn(DEFAULT_ENV_VAR_VALUE).when(mockEnvironmentFacade).getEnv(anyString());
-        doReturn(DEFAULT_ENCRYPTED_ENV_VAR_VALUE).when(mockEnvironmentLookupUtils).getEncryptedVarFromEnvironment(anyString());
+        doReturn("unknown").when(mockEnvironmentLookupUtils).getEncryptedVarFromEnvironment(anyString());
         doReturn(mockAgendaReclaimer).when(mockAgendaReclaimerFactory).createAgendaReclaimer(any(), any(), any());
 
         streamEntry.setEnvironmentFacade(mockEnvironmentFacade);
