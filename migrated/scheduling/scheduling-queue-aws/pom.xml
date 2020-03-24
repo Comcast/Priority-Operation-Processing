@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root-scheduling</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.cts.fission.scheduling</groupId>
-    <artifactId>pl-fission-scheduling-queue-aws</artifactId>
+    <groupId>com.comcast.fission.scheduling</groupId>
+    <artifactId>fission-scheduling-queue-aws</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Scheduling Queue Monitor AWS compatible zip package suitable for Lambda</name>
@@ -32,38 +32,38 @@
     <dependencies>
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-impl-aws</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-impl-aws</artifactId>
             <version>${endpoint-impl-aws.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cts.fission.scheduling</groupId>
-            <artifactId>pl-fission-scheduling-queue-impl</artifactId>
+            <groupId>com.comcast.fission.scheduling</groupId>
+            <artifactId>fission-scheduling-queue-impl</artifactId>
             <version>${scheduling-queue-impl.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
+            <groupId>com.comcast.fission.modules.version</groupId>
+            <artifactId>fission-module-version-info</artifactId>
             <version>${dfh-module-version-info.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.queue</groupId>
-            <artifactId>pl-dfh-modules-queue-aws-sqs-impl</artifactId>
+            <groupId>com.comcast.fission.modules.queue</groupId>
+            <artifactId>fission-modules-queue-aws-sqs-impl</artifactId>
             <version>${dfh-module-queue-aws-sqs.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.persistence</groupId>
-            <artifactId>pl-dfh-persistence-impl-dynamodb</artifactId>
+            <groupId>com.comcast.fission.modules.persistence</groupId>
+            <artifactId>fission-persistence-impl-dynamodb</artifactId>
             <version>${dfh-persistence-aws-dynamodb.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.http</groupId>
-            <artifactId>pl-dfh-http-idm</artifactId>
+            <groupId>com.comcast.fission.modules.http</groupId>
+            <artifactId>fission-http-idm</artifactId>
             <version>${idm-http.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-base-aws</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-base-aws</artifactId>
             <version>${dfh-aws-base-endpoint.version}</version>
         </dependency>
         <dependency>
@@ -74,8 +74,8 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
         </dependency>
 

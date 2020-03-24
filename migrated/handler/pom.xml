@@ -17,10 +17,9 @@
     <modules>
         <module>handler-sample-api</module>
         <module>handler-sample-impl</module>
-        <!-- todo -->
-<!--        <module>handler-executor</module>-->
-<!--        <module>handler-pod-reaper</module>-->
-<!--        <module>handler-puller</module>-->
+        <module>handler-executor</module>
+        <module>handler-pod-reaper</module>
+        <module>handler-puller</module>
     </modules>
 
 </project>

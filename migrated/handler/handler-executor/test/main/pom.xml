@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.theplatform.dfh.cp</groupId>
-    <artifactId>pl-dfh-cp-handler-executor-functional</artifactId>
+    <artifactId>fission-handler-executor-functional</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <description>Executor Functional Tests</description>
 

@@ -1,14 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.fission.handler</groupId>
+        <artifactId>fission-handler-executor-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-executor-impl</artifactId>
+    <artifactId>fission-handler-executor-impl</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Executor Handler Impl</name>
@@ -47,24 +46,24 @@
 
         <!-- Resident Handlers -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-util-http-impl</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-util-http-impl</artifactId>
             <version>${http-request-util-handler.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-filter-ldap-impl</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-filter-ldap-impl</artifactId>
             <version>${ldap-filter.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-filter-accelerate-impl</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-filter-accelerate-impl</artifactId>
             <version>${accelerate-filter-handler.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-executor-api</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-executor-api</artifactId>
             <version>${executor-handler-api.version}</version>
         </dependency>
 
@@ -76,8 +75,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-kubernetes-support</artifactId>
             <version>${handler-kubernetes-support.version}</version>
         </dependency>
 
@@ -94,8 +93,8 @@
             <version>${dfh-http-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-base</artifactId>
             <version>${handler-base.version}</version>
         </dependency>
         <dependency>
@@ -206,7 +205,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.executor.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.comcast.fission.handler.executor.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>

@@ -26,6 +26,7 @@
         <module>module-kube-client</module>
         <module>module-persistence</module>
         <module>module-process-helper</module>
+        <module>module-producer-consumer-util</module>
         <module>module-queue-api</module>
         <module>module-queue-aws-sqs</module>
         <module>module-xml-helper</module>

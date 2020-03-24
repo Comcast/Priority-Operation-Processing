@@ -7,8 +7,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-pod-reaper-impl</artifactId>
+    <groupId>com.comcast.fission.handler</groupId>
+    <artifactId>fission-handler-pod-reaper-impl</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Handler Pod Reaper Impl</name>
@@ -27,8 +27,8 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-kubernetes-support</artifactId>
             <version>${handler-kubernetes-support.version}</version>
         </dependency>
         <dependency>
@@ -39,8 +39,8 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-base</artifactId>
             <version>${handler-base.version}</version>
         </dependency>
         <dependency>
@@ -132,7 +132,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.reaper.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>
