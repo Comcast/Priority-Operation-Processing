@@ -1,0 +1,34 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>fission-root-module</artifactId>
+    <version>1.0.7</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>module-command-builder</module>
+        <module>module-compression</module>
+        <module>module-content-processing-api</module>
+        <module>module-handler-base</module>
+        <module>module-handler-kubernetes-support</module>
+        <module>module-http-api</module>
+        <module>module-http-util</module>
+        <module>module-json-helper</module>
+        <module>module-kube-client</module>
+        <module>module-persistence</module>
+        <module>module-process-helper</module>
+        <module>module-queue-api</module>
+        <module>module-queue-aws-sqs</module>
+        <module>module-xml-helper</module>
+    </modules>
+
+</project>

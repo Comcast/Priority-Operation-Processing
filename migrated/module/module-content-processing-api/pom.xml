@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root</artifactId>
+        <artifactId>fission-root-module</artifactId>
         <version>1.0.7</version>
     </parent>
 
@@ -16,6 +16,6 @@
 
     <modules>
         <module>main</module>
-        <module>scheduling/main</module>
+        <module>scheduling</module>
     </modules>
 </project>

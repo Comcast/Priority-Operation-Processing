@@ -1,21 +1,23 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <parent>
         <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-module</artifactId>
+        <artifactId>fission-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
-    <artifactId>fission-kube-client-parent</artifactId>
-    <version>1.0.0</version>
+    <artifactId>fission-root-handler</artifactId>
+    <version>1.0.7</version>
+
     <packaging>pom</packaging>
-    <name>Kubernetes Client Parent Project</name>
 
     <modules>
-        <module>api</module>
-        <module>fabric8</module>
+        <module>handler-sample-api</module>
+        <module>handler-sample-impl</module>
+        <module>handler-sample-test</module>
     </modules>
+
 </project>

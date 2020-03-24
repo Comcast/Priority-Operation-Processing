@@ -22,31 +22,12 @@
 
     <modules>
         <module>agenda-reclaimer-aws</module>
+        <module>dfh-module-object-api</module>
         <module>data-object-reaper-aws</module>
-        <module>endpoint/endpoint-api</module>
-        <module>endpoint/endpoint-base</module>
-        <module>endpoint/endpoint-base-aws</module>
-        <module>endpoint/endpoint-impl</module>
-        <module>endpoint/endpoint-impl-aws</module>
-        <module>endpoint/endpoint-impl-client</module>
         <module>web-ui</module>
-        <module>handler/handler-sample-api</module>
-        <module>handler/handler-sample-impl</module>
-        <module>handler/handler-sample-test</module>
-        <module>module/module-command-builder</module>
-        <module>module/module-compression</module>
-        <module>module/module-content-processing-api</module>
-        <module>module/module-handler-base</module>
-        <module>module/module-handler-kubernetes-support</module>
-        <module>module/module-http-api</module>
-        <module>module/module-http-util</module>
-        <module>module/module-json-helper</module>
-        <module>module/module-kube-client</module>
-        <module>module/module-persistence</module>
-        <module>module/module-process-helper</module>
-        <module>module/module-queue-api</module>
-        <module>module/module-queue-aws-sqs</module>
-        <module>module/module-xml-helper</module>
+        <module>endpoint</module>
+        <module>handler</module>
+        <module>module</module>
     </modules>
 
     <build>
