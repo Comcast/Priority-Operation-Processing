@@ -1,0 +1,6 @@
+<sample>
+    <subnode attrib="62">45</subnode>
+    <subobject>
+        <another item="55">data</another>
+    </subobject>
+</sample>
