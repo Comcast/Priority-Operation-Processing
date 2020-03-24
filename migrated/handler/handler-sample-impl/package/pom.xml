@@ -3,15 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.theplatform</groupId>
-        <artifactId>theplatform</artifactId>
-        <version>5.0.2</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-sample-package</artifactId>
+    <groupId>com.comcast.fission.handler</groupId>
+    <artifactId>fission-handler-sample-package</artifactId>
     <version>${application.version}</version>
     <packaging>pom</packaging>
     <name>Packaging for Sample Handler</name>
@@ -22,8 +22,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-sample-impl</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-sample-impl</artifactId>
             <version>${application.version}</version>
         </dependency>
     </dependencies>
@@ -52,6 +52,7 @@
             </plugin>
 
             <plugin>
+                <!-- todo -->
                 <groupId>com.theplatform.maven.plugins</groupId>
                 <artifactId>docker-image-plugin</artifactId>
                 <version>1.0.0</version>
@@ -60,7 +61,7 @@
                     <applicationType>application</applicationType>
                     <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
                     <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>
-                    <appMainClass>com.theplatform.dfh.cp.handler.sample.impl.HandlerEntryPoint</appMainClass>
+                    <appMainClass>com.comcast.fission.handler.sample.impl.HandlerEntryPoint</appMainClass>
                 </configuration>
                 <!-- bind to build phases because Maven doesn't -->
                 <executions>

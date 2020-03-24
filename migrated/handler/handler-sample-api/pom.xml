@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-sample-api</artifactId>
+    <groupId>com.comcast.fission.handler</groupId>
+    <artifactId>fission-handler-sample-api</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Sample API</name>
@@ -19,8 +19,8 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
+            <groupId>com.comcast.fission.module.api</groupId>
+            <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
 			<scope>provided</scope>
         </dependency>

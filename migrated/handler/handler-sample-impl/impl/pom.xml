@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.6</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.handler</groupId>
-    <artifactId>pl-dfh-cp-handler-sample-impl</artifactId>
+    <groupId>com.comcast.fission.handler</groupId>
+    <artifactId>fission-handler-sample-impl</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Sample</name>
@@ -26,32 +26,32 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-sample-api</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-sample-api</artifactId>
             <version>${sample-handler-api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-kubernetes-support</artifactId>
             <version>${handler-kubernetes-support.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-base</artifactId>
             <version>${handler-base.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
+            <groupId>com.comcast.fission.module.api</groupId>
+            <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
         </dependency>
 
@@ -134,7 +134,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.theplatform.dfh.cp.handler.sample.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.comcast.fission.handler.sample.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>
@@ -153,22 +153,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.theplatform.plugins</groupId>
-                <artifactId>buildproperty-plugin</artifactId>
-                <configuration>
-                    <service>true</service>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>buildprops</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>plbuild-properties</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
     <reporting>

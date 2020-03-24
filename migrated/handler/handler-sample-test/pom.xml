@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.0</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-    <artifactId>pl-dfh-cp-handler-sample-test-functional</artifactId>
+    <groupId>com.comcast.fission.handler</groupId>
+    <artifactId>fission-handler-sample-test-functional</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Sample Handler Functional Tests</name>
@@ -29,25 +29,25 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-reporter-kubernetes</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-reporter-kubernetes</artifactId>
             <version>${kubernetes-reporter.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp.handler</groupId>
-            <artifactId>pl-dfh-cp-handler-sample-api</artifactId>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-sample-api</artifactId>
             <version>${sample-api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
         </dependency>
