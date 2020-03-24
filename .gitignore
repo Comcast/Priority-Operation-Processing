@@ -23,5 +23,10 @@
 hs_err_pid*
 
 # Idea
-*.idea
-*.iml
+#IntenlliJ generated files
+**/.idea
+**/*.iml
+
+#Auto-gen files
+**/target
+**/logs
