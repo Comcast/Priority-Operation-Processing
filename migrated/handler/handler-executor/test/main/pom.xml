@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
+        <groupId>com.comcast.fission.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
         <version>1.0.7</version>
     </parent>
 
-    <groupId>com.theplatform.dfh.cp</groupId>
+    <groupId>com.comcast.fission.cp</groupId>
     <artifactId>fission-handler-executor-functional</artifactId>
     <version>1.0.0</version>
     <description>Executor Functional Tests</description>
@@ -25,12 +25,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-cp-json-helper</artifactId>
+            <groupId>com.comcast.fission.cp</groupId>
+            <artifactId>fission-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
         </dependency>

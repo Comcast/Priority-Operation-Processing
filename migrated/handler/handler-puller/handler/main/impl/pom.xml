@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
+        <groupId>com.comcast.fission.build</groupId>
         <artifactId>pl-dfh-build-parent</artifactId>
         <version>1.0.7</version>
     </parent>
@@ -43,8 +43,8 @@
             <version>18.0</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.endpoint</groupId>
-            <artifactId>pl-dfh-cp-endpoint-client</artifactId>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-client</artifactId>
             <version>${endpoint-client.version}</version>
         </dependency>
         <dependency>
@@ -63,7 +63,7 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.http</groupId>
+            <groupId>com.comcast.fission.modules.http</groupId>
             <artifactId>pl-dfh-http-idm</artifactId>
             <version>${dfh-http-idm.version}</version>
         </dependency>
@@ -90,29 +90,29 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
             <version>${dfh-fabric8-kube-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
         </dependency>
 
         <!-- Monitoring -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-monitor</artifactId>
             <version>${dfh-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-monitor-graphite</artifactId>
             <version>${dfh-monitor-graphite.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-monitor-bananas</artifactId>
             <version>${bananas-monitor.version}</version>
         </dependency>

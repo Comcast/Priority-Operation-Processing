@@ -25,12 +25,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>fission-monitor</artifactId>
             <version>${dfh-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
+            <groupId>com.comcast.fission.cp</groupId>
             <artifactId>fission-monitor-graphite</artifactId>
             <version>${dfh-monitor-graphite.version}</version>
         </dependency>
