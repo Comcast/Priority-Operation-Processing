@@ -1,0 +1,175 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.theplatform.dfh.build</groupId>
+        <artifactId>pl-dfh-build-parent</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.theplatform.dfh.cp.handler</groupId>
+    <artifactId>pl-dfh-cp-handler-pod-reaper-impl</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Handler Pod Reaper Impl</name>
+
+    <properties>
+        <cp-api.version>1.0.2</cp-api.version>
+        <logging-extension.version>1.2.0</logging-extension.version>
+        <dfh-docker.version>1.0.1</dfh-docker.version>
+        <jackson.version>2.10.2</jackson.version>
+
+        <handler-base.version>1.0.2</handler-base.version>
+        <dfh-fabric8-kube-client.version>1.0.2</dfh-fabric8-kube-client.version>
+        <handler-kubernetes-support.version>1.0.1</handler-kubernetes-support.version>
+        <dfh-producer-consumer-util.version>1.0.1</dfh-producer-consumer-util.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-kubernetes-support</artifactId>
+            <version>${handler-kubernetes-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh</groupId>
+            <artifactId>pl-dfh-producer-consumer-util</artifactId>
+            <version>${dfh-producer-consumer-util.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-base</artifactId>
+            <version>${handler-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp</groupId>
+            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
+            <version>${dfh-fabric8-kube-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.api</groupId>
+            <artifactId>pl-dfh-cp-api</artifactId>
+            <version>${cp-api.version}</version>
+        </dependency>
+
+        <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>com.theplatform.modules</groupId>
+            <artifactId>pl-logging-extension-logback</artifactId>
+            <version>${logging-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cts.modules</groupId>
+            <artifactId>millis-syslog-appender</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check_jdk_compatibility</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>com.theplatform.dfh.cp.handler.reaper.impl.HandlerEntryPoint</Main-Class>
+                                        <Build-Number>1</Build-Number>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.theplatform.plugins</groupId>
+                <artifactId>buildproperty-plugin</artifactId>
+                <configuration>
+                    <service>true</service>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>buildprops</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>plbuild-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+
+    </reporting>
+</project>
