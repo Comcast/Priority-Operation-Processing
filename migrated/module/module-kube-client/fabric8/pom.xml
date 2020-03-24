@@ -23,7 +23,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.cp</groupId>
+            <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-kube-client-api</artifactId>
             <version>${fission-kube-client-api.version}</version>
         </dependency>

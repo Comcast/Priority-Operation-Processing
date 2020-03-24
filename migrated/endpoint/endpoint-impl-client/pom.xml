@@ -11,7 +11,7 @@
     <artifactId>fission-endpoint-client</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
-    <name>DFH Endpoint Client implementation</name>
+    <name>Fission Endpoint Client implementation</name>
 
     <properties>
         <json-helper.version>1.0.2</json-helper.version>

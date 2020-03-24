@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
-            <artifactId>module-queue-api</artifactId>
+            <artifactId>fission-queue-api</artifactId>
             <version>${fission-queue-api.version}</version>
         </dependency>
         <dependency>

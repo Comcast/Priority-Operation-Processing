@@ -7,9 +7,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.modules.queue</groupId>
+    <groupId>com.comcast.fission.module</groupId>
     <artifactId>module-queue-aws-sqs-api</artifactId>
     <version>1.0.1</version>
     <packaging>jar</packaging>
-    <name>DFH Queue AWS SQS API</name>
+    <name>Fission Queue AWS SQS API</name>
 </project>

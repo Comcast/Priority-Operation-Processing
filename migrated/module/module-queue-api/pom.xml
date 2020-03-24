@@ -11,7 +11,7 @@
     <artifactId>fission-queue-api</artifactId>
     <version>1.0.2</version>
     <packaging>jar</packaging>
-    <name>DFH Queue API</name>
+    <name>Fission Queue API</name>
 
     <properties>
     </properties>

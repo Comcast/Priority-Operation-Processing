@@ -65,7 +65,7 @@
             <artifactId>aws-java-sdk-kms</artifactId>
             <version>${aws.java.jdk}</version>
         </dependency>
-        <!-- DFH Dependencies -->
+        <!-- Fission Dependencies -->
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-base</artifactId>

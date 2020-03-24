@@ -28,7 +28,7 @@
     </properties>
 
     <dependencies>
-        <!-- DFH Dependencies -->
+        <!-- Fission Dependencies -->
         <dependency>
             <groupId>com.comcast.fission.reaper</groupId>
             <artifactId>fission-data-object-reaper-aws</artifactId>
