@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.theplatform</groupId>
-        <artifactId>theplatform</artifactId>
-        <version>5.0.2</version>
+        <groupId>com.comcast.fission.handler</groupId>
+        <artifactId>fission-handler-puller-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>

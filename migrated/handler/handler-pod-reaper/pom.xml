@@ -16,8 +16,8 @@
     <name>Handler Pod Reaper Parent</name>
 
     <modules>
-        <module>main/impl</module>
-        <module>main/package</module>
+        <module>impl</module>
+        <module>package</module>
     </modules>
 
 </project>

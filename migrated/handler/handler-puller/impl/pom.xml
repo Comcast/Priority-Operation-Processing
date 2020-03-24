@@ -1,48 +1,94 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <parent>
-        <groupId>com.comcast.fission.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.fission.handler</groupId>
+        <artifactId>fission-handler-puller-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.comcast.fission.handler</groupId>
-    <artifactId>fission-handler-pod-reaper-impl</artifactId>
-    <version>1.0.1</version>
+    <artifactId>fission-handler-puller-impl</artifactId>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
-    <name>Handler Pod Reaper Impl</name>
+    <name>Puller Handler Impl</name>
 
     <properties>
         <cp-api.version>1.0.2</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
-        <dfh-docker.version>1.0.1</dfh-docker.version>
+        <logback.version>1.2.3</logback.version>
+        <dropwizard.version>1.3.5</dropwizard.version>
         <jackson.version>2.10.2</jackson.version>
+        <dfh-http-idm.version>1.0.1</dfh-http-idm.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-io.version>2.6</commons-io.version>
+        <apache-httpclient.version>4.5.2</apache-httpclient.version>
+        <commons-http-client.version>3.1</commons-http-client.version>
+        <endpoint-client.version>1.0.3</endpoint-client.version>
 
-        <handler-base.version>1.0.2</handler-base.version>
-        <dfh-fabric8-kube-client.version>1.0.2</dfh-fabric8-kube-client.version>
-        <handler-kubernetes-support.version>1.0.1</handler-kubernetes-support.version>
-        <dfh-producer-consumer-util.version>1.0.2</dfh-producer-consumer-util.version>
+        <handler-base.version>1.0.3</handler-base.version>
+        <dfh-fabric8-kube-client.version>1.0.4</dfh-fabric8-kube-client.version>
+        <handler-kubernetes-support.version>1.0.2</handler-kubernetes-support.version>
+
+        <dfh-monitor.version>1.0.0</dfh-monitor.version>
+        <dfh-monitor-graphite.version>1.0.0</dfh-monitor-graphite.version>
+        <bananas-monitor.version>1.0.0</bananas-monitor.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-kubernetes-support</artifactId>
-            <version>${handler-kubernetes-support.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-producer-consumer-util</artifactId>
-            <version>${dfh-producer-consumer-util.version}</version>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-client</artifactId>
+            <version>${endpoint-client.version}</version>
         </dependency>
-
-        <!-- Provided dependencies from intermediate modules -->
         <dependency>
             <groupId>com.comcast.fission.handler</groupId>
             <artifactId>fission-handler-base</artifactId>
             <version>${handler-base.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.handler</groupId>
+            <artifactId>fission-handler-kubernetes-support</artifactId>
+            <version>${handler-kubernetes-support.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.modules.http</groupId>
+            <artifactId>pl-dfh-http-idm</artifactId>
+            <version>${dfh-http-idm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache-httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http-client.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
         <dependency>
             <groupId>com.comcast.fission.cp</groupId>
             <artifactId>pl-dfh-kube-client-fabric8</artifactId>
@@ -52,6 +98,23 @@
             <groupId>com.comcast.fission.api</groupId>
             <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
+        </dependency>
+
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>com.comcast.fission.cp</groupId>
+            <artifactId>pl-dfh-monitor</artifactId>
+            <version>${dfh-monitor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.cp</groupId>
+            <artifactId>pl-dfh-monitor-graphite</artifactId>
+            <version>${dfh-monitor-graphite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.cp</groupId>
+            <artifactId>pl-dfh-monitor-bananas</artifactId>
+            <version>${bananas-monitor.version}</version>
         </dependency>
 
         <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
@@ -78,14 +141,55 @@
 
         <!-- Logging -->
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.theplatform.modules</groupId>
             <artifactId>pl-logging-extension-logback</artifactId>
             <version>${logging-extension.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.cts.modules</groupId>
             <artifactId>millis-syslog-appender</artifactId>
             <version>0.1.1</version>
+        </dependency>
+
+        <!--testing-->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -132,7 +236,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.comcast.fission.handler.puller.impl.PullerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>
