@@ -29,6 +29,7 @@
         <module>module-producer-consumer-util</module>
         <module>module-queue-api</module>
         <module>module-queue-aws-sqs</module>
+        <module>module-version-info</module>
         <module>module-xml-helper</module>
     </modules>
 

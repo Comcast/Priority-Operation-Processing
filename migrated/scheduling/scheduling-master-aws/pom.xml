@@ -18,7 +18,7 @@
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
-        <dfh-module-version-info.version>1.0.0</dfh-module-version-info.version>
+        <dfh-module-version-info.version>1.0.1</dfh-module-version-info.version>
         <dfh-persistence-aws-dynamodb.version>1.0.3</dfh-persistence-aws-dynamodb.version>
         <dfh-persistence-api.version>1.0.3</dfh-persistence-api.version>
         <dfh-aws-base-endpoint.version>1.0.2</dfh-aws-base-endpoint.version>
@@ -29,8 +29,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
             <version>${dfh-module-version-info.version}</version>
         </dependency>
         <dependency>

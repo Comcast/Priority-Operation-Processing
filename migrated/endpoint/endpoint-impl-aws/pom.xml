@@ -18,7 +18,7 @@
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
         <fission-module-queue-aws-sqs.version>1.0.3</fission-module-queue-aws-sqs.version>
-        <fission-version-info.version>1.0.0</fission-version-info.version>
+        <fission-version-info.version>1.0.1</fission-version-info.version>
         <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
         <endpoint-impl.version>1.0.1</endpoint-impl.version>
@@ -81,8 +81,8 @@
             <version>${fission-module-queue-aws-sqs.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
             <version>${fission-version-info.version}</version>
         </dependency>
 

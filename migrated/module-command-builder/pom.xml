@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.theplatform</groupId>
-        <artifactId>theplatform</artifactId>
-        <version>5.0.2</version>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root-module</artifactId>
+        <version>1.0.7</version>
     </parent>
 
-    <groupId>com.theplatform.dfh.cp</groupId>
+    <groupId>com.comcast.fission.module</groupId>
     <artifactId>pl-dfh-command-builder</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
 
     <build>
         <plugins>

@@ -18,7 +18,7 @@
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <fission-api.version>1.0.3</fission-api.version>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
-        <fission-version-info.version>1.0.0</fission-version-info.version>
+        <fission-version-info.version>1.0.1</fission-version-info.version>
         <fission-endpoint-base.version>1.0.2</fission-endpoint-base.version>
         <fission-endpoint-api.version>1.0.3</fission-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
@@ -97,8 +97,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.theplatform.dfh.modules.version</groupId>
-            <artifactId>pl-dfh-module-version-info</artifactId>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
             <version>${fission-version-info.version}</version>
         </dependency>
 
