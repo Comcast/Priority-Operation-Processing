@@ -33,16 +33,16 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
-        endpointHandlers.put("/dfh/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/resourcepool/service/updateAgenda", new UpdateAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/resourcepool/service/updateAgenda", new UpdateAgendaLambdaStreamEntry());
     }
 
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         byte[] inputData = IOUtils.toByteArray(inputStream);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputData);

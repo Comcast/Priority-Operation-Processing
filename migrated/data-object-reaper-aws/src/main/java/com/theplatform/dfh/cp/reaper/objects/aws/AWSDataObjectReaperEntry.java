@@ -40,7 +40,7 @@ public class AWSDataObjectReaperEntry implements RequestStreamHandler
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         DataObjectReaperConfig reaperConfig;
         try

@@ -47,26 +47,26 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
-        endpointHandlers.put("/dfh/idm/agendatemplate", new AgendaTemplateLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/agenda", new AgendaLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/progress/operation", new OperationProgressLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/progress/agenda", new ProgressLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/progress/agenda/service", new ProgressServiceLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/agendatemplate", new AgendaTemplateLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/agenda", new AgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/progress/operation", new OperationProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/progress/agenda", new ProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/progress/agenda/service", new ProgressServiceLambdaStreamEntry());
         //TODO: deprecated in favor of transform/service/submit
-        endpointHandlers.put("/dfh/idm/transform", new TransformLambdaStreamEntry(false));
-        endpointHandlers.put("/dfh/idm/transform/service/submit", new TransformLambdaStreamEntry(false));
-        endpointHandlers.put("/dfh/idm/transform/service/resubmit", new TransformLambdaStreamEntry(true));
-        endpointHandlers.put("/dfh/idm/resourcepool", new ResourcePoolLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/insight", new InsightLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/customer", new CustomerLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
-        endpointHandlers.put("/dfh/idm/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/transform", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/fission/idm/transform/service/submit", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/fission/idm/transform/service/resubmit", new TransformLambdaStreamEntry(true));
+        endpointHandlers.put("/fission/idm/resourcepool", new ResourcePoolLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/insight", new InsightLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/customer", new CustomerLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/idm/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
     }
 
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         byte[] inputData = IOUtils.toByteArray(inputStream);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputData);
