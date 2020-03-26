@@ -17,8 +17,6 @@
     <properties>
         <testng.version>6.9.10</testng.version>
         <mockito.version>1.9.5</mockito.version>
-        <fasterxml.jackson.core.version>2.10.2</fasterxml.jackson.core.version>
-        <fasterxml.jackson.core.databind.version>2.10.2</fasterxml.jackson.core.databind.version>
         <commons-io.version>2.6</commons-io.version>
         <!-- todo remove unnecessary api classes -->
         <fission-api.version>1.0.3</fission-api.version>
@@ -43,12 +41,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${fasterxml.jackson.core.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${fasterxml.jackson.core.databind.version}</version>
+            <version>${jackson.databind.version}</version>
         </dependency>
         
         <!-- Testing dependencies -->

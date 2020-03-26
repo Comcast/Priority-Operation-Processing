@@ -21,7 +21,6 @@
         <fission-monitor-bananas.version>1.0.1</fission-monitor-bananas.version>
         <fission-compression.version>1.0.1</fission-compression.version>
         <fission-api.version>1.0.3</fission-api.version>
-        <jackson.version>2.10.2</jackson.version>
     </properties>
     
     <dependencies>

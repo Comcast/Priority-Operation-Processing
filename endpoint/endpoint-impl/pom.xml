@@ -25,10 +25,8 @@
         <accelerate-filter-handler-api.version>1.0.1</accelerate-filter-handler-api.version>
         <ldap-filter-api.version>1.0.1</ldap-filter-api.version>
         <http-request-handler-api.version>1.0.2</http-request-handler-api.version>
-        <commons-http-client.version>3.1</commons-http-client.version>
         <endpoint-api.version>1.0.3</endpoint-api.version>
         <fission-queue-api.version>1.0.2</fission-queue-api.version>
-        <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>

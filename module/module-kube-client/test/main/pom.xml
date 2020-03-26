@@ -16,7 +16,6 @@
 
     <properties>
         <kubeclient-version>1.0.3</kubeclient-version>
-        <jackson.version>2.10.2</jackson.version>
         <failsafe.version>2.0.1</failsafe.version>
         <skipITTests>true</skipITTests>
         <test-suite>testng.xml</test-suite>
