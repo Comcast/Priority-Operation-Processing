@@ -8,17 +8,13 @@
         </layout>
     </appender>
 
-    <appender name="syslogServiceAppender" class="com.cts.modules.logging.MillisSyslogAppender">
-        <filter class="com.theplatform.module.logging.extension.logback.filter.LevelMatchFilter" />
-        <syslogHost>syslog.logging</syslogHost>
-        <facility>local0</facility>
-        <port>514</port>
-
-        <throwableExcluded>true</throwableExcluded>
-        <suffixPattern>fhpr {"index": "service", "ccds_cluster_title": "${ccds-coordinates}", "type": "fhpr-cron", "event": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X{CID} %-5p[%t] %c: %replace(%replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}){'(?=[\"\\])', '\\'}%replace( %replace(%xException){'(?=[\"\\])', '\\'} ){'\n', '\\n'}"}%n</suffixPattern>
+    <appender name="syslogServiceAppender" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>localhost</syslogHost>
+        <facility>LOCAL0</facility>
+        <suffixPattern>%thread: %-5level %logger{36} - %msg%n</suffixPattern>
     </appender>
 
-    <appender name="asyncLogAppender" class="com.theplatform.module.logging.extension.logback.appender.AsyncAppender">
+    <appender name="asyncLogAppender" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="syslogServiceAppender" />
     </appender>
 
