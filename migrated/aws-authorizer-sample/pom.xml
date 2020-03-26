@@ -1,0 +1,172 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.fission</groupId>
+        <artifactId>fission-root</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.fission.authorizer</groupId>
+    <artifactId>fission-authorizer-sample-aws</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Sample Authorizer for Fission AWS compatible zip package suitable for Lambda</name>
+
+    <properties>
+        <jackson.version>2.9.4</jackson.version>
+        <aws.java.jdk>1.11.100</aws.java.jdk>
+        <aws.lambda.version>1.1.0</aws.lambda.version>
+        <commons-io.version>2.5</commons-io.version>
+        <commons-http.version>3.1</commons-http.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <pl-exception.version>1.5.0</pl-exception.version>
+        <fission-version-info.version>1.0.1</fission-version-info.version>
+        <http-api.version>1.0.2</http-api.version>
+        <http-utils.version>1.0.2</http-utils.version>
+        <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
+        <endpoint-api.version>1.0.3</endpoint-api.version>
+        <mpx-authorizer.version>1.2.1</mpx-authorizer.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-version-info</artifactId>
+            <version>${fission-version-info.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-http-api</artifactId>
+            <version>${http-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-base-aws</artifactId>
+            <version>${endpoint-base-aws.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-http-util</artifactId>
+            <version>${http-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+
+        <!-- AWS Dependencies -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws.lambda.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-lambda</artifactId>
+            <version>${aws.java.jdk}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws.java.jdk}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-api</artifactId>
+            <version>${endpoint-api.version}</version>
+        </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http.version}</version>
+        </dependency>
+
+
+        <!-- Test -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.52</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!--  Note: Normally, this plugin would be run using
+                "mvn compile assembly:single" but the execution
+                clause below binds it to the normal 'package' lifecycle phase
+                -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/lambda_deployment_package_assembly.xml</descriptor>
+                    </descriptors>
+                    <finalName>${artifactId}-${pom.version}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>lambda_deployment_package_execution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.theplatform.plugins</groupId>
+                <artifactId>buildproperty-plugin</artifactId>
+                <configuration>
+                    <service>true</service>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>buildprops</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>plbuild-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

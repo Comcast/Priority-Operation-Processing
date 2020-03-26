@@ -34,6 +34,7 @@
             "default": "Lambdas"
           },
           "Parameters": [
+            "LambdaRefPathFissionAuthorizer",
             "LambdaRefPathUnified",
             "LambdaRefPathRetryCallback",
             "LambdaRefPathTaskCallback",
@@ -122,6 +123,10 @@
       "Type": "String",
       "Default": "fission"
     },
+    "AuthorizerRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.authorizer"
+    },    
     "CallbackRole": {
       "Type": "String",
       "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Callback.trigger"
@@ -142,6 +147,10 @@
       "Type": "String",
       "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Reclaimer.app"
     },
+    "LambdaRefPathFissionAuthorizer": {
+      "Type": "String",
+      "Default": "deploy/fission-authorizer-sample-aws-1.0.0.zip"
+    },    
     "LambdaRefPathUnified": {
       "Type": "String",
       "Default": "deploy/fission-endpoint-impl-aws-1.0.1-lambda_deployment_package_assembly.zip"
@@ -1839,6 +1848,18 @@
         }
       }
     },
+    "FissionAuthorizerLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "FissionAuthorizerLambda"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },    
     "SchedulingMasterLambdaAlias": {
       "Type": "AWS::Lambda::Alias",
       "Properties": {
@@ -1928,7 +1949,11 @@
           ]
         },
         "StartingPosition": "LATEST"
-      }
+      },
+      "DependsOn": [
+        "RetryCallback",
+        "ProgressAgendaDynamoDB"
+      ]
     },
     "RestApi": {
       "Type": "AWS::ApiGateway::RestApi",
@@ -1938,6 +1963,68 @@
         }
       }
     },
+    "FissionAuthorizerLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathFissionAuthorizer"
+          }
+        },
+        "MemorySize": 256,
+        "Role": {
+          "Ref": "AuthorizerRole"
+        },
+        "Handler": "com.cts.authorizer.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "FISSION_USER_ID": "123456",
+            "FISSION_USER": "fission_admin",
+            "FISSION_ACCOUNTS": "*"
+          }
+        }
+      }
+    },
+    "FissionAuthorizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "Name": "FissionAuthorizer",
+        "Type": "REQUEST",
+        "AuthorizerResultTtlInSeconds": "0",
+        "AuthorizerUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "FissionAuthorizerLambda",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              },
+              "/invocations"
+            ]
+          ]
+        },
+        "IdentitySource": "method.request.header.Authorization",
+        "RestApiId": {
+          "Ref": "RestApi"
+        }
+      }
+    },    
     "RootApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -2079,7 +2166,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2136,7 +2226,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2301,7 +2394,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2358,7 +2454,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2523,7 +2622,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2580,7 +2682,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2745,7 +2850,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2802,7 +2910,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -2967,7 +3078,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3022,7 +3136,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3283,7 +3400,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3338,7 +3458,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3393,7 +3516,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3491,7 +3617,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3589,7 +3718,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3644,7 +3776,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3699,7 +3834,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3754,7 +3892,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -3943,7 +4084,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -4108,7 +4252,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -4163,7 +4310,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -4218,7 +4368,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -4273,7 +4426,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
-        "AuthorizationType": "None",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "FissionAuthorizer"
+        },
         "RestApiId": {
           "Ref": "RestApi"
         },
@@ -5739,6 +5895,92 @@
       },
       "DependsOn": [
         "UnifiedLambdaAlias"
+      ]
+    },
+    "AuthorizerLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "FissionAuthorizerLambda",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/authorizers/",
+              {
+                "Ref": "FissionAuthorizer"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "AuthorizerLambdaAliasInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "FissionAuthorizerLambda",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/authorizers/",
+              {
+                "Ref": "FissionAuthorizer"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "FissionAuthorizerLambda"
       ]
     }
   }

@@ -21,6 +21,7 @@
     </properties>
 
     <modules>
+        <module>aws-authorizer-sample</module>
         <module>agenda-reclaimer-aws</module>
         <module>agenda-reclaimer-impl</module>
         <module>dfh-module-object-api</module>
