@@ -16,14 +16,14 @@
         <cp-api.version>1.0.3</cp-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <executor-handler-api.version>1.0.3</executor-handler-api.version>
-        <dfh-docker.version>1.0.1</dfh-docker.version>
+        <fission-docker.version>1.0.2</fission-docker.version>
         <jackson.version>2.10.2</jackson.version>
 
         <handler-base.version>1.0.3</handler-base.version>
-        <dfh-fabric8-kube-client.version>1.0.4</dfh-fabric8-kube-client.version>
+        <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
         <handler-kubernetes-support.version>1.0.2</handler-kubernetes-support.version>
         <fission-http-api.version>1.0.2</fission-http-api.version>
-        <dfh-http-util.version>1.0.2</dfh-http-util.version>
+        <fission-http-util.version>1.0.2</fission-http-util.version>
         <json-helper.version>1.0.2</json-helper.version>
         <fission-endpoint-client.version>1.0.3</fission-endpoint-client.version>
 
@@ -32,8 +32,8 @@
         <ldap-filter.version>1.0.3</ldap-filter.version>
         <accelerate-filter-handler.version>1.0.3</accelerate-filter-handler.version>
 
-        <dfh-monitor.version>1.0.1-SNAPSHOT</dfh-monitor.version>
-        <dfh-monitor-graphite.version>1.0.1-SNAPSHOT</dfh-monitor-graphite.version>
+        <fission-monitor.version>1.0.1</fission-monitor.version>
+        <fission-monitor-graphite.version>1.0.1</fission-monitor-graphite.version>
 
         <commons-collections4.version>4.3</commons-collections4.version>
     </properties>
@@ -63,9 +63,9 @@
 
         <!-- Launcher modules -->
         <dependency>
-            <groupId>com.theplatform.modules</groupId>
-            <artifactId>pl-dfh-docker</artifactId>
-            <version>${dfh-docker.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-docker</artifactId>
+            <version>${fission-docker.version}</version>
         </dependency>
 
         <dependency>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-http-util</artifactId>
-            <version>${dfh-http-util.version}</version>
+            <version>${fission-http-util.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-kube-client-fabric8</artifactId>
-            <version>${dfh-fabric8-kube-client.version}</version>
+            <version>${fission-fabric8-kube-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
@@ -110,22 +110,22 @@
 
         <!-- Monitoring -->
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor</artifactId>
-            <version>${dfh-monitor.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-monitor</artifactId>
+            <version>${fission-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor-graphite</artifactId>
-            <version>${dfh-monitor-graphite.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-monitor-graphite</artifactId>
+            <version>${fission-monitor-graphite.version}</version>
         </dependency>
 
         <!-- Logging -->
-        <dependency>
-            <groupId>com.theplatform.modules</groupId>
-            <artifactId>pl-logging-extension-logback</artifactId>
-            <version>${logging-extension.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.comcast.fission.module</groupId>-->
+<!--            <artifactId>pl-logging-extension-logback</artifactId>-->
+<!--            <version>${logging-extension.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -154,12 +154,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.cts.modules</groupId>
-            <artifactId>millis-syslog-appender</artifactId>
-            <version>0.1.1</version>
-        </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -221,22 +215,6 @@
                                 </filter>
                             </filters>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.theplatform.plugins</groupId>
-                <artifactId>buildproperty-plugin</artifactId>
-                <configuration>
-                    <service>true</service>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>buildprops</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>plbuild-properties</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

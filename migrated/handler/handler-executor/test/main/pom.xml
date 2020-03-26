@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.comcast.fission.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
+        <artifactId>fission-build-parent</artifactId>
         <version>1.0.7</version>
     </parent>
 
@@ -16,7 +16,7 @@
     <description>Executor Functional Tests</description>
 
     <properties>
-        <dfh-fabric8-kube-client.version>1.0.0</dfh-fabric8-kube-client.version>
+        <fission-fabric8-kube-client.version>1.0.0</fission-fabric8-kube-client.version>
         <json-helper.version>1.0.0</json-helper.version>
         <commons-io.version>2.5</commons-io.version>
         <spring-version>3.0.7.RELEASE</spring-version>
@@ -31,19 +31,19 @@
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.cp</groupId>
-            <artifactId>pl-dfh-kube-client-fabric8</artifactId>
-            <version>${dfh-fabric8-kube-client.version}</version>
+            <artifactId>fission-kube-client-fabric8</artifactId>
+            <version>${fission-fabric8-kube-client.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.theplatform.test.modules.listener</groupId>
-            <artifactId>pl-test-listener</artifactId>
-            <version>1.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.theplatform.test.modules.listener</groupId>-->
+<!--            <artifactId>pl-test-listener</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
@@ -72,11 +72,11 @@
             <version>${spring-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.theplatform.test.modules</groupId>
-            <artifactId>pl-test-resource-reader</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.theplatform.test.modules</groupId>-->
+<!--            <artifactId>pl-test-resource-reader</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
