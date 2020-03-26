@@ -166,18 +166,6 @@
             <version>1.7.25</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.comcast.fission.module</groupId>-->
-<!--            <artifactId>pl-logging-extension-logback</artifactId>-->
-<!--            <version>${logging-extension.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.cts.modules</groupId>-->
-<!--            <artifactId>millis-syslog-appender</artifactId>-->
-<!--            <version>0.1.1</version>-->
-<!--        </dependency>-->
-
         <!--testing-->
         <dependency>
             <groupId>org.assertj</groupId>
