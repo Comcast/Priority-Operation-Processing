@@ -1,42 +1,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.theplatform.dfh.build</groupId>
-        <artifactId>pl-dfh-build-parent</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.fission.module</groupId>
+        <artifactId>fission-monitor-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.theplatform.dfh.cp</groupId>
-    <artifactId>pl-dfh-monitor-graphite</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <artifactId>fission-monitor</artifactId>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
-    <name>graphite metrics</name>
+    <name>Alerting monitors</name>
 
     <properties>
         <commons-http.version>3.1</commons-http.version>
         <commons-lang3.version>3.1</commons-lang3.version>
-        <dfh-monitor.version>1.0.0</dfh-monitor.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <codahale-metrics.version>3.0.2</codahale-metrics.version>
     </properties>
     
     <dependencies>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
             <version>${codahale-metrics.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>${commons-http.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
         </dependency>
 
         <dependency>

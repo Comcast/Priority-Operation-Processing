@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
-            <artifactId>pl-dfh-command-builder</artifactId>
+            <artifactId>fission-command-builder</artifactId>
             <version>${fission-command-builder.version}</version>
             <scope>provided</scope>
         </dependency>

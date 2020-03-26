@@ -51,33 +51,33 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>com.theplatform.maven.plugins</groupId>
-                <artifactId>docker-image-plugin</artifactId>
-                <version>1.0.1</version>
-                <configuration>
-                    <ccdsService>fhpr</ccdsService>
-                    <applicationType>application</applicationType>
-                    <dockerRepository>${env.DOCKER_LAB}</dockerRepository>
-                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>
-                    <appMainClass>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</appMainClass>
-                </configuration>
-                <!-- bind to build phases because Maven doesn't -->
-                <executions>
-                    <execution>
-                        <id>clean</id>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>build</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.theplatform.maven.plugins</groupId>-->
+<!--                <artifactId>docker-image-plugin</artifactId>-->
+<!--                <version>1.0.1</version>-->
+<!--                <configuration>-->
+<!--                    <ccdsService>fhpr</ccdsService>-->
+<!--                    <applicationType>application</applicationType>-->
+<!--                    <dockerRepository>${env.DOCKER_LAB}</dockerRepository>-->
+<!--                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>-->
+<!--                    <appMainClass>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</appMainClass>-->
+<!--                </configuration>-->
+<!--                &lt;!&ndash; bind to build phases because Maven doesn't &ndash;&gt;-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>clean</id>-->
+<!--                        <goals>-->
+<!--                            <goal>clean</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>build</id>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -85,7 +85,7 @@
                 <configuration>
                     <signature>
                         <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>${java.signature.artifactId}</artifactId>
+                        <artifactId>1.8</artifactId>
                         <version>1.0</version>
                     </signature>
                 </configuration>

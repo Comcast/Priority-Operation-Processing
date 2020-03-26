@@ -19,20 +19,20 @@
         <queue-api.version>1.0.2</queue-api.version>
         <endpoint-client.version>1.0.3</endpoint-client.version>
         <cp-api.version>1.0.3</cp-api.version>
-        <dfh-monitor.version>1.0.1-SNAPSHOT</dfh-monitor.version>
-        <dfh-monitor-graphite.version>1.0.1-SNAPSHOT</dfh-monitor-graphite.version>
+        <fission-monitor.version>1.0.1</fission-monitor.version>
+        <fission-monitor-graphite.version>1.0.1</fission-monitor-graphite.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor</artifactId>
-            <version>${dfh-monitor.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-monitor</artifactId>
+            <version>${fission-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor-graphite</artifactId>
-            <version>${dfh-monitor-graphite.version}</version>
+            <groupId>com.comcast.fission.module</groupId>
+            <artifactId>fission-monitor-graphite</artifactId>
+            <version>${fission-monitor-graphite.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>

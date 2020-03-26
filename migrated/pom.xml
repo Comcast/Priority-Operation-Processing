@@ -23,7 +23,6 @@
     <modules>
         <module>agenda-reclaimer-aws</module>
         <module>agenda-reclaimer-impl</module>
-        <module>dfh-module-object-api</module>
         <module>data-object-reaper-aws</module>
         <module>module</module>
         <!--<module>module-command-builder</module>-->
