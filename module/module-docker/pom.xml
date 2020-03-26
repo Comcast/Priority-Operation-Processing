@@ -43,6 +43,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.60</version>
+        </dependency>
+        <dependency>
             <!-- http://stackoverflow.com/questions/23957409/ava-lang-illegalaccesserror-tried-to-access-method-com-google-common-collect-ma -->
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

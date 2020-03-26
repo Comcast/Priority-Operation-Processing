@@ -15,7 +15,7 @@
     <properties>
         <commons-http.version>3.1</commons-http.version>
         <commons-lang3.version>3.1</commons-lang3.version>
-        <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <codahale-metrics.version>3.0.2</codahale-metrics.version>
     </properties>
     

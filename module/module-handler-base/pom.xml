@@ -19,7 +19,7 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
-        <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
     </properties>
 

@@ -7,7 +7,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-persistence-impl</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
@@ -17,7 +16,7 @@
         <persistence-api.version>1.0.3</persistence-api.version>
         <fission-object-api.version>1.0.2</fission-object-api.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
-        <apache.commons.beanutils>1.9.3</apache.commons.beanutils>
+        <apache.commons.beanutils>1.9.4</apache.commons.beanutils>
     </properties>
 
     <dependencies>
