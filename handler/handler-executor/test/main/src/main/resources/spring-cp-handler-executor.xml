@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:${propFile:test.properties}" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+
+    <bean id="kubeConfig"
+          class="com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig">
+        <property name="nameSpace" value="${dfh.kubernetes.kubernatesNameSpace}" />
+        <property name="masterUrl" value="${dfh.kubernetes.kubernetesMasterUrl}" />
+    </bean>
+
+    <bean id="podConfig" class="com.theplatform.dfh.cp.modules.kube.client.config.PodConfig">
+        <property name="pullAlways" value="true"/>
+        <property name="cpuMaxRequestCount" value="${dfh.kubernetes.podconfig.cpuRequestCount}" />
+        <property name="cpuMinRequestCount" value="${dfh.kubernetes.podconfig.cpuMinRequestCount}" />
+        <property name="memoryRequestCount" value="${dfh.kubernetes.podconfig.memoryRequestCount}" />
+        <property name="reapCompletedPods" value="${dfh.kubernetes.podconfig.reapCompletedPods}" />
+        <property name="podScheduledTimeoutMs" value="${dfh.kubernetes.podconfig.podScheduledTimeoutMs}" />
+        <property name="imageName" value="${dfh.kubernetes.podconfig.imageName}"/>
+        <property name="namePrefix" value="${dfh.kubernetes.podconfig.namePrefix}"/>
+        <property name="endOfLogIdentifier" value="${dfh.kubernetes.podconfig.endOfLogIdentifier}"/>
+        <property name="serviceAccountName" value="${dfh.kubernetes.podconfig.serviceAccountName}"/>
+        <property name="aliveCheckDetails">
+            <bean class="com.theplatform.dfh.cp.modules.kube.client.config.AliveCheckDetails">
+                <property name="alivePath" value="${dfh.kubernetes.podconfig.alivecheck.path}" />
+                <property name="aliveCheckHost" value="${dfh.kubernetes.podconfig.alivecheck.host}" />
+                <property name="aliveCheckLinking" value="${dfh.kubernetes.podconfig.alivecheck.linking}" />
+                <property name="alivePort" value="${dfh.kubernetes.podconfig.alivecheck.port}" />
+            </bean>
+        </property>
+        <property name="nfsDetails">
+            <bean class="com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails">
+                <property name="nfsMountPaths"><util:list value-type="java.lang.String"/></property>
+            </bean>
+        </property>
+        <property name="configMapDetails" ref="configMapDetails"/>
+    </bean>
+
+    <bean id="configMapDetails" class="com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails">
+        <property name="volumeName" value="config-volume"/>
+        <property name="volumeMountPath" value="/config"/>
+        <property name="mapPath" value="external.properties"/>
+        <property name="mapKey" value="external-properties"/>
+        <property name="configMapName" value="${dfh.kubernetes.podconfig.configmap.name}"/>
+    </bean>
+
+</beans>
