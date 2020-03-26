@@ -26,7 +26,6 @@
         <fission-api.version>1.0.3</fission-api.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
         <persistence-api.version>1.0.3</persistence-api.version>
-        <jackson.version>2.10.2</jackson.version>
     </properties>
 
     <dependencies>

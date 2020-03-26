@@ -21,8 +21,6 @@
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
-        <jackson.databind.version>2.10.2</jackson.databind.version>
-        <jackson.version>2.7.4</jackson.version>
     </properties>
 
     <dependencies>

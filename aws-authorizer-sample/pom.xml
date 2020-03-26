@@ -14,11 +14,9 @@
     <name>Sample Authorizer for Fission AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <jackson.version>2.9.4</jackson.version>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <commons-io.version>2.5</commons-io.version>
-        <commons-http.version>3.1</commons-http.version>
         <commons-lang.version>2.6</commons-lang.version>
         <pl-exception.version>1.5.0</pl-exception.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
