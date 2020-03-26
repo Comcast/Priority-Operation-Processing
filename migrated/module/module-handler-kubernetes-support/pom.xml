@@ -73,11 +73,5 @@
             <version>${fission-monitor-graphite.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.theplatform.dfh.cp</groupId>
-            <artifactId>pl-dfh-monitor-bananas</artifactId>
-            <version>${fission-monitor-bananas.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

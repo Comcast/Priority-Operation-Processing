@@ -54,8 +54,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.theplatform.dfh.cp.api</groupId>
-            <artifactId>pl-dfh-cp-api</artifactId>
+            <groupId>com.comcast.fission</groupId>
+            <artifactId>fission-api</artifactId>
             <version>${cp-api.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -71,22 +71,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.theplatform.plugins</groupId>
-        <artifactId>buildproperty-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>buildprops</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>plbuild-properties</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <service>true</service>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>

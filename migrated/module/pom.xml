@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <!--<module>module-command-builder</module>-->
         <module>module-compression</module>
         <module>module-content-processing-api</module>
         <module>module-handler-base</module>
