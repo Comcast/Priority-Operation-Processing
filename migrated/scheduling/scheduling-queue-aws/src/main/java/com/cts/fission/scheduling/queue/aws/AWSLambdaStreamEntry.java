@@ -46,9 +46,6 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String ENV_IDM_ENCRYPTED_PASS = "IDM_ENCRYPTED_PASS";
-    private final String ENV_IDM_USER = "IDM_USER";
-    private final String ENV_IDENTITY_URL = "IDENTITY_URL";
     private final String ENV_ENDPOINT_URL = "ENDPOINT_URL";
     private final String ENV_INSIGHT_ENDPOINT_PATH = "INSIGHT_ENDPOINT_PATH";
     private final String ENV_CUSTOMER_ENDPOINT_PATH = "CUSTOMER_ENDPOINT_PATH";
@@ -173,15 +170,6 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
     private HttpURLConnectionFactory getHttpURLConnectionFactory() throws BadRequestException
     {
-        String identityUrl = getEnvironmentVar(ENV_IDENTITY_URL);
-        String user = getEnvironmentVar(ENV_IDM_USER);
-        String encryptedPass = environmentLookupUtils.getEncryptedVarFromEnvironment(ENV_IDM_ENCRYPTED_PASS);
-
-        /** prior used a different client
-        EncryptedAuthenticationClient encryptedAuthenticationClient = new EncryptedAuthenticationClient(identityUrl, user, encryptedPass, null);
-
-        return new IDMHTTPUrlConnectionFactory(encryptedAuthenticationClient);
-         **/
         return new NoAuthHTTPUrlConnectionFactory();
     }
 

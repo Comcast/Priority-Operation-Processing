@@ -35,9 +35,6 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
 {
     private static Logger logger = LoggerFactory.getLogger(ExecutorContextFactory.class);
 
-    public static final String IDM_URL_FIELD = "idm.url";
-    public static final String IDM_USER = "idm.service.user.name";
-    public static final String IDM_ENCRYPTED_PASS = "idm.service.user.encryptedpass";
     public static final String AGENDA_PROGRESS_CONNECTION_TIMEOUT = "agenda.progress.connection.timeout";
     public static final String AGENDA_PROGRESS_URL = "agenda.progress.url";
     public static final String AGENDA_PROGRESS_PROXY_HOST = "agenda.progress.proxy.host";
