@@ -1,11 +1,14 @@
 {
   "actions": [
     {
-      "action": "log",
+      "action": "externalExecute",
       "paramsMap": {
-        "sleepMilliseconds": 4000,
-        "logMessage": "This is a custom log message",
-        "exceptionMessage": "This is a custom exception message."
+        "externalArgs": [
+          "ash",
+          "-c",
+          "ls",
+          "-la"
+        ]
       }
     }
   ],

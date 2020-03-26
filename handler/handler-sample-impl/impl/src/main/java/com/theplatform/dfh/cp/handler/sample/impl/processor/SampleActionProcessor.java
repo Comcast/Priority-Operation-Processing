@@ -3,13 +3,18 @@ package com.theplatform.dfh.cp.handler.sample.impl.processor;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.processor.BaseJsonOperationProcessor;
 import com.theplatform.dfh.cp.handler.base.progress.reporter.operation.OperationProgressReporter;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactoryImpl;
+import com.theplatform.dfh.cp.handler.kubernetes.support.config.NfsDetailsFactoryImpl;
 import com.theplatform.dfh.cp.handler.sample.api.ActionParameters;
 import com.theplatform.dfh.cp.handler.sample.api.SampleAction;
+import com.theplatform.dfh.cp.handler.sample.api.SampleActions;
 import com.theplatform.dfh.cp.handler.sample.api.SampleInput;
 import com.theplatform.dfh.cp.handler.sample.impl.action.ActionMap;
 import com.theplatform.dfh.cp.handler.sample.impl.action.BaseAction;
+import com.theplatform.dfh.cp.handler.sample.impl.action.ExternalExecuteAction;
 import com.theplatform.dfh.cp.handler.sample.impl.context.OperationContext;
-import com.theplatform.dfh.cp.handler.sample.impl.exception.DfhSampleException;
+import com.theplatform.dfh.cp.handler.sample.impl.exception.FissionSampleHandlerException;
+import com.theplatform.dfh.cp.handler.sample.impl.executor.kubernetes.KubernetesExternalExecutorFactory;
 import com.theplatform.dfh.cp.handler.sample.impl.progress.SampleJobInfo;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
@@ -37,6 +42,8 @@ public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInpu
     @Override
     protected void execute(SampleInput sampleInput)
     {
+        appendAdditionalActions();
+
         // load prior progress
         SampleJobInfo sampleJobInfo = loadPriorProgress();
         if(sampleJobInfo != null)
@@ -66,6 +73,16 @@ public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInpu
         }
     }
 
+    protected void appendAdditionalActions()
+    {
+        // TODO: add others, detect if local vs. not (etc!)
+        actionMap.addAction(SampleActions.externalExecute.name(),
+            new ExternalExecuteAction(new KubernetesExternalExecutorFactory(
+                new KubeConfigFactoryImpl(launchDataWrapper),
+                new NfsDetailsFactoryImpl(launchDataWrapper)),
+                launchDataWrapper));
+    }
+
     protected SampleJobInfo loadPriorProgress()
     {
         return operationContext.getLaunchDataWrapper().getLastOperationProgressParam(SampleJobInfo.PARAM_NAME, SampleJobInfo.class);
@@ -89,7 +106,7 @@ public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInpu
         }
         else
         {
-            throw new DfhSampleException(String.format("Invalid action specified: %1$s", sampleAction.getAction()));
+            throw new FissionSampleHandlerException(String.format("Invalid action specified: %1$s", sampleAction.getAction()));
         }
     }
 

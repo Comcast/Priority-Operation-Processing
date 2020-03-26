@@ -4,9 +4,9 @@ import com.theplatform.dfh.cp.handler.base.field.retriever.api.NamedField;
 
 public enum KubeConfigField implements NamedField
 {
-    MASTER_URL("cp.kubernetes.masterUrl"),
-    NAMESPACE("cp.kubernetes.namespace"),
-    ZONE("cp.kubernetes.zone");
+    MASTER_URL("fission.kubernetes.masterUrl"),
+    NAMESPACE("fission.kubernetes.namespace"),
+    ZONE("fission.kubernetes.zone");
 
     private final String fieldName;
 

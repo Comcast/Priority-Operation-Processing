@@ -22,7 +22,12 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<OperationContext, S
     /**
      * Local/IDEA non-docker execution prerequisites:
      * - debugging/running with a local-only build use these args (will definitely need to adjust the payload.json accordingly):
-     * -launchType local -propFile ./package/local/config/external.properties -payloadFile ./package/local/payload.json
+     * -launchType local -externalLaunchType local -propFile ./handler/handler-sample-impl/package/local/config/external.properties -payloadFile ./handler/handler-sample-impl/package/local/payload.json
+     *
+     * (to specify auth token files) For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
+     *
+     * Local handler / Kubernetes external execution
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-sample-impl/package/local/config/external.properties -payloadFile ./handler/handler-sample-impl/package/local/payload.json
      *
      * @param args command line args
      */

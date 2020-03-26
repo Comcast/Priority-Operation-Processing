@@ -5,3 +5,4 @@ target/
 .idea/
 .DS_Store
 ._*
+dependency-reduced-pom.xml
