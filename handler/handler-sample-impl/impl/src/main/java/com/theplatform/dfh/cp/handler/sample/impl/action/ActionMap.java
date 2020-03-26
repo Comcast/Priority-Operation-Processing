@@ -15,6 +15,11 @@ public class ActionMap
         ACTION_MAP.put(SampleActions.log.name(), new LogAction());
     }
 
+    public void addAction(String actionName, BaseAction action)
+    {
+        ACTION_MAP.put(actionName, action);
+    }
+
     public BaseAction getAction(String actionName)
     {
         return ACTION_MAP.get(actionName);

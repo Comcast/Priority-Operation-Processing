@@ -4,6 +4,7 @@ public class ActionParameters
 {
     private Long sleepMilliseconds;
     private String logMessage;
+    private String[] externalArgs;
     private String exceptionMessage;
 
     public Long getSleepMilliseconds()
@@ -24,6 +25,16 @@ public class ActionParameters
     public void setLogMessage(String logMessage)
     {
         this.logMessage = logMessage;
+    }
+
+    public String[] getExternalArgs()
+    {
+        return externalArgs;
+    }
+
+    public void setExternalArgs(String[] parameters)
+    {
+        this.externalArgs = parameters;
     }
 
     public String getExceptionMessage()
