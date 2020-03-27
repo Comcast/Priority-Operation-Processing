@@ -33,10 +33,10 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
-        endpointHandlers.put("/fission/idm/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/resourcepool/service/updateAgenda", new UpdateAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/resourcepool/service/getAgenda", new GetAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/resourcepool/service/createAgenda", new CreateAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/resourcepool/service/updateAgendaProgress", new UpdateAgendaProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/resourcepool/service/updateAgenda", new UpdateAgendaLambdaStreamEntry());
     }
 
     @Override

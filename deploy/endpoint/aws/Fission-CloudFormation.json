@@ -1446,7 +1446,7 @@
                   {
                     "Ref": "ApiStageEnv"
                   },
-                  "/fission/idm/agenda/service"
+                  "/fission/agenda/service"
                 ]
               ]
             }
@@ -1501,7 +1501,7 @@
         ],
         "Environment": {
           "Variables": {
-            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/idm/resourcepool",
+            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/resourcepool",
             "RESOURCEPOOL_LAMBDA_LAUNCH_LIST": {
               "Fn::Join": [
                 ",",
@@ -1581,9 +1581,9 @@
         ],
         "Environment": {
           "Variables": {
-            "CUSTOMER_ENDPOINT_PATH": "/fission/idm/customer",
-            "INSIGHT_ENDPOINT_PATH": "/fission/idm/insight",
-            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/idm/resourcepool",
+            "CUSTOMER_ENDPOINT_PATH": "/fission/customer",
+            "INSIGHT_ENDPOINT_PATH": "/fission/insight",
+            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/resourcepool",
             "INSIGHT_SCHEDULING_INFO_TABLE": {
               "Ref": "TableNameInsightScheduling"
             },
@@ -1657,8 +1657,8 @@
         ],
         "Environment": {
           "Variables": {
-            "INSIGHT_ENDPOINT_PATH": "/fission/idm/insight",
-            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/idm/resourcepool",
+            "INSIGHT_ENDPOINT_PATH": "/fission/insight",
+            "RESOURCEPOOL_ENDPOINT_PATH": "/fission/resourcepool",
             "INSIGHT_SCHEDULING_INFO_TABLE": {
               "Ref": "TableNameInsightScheduling"
             },
@@ -1801,7 +1801,7 @@
                   {
                     "Ref": "ApiStageEnv"
                   },
-                  "/fission/idm/progress/agenda"
+                  "/fission/progress/agenda"
                 ]
               ]
             }
@@ -2040,18 +2040,6 @@
         "PathPart": "fission"
       }
     },
-    "IDMApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RestApi"
-        },
-        "ParentId": {
-          "Ref": "RootApiResource"
-        },
-        "PathPart": "idm"
-      }
-    },
     "AgendaTemplateApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -2059,7 +2047,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "agendatemplate"
       }
@@ -2287,7 +2275,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "customer"
       }
@@ -2515,7 +2503,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "insight"
       }
@@ -2743,7 +2731,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "resourcepool"
       }
@@ -2971,7 +2959,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "transform"
       }
@@ -3197,7 +3185,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "agenda"
       }
@@ -3953,7 +3941,7 @@
           "Ref": "RestApi"
         },
         "ParentId": {
-          "Ref": "IDMApiResource"
+          "Ref": "RootApiResource"
         },
         "PathPart": "progress"
       }
@@ -5089,7 +5077,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/resourcepool"
+              "/*/*/fission/resourcepool"
             ]
           ]
         }
@@ -5136,7 +5124,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/resourcepool/*"
+              "/*/*/fission/resourcepool/*"
             ]
           ]
         }
@@ -5183,7 +5171,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/transform"
+              "/*/*/fission/transform"
             ]
           ]
         }
@@ -5230,7 +5218,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/transform/*"
+              "/*/*/fission/transform/*"
             ]
           ]
         }
@@ -5277,7 +5265,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/agenda"
+              "/*/*/fission/agenda"
             ]
           ]
         }
@@ -5324,7 +5312,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/agenda/*"
+              "/*/*/fission/agenda/*"
             ]
           ]
         }
@@ -5371,7 +5359,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/agendatemplate"
+              "/*/*/fission/agendatemplate"
             ]
           ]
         }
@@ -5418,7 +5406,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/agendatemplate/*"
+              "/*/*/fission/agendatemplate/*"
             ]
           ]
         }
@@ -5465,7 +5453,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/progress/operation"
+              "/*/*/fission/progress/operation"
             ]
           ]
         }
@@ -5512,7 +5500,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/progress/operation/*"
+              "/*/*/fission/progress/operation/*"
             ]
           ]
         }
@@ -5559,7 +5547,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/resourcepool/service/*"
+              "/*/*/fission/resourcepool/service/*"
             ]
           ]
         }
@@ -5606,7 +5594,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/customer"
+              "/*/*/fission/customer"
             ]
           ]
         }
@@ -5653,7 +5641,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/customer/*"
+              "/*/*/fission/customer/*"
             ]
           ]
         }
@@ -5700,7 +5688,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/insight"
+              "/*/*/fission/insight"
             ]
           ]
         }
@@ -5747,7 +5735,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/insight/*"
+              "/*/*/fission/insight/*"
             ]
           ]
         }
@@ -5794,7 +5782,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/progress/agenda"
+              "/*/*/fission/progress/agenda"
             ]
           ]
         }
@@ -5841,7 +5829,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/progress/agenda/*"
+              "/*/*/fission/progress/agenda/*"
             ]
           ]
         }
@@ -5888,7 +5876,7 @@
               {
                 "Ref": "RestApi"
               },
-              "/*/*/fission/idm/progress/agenda/service"
+              "/*/*/fission/progress/agenda/service"
             ]
           ]
         }

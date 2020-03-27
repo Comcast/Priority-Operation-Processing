@@ -27,7 +27,7 @@ public class AWSLambdaStreamEntryLiveTest
         final String STAGE_ID = "dev";
         final Map<String, String> envVars = new HashMap<>();
         envVars.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://g9solclg15.execute-api.us-west-2.amazonaws.com");
-        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
+        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/fission/resourcepool");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         EnvironmentFacade environmentFacade = new EnvironmentFacade()
