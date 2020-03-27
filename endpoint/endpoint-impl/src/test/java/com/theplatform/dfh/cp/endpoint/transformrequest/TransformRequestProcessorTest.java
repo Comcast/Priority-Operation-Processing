@@ -7,16 +7,12 @@ import com.theplatform.dfh.cp.api.params.GeneralParamKey;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.endpoint.AbstractRequestProcessorTest;
-import com.theplatform.dfh.cp.endpoint.agenda.factory.AgendaFactory;
 import com.theplatform.dfh.cp.endpoint.agenda.service.IgniteAgendaServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.validation.TransformValidator;
-import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
 import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
@@ -87,7 +83,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
 
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
         //the progress request processor only called now for the exec progress
         verify(mockAgendaProgressRequestProcessor, times(1)).handlePOST(any());
@@ -113,7 +109,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
 
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
         verify(mockAgendaProgressRequestProcessor, times(0)).handlePOST(any());
         TransformRequest responseObject = objectPersistResponse.getFirst();
@@ -138,7 +134,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(objectPersistResponse.isError());
@@ -169,7 +165,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(objectPersistResponse.isError());
@@ -195,7 +191,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         DefaultDataObjectRequest<TransformRequest> request = new DefaultDataObjectRequest<>();
         request.setDataObject(transformRequest);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<TransformRequest> objectPersistResponse = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(objectPersistResponse.isError());
@@ -210,7 +206,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         setupAgendaTemplateClientMock(idAgendaTemplate, null);
         TransformRequest transformRequest = new TransformRequest();
         transformRequest.setAgendaTemplateId("theId");
-        Assert.assertEquals(((TransformRequestProcessor)getRequestProcessor(getPersister())).retrieveAgendaTemplate(new MPXAuthorizationResponseBuilder().withSuperUser(true).build(),transformRequest, null).getFirst(), idAgendaTemplate);
+        Assert.assertEquals(((TransformRequestProcessor)getRequestProcessor(getPersister())).retrieveAgendaTemplate(new AuthorizationResponseBuilder().withSuperUser(true).build(),transformRequest, null).getFirst(), idAgendaTemplate);
         verify(mockAgendaTemplateClient, times(1)).handleGET(any());
     }
 
@@ -220,7 +216,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         setupAgendaTemplateClientMock(null, nameAgendaTemplate);
         TransformRequest transformRequest = new TransformRequest();
         transformRequest.setAgendaTemplateTitle("theName");
-        Assert.assertEquals(((TransformRequestProcessor)getRequestProcessor(getPersister())).retrieveAgendaTemplate(new MPXAuthorizationResponseBuilder().withSuperUser(true).build(),transformRequest, null).getFirst(), nameAgendaTemplate);
+        Assert.assertEquals(((TransformRequestProcessor)getRequestProcessor(getPersister())).retrieveAgendaTemplate(new AuthorizationResponseBuilder().withSuperUser(true).build(),transformRequest, null).getFirst(), nameAgendaTemplate);
         verify(mockAgendaTemplateClient, times(1)).handleGET(any());
     }
     @Override

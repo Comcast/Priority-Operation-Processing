@@ -24,7 +24,6 @@
         <http-utils.version>1.0.2</http-utils.version>
         <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
         <endpoint-api.version>1.0.3</endpoint-api.version>
-        <mpx-authorizer.version>1.2.1</mpx-authorizer.version>
     </properties>
 
     <dependencies>

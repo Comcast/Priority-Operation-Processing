@@ -23,7 +23,7 @@ public class DataGenerator
     {
         ResourcePool resourcePool = new ResourcePool();
         resourcePool.setId("2u9490283912832109283091");
-        resourcePool.setCustomerId("mpx/my.resource.pool.user@comcast.com");
+        resourcePool.setCustomerId("my.resource.pool.user@comcast.com");
         resourcePool.setTitle("CTS Seattle");
         return resourcePool;
     }

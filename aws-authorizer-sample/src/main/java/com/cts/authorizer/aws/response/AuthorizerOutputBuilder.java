@@ -46,7 +46,7 @@ public class AuthorizerOutputBuilder
         // Once a token is accepted for one resource+verb all subsequent calls to ANY resource on the API Gateway
         // with the same token will have access to call the lambda until the TTL expires (if configured).
 
-        //build an aws policy context with our mpx auth response so the resulting lambda can access it.
+        //build an aws policy context with our auth response so the resulting lambda can access it.
         FissionPolicyContext policyContext = new FissionPolicyContext();
 
         String userId = policyContext.retrieveUserId();

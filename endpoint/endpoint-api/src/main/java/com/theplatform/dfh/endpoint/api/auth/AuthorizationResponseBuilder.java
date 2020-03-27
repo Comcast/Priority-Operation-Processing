@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MPXAuthorizationResponseBuilder
+public class AuthorizationResponseBuilder
 {
     private static final String DELIMITER = "\\|";
     private String userId;
@@ -12,30 +12,31 @@ public class MPXAuthorizationResponseBuilder
     private DataVisibility dataVisibility = DataVisibility.authorized_account;
     private Set<String> accountList = new HashSet<>();
 
-    public MPXAuthorizationResponseBuilder withUserId(String userId)
+    public AuthorizationResponseBuilder withUserId(String userId)
     {
         this.userId = userId;
         return this;
     }
-    public MPXAuthorizationResponseBuilder withUsername(String username)
+    public AuthorizationResponseBuilder withUsername(String username)
     {
         this.username = username;
         return this;
     }
-    public MPXAuthorizationResponseBuilder withAccounts(String accounts)
+    public AuthorizationResponseBuilder withAccounts(String accounts)
     {
+        // TODO: share the * constant
         parseAccounts(accounts);
-        if(dataVisibility == DataVisibility.authorized_account && accountList.contains("urn:theplatform:auth:any"))
+        if(dataVisibility == DataVisibility.authorized_account && accountList.contains("*"))
             dataVisibility = DataVisibility.global;
         return this;
     }
-    public MPXAuthorizationResponseBuilder withSuperUser(String isSuperUser)
+    public AuthorizationResponseBuilder withSuperUser(String isSuperUser)
     {
         if(isSuperUser == null) return this;
         boolean isSuperUserBool = Boolean.parseBoolean(isSuperUser);
         return withSuperUser(isSuperUserBool);
     }
-    public MPXAuthorizationResponseBuilder withSuperUser(boolean isSuperUser)
+    public AuthorizationResponseBuilder withSuperUser(boolean isSuperUser)
     {
         if(isSuperUser)
             dataVisibility = DataVisibility.global;

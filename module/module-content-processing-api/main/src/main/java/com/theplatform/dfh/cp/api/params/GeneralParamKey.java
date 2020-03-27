@@ -11,9 +11,6 @@ public enum GeneralParamKey implements ParamKey
     customerId,
     externalId,
     maximumAttempts,
-    mpxTaskSourceFiles,
-    mpxTaskRemovedFiles,
-    mpxTaskResultFile,
     doNotRun;
 
     public String getKey()
