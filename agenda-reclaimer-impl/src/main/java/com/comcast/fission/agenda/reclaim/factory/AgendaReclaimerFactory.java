@@ -1,7 +1,7 @@
-package com.theplatform.dfh.cp.agenda.reclaim.factory;
+package com.comcast.fission.agenda.reclaim.factory;
 
-import com.theplatform.dfh.cp.agenda.reclaim.AgendaReclaimer;
-import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
+import com.comcast.fission.agenda.reclaim.AgendaReclaimer;
+import com.comcast.fission.agenda.reclaim.config.ReclaimerConfig;
 
 public class AgendaReclaimerFactory
 {

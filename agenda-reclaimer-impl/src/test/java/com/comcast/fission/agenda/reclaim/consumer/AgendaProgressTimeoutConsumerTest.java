@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.consumer;
+package com.comcast.fission.agenda.reclaim.consumer;
 
 import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;

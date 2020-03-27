@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.config;
+package com.comcast.fission.agenda.reclaim.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;

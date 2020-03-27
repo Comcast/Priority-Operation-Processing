@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.config;
+package com.comcast.fission.agenda.reclaim.config;
 
 import java.util.LinkedList;
 import java.util.List;

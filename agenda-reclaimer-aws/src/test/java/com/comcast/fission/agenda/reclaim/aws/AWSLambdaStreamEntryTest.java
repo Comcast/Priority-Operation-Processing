@@ -2,10 +2,9 @@ package com.comcast.fission.agenda.reclaim.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.agenda.reclaim.AgendaReclaimer;
-import com.comcast.fission.agenda.reclaim.aws.AWSLambdaStreamEntry;
-import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
-import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
+import com.comcast.fission.agenda.reclaim.AgendaReclaimer;
+import com.comcast.fission.agenda.reclaim.config.ReclaimerConfig;
+import com.comcast.fission.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.api.BadRequestException;

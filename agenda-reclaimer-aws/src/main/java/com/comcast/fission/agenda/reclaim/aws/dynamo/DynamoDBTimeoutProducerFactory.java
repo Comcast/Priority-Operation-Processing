@@ -2,7 +2,7 @@ package com.comcast.fission.agenda.reclaim.aws.dynamo;
 
 import com.theplatform.com.dfh.modules.sync.util.Producer;
 import com.comcast.fission.agenda.reclaim.aws.config.AWSReclaimerConfig;
-import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaProgressProducerFactory;
+import com.comcast.fission.agenda.reclaim.factory.AgendaProgressProducerFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
 
 import java.time.Instant;

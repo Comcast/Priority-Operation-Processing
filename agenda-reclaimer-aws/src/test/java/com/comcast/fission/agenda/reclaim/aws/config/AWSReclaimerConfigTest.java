@@ -1,6 +1,6 @@
 package com.comcast.fission.agenda.reclaim.aws.config;
 
-import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
+import com.comcast.fission.agenda.reclaim.config.ReclaimerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
