@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.reaper.objects.aws.dynamo;
+package com.comcast.fission.reaper.objects.aws.dynamo;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -7,11 +7,11 @@ import com.amazonaws.services.dynamodbv2.model.BatchWriteItemResult;
 import com.amazonaws.services.dynamodbv2.model.DeleteRequest;
 import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
+import com.comcast.fission.reaper.objects.aws.BaseBatchedOperation;
 import com.theplatform.com.dfh.modules.sync.util.CollectionUtil;
 import com.theplatform.com.dfh.modules.sync.util.Consumer;
 import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
 import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
-import com.theplatform.dfh.cp.reaper.objects.aws.BaseBatchedOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

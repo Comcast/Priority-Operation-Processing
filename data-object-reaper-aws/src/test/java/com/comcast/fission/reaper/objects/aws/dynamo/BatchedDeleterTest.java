@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.reaper.objects.aws.dynamo;
+package com.comcast.fission.reaper.objects.aws.dynamo;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;

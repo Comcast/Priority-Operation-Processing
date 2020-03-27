@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.reaper.objects.aws.config;
+package com.comcast.fission.reaper.objects.aws.config;
 
 import org.apache.commons.lang3.StringUtils;
 

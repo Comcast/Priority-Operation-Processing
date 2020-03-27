@@ -1,17 +1,16 @@
-package com.theplatform.dfh.cp.reaper.objects.aws;
+package com.comcast.fission.reaper.objects.aws;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.comcast.fission.reaper.objects.aws.config.DataObjectReaperConfig;
+import com.comcast.fission.reaper.objects.aws.dynamo.BatchedDeleter;
+import com.comcast.fission.reaper.objects.aws.dynamo.BatchedReapCandidatesRetriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
-import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedDeleter;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedReapCandidatesRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 public class ManualTests
 {

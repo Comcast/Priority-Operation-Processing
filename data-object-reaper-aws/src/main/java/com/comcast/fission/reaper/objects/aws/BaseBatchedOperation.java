@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.reaper.objects.aws;
+package com.comcast.fission.reaper.objects.aws;
 
 public abstract class BaseBatchedOperation
 {

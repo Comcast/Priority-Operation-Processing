@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedObjectFieldRetriever;
+import com.comcast.fission.reaper.objects.aws.dynamo.BatchedObjectFieldRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

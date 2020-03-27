@@ -1,15 +1,15 @@
-package com.theplatform.dfh.cp.reaper.objects.aws;
+package com.comcast.fission.reaper.objects.aws;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.comcast.fission.reaper.objects.aws.config.DataObjectReaperConfig;
+import com.comcast.fission.reaper.objects.aws.factory.ConsumerFactory;
+import com.comcast.fission.reaper.objects.aws.factory.ProducerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.com.dfh.modules.sync.util.Consumer;
 import com.theplatform.com.dfh.modules.sync.util.Producer;
 import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
-import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
-import com.theplatform.dfh.cp.reaper.objects.aws.factory.ConsumerFactory;
-import com.theplatform.dfh.cp.reaper.objects.aws.factory.ProducerFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;

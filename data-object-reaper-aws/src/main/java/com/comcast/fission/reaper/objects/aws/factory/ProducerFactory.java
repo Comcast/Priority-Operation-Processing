@@ -1,9 +1,9 @@
-package com.theplatform.dfh.cp.reaper.objects.aws.factory;
+package com.comcast.fission.reaper.objects.aws.factory;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.theplatform.com.dfh.modules.sync.util.Producer;
-import com.theplatform.dfh.cp.reaper.objects.aws.config.DataObjectReaperConfig;
-import com.theplatform.dfh.cp.reaper.objects.aws.dynamo.BatchedReapCandidatesRetriever;
+import com.comcast.fission.reaper.objects.aws.config.DataObjectReaperConfig;
+import com.comcast.fission.reaper.objects.aws.dynamo.BatchedReapCandidatesRetriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
