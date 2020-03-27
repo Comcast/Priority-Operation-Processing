@@ -44,7 +44,7 @@ public class KubeClientTestBase
                 {
                     return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/mediainfo:1.0")
-                        .setNamePrefix("dfhk8clienttest")
+                        .setNamePrefix("k8clienttest")
                         .setArguments(new String[] { "--version" })
                         .setEndOfLogIdentifier("MediaInfoLib");
                 }
@@ -56,7 +56,7 @@ public class KubeClientTestBase
                 {
                     return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-                        .setNamePrefix("dfhffmpeg-test")
+                        .setNamePrefix("ffmpeg-test")
                         .setArguments(new String[] {
                             "-i", "shortInsideContainer.mp4", "shortInsideContainer.out.mp4", "-y", "-loglevel", "debug" });
                 }
@@ -69,7 +69,7 @@ public class KubeClientTestBase
                     return configFactory.getDefaultPodConfig()
                         .setImageName("bash")
                         .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
-                        .setNamePrefix("dfh-sleep");
+                        .setNamePrefix("fission-sleep");
                 }
             },
         longerExecutionPod
@@ -79,7 +79,7 @@ public class KubeClientTestBase
                 {
                     return configFactory.getDefaultPodConfig()
                         .setImageName("docker-lab.repo.theplatform.com/ffmpeg-test:3.1-centos")
-                        .setNamePrefix("dfhffmpeg-test")
+                        .setNamePrefix("ffmpeg-test")
                         .setCpuMinRequestCount("4000m")
                         .setCpuMaxRequestCount("8000m")
                         .setArguments(new String[] {
@@ -94,8 +94,8 @@ public class KubeClientTestBase
                 {
                     return configFactory.getDefaultPodConfig()
                         .setImageName("docker-proto.repo.theplatform.com/printalot:1.0.0")
-                        .setNamePrefix("dfh-print-test")
-                        .setEndOfLogIdentifier("DfhComplete")
+                        .setNamePrefix("fission-print-test")
+                        .setEndOfLogIdentifier("HandlerComplete")
                         ;
                 }
             }

@@ -19,46 +19,46 @@ import java.util.Map;
  */
 public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClient
 {
-    private static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
+    private static final String FISSION_SERVICE_ACCOUNT_NAME = "fission-service";
     private static PodConfigFactory podConfigFactory = new PodConfigFactoryImpl();
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
 
     static
     {
         podConfigMap.put("sample",
-                makeDfhBasePod("prod-us-a-aor-fhsamp-p01")
+                makeBasePod("prod-us-a-aor-fhsamp-p01")
                         .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.2")
-                        .setNamePrefix("dfh-samp")
+                        .setNamePrefix("fission-samp")
         );
 
         podConfigMap.put("analysis",
-                makeDfhBasePod("prod-us-a-aor-fhami-p01")
+                makeBasePod("prod-us-a-aor-fhami-p01")
                         .setImageName("docker-prod.repo.theplatform.com/fhami:1.0.1")
-                        .setNamePrefix("dfh-analysis")
+                        .setNamePrefix("fission-analysis")
         );
 
         podConfigMap.put("encode",
-                makeDfhBasePod("prod-us-a-aor-fheff-p01")
+                makeBasePod("prod-us-a-aor-fheff-p01")
                         .setImageName("docker-prod.repo.theplatform.com/fheff:1.0.1")
-                        .setNamePrefix("dfh-encode")
+                        .setNamePrefix("fission-encode")
         );
 
         podConfigMap.put("thumbnail",
-                makeDfhBasePod("prod-us-a-aor-fhtff-p01")
+                makeBasePod("prod-us-a-aor-fhtff-p01")
                         .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.1")
-                        .setNamePrefix("dfh-thumbnail")
+                        .setNamePrefix("fission-thumbnail")
         );
 
         podConfigMap.put("filmstrip",
-            makeDfhBasePod("prod-us-a-aor-fhfsff-p01")
+            makeBasePod("prod-us-a-aor-fhfsff-p01")
                 .setImageName("docker-lab.repo.theplatform.com/fhfsff:1.0.1")
-                .setNamePrefix("dfh-filmstrip")
+                .setNamePrefix("fission-filmstrip")
         );
 
         podConfigMap.put("package",
-                makeDfhBasePod("prod-us-a-aor-fhpkm-p01")
+                makeBasePod("prod-us-a-aor-fhpkm-p01")
                 .setImageName("docker-prod.repo.theplatform.com/fhpkm:1.0.4")
-                .setNamePrefix("dfh-package")
+                .setNamePrefix("fission-package")
                 .setNfsSettings(Collections.singletonList(new NfsDetails()
                     .setNfsServer("fs-71d2e4da.efs.us-west-2.amazonaws.com")
                     .setNfsServerPath("/")
@@ -67,15 +67,15 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
         );
 
         podConfigMap.put("telephone",
-            makeDfhBasePod("lab-main-t-aor-fhtele-t01")
+            makeBasePod("lab-main-t-aor-fhtele-t01")
                 .setImageName("docker-proto.repo.theplatform.com/fhtele:1.0.0")
-                .setNamePrefix("dfh-telephone")
+                .setNamePrefix("fission-telephone")
         );
 
         podConfigMap.put("delete",
-            makeDfhBasePod("prod-us-a-aor-fhdel-p01")
+            makeBasePod("prod-us-a-aor-fhdel-p01")
                 .setImageName("docker-lab.repo.theplatform.com/fhdel:1.0.0")
-                .setNamePrefix("dfh-fission-delete")
+                .setNamePrefix("fission-fission-delete")
         );
     }
 
@@ -85,7 +85,7 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
         return podConfigMap.get(type);
     }
 
-    public static PodConfig makeDfhBasePod(String configMapName)
+    public static PodConfig makeBasePod(String configMapName)
     {
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
                 .setConfigMapName(configMapName)
@@ -96,14 +96,14 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
-                .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
+                .setServiceAccountName(FISSION_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(true)
-                .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
+                .setEndOfLogIdentifier(BaseHandlerEntryPoint.POD_TERMINATION_STRING)
                 .setConfigMapSettings(Collections.singletonList(configMapDetails));
     }
 }

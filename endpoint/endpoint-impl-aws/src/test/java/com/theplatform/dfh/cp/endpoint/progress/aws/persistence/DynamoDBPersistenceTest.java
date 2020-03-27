@@ -26,7 +26,7 @@ public class DynamoDBPersistenceTest
     public void testLiveDynamoDBGetAll() throws PersistenceException
     {
         final String persistenceKeyField = "id";
-        final String tableName = "DFH-Purple-Fission-ProgressAgenda-dev";
+        final String tableName = "Purple-Fission-ProgressAgenda-dev";
         ObjectPersister persister = new DynamoDBAgendaProgressPersisterFactory().getObjectPersister(tableName);;
         DataObjectFeed<AgendaProgress> response = persister.retrieve(scan);
         Assert.assertFalse(response.isError());
@@ -35,9 +35,9 @@ public class DynamoDBPersistenceTest
     private class LiveAwsDynamoDBFactory extends AWSDynamoDBFactory
     {
         BasicSessionCredentials basicSessionCredentials = new BasicSessionCredentials(
-                "ASIAUNDOUIOXTA3YLBFY", // access key id
-                "mlvygzfr2qnoRD4WnWj+6zgUgZ8BCWgH/A5MEwiu", // secret access
-                "FQoGZXIvYXdzECoaDJITWA8R0Z/8eY8OsCKhAmN5eTFgU4JTKoVQGdxxf7IjnZo7Mc/0Ulj3d+wdIOCgVSUK8xmXcQjFIRrOMY79lptrQ6B2PeTt+pKoUw1Bvez2o+AHBu9nrJZcW1kqREpKYw93/YbRK0yVldAnV1CfSJd+s5DpLs4l0F/2lO6yGXoSS75XW2Q8vBJkp5PVbn/foT2Ve7g5QogAYTsHSm3Y5ETPKb2FIB3NgDztzWU5uu22O18gknO9kv0OdFG2uG2FLuvJXItUFMojwaz/+gzBfDgxSgYFUTZvIi0HYimpzjV0WZecv2tPuBcLL0Xt/ZHFGzNZSRy8xPDOacjCC6Fo7orF8QnjGSYpuE4h9KvmK7f3CMhAYpXwHXkpUD1Iq82l92ULYQZzHWfbCDzm/KYclkoo2rCs4AU=" // session token
+                "", // access key id
+                "", // secret access
+                "" // session token
         );
 
         public AmazonDynamoDB getAmazonDynamoDB()

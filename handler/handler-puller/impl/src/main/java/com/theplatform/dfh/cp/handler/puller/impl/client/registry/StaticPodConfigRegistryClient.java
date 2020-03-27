@@ -21,7 +21,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     {
         podConfigMap.put("sample",
             podConfigFactory.createPodConfig()
-                .setServiceAccountName("dfh-service")
+                .setServiceAccountName("fission-service")
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
@@ -29,11 +29,11 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
-                .setNamePrefix("dfh-samp")
+                .setNamePrefix("fission-samp")
         );
         podConfigMap.put("executor",
             podConfigFactory.createPodConfig()
-                .setServiceAccountName("dfh-service")
+                .setServiceAccountName("fission-service")
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
@@ -41,7 +41,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setReapCompletedPods(true)
                 .setPullAlways(true) // for now
                 .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.2")
-                .setNamePrefix("dfh-exec")
+                .setNamePrefix("fission-exec")
                 .setConfigMapSettings(Collections.singletonList(
                     new ConfigMapDetails()
                         .setConfigMapName("lab-main-t-aor-fhexec-t02")

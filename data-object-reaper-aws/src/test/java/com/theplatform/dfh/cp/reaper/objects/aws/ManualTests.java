@@ -20,14 +20,14 @@ public class ManualTests
     //@Test
     public void executeOnTable() throws Exception
     {
-        final String PROFILE_NAME = "lab_DFH";
+        final String PROFILE_NAME = "lab_Fission";
 
         AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder.standard()
             .withCredentials(new ProfileCredentialsProvider(PROFILE_NAME))
             .withRegion(Regions.US_WEST_2)
             .build();
 
-        final String TABLE = "DFH-Fission-Twinkle-ProgressOperation-dev";
+        final String TABLE = "Fission-Twinkle-ProgressOperation-dev";
 
         SynchronousProducerConsumerProcessor<String> processor = new SynchronousProducerConsumerProcessor<>(
             new BatchedReapCandidatesRetriever(amazonDynamoDB, TABLE, "id", "updatedTime", 1557367401477L)

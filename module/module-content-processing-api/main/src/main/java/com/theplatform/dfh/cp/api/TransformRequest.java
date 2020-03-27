@@ -13,8 +13,8 @@ public class TransformRequest extends DefaultEndpointDataObject
 {
     /**
      * Inputs: This includes URLs, creds,
-     * and key metadata for the media files that DFH will process (VIDEO, AUDIO, TEXT tracks, etc.)
-     * and metadata that serves as an input to DFH (e.g. chapter info for Ad Conditioning)
+     * and key metadata for the media files that will be processed (VIDEO, AUDIO, TEXT tracks, etc.)
+     * and metadata that serves as an input(e.g. chapter info for Ad Conditioning)
      */
     private List<InputFileResource> inputs;
     private InputStreams inputStreams;

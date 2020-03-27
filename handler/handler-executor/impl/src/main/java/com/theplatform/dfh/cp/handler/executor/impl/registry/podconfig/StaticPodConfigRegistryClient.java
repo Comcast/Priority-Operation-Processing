@@ -1,6 +1,5 @@
 package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory;
@@ -23,7 +22,7 @@ import java.util.Map;
  */
 public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 {
-    private static final String DFH_SERVICE_ACCOUNT_NAME = "dfh-service";
+    private static final String FISSION_SERVICE_ACCOUNT_NAME = "fission-service";
     private static PodConfigFactory podConfigFactory = new PodConfigFactoryImpl();
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
     private static JsonHelper jsonHelper = new JsonHelper();
@@ -31,57 +30,57 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     static
     {
         podConfigMap.put("sample",
-                makeDfhBasePod("lab-main-t-aor-fhsamp-t01")
+                makeBasePod("lab-main-t-aor-fhsamp-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.2")
-                        .setNamePrefix("dfh-samp")
+                        .setNamePrefix("fission-samp")
         );
 
         podConfigMap.put("slack",
-            makeDfhBasePod("lab-main-t-aor-fhtele-t01")
+            makeBasePod("lab-main-t-aor-fhtele-t01")
                 .setImageName("docker-proto.repo.theplatform.com/fhslak:1.0.0")
-                .setNamePrefix("dfh-fission-slack")
+                .setNamePrefix("fission-slack")
         );
 
         podConfigMap.put("analysis",
-                makeDfhBasePod("lab-main-t-aor-fhami-t01")
+                makeBasePod("lab-main-t-aor-fhami-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fhami:1.0.3")
-                        .setNamePrefix("dfh-analysis")
+                        .setNamePrefix("fission-analysis")
         );
 
         podConfigMap.put("encode",
-                makeDfhBasePod("lab-main-t-aor-fheff-t01")
+                makeBasePod("lab-main-t-aor-fheff-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fheff:1.0.1")
-                        .setNamePrefix("dfh-encode")
+                        .setNamePrefix("fission-encode")
         );
 
         podConfigMap.put("thumbnail",
-                makeDfhBasePod("lab-main-t-aor-fhtff-t01")
+                makeBasePod("lab-main-t-aor-fhtff-t01")
                         .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.1")
-                        .setNamePrefix("dfh-thumbnail")
+                        .setNamePrefix("fission-thumbnail")
         );
 
         podConfigMap.put("filmstrip",
-            makeDfhBasePod("lab-main-t-aor-fhfsff-t01")
+            makeBasePod("lab-main-t-aor-fhfsff-t01")
                 .setImageName("docker-lab.repo.theplatform.com/fhfsff:1.0.1")
-                .setNamePrefix("dfh-filmstrip")
+                .setNamePrefix("fission-filmstrip")
         );
 
         podConfigMap.put("package",
-                makeDfhBasePod("lab-main-t-aor-fhpkm-t01")
+                makeBasePod("lab-main-t-aor-fhpkm-t01")
                 .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.2")
-                .setNamePrefix("dfh-package")
+                .setNamePrefix("fission-package")
         );
 
         podConfigMap.put("delete",
-            makeDfhBasePod("lab-main-t-aor-fhdel-t01")
+            makeBasePod("lab-main-t-aor-fhdel-t01")
                 .setImageName("docker-lab.repo.theplatform.com/fhdel:1.0.0")
-                .setNamePrefix("dfh-delete")
+                .setNamePrefix("fission-delete")
         );
 
         podConfigMap.put("telephone",
-            makeDfhBasePod("lab-main-t-aor-fhtele-t01")
+            makeBasePod("lab-main-t-aor-fhtele-t01")
                 .setImageName("docker-proto.repo.theplatform.com/fhtele:1.0.0")
-                .setNamePrefix("dfh-telephone")
+                .setNamePrefix("fission-telephone")
         );
     }
 
@@ -105,7 +104,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
         throw new PodConfigRegistryClientException("Failed to get pod config type: " + type, ioException);
     }
 
-    public static PodConfig makeDfhBasePod(String configMapName)
+    public static PodConfig makeBasePod(String configMapName)
     {
         ConfigMapDetails configMapDetails = new ConfigMapDetails()
                 .setConfigMapName(configMapName)
@@ -116,14 +115,14 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
-                .setServiceAccountName(DFH_SERVICE_ACCOUNT_NAME)
+                .setServiceAccountName(FISSION_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(true)
-                .setEndOfLogIdentifier(BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING)
+                .setEndOfLogIdentifier(BaseHandlerEntryPoint.POD_TERMINATION_STRING)
                 .setConfigMapSettings(Collections.singletonList(configMapDetails));
     }
 }

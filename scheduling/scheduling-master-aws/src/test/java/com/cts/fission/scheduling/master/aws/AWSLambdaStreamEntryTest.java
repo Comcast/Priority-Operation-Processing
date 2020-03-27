@@ -161,7 +161,7 @@ public class AWSLambdaStreamEntryTest
         environmentMap = new HashMap<>();
         environmentMap.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://guid.execute-api.us-west-2.amazonaws.com");
         environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
-        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
+        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         streamEntry.setEnvironmentLookupUtils(new EnvironmentLookupUtils()
         {

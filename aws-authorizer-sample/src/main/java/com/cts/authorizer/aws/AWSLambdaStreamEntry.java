@@ -39,7 +39,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry<ServiceRespo
         LambdaRequest lambdaRequest = new LambdaRequest(jsonNode);
         setupLoggingMDC(jsonNode);
 
-        //resource in format /dfh/idm/agenda/service
+        //resource in format /idm/agenda/service
         final String token = lambdaRequest.getAuthorizationHeader();
         final String methodArn = lambdaRequest.getRequestValue("/methodArn");
 

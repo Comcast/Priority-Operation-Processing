@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class DynamoDBLiveTest
 {
-    private final String PROFILE_NAME = "lab_DFH";
+    private final String PROFILE_NAME = "lab_Fission";
     private LocalDynamoDBFactory dynamoDBFactory;
 
     @BeforeMethod
@@ -36,7 +36,7 @@ public class DynamoDBLiveTest
     {
         final TableIndexes tableIndexes = new TableIndexes().withIndex("linkid_index", "linkId");
 
-        final String TABLE_NAME = "DFH-Agenda-dev";
+        final String TABLE_NAME = "Fission-Agenda-dev";
         DynamoDBObjectPersister<TestTrackedObject> objectPersister = new DynamoDBObjectPersister<>(TABLE_NAME,
             "id", dynamoDBFactory, TestTrackedObject.class, tableIndexes);
         //Query<String> query = new Query<>("customerId", "http://access.auth.test.corp.theplatform.com/data/Account/3515465101");

@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P extends HandlerProcessor, W extends LaunchDataWrapper>
 {
-    public static final String DFH_POD_TERMINATION_STRING = "DfhComplete";
+    public static final String POD_TERMINATION_STRING = "HandlerComplete";
     private static final String DURATION_TEMPLATE = OPERATION_METADATA_TEMPLATE_PREFIX +"operation: %s; completion status: %s; duration (millisec): %d";
     private static final String OPERATION_METRICS_TEMPLATE = "cid=%s operationId=%s owner=%s conclusionStatus=%s elapsedTime=%s operation=%s payload=%s";
     private static final String CPU_Template = OPERATION_METADATA_TEMPLATE_PREFIX +"Requested CPUs (for handler and any utility pods): %1f";
@@ -97,7 +97,7 @@ public abstract class BaseHandlerEntryPoint<C extends BaseOperationContext, P ex
         {
             logRequestedCPUs(execMetaData);
             operationContext.shutdown();
-            logger.info(DFH_POD_TERMINATION_STRING);
+            logger.info(POD_TERMINATION_STRING);
         }
     }
 

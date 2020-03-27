@@ -37,14 +37,14 @@ public class SplitAHugeMp4IntoSmallerFileTest extends KubeClientTestBase
 
         longerPodConfig = configFactory.getDefaultPodConfig()
             .setImageName("docker-lab.repo.theplatform.com/ffmpeg-perm:1.2")
-            .setNamePrefix("dfhffmpeg-test")
+            .setNamePrefix("fissionffmpeg-test")
             .setArguments(new String[] {
                 "-i", "/testFiles/vault/ep_large_feature.mp4", "-vframes", "10000",
                 "/testFiles/vault/ep_large_feature" + "-test" + "-out.mp4", "-y", "-loglevel", "debug" });
 
         longerPodConfigFast = configFactory.getDefaultPodConfig()
             .setImageName("docker-lab.repo.theplatform.com/ffmpeg-perm:1.2")
-            .setNamePrefix("dfhffmpeg-test")
+            .setNamePrefix("fissionffmpeg-test")
             .setArguments(new String[] {
                 "-i", "/testFiles/vault/ep_large_feature.mp4", "-vcodec", "copy", "-acodec", "copy", "-ss", "00:00:00",
                 "-t", "00:30:00", "/testFiles/vault/ep_large_feature" + "-test2" + "-out.mp4", "-y", "-loglevel",

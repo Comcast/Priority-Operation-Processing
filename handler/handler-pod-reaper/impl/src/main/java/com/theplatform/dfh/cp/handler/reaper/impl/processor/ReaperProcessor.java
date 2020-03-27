@@ -31,7 +31,7 @@ public class ReaperProcessor implements HandlerProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(ReapPodLookupFilter.class);
 
-    public static final String DEFAULT_NAMESPACE = "dfh";
+    public static final String DEFAULT_NAMESPACE = "fission";
     private static final int DEFAULT_REAPER_RUN_MAX_MINUTES = 5;
     private ReaperContext reaperContext;
 

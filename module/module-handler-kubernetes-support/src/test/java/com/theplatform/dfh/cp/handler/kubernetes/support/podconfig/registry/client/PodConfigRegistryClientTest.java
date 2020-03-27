@@ -60,7 +60,7 @@ public class PodConfigRegistryClientTest {
         Assert.assertEquals(pConfig.getPodScheduledTimeoutMs(), baseJsonPodConfig.getPodScheduledTimeoutMs());
         Assert.assertEquals(pConfig.getReapCompletedPods(), baseJsonPodConfig.getReapCompletedPods());
         Assert.assertEquals(pConfig.getPullAlways(), baseJsonPodConfig.getPullAlways());
-        Assert.assertEquals(pConfig.getEndOfLogIdentifier(), BaseHandlerEntryPoint.DFH_POD_TERMINATION_STRING);
+        Assert.assertEquals(pConfig.getEndOfLogIdentifier(), BaseHandlerEntryPoint.POD_TERMINATION_STRING);
         Assert.assertNotNull(pConfig.getConfigMapSettings());
         Assert.assertEquals(pConfig.getConfigMapSettings().size(), 1);
         ConfigMapDetails configMapDetails = pConfig.getConfigMapSettings().get(0);
@@ -69,7 +69,7 @@ public class PodConfigRegistryClientTest {
 
         // validate the json registry values we overlay
         Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fhsamp:1.0.0");
-        Assert.assertEquals(pConfig.getNamePrefix(), "dfh-samp");
+        Assert.assertEquals(pConfig.getNamePrefix(), "fission-samp");
 
         // validate final overlay from the sample entry
         Assert.assertNotNull(configMapDetails.getMapKeyPaths());

@@ -50,7 +50,7 @@ public class AWSLambdaStreamEntryLiveTest
         String requestJson = ("{\"stageId\":\""+ STAGE_ID +"\"}");
 
         new AWSLambdaStreamEntry(
-                new AWSLambdaFactory(new ProfileCredentialsProvider("lab_DFH")).setRegion(Regions.US_WEST_2),
+                new AWSLambdaFactory(new ProfileCredentialsProvider("lab_Fission")).setRegion(Regions.US_WEST_2),
                 new HttpObjectClientFactory(new NoAuthHTTPUrlConnectionFactory())
             )
             .setEnvironmentFacade(environmentFacade)
