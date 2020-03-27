@@ -80,7 +80,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         ResourcePoolMonitorRequest request;
         try
