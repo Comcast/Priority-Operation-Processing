@@ -1,6 +1,5 @@
-package com.theplatform.dfh.cp.scheduling.monitor.aws.config;
+package com.comcast.fission.agenda.reclaim.aws.config;
 
-import com.theplatform.dfh.cp.agenda.reclaim.aws.config.AWSReclaimerConfig;
 import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;

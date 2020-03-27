@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.aws.config;
+package com.comcast.fission.agenda.reclaim.aws.config;
 
 import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
 import org.apache.commons.lang3.StringUtils;

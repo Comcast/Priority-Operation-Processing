@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.agenda.reclaim.aws.dynamo;
+package com.comcast.fission.agenda.reclaim.aws.dynamo;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;

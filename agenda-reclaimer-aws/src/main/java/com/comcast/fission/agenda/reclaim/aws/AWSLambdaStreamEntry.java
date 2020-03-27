@@ -1,10 +1,10 @@
-package com.theplatform.dfh.cp.agenda.reclaim.aws;
+package com.comcast.fission.agenda.reclaim.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.comcast.fission.agenda.reclaim.aws.config.AWSReclaimerConfig;
+import com.comcast.fission.agenda.reclaim.aws.dynamo.DynamoDBTimeoutProducerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.agenda.reclaim.aws.config.AWSReclaimerConfig;
-import com.theplatform.dfh.cp.agenda.reclaim.aws.dynamo.DynamoDBTimeoutProducerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;

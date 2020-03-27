@@ -1,9 +1,9 @@
-package com.theplatform.dfh.cp.scheduling.monitor.aws;
+package com.comcast.fission.agenda.reclaim.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.agenda.reclaim.AgendaReclaimer;
-import com.theplatform.dfh.cp.agenda.reclaim.aws.AWSLambdaStreamEntry;
+import com.comcast.fission.agenda.reclaim.aws.AWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.agenda.reclaim.config.ReclaimerConfig;
 import com.theplatform.dfh.cp.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
