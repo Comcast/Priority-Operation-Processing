@@ -1,5 +1,4 @@
 *.log
-.gitignore
 target/
 *.iml
 .idea/

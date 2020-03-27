@@ -20,12 +20,11 @@ import java.util.Arrays;
 
 /**
  * Local testing against live AWS
- * http://tpconfluence.corp.theplatform.com/display/TD/Local+AWS+Testing+and+Java
  */
 
 public class DynamoDBLiveTest
 {
-    private final String PROFILE_NAME = "lab_DFH";
+    private final String PROFILE_NAME = "lab_Fission";
     private LocalDynamoDBFactory dynamoDBFactory;
 
     @BeforeMethod
@@ -37,7 +36,7 @@ public class DynamoDBLiveTest
     @Test(enabled = false)
     public void testInsightLive()
     {
-        final String TABLE_NAME = "DFH-Insight-dev";
+        final String TABLE_NAME = "Fission-Insight-dev";
         DynamoDBConvertedObjectPersister<Insight, PersistentInsight> persister = new DynamoDBConvertedObjectPersister<>(TABLE_NAME, "id",
             dynamoDBFactory, Insight.class, new PersistentInsightConverter(), DynamoDBInsightPersisterFactory.tableIndexes);
 
@@ -53,7 +52,7 @@ public class DynamoDBLiveTest
     @Test (enabled = false)
     public void testReadyAgendaLookup() throws Throwable
     {
-        final String TABLE_NAME = "DFH-ReadyAgenda-dev";
+        final String TABLE_NAME = "Fission-ReadyAgenda-dev";
         DynamoDBConvertedObjectPersister<ReadyAgenda, PersistentReadyAgenda> persister = new DynamoDBConvertedObjectPersister<>(
             TABLE_NAME,
             "id",

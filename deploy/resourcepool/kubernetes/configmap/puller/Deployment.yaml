@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: fission-puller-01
+  namespace: fission
+spec:
+    strategy:
+      type: Recreate
+    replicas: 1
+    template:
+      metadata:
+        name: fission-puller-01
+        namespace: fission
+        labels:
+          app: cppull
+      spec:
+        serviceAccountName: fission-service
+        containers:
+          - name: cppull
+            image: <your docker repo>/cppull:1.0.2
+            ports:
+             - containerPort: 8081
+               name: "admin"
+             - containerPort: 8080 
+               name:  service
+            imagePullPolicy: Always
+            livenessProbe:
+              httpGet:
+                path: /healthcheck
+                port: 8081
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 25
+              successThreshold: 1
+              failureThreshold: 5
+            resources:
+              requests:
+                memory: 500M
+                cpu: 250m
+              limits:
+                memory: 1G
+            volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+            - name: log
+              mountPath: /dumps
+            env:
+              - name: MY_POD_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP             
+        volumes:
+          - name: config-volume
+            configMap:
+              name: fission-puller-01
+              items:
+              - key: env-properties
+                path: env.properties
+              - key: external-properties
+                path: external.properties
+              - key: conf-yaml
+                path: conf.yaml
+              - key: registry-json
+                path: registry.json
+          - name: log
+            emptyDir: {}
+        restartPolicy: Always

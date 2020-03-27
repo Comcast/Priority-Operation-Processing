@@ -34,7 +34,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         podConfig.setArguments(new String[] { "printenv" });
         podConfig.setNamePrefix("test-envvar");
         podConfig.setUseTaintedNodes(false);
-        podConfig.setServiceAccountName("dfh-service");
+        podConfig.setServiceAccountName("fission-service");
         podConfig.setDefaultEmptyDirLogging(true);
         podConfig.setReapCompletedPods(true);
 
@@ -101,7 +101,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
             .setVolumeMountPath("/config")));
 
         podConfig.setUseTaintedNodes(false);
-        podConfig.setServiceAccountName("dfh-service");
+        podConfig.setServiceAccountName("fission-service");
         podConfig.setDefaultEmptyDirLogging(true);
 
         LogLineAccumulatorImpl logLineAccumulator = new LogLineAccumulatorImpl();

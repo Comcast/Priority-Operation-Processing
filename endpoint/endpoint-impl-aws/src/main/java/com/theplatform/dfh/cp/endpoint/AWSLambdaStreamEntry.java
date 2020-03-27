@@ -47,20 +47,20 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
 
     static
     {
-        endpointHandlers.put("/fission/idm/agendatemplate", new AgendaTemplateLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/agenda", new AgendaLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/progress/operation", new OperationProgressLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/progress/agenda", new ProgressLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/progress/agenda/service", new ProgressServiceLambdaStreamEntry());
+        endpointHandlers.put("/fission/agendatemplate", new AgendaTemplateLambdaStreamEntry());
+        endpointHandlers.put("/fission/agenda", new AgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/progress/operation", new OperationProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/progress/agenda", new ProgressLambdaStreamEntry());
+        endpointHandlers.put("/fission/progress/agenda/service", new ProgressServiceLambdaStreamEntry());
         //TODO: deprecated in favor of transform/service/submit
-        endpointHandlers.put("/fission/idm/transform", new TransformLambdaStreamEntry(false));
-        endpointHandlers.put("/fission/idm/transform/service/submit", new TransformLambdaStreamEntry(false));
-        endpointHandlers.put("/fission/idm/transform/service/resubmit", new TransformLambdaStreamEntry(true));
-        endpointHandlers.put("/fission/idm/resourcepool", new ResourcePoolLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/insight", new InsightLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/customer", new CustomerLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
-        endpointHandlers.put("/fission/idm/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/transform", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/fission/transform/service/submit", new TransformLambdaStreamEntry(false));
+        endpointHandlers.put("/fission/transform/service/resubmit", new TransformLambdaStreamEntry(true));
+        endpointHandlers.put("/fission/resourcepool", new ResourcePoolLambdaStreamEntry());
+        endpointHandlers.put("/fission/insight", new InsightLambdaStreamEntry());
+        endpointHandlers.put("/fission/customer", new CustomerLambdaStreamEntry());
+        endpointHandlers.put("/fission/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/fission/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
     }
 
     @Override

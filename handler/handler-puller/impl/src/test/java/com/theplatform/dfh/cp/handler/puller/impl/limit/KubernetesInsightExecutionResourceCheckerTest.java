@@ -35,9 +35,9 @@ public class KubernetesInsightExecutionResourceCheckerTest
         PropertyRetriever mockPropertiesRetriever = mock(PropertyRetriever.class);
         ArgumentRetriever mockArgumentRetriever = mock(ArgumentRetriever.class);
         doReturn("https://api.bravo.k8s.aort.theplatform.com").when(mockPropertiesRetriever).getField(KubeConfigField.MASTER_URL.getFieldName());
-        doReturn("dfh").when(mockPropertiesRetriever).getField(KubeConfigField.NAMESPACE.getFieldName());
-        doReturn("/Users/tstair200/dfh-service.ca.cert").when(mockArgumentRetriever).getField(KubeConfigArgument.OAUTH_CERT_FILE_PATH, null);
-        doReturn("/Users/tstair200/dfh-service.sa.token").when(mockArgumentRetriever).getField(KubeConfigArgument.OAUTH_TOKEN_FILE_PATH, null);
+        doReturn("fission").when(mockPropertiesRetriever).getField(KubeConfigField.NAMESPACE.getFieldName());
+        doReturn("~/fission-service.ca.cert").when(mockArgumentRetriever).getField(KubeConfigArgument.OAUTH_CERT_FILE_PATH, null);
+        doReturn("~/fission-service.sa.token").when(mockArgumentRetriever).getField(KubeConfigArgument.OAUTH_TOKEN_FILE_PATH, null);
         doReturn(mockPropertiesRetriever).when(mockLaunchDataWrapper).getPropertyRetriever();
         doReturn(mockArgumentRetriever).when(mockLaunchDataWrapper).getArgumentRetriever();
 

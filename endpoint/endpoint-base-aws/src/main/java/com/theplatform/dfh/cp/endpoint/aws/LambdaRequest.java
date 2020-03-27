@@ -1,17 +1,15 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.endpoint.api.BadRequestException;
 import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.*;
@@ -238,17 +236,16 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     }
     /**
      * "authorizer": {
-     *             "mpxUserName": "dfh-puller@comcast.com",
-     *             "mpxAccounts": "http://access.auth.test.corp.theplatform.com/data/Account/3131523765",
-     *             "mpxUserId": "http://identity.auth.test.corp.theplatform.com/idm/data/User/service/10200241",
-     *             "principalId": "user|http://identity.auth.test.corp.theplatform.com/idm/data/User/service/10200241",
+     *             "userName": "me@me.com",
+     *             "accounts": "123456",
+     *             "userId": "654321",
      *             "isSuperUser": "false"
      *         }
      **/
     public AuthorizationResponse parseAuthorizationResponse()
     {
         JsonNode requestValueNode = rootNode.at(AUTHORIZATION_RESPONSE);
-        MPXAuthorizationResponseBuilder builder = new MPXAuthorizationResponseBuilder();
+        AuthorizationResponseBuilder builder = new AuthorizationResponseBuilder();
         AuthorizationResponse authorizationResponse;
         if(requestValueNode.isMissingNode())
         {

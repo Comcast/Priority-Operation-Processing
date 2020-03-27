@@ -46,12 +46,12 @@ public class LiveKubernetesTest extends KubeClientTestBase
     {
         KubeConfig kubeConfig = configFactory.getDefaultKubeConfig();
 
-        final String CERT_PATH = "/depot/DFH/git/ffmpeg.ca.cert";
+        final String CERT_PATH = "~/ffmpeg.ca.cert";
 
         if (new File(CERT_PATH).exists())
         {
-            kubeConfig.setOauthToken(readFile("/depot/DFH/git/ffmpeg.sa.token"));
-            kubeConfig.setCaCertData(readFile("/depot/DFH/git/ffmpeg.ca.cert"));
+            kubeConfig.setOauthToken(readFile("~/ffmpeg.sa.token"));
+            kubeConfig.setCaCertData(readFile("~/ffmpeg.ca.cert"));
         }
         else
         {
@@ -180,9 +180,9 @@ public class LiveKubernetesTest extends KubeClientTestBase
         envVars.put("DEFAULT_PRINT_DELAY", String.valueOf(delayTime));
         PodConfig podConfig = configFactory.getDefaultPodConfig()
             .setImageName("docker-proto.repo.theplatform.com/printalot:1.0.0")
-            .setNamePrefix("dfhk8clienttest")
+            .setNamePrefix("k8clienttest")
             .setEnvVars(envVars)
-            .setEndOfLogIdentifier("DfhComplete")
+            .setEndOfLogIdentifier("FissionComplete")
         ;
 
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix());
@@ -400,7 +400,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
 
         podConfig.setImageName("bash")
             .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 1"})
-            .setNamePrefix("dfh-failslow");
+            .setNamePrefix("fission-failslow");
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .setCpuRequestModulator(new HiLowCpuRequestModulator());
 

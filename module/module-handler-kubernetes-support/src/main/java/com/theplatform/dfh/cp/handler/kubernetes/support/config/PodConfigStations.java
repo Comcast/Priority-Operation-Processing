@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /**
  * Each enum is a 'station' that:
- * - defines a DFH-Fission supported configuration key;
+ * - defines a Fission supported configuration key;
  * - defines a default value; and
  * - provides an operation to retrieve a configured value and set it on a PodConfig instance.
  */

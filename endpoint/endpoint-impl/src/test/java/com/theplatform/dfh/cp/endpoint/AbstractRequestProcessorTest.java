@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint;
 
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
@@ -36,7 +36,7 @@ public abstract class AbstractRequestProcessorTest<T extends IdentifiedObject>
 
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withAccounts("my customer").build());
         DataObjectRequestProcessor processor = getRequestProcessor(getPersister());
         DataObjectResponse<T> response = processor.handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -52,7 +52,7 @@ public abstract class AbstractRequestProcessorTest<T extends IdentifiedObject>
 
         DefaultDataObjectRequest<T> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withAccounts("my customer").build());
         DataObjectResponse<T> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertFalse(response.isError());
     }

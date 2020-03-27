@@ -6,7 +6,7 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.exceptions.DockerRequestException;
 import com.spotify.docker.client.messages.*;
 import com.theplatform.module.docker.elastic.InstanceRegulatorClient;
-import com.theplatform.module.docker.exception.DfhDockerException;
+import com.theplatform.module.docker.exception.FissionDockerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -364,7 +364,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         }
     }
 
-    public boolean isInstanceRunning(String nameSuffix) throws DfhDockerException
+    public boolean isInstanceRunning(String nameSuffix) throws FissionDockerException
     {
         try
         {
@@ -373,7 +373,7 @@ public class DockerContainerRegulatorClient implements InstanceRegulatorClient
         catch (InterruptedException | DockerException e)
         {
             logger.error("Exception while inspecting container for running status [" + getName(nameSuffix) + "] ", e);
-            throw new DfhDockerException(e);
+            throw new FissionDockerException(e);
         }
     }
 

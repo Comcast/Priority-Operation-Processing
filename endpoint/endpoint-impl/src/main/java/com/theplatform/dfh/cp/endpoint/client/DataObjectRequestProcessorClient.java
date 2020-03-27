@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.client;
 
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
 import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
@@ -18,7 +18,7 @@ import java.util.List;
 public class DataObjectRequestProcessorClient<T extends IdentifiedObject> implements ObjectClient<T>
 {
     private final DataObjectRequestProcessor<T> requestProcessor;
-    private static final AuthorizationResponse globalAuthorization = new MPXAuthorizationResponseBuilder().withSuperUser(true).build();
+    private static final AuthorizationResponse globalAuthorization = new AuthorizationResponseBuilder().withSuperUser(true).build();
     public DataObjectRequestProcessorClient(DataObjectRequestProcessor<T> requestProcessor)
     {
         this.requestProcessor = requestProcessor;

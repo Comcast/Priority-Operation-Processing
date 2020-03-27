@@ -13,17 +13,14 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelect
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -33,7 +30,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -89,7 +85,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertFalse(response.isError());
 
@@ -107,7 +103,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(getAgenda(2));
         request.setCid(UUID.randomUUID().toString());
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -135,7 +131,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(getAgenda(1));
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(response.isError());
@@ -158,7 +154,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setId(UUID.randomUUID().toString());
@@ -195,7 +191,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setId(UUID.randomUUID().toString());
@@ -236,7 +232,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
         request.setCid(cid);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
 
         AgendaProgress agendaProgress = new AgendaProgress();
         agendaProgress.setId(UUID.randomUUID().toString());
@@ -283,7 +279,7 @@ public class AgendaRequestProcessorTest extends AbstractRequestProcessorTest<Age
 
         DefaultDataObjectRequest<Agenda> request = new DefaultDataObjectRequest<>();
         request.setDataObject(agenda);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<Agenda> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertFalse(response.isError());
 

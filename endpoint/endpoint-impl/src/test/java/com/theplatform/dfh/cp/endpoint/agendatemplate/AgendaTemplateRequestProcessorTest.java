@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.AbstractRequestProcessorTest;
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.endpoint.api.auth.MPXAuthorizationResponseBuilder;
+import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
 import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
@@ -36,7 +36,7 @@ public class AgendaTemplateRequestProcessorTest extends AbstractRequestProcessor
 
         DefaultDataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withSuperUser(true).build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withSuperUser(true).build());
         DataObjectResponse<AgendaTemplate> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertFalse(response.isError());
 
@@ -52,7 +52,7 @@ public class AgendaTemplateRequestProcessorTest extends AbstractRequestProcessor
 
         DefaultDataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withAccounts("my customer").build());
         DataObjectResponse<AgendaTemplate> response = getRequestProcessor(getPersister()).handlePOST(request);
         Assert.assertTrue(response.isError());
         Assert.assertTrue(response.getErrorResponse().getTitle().contains("Unauthorized"));
@@ -67,7 +67,7 @@ public class AgendaTemplateRequestProcessorTest extends AbstractRequestProcessor
 
         DefaultDataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withAccounts("my customer").build());
         DataObjectResponse<AgendaTemplate> response = getRequestProcessor(getPersister()).handleGET(request);
         Assert.assertFalse(response.isError());
     }
@@ -82,7 +82,7 @@ public class AgendaTemplateRequestProcessorTest extends AbstractRequestProcessor
 
         DefaultDataObjectRequest<AgendaTemplate> request = new DefaultDataObjectRequest<>();
         request.setDataObject(dataObject);
-        request.setAuthorizationResponse(new MPXAuthorizationResponseBuilder().withAccounts("my customer").build());
+        request.setAuthorizationResponse(new AuthorizationResponseBuilder().withAccounts("my customer").build());
         DataObjectResponse<AgendaTemplate> response = getRequestProcessor(getPersister()).handleGET(request);
         Assert.assertFalse(response.isError());
     }

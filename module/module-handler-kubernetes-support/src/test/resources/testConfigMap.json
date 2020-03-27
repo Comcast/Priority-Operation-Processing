@@ -12,7 +12,7 @@
     "configMapName": "lab-main-t-aor-fhsamp-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhsamp:1.0.0",
-      "namePrefix": "dfh-samp",
+      "namePrefix": "fission-samp",
       "configMapSettings": [
         {
           "volumeName":"config-volume-ex",
@@ -30,7 +30,7 @@
     "configMapName": "lab-main-t-aor-fhami-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhami:1.0.0",
-      "namePrefix": "dfh-analysis"
+      "namePrefix": "fission-analysis"
     }
   },
 
@@ -38,7 +38,7 @@
     "configMapName": "lab-main-t-aor-fheff-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fheff:1.0.0",
-      "namePrefix": "dfh-encode"
+      "namePrefix": "fission-encode"
     }
   },
 
@@ -46,7 +46,7 @@
     "configMapName": "lab-main-t-aor-fhtff-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhtff:1.0.0",
-      "namePrefix": "dfh-thumbnail"
+      "namePrefix": "fission-thumbnail"
     }
   },
 
@@ -54,7 +54,7 @@
     "configMapName": "lab-main-t-aor-fhpkm-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhpkm:1.0.0",
-      "namePrefix": "dfh-package"
+      "namePrefix": "fission-package"
     }
   }
 }
