@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fission-executor-01
+  namespace: fission
+  labels:
+   serviceShortName: fhexec
+data:
+  env-properties: |
+    JAVA_HEAP=256M
+    LOG_LEVEL=DEBUG
+    JAVA_EXTRA=-XX:MaxMetaspaceSize=256m 
+    JAVA_EXTRA="$JAVA_EXTRA"
+  external-properties: |
+    fission.kubernetes.namespace=fission
+    metrics.enabled=false
+  registry-json: |
+    {
+      "basePodConfig": {
+        "memoryRequestCount": "1000m",
+        "cpuMinRequestCount": "1000m",
+        "cpuMaxRequestCount": "1000m",
+        "podScheduledTimeoutMs": 600000,
+        "reapCompletedPods": true,
+        "pullAlways": true
+      },
+      "sample": {
+        "configMapName": "fission-sample-01",
+        "podConfig": {
+          "imageName": "<your docker repo>/fhsamp:1.0.2",
+          "namePrefix": "fission-sample",
+          "cpuMinRequestCount":"100m",
+          "cpuMaxRequestCount":"250m"
+        }
+      }
+    }
