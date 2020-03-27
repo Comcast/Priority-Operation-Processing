@@ -16,6 +16,7 @@
 
     <modules>
         <module>scheduling-master-aws</module>
+        <module>scheduling-monitor-aws</module>
         <module>scheduling-monitor-impl</module>
         <module>scheduling-queue-aws</module>
         <module>scheduling-queue-impl</module>
