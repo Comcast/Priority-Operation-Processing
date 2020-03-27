@@ -1,9 +1,9 @@
-package com.cts.authorizer.aws;
+package com.comcast.fission.auth.aws;
 
 import com.amazonaws.auth.policy.Statement;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.comcast.fission.auth.aws.response.AuthorizerOutputBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.cts.authorizer.aws.response.AuthorizerOutputBuilder;
 import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
 import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;

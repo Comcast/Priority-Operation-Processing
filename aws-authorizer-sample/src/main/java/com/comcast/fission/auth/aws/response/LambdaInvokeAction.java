@@ -1,4 +1,4 @@
-package com.cts.authorizer.aws.response;
+package com.comcast.fission.auth.aws.response;
 
 public class LambdaInvokeAction implements com.amazonaws.auth.policy.Action
 {

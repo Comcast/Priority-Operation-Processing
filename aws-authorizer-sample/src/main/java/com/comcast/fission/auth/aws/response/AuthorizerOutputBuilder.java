@@ -1,4 +1,4 @@
-package com.cts.authorizer.aws.response;
+package com.comcast.fission.auth.aws.response;
 
 import com.amazonaws.auth.policy.Policy;
 import com.amazonaws.auth.policy.Statement;
