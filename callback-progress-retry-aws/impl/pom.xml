@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.fission.callback</groupId>
+        <artifactId>fission-callback-progress-retry-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>fission-callback-progress-retry-impl</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Progress Callback - Retry implementation</name>
+
+    <properties>
+        <ws-api.version>3.7.2</ws-api.version>
+        <exception.version>1.5.0</exception.version>
+        <endpoint-client.version>1.0.3</endpoint-client.version>
+        <mediainfo-handler-api.version>1.0.2</mediainfo-handler-api.version>
+        <fission-api.version>1.0.3</fission-api.version>
+
+        <context.interface.version>1.2.2</context.interface.version>
+        <jaxb.version>2.2.11</jaxb.version>
+        <commons-io.version>2.6</commons-io.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.fission.endpoint</groupId>
+            <artifactId>fission-endpoint-client</artifactId>
+            <version>${endpoint-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theplatform.dfh.cp.handler</groupId>
+            <artifactId>pl-dfh-cp-handler-analysis-mediainfo-api</artifactId>
+            <version>${mediainfo-handler-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.fission.api</groupId>
+            <artifactId>fission-api</artifactId>
+            <version>${fission-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+    </dependencies>
+</project>

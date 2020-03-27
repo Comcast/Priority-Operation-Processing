@@ -32,6 +32,7 @@
         <module>aws-authorizer-sample</module>
         <module>agenda-reclaimer-aws</module>
         <module>agenda-reclaimer-impl</module>
+        <module>callback-progress-retry-aws</module>
         <module>data-object-reaper-aws</module>
         <module>module</module>
         <module>scheduling</module>
