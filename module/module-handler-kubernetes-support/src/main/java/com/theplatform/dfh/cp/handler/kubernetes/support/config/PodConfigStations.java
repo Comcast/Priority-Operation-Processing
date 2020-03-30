@@ -119,7 +119,15 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                 {
                     podConfig.setRetryDelayMilliSecs(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getInt(getFieldName(), DEFAULT_RETRY_DELAY)).orElse(DEFAULT_RETRY_DELAY));
                 }
-            };
+            },
+    serviceAccount("fission.kubernetes.podconfig.serviceAccount")
+        {
+            @Override
+            public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
+            {
+                podConfig.setServiceAccountName(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getField(getFieldName(), DEFAULT_STRING)).orElse(DEFAULT_STRING));
+            }
+        };
 
 
     private static final String DEFAULT_STRING = null;

@@ -30,57 +30,11 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
     static
     {
         podConfigMap.put("sample",
-                makeBasePod("lab-main-t-aor-fhsamp-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.2")
-                        .setNamePrefix("fission-samp")
-        );
-
-        podConfigMap.put("slack",
-            makeBasePod("lab-main-t-aor-fhtele-t01")
-                .setImageName("docker-proto.repo.theplatform.com/fhslak:1.0.0")
-                .setNamePrefix("fission-slack")
-        );
-
-        podConfigMap.put("analysis",
-                makeBasePod("lab-main-t-aor-fhami-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhami:1.0.3")
-                        .setNamePrefix("fission-analysis")
-        );
-
-        podConfigMap.put("encode",
-                makeBasePod("lab-main-t-aor-fheff-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fheff:1.0.1")
-                        .setNamePrefix("fission-encode")
-        );
-
-        podConfigMap.put("thumbnail",
-                makeBasePod("lab-main-t-aor-fhtff-t01")
-                        .setImageName("docker-lab.repo.theplatform.com/fhtff:1.0.1")
-                        .setNamePrefix("fission-thumbnail")
-        );
-
-        podConfigMap.put("filmstrip",
-            makeBasePod("lab-main-t-aor-fhfsff-t01")
-                .setImageName("docker-lab.repo.theplatform.com/fhfsff:1.0.1")
-                .setNamePrefix("fission-filmstrip")
-        );
-
-        podConfigMap.put("package",
-                makeBasePod("lab-main-t-aor-fhpkm-t01")
-                .setImageName("docker-lab.repo.theplatform.com/fhpkm:1.0.2")
-                .setNamePrefix("fission-package")
-        );
-
-        podConfigMap.put("delete",
-            makeBasePod("lab-main-t-aor-fhdel-t01")
-                .setImageName("docker-lab.repo.theplatform.com/fhdel:1.0.0")
-                .setNamePrefix("fission-delete")
-        );
-
-        podConfigMap.put("telephone",
-            makeBasePod("lab-main-t-aor-fhtele-t01")
-                .setImageName("docker-proto.repo.theplatform.com/fhtele:1.0.0")
-                .setNamePrefix("fission-telephone")
+                makeBasePod("fission-sample-01")
+                        .setImageName("fission-sample:1.0.2")
+                        .setNamePrefix("fission-sample")
+                        .setPullAlways(false)
+                        .setReapCompletedPods(false)
         );
     }
 

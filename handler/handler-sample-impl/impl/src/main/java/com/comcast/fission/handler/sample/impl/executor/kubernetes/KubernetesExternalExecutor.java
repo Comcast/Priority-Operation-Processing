@@ -97,19 +97,19 @@ public class KubernetesExternalExecutor extends BaseExternalExecutor
 
             finalPodPhaseInfo = follower.startAndFollowPod(logLineObserver);
 
-            logger.info("MediaInfo completed with pod status {}", finalPodPhaseInfo.phase.getLabel());
+            logger.info("External execution completed with pod status {}", finalPodPhaseInfo.phase.getLabel());
             if (finalPodPhaseInfo.phase.hasFinished())
             {
                 if (finalPodPhaseInfo.phase.isFailed())
                 {
-                    logger.error("MediaInfo failed to produce metadata, output was : {}", allStdout);
+                    logger.error("External execution failed to produce metadata, output was : {}", allStdout);
                     throw new FissionSampleHandlerException(allStdout.toString());
                 }
             }
 
             if (logger.isDebugEnabled())
             {
-                logger.debug("MediaInfo produced: {}", allStdout.toString());
+                logger.debug("External execution produced: {}", allStdout.toString());
             }
         }
         catch (Exception e)
