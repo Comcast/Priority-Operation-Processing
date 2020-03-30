@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>fission-handler-puller-impl</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Puller Handler Impl</name>
 
@@ -102,11 +102,6 @@
             <artifactId>fission-monitor-graphite</artifactId>
             <version>${fission-monitor-graphite.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.comcast.fission.module</groupId>-->
-<!--            <artifactId>fission-monitor-bananas</artifactId>-->
-<!--            <version>${bananas-monitor.version}</version>-->
-<!--        </dependency>-->
 
         <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
         <dependency>

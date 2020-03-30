@@ -17,7 +17,7 @@
     <name>Puller Handler Package</name>
 
     <properties>
-        <application.version>1.0.3</application.version>
+        <application.version>1.0.0</application.version>
     </properties>
 
     <dependencies>
@@ -50,33 +50,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>com.theplatform.maven.plugins</groupId>-->
-<!--                <artifactId>docker-image-plugin</artifactId>-->
-<!--                <version>1.0.1</version>-->
-<!--                <configuration>-->
-<!--                    <ccdsService>cppull</ccdsService>-->
-<!--                    <applicationType>application</applicationType>-->
-<!--                    <dockerRepository>${env.DOCKER_LAB}</dockerRepository>-->
-<!--                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>-->
-<!--                    <appMainClass>com.comcast.fission.handler.puller.impl.PullerEntryPoint</appMainClass>-->
-<!--                </configuration>-->
-<!--                &lt;!&ndash; bind to build phases because Maven doesn't &ndash;&gt;-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>clean</id>-->
-<!--                        <goals>-->
-<!--                            <goal>clean</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>build</id>-->
-<!--                        <goals>-->
-<!--                            <goal>build</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -103,20 +76,7 @@
             </activation>
             <properties>
                 <!-- Override only if necessary -->
-                <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
-            </properties>
-        </profile>
-        <profile>
-            <id>dockerProdDefault</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!env.DOCKER_PROD</name>
-                </property>
-            </activation>
-            <properties>
-                <!-- Override only if necessary -->
-                <env.DOCKER_PROD>docker-prod.repo.theplatform.com</env.DOCKER_PROD>
+                <env.DOCKER_LAB>INSERT YOUR REPO</env.DOCKER_LAB>
             </properties>
         </profile>
     </profiles>
