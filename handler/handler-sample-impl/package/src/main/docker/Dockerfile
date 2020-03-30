@@ -1,7 +1,15 @@
-## Commands to prep/build
-# Assumes you are in the /package folder
+## This is a Dockerfile TEMPLATE intended for use with https://github.com/fabric8io/docker-maven-plugin
+
+#########
+## MANUAL - Commands to prep/build (if you cannot use the maven plugin for whatever reason)
+# In pom.xml - comment out the use of the maven-dependency-plugin and docker-maven-plugin
+# Navigate to the /package folder
 # mvn clean dependency:copy-dependencies
-# docker build -t fission-sample:1.0.3 .
+# docker build -t fission-sample:1.0.2 .
+
+########
+#Dockerfile Contents
+####
 
 FROM alpine:3.11
 
@@ -20,9 +28,4 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 ENV LANG="C.UTF-8" JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 ADD target/dependency /app
-CMD java -classpath app/fission-handler-sample-impl-1.0.2.jar com.comcast.fission.handler.sample.impl.HandlerEntryPoint
-
-#extra stuff for debugging
-#CMD java -version
-#CMD ls /app
-
+CMD java -classpath app/fission-handler-sample-impl-${application.version}.jar com.comcast.fission.handler.sample.impl.HandlerEntryPoint
