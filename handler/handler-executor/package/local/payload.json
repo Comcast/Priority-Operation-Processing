@@ -17,6 +17,17 @@
               "sleepMilliseconds": 4000,
               "logMessage": "This is a custom log message"
             }
+          },
+          {
+            "action": "externalExecute",
+            "paramsMap": {
+              "externalArgs": [
+                "ash",
+                "-c",
+                "ls",
+                "-la"
+              ]
+            }
           }
         ],
         "resultPayload": {

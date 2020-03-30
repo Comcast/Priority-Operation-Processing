@@ -30,7 +30,7 @@ public class HandlerEntryPoint extends BaseHandlerEntryPoint<ExecutorContext, Ba
      * NOTE! For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
      *
      * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -payloadFile ./handler/main/package/local/payload.json
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-executor/package/local//config/external.properties -payloadFile ./handler/handler-executor/package/local/payload.json
      *
      * @param args command line args
      */
