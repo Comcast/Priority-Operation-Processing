@@ -15,8 +15,8 @@ import static org.mockito.Mockito.mock;
 
 public class PodConfigStationsTest
 {
-    private static final Object[] defaults = {null, null, null, false, false, false, null, null, 300000L, 120000L, 0, 3000 };
-    private static final Object[] testValues = {"test end of log id", "test name prefix", "test docker image name", true, true, true, "test tainted node selector", "test tainted node toleration", 99999999L, 8888888L, 7, 6666 };
+    private static final Object[] defaults = {null, null, null, false, false, false, null, null, 300000L, 120000L, 0, 3000, null };
+    private static final Object[] testValues = {"test end of log id", "test name prefix", "test docker image name", true, true, true, "test tainted node selector", "test tainted node toleration", 99999999L, 8888888L, 7, 6666, "service-account" };
     private PodConfigTestHelper helper = new PodConfigTestHelper();
 
     /**
@@ -78,6 +78,7 @@ class PodConfigTestHelper
                 doReturn(testValues[9]).when(mockRetriever).getLong(PodConfigStations.podTimeoutStdOut.getFieldName(), 120000L);
                 doReturn(testValues[10]).when(mockRetriever).getInt(PodConfigStations.retryCount.getFieldName(), 0);
                 doReturn(testValues[11]).when(mockRetriever).getInt(PodConfigStations.retryDelay.getFieldName(), 3000);
+                doReturn(testValues[12]).when(mockRetriever).getField(PodConfigStations.serviceAccount.getFieldName(), null);
 
                 return mockRetriever;
             }
@@ -100,6 +101,7 @@ class PodConfigTestHelper
                     softly.assertThat(podConfig.getPodStdoutTimeout()).isEqualTo(expectedValues[9]);
                     softly.assertThat(podConfig.getPodRetryCount()).isEqualTo(expectedValues[10]);
                     softly.assertThat(podConfig.getRetryDelayMilliSecs()).isEqualTo(expectedValues[11]);
+                    softly.assertThat(podConfig.getServiceAccountName()).isEqualTo(expectedValues[12]);
                 });
             }
         }
