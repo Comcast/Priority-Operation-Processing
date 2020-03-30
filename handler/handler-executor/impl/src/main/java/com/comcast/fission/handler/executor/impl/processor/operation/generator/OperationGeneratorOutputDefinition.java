@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator;
+package com.comcast.fission.handler.executor.impl.processor.operation.generator;
 
 /**
  * Definition extracted from the params of an operation (not the payload params, the operation params)

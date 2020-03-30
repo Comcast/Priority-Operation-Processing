@@ -19,18 +19,6 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
 
     static
     {
-        podConfigMap.put("sample",
-            podConfigFactory.createPodConfig()
-                .setServiceAccountName("fission-service")
-                .setMemoryRequestCount("1000m")
-                .setCpuMinRequestCount("1000m")
-                .setCpuMaxRequestCount("1000m")
-                .setPodScheduledTimeoutMs(600000L)
-                .setReapCompletedPods(true)
-                .setPullAlways(true) // for now
-                .setImageName("docker-lab.repo.theplatform.com/fhsamp:1.0.1")
-                .setNamePrefix("fission-samp")
-        );
         podConfigMap.put("executor",
             podConfigFactory.createPodConfig()
                 .setServiceAccountName("fission-service")
@@ -39,12 +27,12 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setCpuMaxRequestCount("1000m")
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
-                .setPullAlways(true) // for now
-                .setImageName("docker-lab.repo.theplatform.com/fhexec:1.0.2")
+                .setPullAlways(false) // for now
+                .setImageName("fhexec:1.0.3")
                 .setNamePrefix("fission-exec")
                 .setConfigMapSettings(Collections.singletonList(
                     new ConfigMapDetails()
-                        .setConfigMapName("lab-main-t-aor-fhexec-t02")
+                        .setConfigMapName("fission-executor-01")
                         .setVolumeName("config-volume")
                         .setVolumeMountPath("/app/config")
                         .setMapKeyPaths(

@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
+package com.comcast.fission.handler.executor.impl.resident.generator;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.GeneralParamKey;
@@ -6,8 +6,8 @@ import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRetriever;
 import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
-import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
+import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
+import com.comcast.fission.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
 import com.theplatform.dfh.endpoint.api.ErrorResponse;
 import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;

@@ -1,12 +1,12 @@
-package com.theplatform.dfh.cp.handler.executor.impl.executor.local;
+package com.comcast.fission.handler.executor.impl.executor.local;
 
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.reporter.LogReporter;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
+import com.comcast.fission.handler.executor.impl.executor.BaseOperationExecutor;
+import com.comcast.fission.handler.executor.impl.resident.SampleResidentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

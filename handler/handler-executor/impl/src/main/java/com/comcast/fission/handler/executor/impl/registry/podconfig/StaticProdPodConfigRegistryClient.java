@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.registry.podconfig;
+package com.comcast.fission.handler.executor.impl.registry.podconfig;
 
 import com.theplatform.dfh.cp.handler.base.BaseHandlerEntryPoint;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.PodConfigFactory;

@@ -1,8 +1,8 @@
-package com.theplatform.dfh.cp.handler.executor.impl.resident.generator;
+package com.comcast.fission.handler.executor.impl.resident.generator;
 
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
-import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations.ResidentHandlerFactory;
+import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
+import com.comcast.fission.handler.executor.impl.registry.resident.operations.ResidentHandlerFactory;
 
 public class UpdateAgendaResidentHandlerFactory implements ResidentHandlerFactory
 {

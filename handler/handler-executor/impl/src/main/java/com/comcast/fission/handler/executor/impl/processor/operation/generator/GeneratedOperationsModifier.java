@@ -1,15 +1,15 @@
-package com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator;
+package com.comcast.fission.handler.executor.impl.processor.operation.generator;
 
+import com.comcast.fission.handler.executor.impl.processor.OperationWrapper;
+import com.comcast.fission.handler.executor.impl.processor.OperationWrapperFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapperFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.parallel.OperationConductor;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.parallel.OperationConductorModifier;
+import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
+import com.comcast.fission.handler.executor.impl.processor.parallel.OperationConductor;
+import com.comcast.fission.handler.executor.impl.processor.parallel.OperationConductorModifier;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

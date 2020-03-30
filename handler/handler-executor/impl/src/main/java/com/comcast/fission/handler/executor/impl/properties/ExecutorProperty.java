@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.properties;
+package com.comcast.fission.handler.executor.impl.properties;
 
 import com.theplatform.dfh.cp.handler.base.field.retriever.api.NamedField;
 

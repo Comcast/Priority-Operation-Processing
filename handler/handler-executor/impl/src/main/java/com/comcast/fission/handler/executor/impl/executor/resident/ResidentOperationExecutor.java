@@ -1,5 +1,6 @@
-package com.theplatform.dfh.cp.handler.executor.impl.executor.resident;
+package com.comcast.fission.handler.executor.impl.executor.resident;
 
+import com.comcast.fission.handler.executor.impl.messages.ExecutorMessages;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
@@ -9,8 +10,7 @@ import com.theplatform.dfh.cp.handler.base.ResidentHandler;
 import com.theplatform.dfh.cp.handler.base.ResidentHandlerParams;
 import com.theplatform.dfh.cp.handler.base.field.retriever.LaunchDataWrapper;
 import com.theplatform.dfh.cp.handler.base.reporter.JsonReporter;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.handler.executor.impl.messages.ExecutorMessages;
+import com.comcast.fission.handler.executor.impl.executor.BaseOperationExecutor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
 import org.slf4j.Logger;

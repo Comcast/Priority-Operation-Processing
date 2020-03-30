@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.resident.log;
+package com.comcast.fission.handler.executor.impl.resident.log;
 
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;

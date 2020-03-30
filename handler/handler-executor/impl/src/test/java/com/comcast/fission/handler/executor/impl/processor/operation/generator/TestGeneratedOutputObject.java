@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.processor.operation.generator;
+package com.comcast.fission.handler.executor.impl.processor.operation.generator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.theplatform.dfh.cp.api.operation.Operation;

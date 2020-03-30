@@ -1,9 +1,9 @@
-package com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations;
+package com.comcast.fission.handler.executor.impl.registry.resident.operations;
 
+import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
+import com.comcast.fission.handler.executor.impl.resident.SampleResidentHandler;
+import com.comcast.fission.handler.executor.impl.resident.log.LogResidentHandler;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
-import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.resident.SampleResidentHandler;
-import com.theplatform.dfh.cp.handler.executor.impl.resident.log.LogResidentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

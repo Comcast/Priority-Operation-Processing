@@ -1,12 +1,12 @@
-package com.theplatform.dfh.cp.handler.executor.impl.executor.resident;
+package com.comcast.fission.handler.executor.impl.executor.resident;
 
+import com.comcast.fission.handler.executor.impl.processor.OperationWrapper;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.handler.base.ResidentHandler;
-import com.theplatform.dfh.cp.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.handler.executor.impl.executor.OperationExecutorFactory;
-import com.theplatform.dfh.cp.handler.executor.impl.processor.OperationWrapper;
-import com.theplatform.dfh.cp.handler.executor.impl.registry.resident.operations.ResidentOperationRegistry;
+import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
+import com.comcast.fission.handler.executor.impl.executor.BaseOperationExecutor;
+import com.comcast.fission.handler.executor.impl.executor.OperationExecutorFactory;
+import com.comcast.fission.handler.executor.impl.registry.resident.operations.ResidentOperationRegistry;
 
 /**
  * OperationExecutor factory for resident handlers.

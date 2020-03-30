@@ -14,6 +14,8 @@ data:
   external-properties: |
     fission.kubernetes.namespace=fission
     metrics.enabled=false
+    executor.reap.self=false
+    agenda.progress.url=https://localhost/resourcepool/service/this/is/not/valid
   registry-json: |
     {
       "basePodConfig": {
@@ -21,13 +23,13 @@ data:
         "cpuMinRequestCount": "1000m",
         "cpuMaxRequestCount": "1000m",
         "podScheduledTimeoutMs": 600000,
-        "reapCompletedPods": true,
-        "pullAlways": true
+        "reapCompletedPods": false,
+        "pullAlways": false
       },
       "sample": {
         "configMapName": "fission-sample-01",
         "podConfig": {
-          "imageName": "<your docker repo>/fhsamp:1.0.2",
+          "imageName": "fission-sample:1.0.2",
           "namePrefix": "fission-sample",
           "cpuMinRequestCount":"100m",
           "cpuMaxRequestCount":"250m"

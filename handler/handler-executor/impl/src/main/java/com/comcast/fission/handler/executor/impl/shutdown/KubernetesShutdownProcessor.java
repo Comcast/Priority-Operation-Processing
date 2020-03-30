@@ -1,4 +1,4 @@
-package com.theplatform.dfh.cp.handler.executor.impl.shutdown;
+package com.comcast.fission.handler.executor.impl.shutdown;
 
 import com.theplatform.dfh.cp.handler.base.field.retriever.api.FieldRetriever;
 import com.theplatform.dfh.cp.handler.kubernetes.support.config.KubeConfigFactory;
