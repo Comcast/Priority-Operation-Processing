@@ -17,13 +17,13 @@ spec:
         serviceAccountName: fission-service
         containers:
           - name: cppull
-            image: <your docker repo>/cppull:1.0.2
+            image: cppull:1.0.0
             ports:
              - containerPort: 8081
                name: "admin"
              - containerPort: 8080 
                name:  service
-            imagePullPolicy: Always
+            imagePullPolicy: Never
             livenessProbe:
               httpGet:
                 path: /healthcheck

@@ -31,7 +31,7 @@ data:
       "executor": {
         "configMapName": "fission-executor-01",
         "podConfig": {
-          "imageName": "<your docker repo>/fhexec:1.0.3",
+          "imageName": "fhexec:1.0.3",
           "namePrefix": "fission-exec",
           "configMapSettings": [
             {
