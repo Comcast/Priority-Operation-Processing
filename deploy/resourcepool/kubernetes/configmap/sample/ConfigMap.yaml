@@ -11,7 +11,6 @@ data:
     LOG_LEVEL=DEBUG
     JAVA_EXTRA=-XX:MaxMetaspaceSize=256m 
   external-properties: |
-    fission.kubernetes.masterUrl=https://192.168.64.2:8443
     fission.kubernetes.namespace=fission
     fission.kubernetes.podconfig.serviceAccount=fission-service
     fission.kubernetes.podconfig.namePrefix=fission-sample-ext

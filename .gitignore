@@ -5,3 +5,4 @@ target/
 .DS_Store
 ._*
 dependency-reduced-pom.xml
+deploy/endpoint/aws/binaries
