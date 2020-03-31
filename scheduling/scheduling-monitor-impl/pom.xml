@@ -17,7 +17,7 @@
         <scheduling-api.version>1.0.2</scheduling-api.version>
         <persistent-api.version>1.0.3</persistent-api.version>
         <queue-api.version>1.0.2</queue-api.version>
-        <endpoint-client.version>1.0.3</endpoint-client.version>
+        <endpoint-client.version>1.0.0</endpoint-client.version>
         <cp-api.version>1.0.3</cp-api.version>
         <fission-monitor.version>1.0.1</fission-monitor.version>
         <fission-monitor-graphite.version>1.0.1</fission-monitor-graphite.version>

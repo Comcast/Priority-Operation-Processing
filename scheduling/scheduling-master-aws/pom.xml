@@ -21,7 +21,7 @@
         <fission-module-version-info.version>1.0.1</fission-module-version-info.version>
         <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
-        <fission-aws-base-endpoint.version>1.0.2</fission-aws-base-endpoint.version>
+        <fission-aws-base-endpoint.version>1.0.0</fission-aws-base-endpoint.version>
         <idm-http.version>1.0.1</idm-http.version>
         <endpoint-client.version>1.0.3</endpoint-client.version>
     </properties>

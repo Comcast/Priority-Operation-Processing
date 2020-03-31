@@ -22,8 +22,8 @@
         <fission-version-info.version>1.0.1</fission-version-info.version>
         <http-api.version>1.0.2</http-api.version>
         <http-utils.version>1.0.2</http-utils.version>
-        <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
-        <endpoint-api.version>1.0.3</endpoint-api.version>
+        <endpoint-base-aws.version>1.0.0</endpoint-base-aws.version>
+        <endpoint-api.version>1.0.0</endpoint-api.version>
     </properties>
 
     <dependencies>

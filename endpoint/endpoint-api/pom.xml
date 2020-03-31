@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.endpoint</groupId>
     <artifactId>fission-endpoint-api</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Endpoint API</name>
 

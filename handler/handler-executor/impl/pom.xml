@@ -24,7 +24,7 @@
         <fission-http-api.version>1.0.2</fission-http-api.version>
         <fission-http-util.version>1.0.2</fission-http-util.version>
         <json-helper.version>1.0.2</json-helper.version>
-        <fission-endpoint-client.version>1.0.3</fission-endpoint-client.version>
+        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
 
         <!-- Resident Handlers-->
         <http-request-util-handler.version>1.0.3</http-request-util-handler.version>

@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.endpoint</groupId>
     <artifactId>fission-endpoint-impl-aws</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Endpoint AWS Impl compatible zip package suitable for Lambda</name>
 
@@ -19,10 +19,10 @@
         <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
         <fission-module-queue-aws-sqs.version>1.0.3</fission-module-queue-aws-sqs.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
-        <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
+        <endpoint-base-aws.version>1.0.0</endpoint-base-aws.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
-        <endpoint-impl.version>1.0.1</endpoint-impl.version>
-        <endpoint-api.version>1.0.3</endpoint-api.version>
+        <endpoint-impl.version>1.0.0</endpoint-impl.version>
+        <endpoint-api.version>1.0.0</endpoint-api.version>
         <fission-api.version>1.0.3</fission-api.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
         <persistence-api.version>1.0.3</persistence-api.version>

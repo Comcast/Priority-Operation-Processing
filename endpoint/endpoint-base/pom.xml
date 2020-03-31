@@ -9,14 +9,14 @@
 
     <groupId>com.comcast.fission.endpoint</groupId>
     <artifactId>fission-endpoint-base</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>TransformRequest endpoint implementation</name>
 
     <properties>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
         <fission-api.version>1.0.3</fission-api.version>
-        <endpoint-api.version>1.0.3</endpoint-api.version>
+        <endpoint-api.version>1.0.0</endpoint-api.version>
     </properties>
 
     <dependencies>
