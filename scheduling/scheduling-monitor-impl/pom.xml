@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.scheduling</groupId>
     <artifactId>fission-scheduling-monitor-impl</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Scheduling Monitor implementation</name>
 

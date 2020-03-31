@@ -37,7 +37,6 @@
             "LambdaRefPathFissionAuthorizer",
             "LambdaRefPathUnified",
             "LambdaRefPathRetryCallback",
-            "LambdaRefPathTaskCallback",
             "LambdaRefPathSchedulingMaster",
             "LambdaRefPathSchedulingQueue",
             "LambdaRefPathSchedulingMonitor",
@@ -53,7 +52,6 @@
             "AuthorizerRole",
             "CallbackRole",
             "SchedulerRole",
-            "SplunkRole",
             "ReaperRole",
             "UnifiedEndpointRole",
             "ReclaimerRole"
@@ -268,7 +266,7 @@
     "ResourcePoolUnified": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.theplatform.dfh.cp.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.fission.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {

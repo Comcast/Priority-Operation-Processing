@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.scheduling</groupId>
     <artifactId>fission-scheduling-queue-impl</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Scheduling Queue Monitor implementation</name>
 
