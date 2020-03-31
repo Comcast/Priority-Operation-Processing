@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.agenda.reclaim</groupId>
     <artifactId>fission-agenda-reclaimer-aws</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Agenda Reclaimer AWS compatible zip package suitable for Lambda</name>
 
