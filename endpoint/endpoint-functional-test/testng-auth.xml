@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="CP Endpoint tests" configfailurepolicy="continue">
-
-    <test verbose="1" name="CP Object Endpoint Functional">
-        <packages>
-            <package name="com.theplatform.dfh.cp.endpoint.test.auth.*" />
-        </packages>
-    </test>
-</suite>
