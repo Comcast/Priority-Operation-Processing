@@ -17,8 +17,8 @@ import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
@@ -183,7 +183,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 //
 //        EncryptedAuthenticationClient encryptedAuthenticationClient = new EncryptedAuthenticationClient(identityUrl, user, encryptedPass, null);
 
-        return new NoAuthHTTPUrlConnectionFactory();
+        return new AuthHttpURLConnectionFactory();
 
     }
 

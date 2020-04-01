@@ -8,6 +8,7 @@ import com.cts.fission.scheduling.master.aws.AWSLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.testng.annotations.Test;
 
@@ -51,7 +52,7 @@ public class AWSLambdaStreamEntryLiveTest
 
         new AWSLambdaStreamEntry(
                 new AWSLambdaFactory(new ProfileCredentialsProvider("lab_Fission")).setRegion(Regions.US_WEST_2),
-                new HttpObjectClientFactory(new NoAuthHTTPUrlConnectionFactory())
+                new HttpObjectClientFactory(new AuthHttpURLConnectionFactory())
             )
             .setEnvironmentFacade(environmentFacade)
             .setEnvironmentLookupUtils(environmentLookupUtils)

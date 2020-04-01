@@ -13,6 +13,7 @@ import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
@@ -153,7 +154,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
     private HttpURLConnectionFactory getHttpURLConnectionFactory() throws BadRequestException
     {
-        return new NoAuthHTTPUrlConnectionFactory();
+        return new AuthHttpURLConnectionFactory();
     }
 
     public AWSLambdaStreamEntry setAwsLambdaFactory(AWSLambdaFactory awsLambdaFactory)

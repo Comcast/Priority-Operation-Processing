@@ -10,6 +10,7 @@ import com.comcast.fission.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.comcast.fission.endpoint.api.BadRequestException;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
@@ -105,7 +106,7 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
 
         return new IDMHTTPUrlConnectionFactory(encryptedAuthenticationClient);
         **/
-        return new NoAuthHTTPUrlConnectionFactory();
+        return new AuthHttpURLConnectionFactory();
     }
 
     public void setEnvironmentFacade(EnvironmentFacade environmentFacade)

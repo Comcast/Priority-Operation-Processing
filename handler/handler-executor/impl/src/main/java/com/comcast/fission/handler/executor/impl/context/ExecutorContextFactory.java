@@ -19,6 +19,7 @@ import com.comcast.fission.handler.executor.impl.progress.agenda.ResourcePoolSer
 import com.theplatform.dfh.cp.handler.kubernetes.support.context.KubernetesOperationContextFactory;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.apache.commons.lang.StringUtils;
@@ -168,7 +169,7 @@ public class ExecutorContextFactory extends KubernetesOperationContextFactory<Ex
         return new IDMHTTPUrlConnectionFactory(httpConfig)
             .setCid(retrieveCID());
          */
-        return new NoAuthHTTPUrlConnectionFactory();
+        return new AuthHttpURLConnectionFactory();
     }
 
     public void setResourcePoolServiceClientFactory(ResourcePoolServiceClientFactory resourcePoolServiceClientFactory)

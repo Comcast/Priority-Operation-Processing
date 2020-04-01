@@ -1,0 +1,27 @@
+{
+  "customerId": "http://access.auth.theplatform.com/data/Account/2708235339",
+  "operations": [
+    {
+      "payload": {
+        "inputs": {
+          "action": "atemeencode",
+          "ParamsMap": {
+            "aliasName": "1080i_fraST_null",
+            "movieFileName": "file:///mnt/mezzanine/encoded_staging/watchfolder/regression/testFiles/HDMOVIE_SmurfsTheLostVillageHD_MD717197_mezz.mov",
+            "captionFileName": "",
+            "esamData": "",
+            "outputDirectory": "file:///mnt/mezzanine/encoded_staging/watchfolder/regression/testFiles/test_atemetool/",
+            "transcodeDerivativeType": "IP_M_HD",
+            "transcoder": "http://172.26.51.155:80/xml/jobs"
+          }
+        }
+      },
+      "type": "encode.ateme",
+      "id": null,
+      "name": "encode.ateme.1",
+      "params": null
+    }
+  ],
+  "params": {},
+  "linkId": "my.ateme.v1"
+}

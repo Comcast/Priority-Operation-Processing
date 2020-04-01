@@ -18,6 +18,7 @@
         <module>endpoint-api</module>
         <module>endpoint-base</module>
         <module>endpoint-base-aws</module>
+        <module>endpoint-functional-test</module>
         <module>endpoint-impl</module>
         <module>endpoint-impl-aws</module>
         <module>endpoint-impl-client</module>

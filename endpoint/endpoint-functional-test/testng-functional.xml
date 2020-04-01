@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="CP Endpoint tests" configfailurepolicy="continue">
+
+    <test verbose="1" name="CP Object Endpoint Functional">
+        <packages>
+            <package name="com.theplatform.dfh.cp.endpoint.test.agenda.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.agendatemplate.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.facility.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.progress.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.resourcepool.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.task.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.transform.*" />
+            <package name="com.theplatform.dfh.cp.endpoint.test.auth.*" />
+        </packages>
+    </test>
+</suite>

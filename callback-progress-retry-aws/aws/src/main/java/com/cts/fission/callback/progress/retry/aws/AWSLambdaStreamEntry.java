@@ -16,6 +16,8 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
 import com.theplatform.dfh.endpoint.client.AgendaServiceClientFactory;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
+import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.apache.commons.lang3.StringUtils;
@@ -152,10 +154,10 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
             agendaProgressUrl);*/
 
 
-        NoAuthHTTPUrlConnectionFactory idmhttpUrlConnectionFactory = new NoAuthHTTPUrlConnectionFactory();
+        HttpURLConnectionFactory httpUrlConnectionFactory = new AuthHttpURLConnectionFactory();
 
         agendaProgressProcessorFactory.createAgendaProgressProcessor(
-            agendaServiceClientFactory.create(agendaClientUrl, idmhttpUrlConnectionFactory), new HttpObjectClient<>(agendaProgressUrl, idmhttpUrlConnectionFactory, AgendaProgress.class))
+            agendaServiceClientFactory.create(agendaClientUrl, httpUrlConnectionFactory), new HttpObjectClient<>(agendaProgressUrl, httpUrlConnectionFactory, AgendaProgress.class))
             .process(agendaProgress);
     }
 

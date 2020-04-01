@@ -10,6 +10,7 @@ import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.cp.modules.monitor.graphite.GraphiteConfigKeys;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.LocalDynamoDBFactory;
@@ -51,7 +52,7 @@ public class AWSLambdaStreamEntryLiveTest
             new DynamoDBPersisterFactory<>("id", ReadyAgenda.class, AWSLambdaStreamEntry.READY_AGENDA_TABLE_INDEXES,
                 new LocalDynamoDBFactory(AWS_PROFILE_NAME, AWS_REGION)),
             new HttpObjectClientFactory(
-                new NoAuthHTTPUrlConnectionFactory(
+                new AuthHttpURLConnectionFactory(
             )));
         streamEntry.setEnvironmentFacade(new EnvironmentFacade()
         {

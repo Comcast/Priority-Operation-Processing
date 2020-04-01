@@ -4,6 +4,7 @@ import com.comcast.fission.handler.puller.impl.PullerApp;
 import com.comcast.fission.handler.puller.impl.config.PullerConfig;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +79,7 @@ public class PullerResourcePoolServiceClientFactory
             new IDMHTTPUrlConnectionFactory(idmhttpClientConfig));
         **/
         return resourcePoolServiceClientFactory.create(pullerConfig.getAgendaProviderUrl(),
-            new NoAuthHTTPUrlConnectionFactory());
+            new AuthHttpURLConnectionFactory());
     }
 
     public PullerResourcePoolServiceClientFactory setPullerConfig(PullerConfig pullerConfig)

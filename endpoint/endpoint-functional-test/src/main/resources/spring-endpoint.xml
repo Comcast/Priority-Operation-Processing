@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:${propFile:fission-test.properties}" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+
+    <bean id="testCustomerId" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${test.customerId}"/>
+    </bean>
+
+    <bean id="testInsightQueueName" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${test.insightQueueName}" />
+    </bean>
+
+    <bean id="testResourcePoolId" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${test.resourcePoolId}" />
+    </bean>
+
+    <bean id="testInsightOperation" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${test.insightOperation}" />
+    </bean>
+
+    <bean id="testInsightId" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${test.insightId}" />
+    </bean>
+
+    <bean id="agendaServiceUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${agenda.service.path}"/>
+    </bean>
+
+    <bean id="agendaProgressUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${agenda.progress.path}"/>
+    </bean>
+
+    <bean id="operationProgressUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${operation.progress.path}"/>
+    </bean>
+
+    <bean id="agendaTemplateUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${agendatemplate.path}"/>
+    </bean>
+
+    <bean id="agendaUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${agenda.path}"/>
+    </bean>
+
+    <bean id="resourcePoolServiceUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${resource.pool.service.path}"/>
+    </bean>
+
+    <bean id="resourcePoolUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${resource.pool.path}"/>
+    </bean>
+
+    <bean id="customerUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${customer.path}"/>
+    </bean>
+
+    <bean id="insightUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${insight.path}"/>
+    </bean>
+
+    <bean id="taskSubmitUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${task.submit.path}"/>
+    </bean>
+
+    <bean id="progressProviderUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${endpoint.url}${progress.provider.url}"/>
+    </bean>
+
+    <bean id="cid" class="java.lang.String">
+        <constructor-arg value="#{cidGenerator.generateCid()}" />
+    </bean>
+
+    <bean id="cidGenerator" class="com.cts.fission.test.CidGenerator" />
+
+    <bean id="identifiedObjectCreateTracker" class="com.theplatform.dfh.cp.test.cleanup.endpoint.IdentifiedObjectCreateTracker"/>
+
+    <bean id="httpUrlConnectionFactory" class="com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory"/>
+
+    <bean id="agendaProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="agendaProgressUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.progress.AgendaProgress"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="operationProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="operationProgressUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.progress.OperationProgress"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="agendaTemplateClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="agendaTemplateUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.AgendaTemplate"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="agendaClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="agendaUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.Agenda"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="progressServiceClient" class="com.theplatform.dfh.endpoint.client.ProgressServiceClient">
+        <constructor-arg index="0" ref="httpUrlConnectionFactory"/>
+        <property name="progressSummaryUrl" ref="progressProviderUrl"/>
+    </bean>
+
+    <bean id="agendaServiceClient" class="com.theplatform.dfh.endpoint.client.AgendaServiceClient">
+        <constructor-arg index="0" ref="httpUrlConnectionFactory"/>
+        <property name="agendaServiceUrl" ref="agendaServiceUrl"/>
+    </bean>
+
+    <bean id="resourcePoolServiceClient" class="com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient">
+        <constructor-arg index="0" ref="resourcePoolServiceUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+    </bean>
+
+    <bean id="resourcePoolClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="resourcePoolUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.ResourcePool"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="customerClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="customerUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.Customer"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="insightClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+        <constructor-arg index="0" ref="insightUrl"/>
+        <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.Insight"/>
+        <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
+    </bean>
+
+    <bean id="identifiedObjectCleanupManager" class="com.theplatform.dfh.cp.test.cleanup.endpoint.IdentifiedObjectCleanupManager">
+        <constructor-arg index="0" ref="identifiedObjectCreateTracker"/>
+        <constructor-arg index="1">
+            <util:list id="clientsForCleanup" value-type="com.theplatform.dfh.endpoint.client.HttpObjectClient">
+                <ref bean="agendaProgressClient"/>
+                <ref bean="operationProgressClient"/>
+                <ref bean="agendaTemplateClient"/>
+                <ref bean="agendaClient"/>
+                <ref bean="resourcePoolClient"/>
+                <ref bean="customerClient"/>
+                <ref bean="insightClient"/>
+            </util:list>
+        </constructor-arg>
+    </bean>
+</beans>

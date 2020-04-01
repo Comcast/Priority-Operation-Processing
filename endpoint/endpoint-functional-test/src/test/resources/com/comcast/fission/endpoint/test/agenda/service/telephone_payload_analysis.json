@@ -1,0 +1,57 @@
+{
+  "customerId": "http://access.auth.test.corp.theplatform.com/data/Account/3131523765",
+  "operations": [
+    {
+      "payload": {
+        "channelX": "cts-video-platform",
+        "channel": "@tstair200",
+        "username": "Fission Slack Handler",
+        "textLines": [
+          "a"
+        ],
+        "icon_emoji": ":fission:"
+      },
+      "type": "slack",
+      "name": "slack.1"
+    },
+    {
+      "payload": {
+        "channelX": "@knagi201",
+        "channel": "@tstair200",
+        "username": "Fission Slack Handler",
+        "textLines": [
+          "b"
+        ],
+        "icon_emoji": ":fission:"
+      },
+      "type": "slack",
+      "name": "slack.2"
+    },
+    {
+      "payload": {
+        "channelX": "@clong492",
+        "channel": "@tstair200",
+        "username": "Fission Slack Handler",
+        "textLines": [
+          "c"
+        ],
+        "icon_emoji": ":fission:"
+      },
+      "type": "slack",
+      "name": "slack.3"
+    },
+    {
+      "payload": {
+        "channelX": "@MMCKAY203",
+        "channel": "@tstair200",
+        "username": "Fission Slack Handler",
+        "textLines": [
+          "d"
+        ],
+        "icon_emoji": ":fission:"
+      },
+      "type": "slack",
+      "name": "slack.4"
+    }
+  ]
+}
