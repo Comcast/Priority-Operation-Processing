@@ -4,10 +4,9 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressResponse;
+import com.comcast.fission.endpoint.api.ErrorResponse;
+import com.comcast.fission.endpoint.api.ErrorResponseFactory;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

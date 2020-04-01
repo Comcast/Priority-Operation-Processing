@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint;
 
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponseBuilder;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.auth.AuthorizationResponseBuilder;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;

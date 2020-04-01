@@ -2,11 +2,11 @@ package com.theplatform.dfh.cp.endpoint.base;
 
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
 import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilterMap;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.query.ByTitle;
+import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.data.query.ByTitle;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;

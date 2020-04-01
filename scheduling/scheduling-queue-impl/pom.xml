@@ -14,38 +14,38 @@
     <name>Scheduling Queue Monitor implementation</name>
 
     <properties>
-        <scheduling-api.version>1.0.2</scheduling-api.version>
-        <persistent-api.version>1.0.3</persistent-api.version>
-        <queue-api.version>1.0.2</queue-api.version>
-        <endpoint-client.version>1.0.0</endpoint-client.version>
-        <cp-api.version>1.0.3</cp-api.version>
+        <fission-scheduling-api.version>1.0.2</fission-scheduling-api.version>
+        <fission-persistent-api.version>1.0.3</fission-persistent-api.version>
+        <fission-queue-api.version>1.0.2</fission-queue-api.version>
+        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
+        <fission-api.version>1.0.3</fission-api.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-client</artifactId>
-            <version>${endpoint-client.version}</version>
+            <version>${fission-endpoint-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
-            <version>${persistent-api.version}</version>
+            <version>${fission-persistent-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-queue-api</artifactId>
-            <version>${queue-api.version}</version>
+            <version>${fission-queue-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-scheduling-api</artifactId>
-            <version>${scheduling-api.version}</version>
+            <version>${fission-scheduling-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
             <artifactId>fission-api</artifactId>
-            <version>${cp-api.version}</version>
+            <version>${fission-api.version}</version>
             <scope>provided</scope>
         </dependency>
 

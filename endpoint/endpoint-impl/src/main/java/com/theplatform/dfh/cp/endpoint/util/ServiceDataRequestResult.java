@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.util;
 
-import com.theplatform.dfh.endpoint.api.ServiceResponse;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.ServiceResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
 /**

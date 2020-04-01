@@ -3,7 +3,7 @@ package com.cts.fission.scheduling.queue.algorithm;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByInsightId;
+import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByInsightId;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;

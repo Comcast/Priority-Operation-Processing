@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base.visibility;
 
 import com.theplatform.dfh.cp.api.GlobalEndpointDataObject;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

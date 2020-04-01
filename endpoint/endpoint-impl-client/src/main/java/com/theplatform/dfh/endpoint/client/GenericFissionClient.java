@@ -1,7 +1,9 @@
 package com.theplatform.dfh.endpoint.client;
 
+import com.comcast.fission.endpoint.api.ErrorResponseFactory;
+import com.comcast.fission.endpoint.api.RuntimeServiceException;
+import com.comcast.fission.endpoint.api.ServiceResponse;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import org.slf4j.Logger;
@@ -71,7 +73,8 @@ public class GenericFissionClient<T extends ServiceResponse, R>
                 logger.debug("Failed to get responseCode from HttpURLConnection.  Using default.", e2);
             }
             T response = objectClass.newInstance();
-            response.setErrorResponse(ErrorResponseFactory.buildErrorResponse(new FissionClientException(String.format("Failed to get %1$s", objectClass.getSimpleName()), ioException),
+            response.setErrorResponse(
+                ErrorResponseFactory.buildErrorResponse(new FissionClientException(String.format("Failed to get %1$s", objectClass.getSimpleName()), ioException),
                 responseCode, cid));
             return response;
         }

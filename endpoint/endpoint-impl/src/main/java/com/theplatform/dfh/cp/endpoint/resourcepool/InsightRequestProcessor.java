@@ -5,8 +5,7 @@ import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.visibility.*;
 import com.theplatform.dfh.cp.endpoint.validation.InsightValidator;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 public class InsightRequestProcessor extends EndpointDataObjectRequestProcessor<Insight>

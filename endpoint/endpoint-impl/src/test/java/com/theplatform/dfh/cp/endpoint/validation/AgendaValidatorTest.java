@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.operation.Operation;
 import com.theplatform.dfh.cp.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
-import com.theplatform.dfh.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.ValidationException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
+import com.comcast.fission.endpoint.api.*;
 import com.theplatform.dfh.cp.endpoint.base.validation.DefaultRequestValidator;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
-import com.theplatform.dfh.endpoint.api.*;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

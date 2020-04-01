@@ -10,9 +10,9 @@ import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.service.ProgressSummaryRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.progress.ProgressSummaryRequest;
+import com.comcast.fission.endpoint.api.progress.ProgressSummaryResponse;
+import com.comcast.fission.endpoint.api.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

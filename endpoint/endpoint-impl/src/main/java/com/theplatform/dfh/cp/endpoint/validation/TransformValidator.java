@@ -8,7 +8,7 @@ import com.theplatform.dfh.cp.api.input.InputStream;
 import com.theplatform.dfh.cp.api.output.OutputStream;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;

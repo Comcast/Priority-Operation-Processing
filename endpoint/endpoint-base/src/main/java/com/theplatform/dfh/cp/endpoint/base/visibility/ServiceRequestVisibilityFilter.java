@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.base.visibility;
 
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.auth.AuthorizationResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
 /**

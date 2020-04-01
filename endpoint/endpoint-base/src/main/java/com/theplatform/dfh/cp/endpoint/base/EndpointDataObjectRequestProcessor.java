@@ -3,7 +3,7 @@ package com.theplatform.dfh.cp.endpoint.base;
 import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
 import com.theplatform.dfh.cp.endpoint.base.persistence.EndpointDataObjectPersister;
 import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

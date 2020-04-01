@@ -1,7 +1,7 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryResponse;
+import com.comcast.fission.endpoint.api.progress.ProgressSummaryRequest;
+import com.comcast.fission.endpoint.api.progress.ProgressSummaryResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class ProgressServiceClient extends FissionServiceClient

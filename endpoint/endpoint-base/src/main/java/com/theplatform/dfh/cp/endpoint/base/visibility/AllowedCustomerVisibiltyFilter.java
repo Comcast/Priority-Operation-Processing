@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.base.visibility;
 
 import com.theplatform.dfh.cp.api.AllowedCustomerEndpointDataObject;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.auth.AuthorizationResponse;
+import com.comcast.fission.endpoint.api.auth.DataVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

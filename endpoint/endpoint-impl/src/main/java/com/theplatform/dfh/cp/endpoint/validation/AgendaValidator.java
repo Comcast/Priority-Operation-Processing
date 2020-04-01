@@ -8,9 +8,8 @@ import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import org.apache.commons.lang3.StringUtils;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
 
 import java.util.HashMap;
 import java.util.HashSet;

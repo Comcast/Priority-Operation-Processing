@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.BadRequestException;
 import com.theplatform.dfh.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

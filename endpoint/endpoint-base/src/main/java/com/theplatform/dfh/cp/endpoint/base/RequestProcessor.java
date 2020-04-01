@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base;
 
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ServiceResponse;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ServiceResponse;
 
 /**
  * RequestProcessor base that forces validation (if implemented) before the requests are handled.

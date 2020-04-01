@@ -7,7 +7,7 @@ import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

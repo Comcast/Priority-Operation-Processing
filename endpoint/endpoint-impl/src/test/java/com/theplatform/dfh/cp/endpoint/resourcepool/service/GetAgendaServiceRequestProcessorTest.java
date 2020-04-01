@@ -1,5 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
+import com.comcast.fission.endpoint.api.*;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
@@ -9,12 +10,11 @@ import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.*;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaRequest;
+import com.comcast.fission.endpoint.api.auth.AuthorizationResponse;
+import com.comcast.fission.endpoint.api.auth.DataVisibility;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.api.QueueResult;

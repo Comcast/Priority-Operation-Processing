@@ -8,8 +8,8 @@ import com.theplatform.dfh.cp.handler.base.field.retriever.properties.PropertyRe
 import com.theplatform.dfh.cp.handler.base.reporter.ProgressReporter;
 import com.comcast.fission.handler.executor.impl.context.ExecutorContext;
 import com.comcast.fission.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
+import com.comcast.fission.endpoint.api.ErrorResponse;
+import com.comcast.fission.endpoint.api.agenda.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;

@@ -15,9 +15,9 @@ import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoD
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.service.UpdateAgendaProgressServiceRequestProcessor;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressResponse;
+import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
+import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 

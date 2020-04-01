@@ -2,8 +2,8 @@ package com.comcast.fission.handler.puller.impl.client.agenda;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaRequest;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import org.apache.commons.io.IOUtils;
 

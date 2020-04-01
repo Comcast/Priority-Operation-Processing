@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.base.validation;
 
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 
 public interface RequestValidator<R extends ServiceRequest>
 {

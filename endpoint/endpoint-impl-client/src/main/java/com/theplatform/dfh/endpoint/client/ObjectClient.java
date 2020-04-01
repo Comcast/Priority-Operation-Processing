@@ -1,6 +1,6 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 

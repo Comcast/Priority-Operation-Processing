@@ -18,8 +18,8 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.aws.ResourcePoolLambdaStream
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.OperationProgressLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.progress.aws.ProgressLambdaStreamEntry;
 import com.theplatform.dfh.cp.endpoint.transformrequest.aws.TransformLambdaStreamEntry;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

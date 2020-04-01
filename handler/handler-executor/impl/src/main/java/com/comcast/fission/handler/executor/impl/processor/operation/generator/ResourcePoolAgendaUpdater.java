@@ -1,7 +1,7 @@
 package com.comcast.fission.handler.executor.impl.processor.operation.generator;
 
-import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.UpdateAgendaResponse;
+import com.comcast.fission.endpoint.api.agenda.UpdateAgendaRequest;
+import com.comcast.fission.endpoint.api.agenda.UpdateAgendaResponse;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;

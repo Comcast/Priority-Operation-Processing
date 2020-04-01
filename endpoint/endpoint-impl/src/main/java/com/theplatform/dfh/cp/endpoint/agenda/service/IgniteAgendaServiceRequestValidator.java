@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.agenda.service;
 
 import com.theplatform.dfh.cp.endpoint.base.validation.DefaultRequestValidator;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.agenda.IgniteAgendaRequest;
 import org.apache.commons.lang3.StringUtils;
 
 public class IgniteAgendaServiceRequestValidator extends DefaultRequestValidator<ServiceRequest<IgniteAgendaRequest>>

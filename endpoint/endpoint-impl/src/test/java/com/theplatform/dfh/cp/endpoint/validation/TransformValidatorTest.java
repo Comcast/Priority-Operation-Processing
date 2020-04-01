@@ -7,7 +7,7 @@ import com.theplatform.dfh.cp.api.input.InputStreams;
 import com.theplatform.dfh.cp.api.output.OutputFileResource;
 import com.theplatform.dfh.cp.api.output.OutputStream;
 import com.theplatform.dfh.cp.api.output.OutputStreams;
-import com.theplatform.dfh.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.ValidationException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

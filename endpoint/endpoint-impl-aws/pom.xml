@@ -19,13 +19,13 @@
         <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
         <fission-module-queue-aws-sqs.version>1.0.3</fission-module-queue-aws-sqs.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
-        <endpoint-base-aws.version>1.0.0</endpoint-base-aws.version>
+        <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
-        <endpoint-impl.version>1.0.0</endpoint-impl.version>
-        <endpoint-api.version>1.0.0</endpoint-api.version>
+        <fission-endpoint-impl.version>1.0.0</fission-endpoint-impl.version>
+        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
         <fission-api.version>1.0.3</fission-api.version>
         <fission-http-idm.version>1.0.1</fission-http-idm.version>
-        <persistence-api.version>1.0.3</persistence-api.version>
+        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
     </properties>
 
     <dependencies>
@@ -33,12 +33,12 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-impl</artifactId>
-            <version>${endpoint-impl.version}</version>
+            <version>${fission-endpoint-impl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-api</artifactId>
-            <version>${endpoint-api.version}</version>
+            <version>${fission-endpoint-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${endpoint-base-aws.version}</version>
+            <version>${fission-endpoint-base-aws.version}</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.comcast.fission.module</groupId>-->
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-persistence-api</artifactId>
-            <version>${persistence-api.version}</version>
+            <version>${fission-persistence-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>

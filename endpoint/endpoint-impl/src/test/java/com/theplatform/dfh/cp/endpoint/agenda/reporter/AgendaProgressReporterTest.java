@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.testng.annotations.BeforeTest;
@@ -12,10 +12,8 @@ import java.util.Date;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
 
 public class AgendaProgressReporterTest extends AgendaBaseTest
 {

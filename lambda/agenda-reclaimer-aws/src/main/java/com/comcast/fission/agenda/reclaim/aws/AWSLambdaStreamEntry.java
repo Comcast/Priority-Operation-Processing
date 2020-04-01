@@ -9,7 +9,7 @@ import com.comcast.fission.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.comcast.fission.agenda.reclaim.factory.TimeoutConsumerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.BadRequestException;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;

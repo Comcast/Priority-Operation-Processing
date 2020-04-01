@@ -1,5 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
+import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.ErrorResponseFactory;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.params.ParamsMap;
@@ -15,13 +18,12 @@ import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.validation.AgendaServiceGetAgendaValidator;
-import com.theplatform.dfh.endpoint.api.*;
 import com.theplatform.dfh.cp.scheduling.api.AgendaInfo;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaResponse;
+import com.comcast.fission.endpoint.api.auth.AuthorizationResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaRequest;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaResponse;
 import com.theplatform.dfh.modules.queue.api.ItemQueue;
 import com.theplatform.dfh.modules.queue.api.ItemQueueFactory;
 import com.theplatform.dfh.modules.queue.api.QueueResult;

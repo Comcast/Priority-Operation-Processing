@@ -32,9 +32,9 @@
         <module>callback-progress-retry-aws</module>
         <module>lambda</module>
         <module>module</module>
-        <module>scheduling</module>
         <module>web-ui</module>
         <module>endpoint</module>
+        <module>scheduling</module>
         <module>handler</module>
     </modules>
 

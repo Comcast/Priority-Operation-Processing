@@ -13,7 +13,7 @@
     <name>Executor Handler Impl</name>
 
     <properties>
-        <cp-api.version>1.0.3</cp-api.version>
+        <fission-api.version>1.0.3</fission-api.version>
         <logging-extension.version>1.2.0</logging-extension.version>
         <executor-handler-api.version>1.0.3</executor-handler-api.version>
         <fission-docker.version>1.0.2</fission-docker.version>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
             <artifactId>fission-api</artifactId>
-            <version>${cp-api.version}</version>
+            <version>${fission-api.version}</version>
         </dependency>
 
         <!-- Monitoring -->

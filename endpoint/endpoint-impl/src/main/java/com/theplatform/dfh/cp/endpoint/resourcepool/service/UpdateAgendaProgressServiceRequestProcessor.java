@@ -5,26 +5,18 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.validation.ProgressServiceValidator;
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.ErrorResponseFactory;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.auth.AuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.auth.DataVisibility;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.UpdateAgendaProgressResponse;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.fission.endpoint.api.ErrorResponse;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
+import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
 
 /**
  */

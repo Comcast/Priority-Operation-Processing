@@ -1,5 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
+import com.comcast.fission.endpoint.api.ErrorResponse;
+import com.comcast.fission.endpoint.api.ErrorResponseFactory;
+import com.comcast.fission.endpoint.api.RuntimeServiceException;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.facility.Customer;
 import com.theplatform.dfh.cp.api.facility.Insight;
@@ -10,12 +14,11 @@ import com.theplatform.dfh.cp.endpoint.base.AbstractServiceRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.factory.RequestProcessorFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.*;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaRequest;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.CreateAgendaResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.resourcepool.CreateAgendaRequest;
+import com.comcast.fission.endpoint.api.resourcepool.CreateAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

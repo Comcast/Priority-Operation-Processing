@@ -20,10 +20,10 @@
         <commons-lang.version>2.6</commons-lang.version>
         <pl-exception.version>1.5.0</pl-exception.version>
         <fission-version-info.version>1.0.1</fission-version-info.version>
-        <http-api.version>1.0.2</http-api.version>
-        <http-utils.version>1.0.2</http-utils.version>
-        <endpoint-base-aws.version>1.0.0</endpoint-base-aws.version>
-        <endpoint-api.version>1.0.0</endpoint-api.version>
+        <fission-http-api.version>1.0.2</fission-http-api.version>
+        <fission-http-utils.version>1.0.2</fission-http-utils.version>
+        <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
+        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
     </properties>
 
     <dependencies>
@@ -41,17 +41,17 @@
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-http-api</artifactId>
-            <version>${http-api.version}</version>
+            <version>${fission-http-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${endpoint-base-aws.version}</version>
+            <version>${fission-endpoint-base-aws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-http-util</artifactId>
-            <version>${http-utils.version}</version>
+            <version>${fission-http-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-api</artifactId>
-            <version>${endpoint-api.version}</version>
+            <version>${fission-endpoint-api.version}</version>
         </dependency>
 
         <!-- logging -->

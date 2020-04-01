@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.base.validation;
 
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
 /**

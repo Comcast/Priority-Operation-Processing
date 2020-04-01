@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.util;
 
-import com.theplatform.dfh.endpoint.api.ErrorResponse;
-import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ServiceResponse;
+import com.comcast.fission.endpoint.api.ErrorResponse;
+import com.comcast.fission.endpoint.api.RuntimeServiceException;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ServiceResponse;
 
 /**
  * ServiceResponse factory to wrap the creatton of ServiceResponses. No per-type implementation is necessary unless special handling is required.

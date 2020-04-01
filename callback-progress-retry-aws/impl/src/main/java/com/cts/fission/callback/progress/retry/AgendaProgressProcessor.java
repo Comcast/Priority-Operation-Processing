@@ -1,12 +1,12 @@
 package com.cts.fission.callback.progress.retry;
 
+import com.comcast.fission.endpoint.api.agenda.ReigniteAgendaParameter;
+import com.comcast.fission.endpoint.api.agenda.ReigniteAgendaRequest;
+import com.comcast.fission.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.cp.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.api.progress.CompleteStateMessage;
 import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaParameter;
-import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.ReigniteAgendaResponse;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import org.apache.commons.lang3.StringUtils;

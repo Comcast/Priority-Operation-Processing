@@ -1,12 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.cleanup;
 
 import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ServiceResponse;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.endpoint.client.ObjectClientException;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 import org.slf4j.Logger;

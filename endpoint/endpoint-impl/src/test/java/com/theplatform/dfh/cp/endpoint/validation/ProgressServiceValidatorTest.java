@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.endpoint.progress.service.api.ProgressSummaryRequest;
-import com.theplatform.dfh.endpoint.api.DefaultServiceRequest;
-import com.theplatform.dfh.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.progress.ProgressSummaryRequest;
+import com.comcast.fission.endpoint.api.DefaultServiceRequest;
+import com.comcast.fission.endpoint.api.ValidationException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.theplatform.dfh.cp.endpoint.base.validation.DefaultRequestValidator;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.resourcepool.service.GetAgendaRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.resourcepool.GetAgendaRequest;
 import org.apache.commons.lang3.StringUtils;
 
 /**

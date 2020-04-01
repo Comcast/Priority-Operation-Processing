@@ -18,7 +18,7 @@ import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.ServiceRequest;
+import com.comcast.fission.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

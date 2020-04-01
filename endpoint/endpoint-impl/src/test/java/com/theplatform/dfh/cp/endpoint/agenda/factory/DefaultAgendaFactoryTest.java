@@ -4,7 +4,7 @@ import com.theplatform.dfh.cp.api.Agenda;
 import com.theplatform.dfh.cp.api.AgendaTemplate;
 import com.theplatform.dfh.cp.api.TransformRequest;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.AgendaTemplateMapper;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

@@ -16,7 +16,7 @@
     <properties>
         <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
         <fission-api.version>1.0.3</fission-api.version>
-        <endpoint-api.version>1.0.0</endpoint-api.version>
+        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
     </properties>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-api</artifactId>
-            <version>${endpoint-api.version}</version>
+            <version>${fission-endpoint-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -20,9 +20,9 @@ import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaPr
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCustomerPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
-import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaRequest;
-import com.theplatform.dfh.endpoint.api.agenda.service.IgniteAgendaResponse;
+import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.agenda.IgniteAgendaRequest;
+import com.comcast.fission.endpoint.api.agenda.IgniteAgendaResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 import com.theplatform.dfh.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 

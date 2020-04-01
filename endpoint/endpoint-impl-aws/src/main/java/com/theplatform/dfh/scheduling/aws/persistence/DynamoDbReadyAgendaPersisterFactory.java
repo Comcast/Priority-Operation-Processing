@@ -1,7 +1,7 @@
 package com.theplatform.dfh.scheduling.aws.persistence;
 
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.theplatform.dfh.endpoint.api.data.query.scheduling.ByCustomerId;
+import com.comcast.fission.endpoint.api.data.query.scheduling.ByCustomerId;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 

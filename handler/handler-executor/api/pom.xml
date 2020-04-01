@@ -14,14 +14,14 @@
     <name>Executor Handler API</name>
 
     <properties>
-        <cp-api.version>1.0.3</cp-api.version>
+        <fission-api.version>1.0.3</fission-api.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
             <artifactId>fission-api</artifactId>
-            <version>${cp-api.version}</version>
+            <version>${fission-api.version}</version>
 			<scope>provided</scope>
         </dependency>
     </dependencies>

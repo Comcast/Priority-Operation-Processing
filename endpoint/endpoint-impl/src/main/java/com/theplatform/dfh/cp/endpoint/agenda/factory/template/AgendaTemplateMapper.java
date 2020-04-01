@@ -6,7 +6,7 @@ import com.theplatform.dfh.cp.api.AgendaTemplate;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.BasicParametersExtractor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
-import com.theplatform.dfh.endpoint.api.RuntimeServiceException;
+import com.comcast.fission.endpoint.api.RuntimeServiceException;
 
 import java.util.HashMap;
 import java.util.Map;

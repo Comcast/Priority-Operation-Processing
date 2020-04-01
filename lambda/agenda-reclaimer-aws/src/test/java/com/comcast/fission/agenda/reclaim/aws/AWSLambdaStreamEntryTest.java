@@ -7,7 +7,7 @@ import com.comcast.fission.agenda.reclaim.config.ReclaimerConfig;
 import com.comcast.fission.agenda.reclaim.factory.AgendaReclaimerFactory;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
 import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
-import com.theplatform.dfh.endpoint.api.BadRequestException;
+import com.comcast.fission.endpoint.api.BadRequestException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

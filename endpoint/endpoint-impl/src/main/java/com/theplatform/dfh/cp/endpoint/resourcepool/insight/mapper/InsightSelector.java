@@ -6,12 +6,12 @@ import com.theplatform.dfh.cp.api.facility.Insight;
 import com.theplatform.dfh.cp.api.facility.InsightMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.endpoint.api.auth.CustomerIdAuthorizationResponse;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.auth.CustomerIdAuthorizationResponse;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.apache.commons.lang3.StringUtils;
 

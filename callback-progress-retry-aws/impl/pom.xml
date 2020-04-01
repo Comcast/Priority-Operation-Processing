@@ -13,7 +13,7 @@
     <name>Progress Callback - Retry implementation</name>
 
     <properties>
-        <endpoint-client.version>1.0.3</endpoint-client.version>
+        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
         <fission-api.version>1.0.3</fission-api.version>
         <commons-io.version>2.6</commons-io.version>
     </properties>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-client</artifactId>
-            <version>${endpoint-client.version}</version>
+            <version>${fission-endpoint-client.version}</version>
         </dependency>
 
         <dependency>

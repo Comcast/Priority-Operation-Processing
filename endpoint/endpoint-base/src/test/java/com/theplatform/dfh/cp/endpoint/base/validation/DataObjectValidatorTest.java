@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.base.validation;
 
 import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.endpoint.api.ValidationException;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

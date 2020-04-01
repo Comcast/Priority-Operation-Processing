@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.object.api.IdentifiedObject;
 
 public abstract class BaseValidatorTest<T extends IdentifiedObject>
