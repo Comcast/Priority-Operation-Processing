@@ -15,7 +15,7 @@ data:
     fission.kubernetes.namespace=fission
     metrics.enabled=false
     executor.reap.self=false
-    agenda.progress.url=https://localhost/resourcepool/service/this/is/not/valid
+    agenda.progress.url=https://localhost/resourcepool/service
   registry-json: |
     {
       "basePodConfig": {

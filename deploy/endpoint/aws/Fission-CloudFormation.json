@@ -155,7 +155,7 @@
     },
     "LambdaRefPathRetryCallback": {
       "Type": "String",
-      "Default": "fission-deploy/pl-fission-callback-progress-retry-aws-1.0.0-SNAPSHOT-lambda_deployment_package_assembly.zip"
+      "Default": "fission-deploy/fission-callback-progress-retry-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathSchedulingMaster": {
       "Type": "String",
@@ -167,7 +167,7 @@
     },
     "LambdaRefPathSchedulingMonitor": {
       "Type": "String",
-      "Default": "fission-deploy/pl-fission-scheduling-monitor-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "fission-deploy/fission-scheduling-monitor-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathDataObjectReaper": {
       "Type": "String",
@@ -266,7 +266,7 @@
     "ResourcePoolUnified": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.comcast.fission.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.theplatform.dfh.cp.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1690,7 +1690,7 @@
     "DataObjectReaper": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.theplatform.dfh.cp.reaper.objects.aws.AWSDataObjectReaperEntry::handleRequest",
+        "Handler": "com.comcast.fission.reaper.objects.aws.AWSDataObjectReaperEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1742,7 +1742,7 @@
     "AgendaReclaimer": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.theplatform.dfh.cp.agenda.reclaim.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.fission.agenda.reclaim.aws.AWSDataObjectReaperEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1976,7 +1976,7 @@
         "Role": {
           "Ref": "AuthorizerRole"
         },
-        "Handler": "com.cts.authorizer.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.fission.auth.aws.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Timeout": 60,
         "Environment": {
