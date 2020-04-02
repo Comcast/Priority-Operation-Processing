@@ -14,11 +14,11 @@
     <name>Agenda Reclaimer implementation</name>
 
     <properties>
-        <fission-scheduling-api.version>1.0.2</fission-scheduling-api.version>
-        <fission-persistent-api.version>1.0.3</fission-persistent-api.version>
+        <fission-scheduling-api.version>1.0.0</fission-scheduling-api.version>
+        <fission-persistent-api.version>1.0.0</fission-persistent-api.version>
         <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-producer-consumer-util.version>1.0.2</fission-producer-consumer-util.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-producer-consumer-util.version>1.0.0</fission-producer-consumer-util.version>
     </properties>
 
     <dependencies>

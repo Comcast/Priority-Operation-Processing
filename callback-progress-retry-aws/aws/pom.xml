@@ -13,11 +13,11 @@
     <name>Progress Callback - Retry AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <endpoint-progress-retry.version>1.0.0</endpoint-progress-retry.version>
-        <endpoint-base-aws.version>1.0.2</endpoint-base-aws.version>
+        <fission-endpoint-progress-retry.version>1.0.0</fission-endpoint-progress-retry.version>
+        <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
     </properties>
 
     <dependencies>
@@ -49,12 +49,12 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${endpoint-base-aws.version}</version>
+            <version>${fission-endpoint-base-aws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.callback</groupId>
             <artifactId>fission-callback-progress-retry-impl</artifactId>
-            <version>${endpoint-progress-retry.version}</version>
+            <version>${fission-endpoint-progress-retry.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->

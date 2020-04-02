@@ -14,7 +14,7 @@
 
     <properties>
         <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <commons-io.version>2.6</commons-io.version>
     </properties>
 

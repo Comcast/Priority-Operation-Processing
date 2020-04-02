@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-http-util</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <properties>
         <slf4j-api.version>1.7.25</slf4j-api.version>
     </properties>

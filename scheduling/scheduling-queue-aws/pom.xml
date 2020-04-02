@@ -14,16 +14,16 @@
     <name>Scheduling Queue Monitor AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
         <fission-scheduling-queue.version>1.0.0</fission-scheduling-queue.version>
-        <fission-module-version-info.version>1.0.1</fission-module-version-info.version>
-        <fission-module-queue-aws-sqs.version>1.0.3</fission-module-queue-aws-sqs.version>
-        <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
+        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
+        <fission-module-queue-aws-sqs.version>1.0.0</fission-module-queue-aws-sqs.version>
+        <fission-persistence-aws-dynamodb.version>1.0.0</fission-persistence-aws-dynamodb.version>
         <fission-aws-base-endpoint.version>1.0.0</fission-aws-base-endpoint.version>
-        <fission-idm-http.version>1.0.1</fission-idm-http.version>
+        <fission-idm-http.version>1.0.0</fission-idm-http.version>
         <fission-endpoint-aws.version>1.0.0</fission-endpoint-aws.version>
     </properties>
 

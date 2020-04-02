@@ -16,16 +16,16 @@
     <properties>
         <aws.java.jdk>1.11.451</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <fission-persistence-aws-dynamodb.version>1.0.3</fission-persistence-aws-dynamodb.version>
-        <fission-module-queue-aws-sqs.version>1.0.3</fission-module-queue-aws-sqs.version>
-        <fission-version-info.version>1.0.1</fission-version-info.version>
+        <fission-persistence-aws-dynamodb.version>1.0.0</fission-persistence-aws-dynamodb.version>
+        <fission-module-queue-aws-sqs.version>1.0.0</fission-module-queue-aws-sqs.version>
+        <fission-version-info.version>1.0.0</fission-version-info.version>
         <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
-        <fission-http-idm.version>1.0.1</fission-http-idm.version>
+        <fission-http-idm.version>1.0.0</fission-http-idm.version>
         <fission-endpoint-impl.version>1.0.0</fission-endpoint-impl.version>
         <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-http-idm.version>1.0.1</fission-http-idm.version>
-        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-http-idm.version>1.0.0</fission-http-idm.version>
+        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
     </properties>
 
     <dependencies>

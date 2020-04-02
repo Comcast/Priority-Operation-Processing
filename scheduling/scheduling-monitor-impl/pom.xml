@@ -14,13 +14,13 @@
     <name>Scheduling Monitor implementation</name>
 
     <properties>
-        <fission-scheduling-api.version>1.0.2</fission-scheduling-api.version>
-        <fission-persistent-api.version>1.0.3</fission-persistent-api.version>
-        <fission-queue-api.version>1.0.2</fission-queue-api.version>
+        <fission-scheduling-api.version>1.0.0</fission-scheduling-api.version>
+        <fission-persistent-api.version>1.0.0</fission-persistent-api.version>
+        <fission-queue-api.version>1.0.0</fission-queue-api.version>
         <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-monitor.version>1.0.1</fission-monitor.version>
-        <fission-monitor-graphite.version>1.0.1</fission-monitor-graphite.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-monitor.version>1.0.0</fission-monitor.version>
+        <fission-monitor-graphite.version>1.0.0</fission-monitor-graphite.version>
     </properties>
 
     <dependencies>

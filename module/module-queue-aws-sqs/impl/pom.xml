@@ -9,29 +9,29 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>module-queue-aws-sqs-impl</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Fission Queue AWS SQS Impl</name>
 
     <properties>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
-        <aws-lambda.version>1.1.0</aws-lambda.version>
-        <queue-api.version>1.0.2</queue-api.version>
-        <queue-sqs-api.version>1.0.1</queue-sqs-api.version>
+        <aws-lambda.version>1.0.0</aws-lambda.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <fission-object-api.version>1.0.2</fission-object-api.version>
+        <fission-queue-api.version>1.0.0</fission-queue-api.version>
+        <fission-queue-sqs-api.version>1.0.0</fission-queue-sqs-api.version>
+        <fission-object-api.version>1.0.0</fission-object-api.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-queue-api</artifactId>
-            <version>${queue-api.version}</version>
+            <version>${fission-queue-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>module-queue-aws-sqs-api</artifactId>
-            <version>${queue-sqs-api.version}</version>
+            <version>${fission-queue-sqs-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.object</groupId>

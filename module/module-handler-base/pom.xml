@@ -9,18 +9,18 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-handler-base</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Base</name>
 
     <properties>
-        <json-helper.version>1.0.2</json-helper.version>
-        <fission-api.version>1.0.3</fission-api.version>
+        <json-helper.version>1.0.0</json-helper.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <fission-version-info.version>1.0.1</fission-version-info.version>
+        <fission-version-info.version>1.0.0</fission-version-info.version>
     </properties>
 
     <dependencies>

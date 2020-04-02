@@ -9,13 +9,13 @@
 
     <groupId>com.comcast.fission.api</groupId>
     <artifactId>fission-api</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing API</name>
 
     <properties>
         <commons-io.version>2.6</commons-io.version>
-        <fission-object-api.version>1.0.2</fission-object-api.version>
+        <fission-object-api.version>1.0.0</fission-object-api.version>
     </properties>
     
     <dependencies>

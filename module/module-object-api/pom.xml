@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.object</groupId>
     <artifactId>fission-object-api</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>DFH Object API</name>
 

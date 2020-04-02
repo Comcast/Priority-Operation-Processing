@@ -15,7 +15,7 @@
     <name>Fission Endpoint Test Clean-Up Module</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
         <commons-http-client.version>3.1</commons-http-client.version>
     </properties>

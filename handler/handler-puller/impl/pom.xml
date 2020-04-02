@@ -14,22 +14,25 @@
     <name>Puller Handler Impl</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
+        <!-- todo figure out if this is needed -->
         <logging-extension.version>1.2.0</logging-extension.version>
+
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-http-idm.version>1.0.0</fission-http-idm.version>
+        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
+
+        <fission-handler-base.version>1.0.0</fission-handler-base.version>
+        <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
+        <fission-handler-kubernetes-support.version>1.0.0</fission-handler-kubernetes-support.version>
+
+        <fission-monitor.version>1.0.0</fission-monitor.version>
+        <fission-monitor-graphite.version>1.0.0</fission-monitor-graphite.version>
+
         <logback.version>1.2.3</logback.version>
         <dropwizard.version>1.3.19</dropwizard.version>
-        <fission-http-idm.version>1.0.1</fission-http-idm.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-io.version>2.6</commons-io.version>
         <apache-httpclient.version>4.5.12</apache-httpclient.version>
-        <endpoint-client.version>1.0.0</endpoint-client.version>
-
-        <handler-base.version>1.0.3</handler-base.version>
-        <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
-        <handler-kubernetes-support.version>1.0.2</handler-kubernetes-support.version>
-
-        <fission-monitor.version>1.0.1</fission-monitor.version>
-        <fission-monitor-graphite.version>1.0.1</fission-monitor-graphite.version>
     </properties>
 
     <dependencies>
@@ -41,17 +44,17 @@
         <dependency>
             <groupId>com.comcast.fission.endpoint</groupId>
             <artifactId>fission-endpoint-client</artifactId>
-            <version>${endpoint-client.version}</version>
+            <version>${fission-endpoint-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-base</artifactId>
-            <version>${handler-base.version}</version>
+            <version>${fission-handler-base.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-kubernetes-support</artifactId>
-            <version>${handler-kubernetes-support.version}</version>
+            <version>${fission-handler-kubernetes-support.version}</version>
         </dependency>
          <dependency>
             <groupId>io.dropwizard</groupId>

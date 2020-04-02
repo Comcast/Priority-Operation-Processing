@@ -9,12 +9,12 @@
 
     <groupId>com.comcast.fission.handler</groupId>
     <artifactId>fission-handler-sample-api</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Sample API</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
     </properties>
     
     <dependencies>

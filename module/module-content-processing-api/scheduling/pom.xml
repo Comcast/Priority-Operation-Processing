@@ -9,12 +9,12 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-scheduling-api</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing Scheduling API</name>
 
     <properties>
-        <fission-object-api.version>1.0.2</fission-object-api.version>
+        <fission-object-api.version>1.0.0</fission-object-api.version>
     </properties>
     
     <dependencies>

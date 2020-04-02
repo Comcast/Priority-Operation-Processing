@@ -18,7 +18,7 @@
 
     <properties>
         <fabric8.docker.maven.plugin.version>0.33.0</fabric8.docker.maven.plugin.version>
-        <application.version>1.0.2</application.version>
+        <application.version>1.0.0</application.version>
         <docker.image.name>fission-sample</docker.image.name>
     </properties>
 

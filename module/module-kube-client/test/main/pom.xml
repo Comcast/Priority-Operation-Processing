@@ -10,12 +10,12 @@
 
     <groupId>com.comcast.fission.cp</groupId>
     <artifactId>fission-kube-client-fabric8-tests</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Kube Client Test</name>
 
     <properties>
-        <kubeclient-version>1.0.3</kubeclient-version>
+        <kubeclient-version>1.0.0</kubeclient-version>
         <failsafe.version>2.0.1</failsafe.version>
         <skipITTests>true</skipITTests>
         <test-suite>testng.xml</test-suite>

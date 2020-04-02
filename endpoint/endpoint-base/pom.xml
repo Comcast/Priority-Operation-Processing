@@ -14,8 +14,8 @@
     <name>TransformRequest endpoint implementation</name>
 
     <properties>
-        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
-        <fission-api.version>1.0.3</fission-api.version>
+        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
         <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
     </properties>
 

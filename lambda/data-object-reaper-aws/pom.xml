@@ -17,11 +17,11 @@
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
-        <fission-version-info.version>1.0.1</fission-version-info.version>
+        <fission-version-info.version>1.0.0</fission-version-info.version>
         <fission-aws-base-endpoint.version>1.0.0</fission-aws-base-endpoint.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-producer-consumer-util>1.0.2</fission-producer-consumer-util>
-        <fission-dynamodb.version>1.0.3</fission-dynamodb.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-producer-consumer-util>1.0.0</fission-producer-consumer-util>
+        <fission-dynamodb.version>1.0.0</fission-dynamodb.version>
     </properties>
 
     <dependencies>

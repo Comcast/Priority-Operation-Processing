@@ -43,7 +43,7 @@
     <description>Command builder</description>
 
     <properties>
-        <cp-api.version>1.0.2</cp-api.version>
+        <cp-api.version>1.0.0</cp-api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>

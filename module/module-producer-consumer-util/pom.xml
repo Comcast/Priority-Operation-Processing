@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-producer-consumer-util</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Producer Consumer Utilities</name>
 

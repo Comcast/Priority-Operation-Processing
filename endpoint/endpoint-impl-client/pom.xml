@@ -14,12 +14,12 @@
     <name>Fission Endpoint Client implementation</name>
 
     <properties>
-        <json-helper.version>1.0.2</json-helper.version>
+        <json-helper.version>1.0.0</json-helper.version>
         <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
-        <fission-http-utils.version>1.0.2</fission-http-utils.version>
-        <fission-http-api.version>1.0.2</fission-http-api.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
+        <fission-http-utils.version>1.0.0</fission-http-utils.version>
+        <fission-http-api.version>1.0.0</fission-http-api.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
     </properties>
 
     <dependencies>

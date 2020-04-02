@@ -8,37 +8,38 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>fission-handler-sample-impl</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Sample</name>
 
     <properties>
-        <fission-api.version>1.0.3</fission-api.version>
-        <sample-handler-api.version>1.0.1</sample-handler-api.version>
+        <!-- todo figure out if we need this -->
         <logging-extension.version>1.2.0</logging-extension.version>
-        <handler-base.version>1.0.3</handler-base.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-sample-handler-api.version>1.0.0</fission-sample-handler-api.version>
+        <fission-handler-base.version>1.0.0</fission-handler-base.version>
         <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
-        <handler-kubernetes-support.version>1.0.2</handler-kubernetes-support.version>
+        <fission-handler-kubernetes-support.version>1.0.0</fission-handler-kubernetes-support.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.comcast.fission.handler</groupId>
             <artifactId>fission-handler-sample-api</artifactId>
-            <version>${sample-handler-api.version}</version>
+            <version>${fission-sample-handler-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-kubernetes-support</artifactId>
-            <version>${handler-kubernetes-support.version}</version>
+            <version>${fission-handler-kubernetes-support.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-base</artifactId>
-            <version>${handler-base.version}</version>
+            <version>${fission-handler-base.version}</version>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>

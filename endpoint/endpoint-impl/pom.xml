@@ -14,16 +14,16 @@
     <name>Endpoint implementation</name>
 
     <properties>
-        <fission-persistence-api.version>1.0.3</fission-persistence-api.version>
+        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
         <fission-endpoint-base.version>1.0.0</fission-endpoint-base.version>
-        <fission-scheduling-api.version>1.0.2</fission-scheduling-api.version>
-        <fission-json-helper.version>1.0.2</fission-json-helper.version>
-        <fission-api.version>1.0.3</fission-api.version>
-        <fission-http-util.version>1.0.2</fission-http-util.version>
+        <fission-scheduling-api.version>1.0.0</fission-scheduling-api.version>
+        <fission-json-helper.version>1.0.0</fission-json-helper.version>
+        <fission-api.version>1.0.0</fission-api.version>
+        <fission-http-util.version>1.0.0</fission-http-util.version>
         <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-http-request-handler-api.version>1.0.2</fission-http-request-handler-api.version>
+        <fission-http-request-handler-api.version>1.0.0</fission-http-request-handler-api.version>
         <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
-        <fission-queue-api.version>1.0.2</fission-queue-api.version>
+        <fission-queue-api.version>1.0.0</fission-queue-api.version>
     </properties>
 
     <dependencies>

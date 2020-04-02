@@ -9,16 +9,16 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>fission-persistence-impl-dynamodb</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Persistence AWS DynamoDB</name>
 
     <properties>
-        <persistence-api.version>1.0.3</persistence-api.version>
-        <persistence-impl.version>1.0.3</persistence-impl.version>
-        <fission-object-api.version>1.0.2</fission-object-api.version>
+        <persistence-api.version>1.0.0</persistence-api.version>
+        <persistence-impl.version>1.0.0</persistence-impl.version>
+        <fission-object-api.version>1.0.0</fission-object-api.version>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
-        <fission-compression.version>1.0.1</fission-compression.version>
+        <fission-compression.version>1.0.0</fission-compression.version>
         <apache.commons.beanutils>1.9.4</apache.commons.beanutils>
         <apache.commons.lang3>3.9</apache.commons.lang3>
     </properties>

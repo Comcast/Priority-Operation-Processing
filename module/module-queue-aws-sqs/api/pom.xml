@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.fission.module</groupId>
     <artifactId>module-queue-aws-sqs-api</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Fission Queue AWS SQS API</name>
 </project>
