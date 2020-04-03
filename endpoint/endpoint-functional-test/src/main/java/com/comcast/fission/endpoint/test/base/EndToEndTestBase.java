@@ -16,7 +16,7 @@ public class EndToEndTestBase extends EndpointTestBase
 
     protected void waitOnStatus(String linkId, final ProcessingState processingState) throws Exception
     {
-        for(int nCount = 0; nCount < 1000; nCount++)
+        for(int nCount = 0; nCount < 100; nCount++)
         {
             Thread.sleep(1500);
             ProgressSummaryResponse progressSummaryResult = progressServiceClient.getProgressSummary(new ProgressSummaryRequest(linkId));

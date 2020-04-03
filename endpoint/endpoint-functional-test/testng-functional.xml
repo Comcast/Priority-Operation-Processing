@@ -3,7 +3,12 @@
 
     <test verbose="1" name="Fission Object Endpoint Functional">
         <packages>
-            <package name="com.comcast.fission.endpoint.test.*" />
+            <package name="com.comcast.fission.endpoint.test.agenda.*" />
+            <package name="com.comcast.fission.endpoint.test.agendatemplate.*" />
+            <package name="com.comcast.fission.endpoint.test.facility.*" />
+            <package name="com.comcast.fission.endpoint.test.messages.*" />
+            <package name="com.comcast.fission.endpoint.test.progress.*" />
+            <package name="com.comcast.fission.endpoint.test.resourcepool.*" />
         </packages>
     </test>
 </suite>

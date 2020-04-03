@@ -64,10 +64,6 @@
         <constructor-arg type="java.lang.String" value="${endpoint.url}${insight.path}"/>
     </bean>
 
-    <bean id="taskSubmitUrl" class="java.lang.String">
-        <constructor-arg type="java.lang.String" value="${endpoint.url}${task.submit.path}"/>
-    </bean>
-
     <bean id="progressProviderUrl" class="java.lang.String">
         <constructor-arg type="java.lang.String" value="${endpoint.url}${progress.provider.url}"/>
     </bean>

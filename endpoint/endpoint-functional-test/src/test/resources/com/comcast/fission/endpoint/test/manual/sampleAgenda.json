@@ -1,0 +1,27 @@
+{
+  "operations": [
+    {
+      "id": "01",
+      "name": "sample.1",
+      "type": "sample",
+      "payload": {
+        "actions": [
+          {
+            "action": "externalExecute",
+            "paramsMap": {
+              "externalArgs": [
+                "ash",
+                "-c",
+                "ls",
+                "-la"
+              ]
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "output!"
+        }
+      }
+    }
+  ]
+}

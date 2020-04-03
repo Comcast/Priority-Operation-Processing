@@ -80,6 +80,13 @@ public class DataGenerator
 
     public static Agenda createNonRunningLogAgenda(String customerId, String... opNames)
     {
+        Agenda agenda = createAgenda(customerId, opNames);
+        agenda.getParams().put(GeneralParamKey.doNotRun, null);
+        return agenda;
+    }
+
+    public static Agenda createAgenda(String customerId, String... opNames)
+    {
         Agenda agenda = new Agenda();
         agenda.setCustomerId(customerId);
         if (opNames != null)
@@ -92,10 +99,7 @@ public class DataGenerator
                 return operation;
             }).collect(Collectors.toList()));
         }
-        ParamsMap paramsMap = new ParamsMap();
-        // These agendas are not intended to execute!
-        paramsMap.put(GeneralParamKey.doNotRun, null);
-        agenda.setParams(paramsMap);
+        agenda.setParams(new ParamsMap());
         return agenda;
     }
 
