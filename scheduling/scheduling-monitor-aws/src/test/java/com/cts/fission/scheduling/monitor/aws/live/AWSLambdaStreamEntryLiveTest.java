@@ -42,7 +42,7 @@ public class AWSLambdaStreamEntryLiveTest
         envVars.put(GraphiteConfigKeys.ENDPOINT.getPropertyKey(), "bg");
         envVars.put(GraphiteConfigKeys.PATH.getPropertyKey(), "1m.lab.main.t.aort.dfh.testing");
 //        envVars.put(AWSLambdaStreamEntry.ENV_IDM_ENCRYPTED_PASS, AES.encrypt(SCHEDULER_PASSWORD));
-        envVars.put(AWSLambdaStreamEntry.ENV_IDM_USER, "service/dfh-scheduler@comcast.com");
+        envVars.put(AWSLambdaStreamEntry.ENV_IDM_USER, "scheduler@site.com");
         envVars.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://lambda.execute-api.us-west-2.amazonaws.com");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/dfh/idm/resourcepool");
         envVars.put(AWSLambdaStreamEntry.ENV_INSIGHT_ENDPOINT_PATH, "/dfh/idm/insight");
