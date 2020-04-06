@@ -1,35 +1,52 @@
-// TODO: these need to reset!
-var g_idmToken = "";
-var g_idmTokenExpireUTC = 0;
+var g_authToken = "";
+var g_authTokenExpireUTC = 0;
 var g_onAuthorizationCallback = null;
+
+function getAuthToken(){
+    return g_authToken;
+}
 
 function registerOnAuthorizationCallback(callback){
     g_onAuthorizationCallback = callback;
 }
 
 function isAuthorizationRequired(){
-    return new Date().getTime() > g_idmTokenExpireUTC;
+    return new Date().getTime() > g_authTokenExpireUTC;
 }
 
 function resetTokenInfo(){
-    g_idmToken = "";
-    g_idmTokenExpireUTC = 0;
+    g_authToken = "";
+    g_authTokenExpireUTC = 0;
 }
 
 function updateTokenInfo(idmResponse){
-    g_idmToken = idmResponse.signInResponse.token;
+    g_authToken = idmResponse.signInResponse.token;
     // make the expiration a little fuzzy, 5 minutes before actual expiration
-    g_idmTokenExpireUTC = (new Date().getTime() + idmResponse.signInResponse.duration) - (5 * 60 * 1000);
+    g_authTokenExpireUTC = (new Date().getTime() + idmResponse.signInResponse.duration) - (5 * 60 * 1000);
 }
 
-function performAuthorizeRequest(idmURL, username, password, cid, successCallback, errorCallback){
+function performAuthorizeRequest(authURL, username, password, cid, successCallback, errorCallback){
+    // TEMP If there is no authorization url just apply a dummy token and call the callback
+    if(authURL == null){
+        var idmResponse = {
+            signInResponse:{
+                token: "dummytoken",
+                duration: 1000 * 60 * 24 * 7
+            }
+        };
+        updateTokenInfo(idmResponse);
+        if(g_onAuthorizationCallback != null)
+            g_onAuthorizationCallback(idmResponse);
+        successCallback();
+        return;
+    }
 
     if(!isAuthorizationRequired())
         successCallback();
     else{
         $.ajax({
             type: "POST",
-            url: idmURL,
+            url: authURL,
             crossDomain: "true",
             cache:false,
             dataType:"json",

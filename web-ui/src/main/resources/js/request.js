@@ -61,71 +61,6 @@ function processAuthorizedRequest(e, server, endpoint, successCallback, failCall
             });
 }
 
-function performBasicRequest(httpVerb, url, data, successCallback, failCallback){
-    $.ajax({
-        type: httpVerb,
-        url: url,
-        crossDomain: true,
-        jsonp: true,
-        contentType: "application/json",
-        data: data,
-        headers: {
-            'Authorization': "Basic " + btoa(getAccountId() + ":" + g_idmToken),
-            'Content-Type': "application/json",
-            'X-thePlatform-cid': g_requestCid
-        },
-        success: function (response) {
-            if(successCallback != null)
-                successCallback(response);
-        },
-        error: function (response) {
-            if(failCallback != null)
-                failCallback(response)
-            resetTokenInfo();
-            alert("Unsuccessful CID '" + g_requestCid +"' -- Identity token has been reset. Please try the request again.");
-        }
-    });
-}
-
-
-///////////////
-
-// TODO: make a generic one that does the auth request
-function processRequestNew(e) {
-    e.preventDefault();
-
-    // reset view
-    $("#response").val("");
-    $("#progressTable").html("");
-
-    if(!validateCredentialInputs())
-        return;
-
-    toggleSpinner(true);
-
-    regenerateCid();
-
-    var targetServerIndex = $("#target_server").val();
-    var server = serverInfo[targetServerIndex];
-    var targetEndpointIndex = $("#target_endpoint").val();
-    var endpoint = endpoints[targetEndpointIndex];
-    var username = $("#modlgn-username").val();
-    var password = $("#modlgn-passwd").val();
-
-    performAuthorizeRequest(server.endpointIDMURL, username, password, g_requestCid,
-            function(){
-                // get the active tab
-                var activeTab = getActiveTab();
-                if(activeTab != null)
-                    window["process" + activeTab.id + "Request"](server, endpoint);
-                // TODO: alert on no tab
-            },
-            function(error){
-                console.log(error);
-                toggleSpinner(false);
-            });
-}
-
 function processRequest(e) {
     e.preventDefault();
 
@@ -213,7 +148,7 @@ function performRequest(httpVerb, url, data, successFunction){
         contentType: "application/json",
         data: data,
         headers: {
-            'Authorization': "Basic " + btoa(getAccountId() + ":" + g_idmToken),
+            'Authorization': "Basic " + btoa(getAccountId() + ":" + getAuthToken()),
             'Content-Type': "application/json",
             'X-thePlatform-cid': g_requestCid
         },

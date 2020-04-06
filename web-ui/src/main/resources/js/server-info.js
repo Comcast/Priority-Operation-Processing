@@ -1,22 +1,16 @@
-var labIDMURL = "https://identity.auth.test.corp.theplatform.com/idm/web/Authentication?form=json&schema=1.1";
-var prodIDMURL = "https://identity.auth.theplatform.com/idm/web/Authentication?form=json&schema=1.1";
+var testAuthURL = null;
 var serverInfo =
         [
             {
-                name:"Twinkle (Lab)",
-                endpointServerURL:"https://g9solclg15.execute-api.us-west-2.amazonaws.com",
+                name:"Fission(Sample)",
+                // This should be the url to your API Gateway (do not include the stage!)
+                endpointServerURL:"https://[your url here WITHOUT the stage]",
                 endpointStage:"dev",
-                endpointIDMURL:labIDMURL
-            },
-            {
-                name:"Rage (Prod)",
-                endpointServerURL:"https://fhm5nnh1n3.execute-api.us-west-2.amazonaws.com",
-                endpointStage:"SEA1",
-                endpointIDMURL:prodIDMURL
+                endpointIDMURL:testAuthURL
             }
         ];
 
-var endpointPrefix = "/dfh/idm/";
+var endpointPrefix = "/fission/";
 
 var endpoints =
         [

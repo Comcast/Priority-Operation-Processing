@@ -58,7 +58,7 @@ function makeServiceRequest(httpVerb, url, data, successCallback, failCallback){
         contentType: "application/json",
         data: data,
         headers: {
-            'Authorization': "Basic " + btoa(getAccountId() + ":" + g_idmToken),
+            'Authorization': "Basic " + btoa(getAccountId() + ":" + getAuthToken()),
             'Content-Type': "application/json",
             'X-thePlatform-cid': g_requestCid
         },
