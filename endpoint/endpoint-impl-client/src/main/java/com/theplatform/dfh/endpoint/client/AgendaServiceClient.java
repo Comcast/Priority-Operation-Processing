@@ -1,9 +1,9 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.comcast.fission.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.fission.endpoint.api.agenda.ReigniteAgendaResponse;
-import com.comcast.fission.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.fission.endpoint.api.agenda.IgniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.IgniteAgendaResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 
 public class AgendaServiceClient extends FissionServiceClient

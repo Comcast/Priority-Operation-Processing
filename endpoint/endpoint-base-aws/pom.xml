@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-endpoint</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.endpoint</groupId>
-    <artifactId>fission-endpoint-base-aws</artifactId>
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-base-aws</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Base AWS Endpoint</name>
@@ -16,11 +16,11 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <fission-api.version>1.0.0</fission-api.version>
-        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
-        <fission-version-info.version>1.0.0</fission-version-info.version>
-        <fission-endpoint-base.version>1.0.0</fission-endpoint-base.version>
-        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-version-info.version>1.0.0</pop-version-info.version>
+        <pop-endpoint-base.version>1.0.0</pop-endpoint-base.version>
+        <pop-endpoint-api.version>1.0.0</pop-endpoint-api.version>
         <commons-text.version>1.4</commons-text.version>
         <apache.commons.collections4>4.1</apache.commons.collections4>
         <apache.commons.beanutils>1.9.4</apache.commons.beanutils>
@@ -67,20 +67,20 @@
         </dependency>
         <!-- Fission Dependencies -->
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-base</artifactId>
-            <version>${fission-endpoint-base.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base</artifactId>
+            <version>${pop-endpoint-base.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-api</artifactId>
-            <version>${fission-endpoint-api.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-api</artifactId>
+            <version>${pop-endpoint-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-persistence-api</artifactId>
-            <version>${fission-persistence-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -90,16 +90,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-version-info</artifactId>
-            <version>${fission-version-info.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-version-info.version}</version>
         </dependency>
 
         <!-- Test dependencies -->

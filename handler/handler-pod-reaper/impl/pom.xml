@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.handler</groupId>
-        <artifactId>fission-handler-pod-reaper-parent</artifactId>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-pod-reaper-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-handler-pod-reaper-impl</artifactId>
+    <artifactId>pop-handler-pod-reaper-impl</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Handler Pod Reaper Impl</name>
@@ -16,42 +16,42 @@
         <!-- todo figure out if this is needed -->
         <logging-extension.version>1.2.0</logging-extension.version>
 
-        <fission-api.version>1.0.0</fission-api.version>
-        <fission-docker.version>1.0.0</fission-docker.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-docker.version>1.0.0</pop-docker.version>
 
-        <fission-handler-base.version>1.0.0</fission-handler-base.version>
-        <fission-fabric8-kube-client.version>1.0.4</fission-fabric8-kube-client.version>
-        <fission-handler-kubernetes-support.version>1.0.0</fission-handler-kubernetes-support.version>
-        <fission-producer-consumer-util.version>1.0.0</fission-producer-consumer-util.version>
+        <pop-handler-base.version>1.0.0</pop-handler-base.version>
+        <pop-fabric8-kube-client.version>1.0.4</pop-fabric8-kube-client.version>
+        <pop-handler-kubernetes-support.version>1.0.0</pop-handler-kubernetes-support.version>
+        <pop-producer-consumer-util.version>1.0.0</pop-producer-consumer-util.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-handler-kubernetes-support</artifactId>
-            <version>${fission-handler-kubernetes-support.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-handler-kubernetes-support</artifactId>
+            <version>${pop-handler-kubernetes-support.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-producer-consumer-util</artifactId>
-            <version>${fission-producer-consumer-util.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-producer-consumer-util</artifactId>
+            <version>${pop-producer-consumer-util.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-handler-base</artifactId>
-            <version>${fission-handler-base.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-handler-base</artifactId>
+            <version>${pop-handler-base.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-kube-client-fabric8</artifactId>
-            <version>${fission-fabric8-kube-client.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-kube-client-fabric8</artifactId>
+            <version>${pop-fabric8-kube-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
         </dependency>
 
         <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
@@ -120,7 +120,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</Main-Class>
+                                        <Main-Class>com.comcast.pop.handler.reaper.impl.HandlerEntryPoint</Main-Class>
                                         <Build-Number>1</Build-Number>
                                     </manifestEntries>
                                 </transformer>

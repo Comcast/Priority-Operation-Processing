@@ -1,17 +1,17 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.InsightMapper;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.InsightMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
-import com.comcast.fission.endpoint.api.auth.CustomerIdAuthorizationResponse;
-import com.comcast.fission.endpoint.api.ValidationException;
-import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.pop.endpoint.api.auth.CustomerIdAuthorizationResponse;
+import com.comcast.pop.endpoint.api.ValidationException;
+import com.comcast.pop.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.apache.commons.lang3.StringUtils;
 

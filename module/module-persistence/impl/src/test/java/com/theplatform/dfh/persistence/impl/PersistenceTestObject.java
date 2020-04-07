@@ -1,6 +1,6 @@
 package com.theplatform.dfh.persistence.impl;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 public class PersistenceTestObject implements IdentifiedObject
 {

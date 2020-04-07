@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.operationprogress;
 
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
+import com.comcast.pop.api.progress.OperationProgress;
+import com.comcast.pop.endpoint.base.EndpointDataObjectRequestProcessor;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

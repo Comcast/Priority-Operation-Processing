@@ -1,6 +1,6 @@
 package com.theplatform.dfh.persistence.api;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.query.Query;
 
 import java.util.List;

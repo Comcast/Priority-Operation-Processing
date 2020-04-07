@@ -2,7 +2,7 @@ package com.theplatform.dfh.persistence.aws.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import com.theplatform.dfh.persistence.api.PersistentObjectConverter;

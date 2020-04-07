@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.comcast.fission.handler</groupId>
-        <artifactId>fission-handler-executor-parent</artifactId>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-executor-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-handler-executor-package</artifactId>
+    <artifactId>pop-handler-executor-package</artifactId>
     <version>${application.version}</version>
     <packaging>pom</packaging>
     <name>Executor Handler Package</name>
@@ -23,8 +23,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-executor-impl</artifactId>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-executor-impl</artifactId>
             <version>${application.version}</version>
         </dependency>
     </dependencies>

@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
 import com.amazonaws.regions.Regions;
-import com.theplatform.dfh.cp.api.facility.Insight;
+import com.comcast.pop.api.facility.Insight;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByInsightId;
-import com.comcast.fission.endpoint.api.data.query.scheduling.ByCustomerId;
-import com.theplatform.dfh.object.api.UUIDGenerator;
+import com.comcast.pop.endpoint.api.data.query.resourcepool.insight.ByInsightId;
+import com.comcast.pop.endpoint.api.data.query.scheduling.ByCustomerId;
+import com.comcast.pop.object.api.UUIDGenerator;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedObjectPersister;
 import com.theplatform.dfh.persistence.aws.dynamodb.LocalDynamoDBFactory;

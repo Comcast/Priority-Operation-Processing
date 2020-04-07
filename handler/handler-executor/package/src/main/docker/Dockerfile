@@ -28,4 +28,4 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 ENV LANG="C.UTF-8" JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 ADD target/dependency /app
-CMD java -classpath app/fission-handler-executor-impl-${application.version}.jar com.comcast.fission.handler.executor.impl.HandlerEntryPoint
+CMD java -classpath app/pop-handler-executor-impl-${application.version}.jar HandlerEntryPoint

@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: fission-puller-01
+  name: pop-puller-01
   namespace: fission
   annotations:
     # AWS to get X-Forwarded-For headers and other things
@@ -20,4 +20,4 @@ spec:
       targetPort: 8081
       name: admin
   selector:
-    clusterTitle: fission-puller-01
+    clusterTitle: pop-puller-01

@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.endpoint.agendatemplate.aws;
 
-import com.theplatform.dfh.cp.api.AgendaTemplate;
+import com.comcast.pop.api.AgendaTemplate;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.AgendaTemplateRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.persistence.DynamoDBAgendaTemplatePersisterFactory;
-import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
+import com.comcast.pop.endpoint.aws.DataObjectLambdaStreamEntry;
+import com.comcast.pop.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

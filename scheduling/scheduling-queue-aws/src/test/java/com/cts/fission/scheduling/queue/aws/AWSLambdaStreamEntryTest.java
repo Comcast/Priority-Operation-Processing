@@ -1,10 +1,10 @@
 package com.cts.fission.scheduling.queue.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.comcast.fission.endpoint.api.BadRequestException;
+import com.comcast.pop.endpoint.api.BadRequestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
+import com.comcast.pop.endpoint.aws.EnvironmentFacade;
+import com.comcast.pop.endpoint.aws.EnvironmentLookupUtils;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.cts.fission.scheduling.queue.monitor.QueueMonitor;

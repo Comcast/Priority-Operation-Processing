@@ -400,7 +400,7 @@ public class LiveKubernetesTest extends KubeClientTestBase
 
         podConfig.setImageName("bash")
             .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 1"})
-            .setNamePrefix("fission-failslow");
+            .setNamePrefix("pop-failslow");
         ExecutionConfig executionConfig = new ExecutionConfig(podConfig.getNamePrefix())
             .setCpuRequestModulator(new HiLowCpuRequestModulator());
 

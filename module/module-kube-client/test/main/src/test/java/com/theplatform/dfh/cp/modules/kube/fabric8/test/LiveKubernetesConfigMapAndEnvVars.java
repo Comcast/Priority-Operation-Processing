@@ -34,7 +34,7 @@ public class LiveKubernetesConfigMapAndEnvVars extends KubeClientTestBase
         podConfig.setArguments(new String[] { "printenv" });
         podConfig.setNamePrefix("test-envvar");
         podConfig.setUseTaintedNodes(false);
-        podConfig.setServiceAccountName("fission-service");
+        podConfig.setServiceAccountName("pop-service");
         podConfig.setDefaultEmptyDirLogging(true);
         podConfig.setReapCompletedPods(true);
 

@@ -65,7 +65,7 @@ public class KubeClientTestBase
                     return configFactory.getDefaultPodConfig()
                         .setImageName("bash")
                         .setArguments(new String[]{"-c", "sleep 20 && echo asdfasdfasdf && exit 0"})
-                        .setNamePrefix("fission-sleep");
+                        .setNamePrefix("pop-sleep");
                 }
             },
         longerExecutionPod
@@ -90,7 +90,7 @@ public class KubeClientTestBase
                 {
                     return configFactory.getDefaultPodConfig()
                         .setImageName("docker-proto.repo.theplatform.com/printalot:1.0.0")
-                        .setNamePrefix("fission-print-test")
+                        .setNamePrefix("pop-print-test")
                         .setEndOfLogIdentifier("HandlerComplete")
                         ;
                 }

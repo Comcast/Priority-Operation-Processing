@@ -1,12 +1,12 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service;
 
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.comcast.fission.endpoint.api.ErrorResponse;
-import com.comcast.fission.endpoint.api.ErrorResponseFactory;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.DiagnosticEvent;
+import com.comcast.pop.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.ProcessingState;
+import com.comcast.pop.endpoint.api.ErrorResponse;
+import com.comcast.pop.endpoint.api.ErrorResponseFactory;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.DiagnosticEvent;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.comcast.pop.api.params.ParamsMap;
+import com.comcast.pop.api.progress.DiagnosticEvent;
+import com.comcast.pop.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.ProcessingState;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.DiagnosticEventArrayConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;

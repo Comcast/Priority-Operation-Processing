@@ -1,14 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.agendatemplate;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.AbstractRequestProcessorTest;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.comcast.fission.endpoint.api.auth.AuthorizationResponseBuilder;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.pop.endpoint.base.DataObjectRequestProcessor;
+import com.comcast.pop.endpoint.api.auth.AuthorizationResponseBuilder;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.apache.commons.lang3.RandomStringUtils;

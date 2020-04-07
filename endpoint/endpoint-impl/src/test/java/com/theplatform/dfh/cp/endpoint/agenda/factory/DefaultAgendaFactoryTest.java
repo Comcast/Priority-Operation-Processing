@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.agenda.factory;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.TransformRequest;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.TransformRequest;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.AgendaTemplateMapper;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

@@ -8,10 +8,10 @@
     "pullAlways": true
   },
   "executor": {
-    "configMapName": "fission-executor-01",
+    "configMapName": "pop-executor-01",
     "podConfig": {
       "imageName": "you.docker.repo/fhexec:1.0.0",
-      "namePrefix": "fission-exec",
+      "namePrefix": "pop-exec",
       "configMapDetails": {
         "mapKeyPaths":[
           { "key": "external-properties", "path": "external.properties"},

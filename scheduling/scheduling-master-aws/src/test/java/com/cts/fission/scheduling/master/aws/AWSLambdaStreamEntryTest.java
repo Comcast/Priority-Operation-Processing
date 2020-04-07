@@ -2,14 +2,14 @@ package com.cts.fission.scheduling.master.aws;
 
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.comcast.fission.endpoint.api.BadRequestException;
-import com.comcast.fission.endpoint.api.ErrorResponse;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.endpoint.api.BadRequestException;
+import com.comcast.pop.endpoint.api.ErrorResponse;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
+import com.comcast.pop.api.facility.ResourcePool;
+import com.comcast.pop.endpoint.aws.EnvironmentFacade;
+import com.comcast.pop.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClient;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
 import org.testng.annotations.BeforeMethod;
@@ -161,7 +161,7 @@ public class AWSLambdaStreamEntryTest
         environmentMap = new HashMap<>();
         environmentMap.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://guid.execute-api.us-west-2.amazonaws.com");
         environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/fission/resourcepool");
-        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
+        environmentMap.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "pop-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         streamEntry.setEnvironmentLookupUtils(new EnvironmentLookupUtils()
         {

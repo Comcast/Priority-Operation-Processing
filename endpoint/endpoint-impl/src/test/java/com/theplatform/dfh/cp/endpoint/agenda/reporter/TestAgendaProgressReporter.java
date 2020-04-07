@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
-import com.theplatform.dfh.cp.api.Agenda;
+import com.comcast.pop.api.Agenda;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.slf4j.Logger;
 

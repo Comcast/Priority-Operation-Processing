@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.test.cleanup.endpoint;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 /**
  */

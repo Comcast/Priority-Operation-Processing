@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence;
 
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.persistence.aws.dynamodb.*;
 
 /**

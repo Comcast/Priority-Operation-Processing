@@ -1,28 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.module</groupId>
-        <artifactId>fission-api-parent</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-api</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.api</groupId>
-    <artifactId>fission-api</artifactId>
+    <groupId>com.comcast.pop.api</groupId>
+    <artifactId>pop-api</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing API</name>
 
     <properties>
         <commons-io.version>2.6</commons-io.version>
-        <fission-object-api.version>1.0.0</fission-object-api.version>
+        <pop-object-api.version>1.0.0</pop-object-api.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.object</groupId>
-            <artifactId>fission-object-api</artifactId>
-            <version>${fission-object-api.version}</version>
+            <groupId>com.comcast.pop.object</groupId>
+            <artifactId>pop-object-api</artifactId>
+            <version>${pop-object-api.version}</version>
         </dependency>
 
         <!-- Provided dependencies -->

@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.module</groupId>
-        <artifactId>fission-module-queue-aws-sqs-base</artifactId>
+        <groupId>com.comcast.pop.module</groupId>
+        <artifactId>pop-module-queue-aws-sqs-base</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
+    <groupId>com.comcast.pop.module</groupId>
     <artifactId>module-queue-aws-sqs-impl</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -17,26 +17,26 @@
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>
         <aws-lambda.version>1.0.0</aws-lambda.version>
         <apache.commons.lang.version>2.6</apache.commons.lang.version>
-        <fission-queue-api.version>1.0.0</fission-queue-api.version>
-        <fission-queue-sqs-api.version>1.0.0</fission-queue-sqs-api.version>
-        <fission-object-api.version>1.0.0</fission-object-api.version>
+        <pop-queue-api.version>1.0.0</pop-queue-api.version>
+        <pop-queue-sqs-api.version>1.0.0</pop-queue-sqs-api.version>
+        <pop-object-api.version>1.0.0</pop-object-api.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-queue-api</artifactId>
-            <version>${fission-queue-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-queue-api</artifactId>
+            <version>${pop-queue-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
+            <groupId>com.comcast.pop.module</groupId>
             <artifactId>module-queue-aws-sqs-api</artifactId>
-            <version>${fission-queue-sqs-api.version}</version>
+            <version>${pop-queue-sqs-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.object</groupId>
-            <artifactId>fission-object-api</artifactId>
-            <version>${fission-object-api.version}</version>
+            <groupId>com.comcast.pop.object</groupId>
+            <artifactId>pop-object-api</artifactId>
+            <version>${pop-object-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->

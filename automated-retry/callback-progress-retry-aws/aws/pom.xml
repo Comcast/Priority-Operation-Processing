@@ -1,23 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.callback</groupId>
-        <artifactId>fission-callback-progress-retry-parent</artifactId>
+        <groupId>com.comcast.pop.callback</groupId>
+        <artifactId>pop-callback-progress-retry-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-callback-progress-retry-aws</artifactId>
+    <artifactId>pop-callback-progress-retry-aws</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Progress Callback - Retry AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <fission-api.version>1.0.0</fission-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <fission-endpoint-progress-retry.version>1.0.0</fission-endpoint-progress-retry.version>
-        <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
+        <pop-endpoint-progress-retry.version>1.0.0</pop-endpoint-progress-retry.version>
+        <pop-endpoint-base-aws.version>1.0.0</pop-endpoint-base-aws.version>
     </properties>
 
     <dependencies>
@@ -47,21 +47,21 @@
 
         <!-- DFH Dependencies -->
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${fission-endpoint-base-aws.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base-aws</artifactId>
+            <version>${pop-endpoint-base-aws.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.callback</groupId>
-            <artifactId>fission-callback-progress-retry-impl</artifactId>
-            <version>${fission-endpoint-progress-retry.version}</version>
+            <groupId>com.comcast.pop.callback</groupId>
+            <artifactId>pop-callback-progress-retry-impl</artifactId>
+            <version>${pop-endpoint-progress-retry.version}</version>
         </dependency>
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
         </dependency>
     </dependencies>
 

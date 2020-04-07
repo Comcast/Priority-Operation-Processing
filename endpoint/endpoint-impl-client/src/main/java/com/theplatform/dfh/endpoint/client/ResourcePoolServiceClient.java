@@ -1,14 +1,14 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.comcast.fission.endpoint.api.ServiceResponse;
-import com.comcast.fission.endpoint.api.agenda.UpdateAgendaRequest;
-import com.comcast.fission.endpoint.api.agenda.UpdateAgendaResponse;
-import com.comcast.fission.endpoint.api.resourcepool.CreateAgendaRequest;
-import com.comcast.fission.endpoint.api.resourcepool.CreateAgendaResponse;
-import com.comcast.fission.endpoint.api.resourcepool.GetAgendaRequest;
-import com.comcast.fission.endpoint.api.resourcepool.GetAgendaResponse;
-import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
-import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
+import com.comcast.pop.endpoint.api.ServiceResponse;
+import com.comcast.pop.endpoint.api.agenda.UpdateAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.UpdateAgendaResponse;
+import com.comcast.pop.endpoint.api.resourcepool.CreateAgendaRequest;
+import com.comcast.pop.endpoint.api.resourcepool.CreateAgendaResponse;
+import com.comcast.pop.endpoint.api.resourcepool.GetAgendaRequest;
+import com.comcast.pop.endpoint.api.resourcepool.GetAgendaResponse;
+import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
+import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
 import com.theplatform.dfh.endpoint.client.resourcepool.ResourcePoolEndpoint;
 import com.theplatform.dfh.endpoint.client.resourcepool.ResourcePoolServiceConfig;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;

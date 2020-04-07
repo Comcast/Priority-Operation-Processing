@@ -3,10 +3,10 @@ package com.theplatform.dfh.cp.endpoint.agenda.aws.persistence;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaInsight;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaInsight;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.ParamsMapConverter;
 

@@ -1,7 +1,7 @@
 package com.theplatform.dfh.persistence.aws.dynamodb.retrieve;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.aws.dynamodb.QueryExpression;
 
 import java.util.List;

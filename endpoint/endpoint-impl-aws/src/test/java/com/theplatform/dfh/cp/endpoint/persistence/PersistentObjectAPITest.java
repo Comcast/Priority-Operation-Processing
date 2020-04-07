@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.endpoint.persistence;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.TransformRequest;
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.TransformRequest;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.ResourcePool;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.PersistentAgenda;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.persistence.PersistentAgendaTemplate;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.PersistentCustomer;

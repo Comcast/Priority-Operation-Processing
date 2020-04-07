@@ -1,26 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-module</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-handler</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
-    <artifactId>fission-handler-base</artifactId>
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-handler-base</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Content Processing Handler Base</name>
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
-        <fission-api.version>1.0.0</fission-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <failsafe.version>2.0.1</failsafe.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <fission-version-info.version>1.0.0</fission-version-info.version>
+        <pop-version-info.version>1.0.0</pop-version-info.version>
     </properties>
 
     <dependencies>
@@ -30,8 +30,8 @@
             <version>${commons-cli.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-json-helper</artifactId>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
         <dependency>
@@ -40,9 +40,9 @@
             <version>${failsafe.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -57,9 +57,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-version-info</artifactId>
-            <version>${fission-version-info.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-version-info.version}</version>
         </dependency>
 
         <!-- Logging -->

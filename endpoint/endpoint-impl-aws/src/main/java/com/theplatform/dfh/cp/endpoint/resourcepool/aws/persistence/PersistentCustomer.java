@@ -2,7 +2,7 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.theplatform.dfh.cp.api.facility.Customer;
+import com.comcast.pop.api.facility.Customer;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.ListOperationsConverter;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 

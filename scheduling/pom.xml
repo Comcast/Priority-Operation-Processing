@@ -2,14 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-root-scheduling</artifactId>
+    <artifactId>pop-root-scheduling</artifactId>
     <version>1.0.0</version>
 
     <packaging>pom</packaging>

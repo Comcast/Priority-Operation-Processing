@@ -1,17 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.agenda.factory;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.TransformRequest;
-import com.theplatform.dfh.cp.api.params.GeneralParamKey;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.TransformRequest;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.AgendaTemplateMapper;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

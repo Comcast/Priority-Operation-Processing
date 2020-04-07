@@ -1,23 +1,23 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.service.aws;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.theplatform.dfh.cp.endpoint.aws.AbstractLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaRequest;
-import com.theplatform.dfh.cp.endpoint.base.RequestProcessor;
+import com.comcast.pop.endpoint.aws.AbstractLambdaStreamEntry;
+import com.comcast.pop.endpoint.aws.EnvironmentLookupUtils;
+import com.comcast.pop.endpoint.aws.LambdaRequest;
+import com.comcast.pop.endpoint.base.RequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.service.UpdateAgendaProgressServiceRequestProcessor;
-import com.comcast.fission.endpoint.api.BadRequestException;
-import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
-import com.comcast.fission.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
+import com.comcast.pop.endpoint.api.BadRequestException;
+import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
+import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 

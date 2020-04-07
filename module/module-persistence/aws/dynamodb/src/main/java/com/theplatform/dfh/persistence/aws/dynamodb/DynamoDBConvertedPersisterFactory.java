@@ -1,8 +1,8 @@
 package com.theplatform.dfh.persistence.aws.dynamodb;
 
-import com.theplatform.dfh.object.api.IdGenerator;
-import com.theplatform.dfh.object.api.UUIDGenerator;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdGenerator;
+import com.comcast.pop.object.api.UUIDGenerator;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
 

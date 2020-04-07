@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool;
 
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
-import com.comcast.fission.endpoint.api.ErrorResponse;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
-import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.ResourcePool;
+import com.comcast.pop.endpoint.base.EndpointDataObjectRequestProcessor;
+import com.comcast.pop.endpoint.api.ErrorResponse;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.pop.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 import java.util.Collections;

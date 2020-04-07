@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.agendatemplate;
 
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.visibility.*;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.endpoint.base.EndpointDataObjectRequestProcessor;
+import com.comcast.pop.endpoint.base.visibility.*;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

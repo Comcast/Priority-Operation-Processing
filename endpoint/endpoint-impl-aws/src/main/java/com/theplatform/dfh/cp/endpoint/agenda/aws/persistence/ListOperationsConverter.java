@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.agenda.aws.persistence;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.theplatform.dfh.cp.api.operation.Operation;
+import com.comcast.pop.api.operation.Operation;
 import com.theplatform.dfh.cp.endpoint.persistence.JsonDynamoDBTypeConverter;
 
 import java.util.List;

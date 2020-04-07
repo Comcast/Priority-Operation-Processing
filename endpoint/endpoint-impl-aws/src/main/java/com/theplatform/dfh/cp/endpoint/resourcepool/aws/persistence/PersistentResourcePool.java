@@ -3,8 +3,8 @@ package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 
 import java.util.Date;

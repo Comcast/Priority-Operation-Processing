@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.operationprogress.aws;
 
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
-import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
+import com.comcast.pop.endpoint.aws.DataObjectLambdaStreamEntry;
+import com.comcast.pop.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;
 import com.theplatform.dfh.persistence.api.ObjectPersister;

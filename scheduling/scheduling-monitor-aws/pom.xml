@@ -1,75 +1,75 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-scheduling</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-scheduling</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.scheduling</groupId>
-    <artifactId>fission-scheduling-monitor-aws</artifactId>
+    <groupId>com.comcast.pop.scheduling</groupId>
+    <artifactId>pop-scheduling-monitor-aws</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Scheduling Metric / Alert Monitor AWS compatible zip package suitable for Lambda</name>
 
     <properties>
-        <fission-api.version>1.0.0</fission-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
         <aws-java-jdk>1.11.100</aws-java-jdk>
         <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
         <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
-        <fission-scheduling-monitor.version>1.0.0</fission-scheduling-monitor.version>
-        <fission-module-version-info.version>1.0.0</fission-module-version-info.version>
-        <fission-module-queue-aws-sqs.version>1.0.0</fission-module-queue-aws-sqs.version>
-        <fission-aws-base-endpoint.version>1.0.0</fission-aws-base-endpoint.version>
-        <fission-idm-http.version>1.0.0</fission-idm-http.version>
-        <fission-monitor.version>1.0.0</fission-monitor.version>
-        <fission-monitor-graphite.version>1.0.0</fission-monitor-graphite.version>
-        <fission-endpoint-aws.version>1.0.0</fission-endpoint-aws.version>
-        <fission-persistence-dynamodb.version>1.0.0</fission-persistence-dynamodb.version>
+        <pop-scheduling-monitor.version>1.0.0</pop-scheduling-monitor.version>
+        <pop-module-version-info.version>1.0.0</pop-module-version-info.version>
+        <pop-module-queue-aws-sqs.version>1.0.0</pop-module-queue-aws-sqs.version>
+        <pop-aws-base-endpoint.version>1.0.0</pop-aws-base-endpoint.version>
+        <pop-idm-http.version>1.0.0</pop-idm-http.version>
+        <pop-monitor.version>1.0.0</pop-monitor.version>
+        <pop-monitor-graphite.version>1.0.0</pop-monitor-graphite.version>
+        <pop-endpoint-aws.version>1.0.0</pop-endpoint-aws.version>
+        <pop-persistence-dynamodb.version>1.0.0</pop-persistence-dynamodb.version>
     </properties>
 
     <dependencies>
         <!-- Fission Dependencies -->
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-impl-aws</artifactId>
-            <version>${fission-endpoint-aws.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-impl-aws</artifactId>
+            <version>${pop-endpoint-aws.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-persistence-impl-dynamodb</artifactId>
-            <version>${fission-persistence-dynamodb.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-impl-dynamodb</artifactId>
+            <version>${pop-persistence-dynamodb.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor</artifactId>
-            <version>${fission-monitor.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor</artifactId>
+            <version>${pop-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor-graphite</artifactId>
-            <version>${fission-monitor-graphite.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor-graphite</artifactId>
+            <version>${pop-monitor-graphite.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.scheduling</groupId>
-            <artifactId>fission-scheduling-monitor-impl</artifactId>
-            <version>${fission-scheduling-monitor.version}</version>
+            <groupId>com.comcast.pop.scheduling</groupId>
+            <artifactId>pop-scheduling-monitor-impl</artifactId>
+            <version>${pop-scheduling-monitor.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-version-info</artifactId>
-            <version>${fission-module-version-info.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-module-version-info.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
+            <groupId>com.comcast.pop.module</groupId>
             <artifactId>module-queue-aws-sqs-impl</artifactId>
-            <version>${fission-module-queue-aws-sqs.version}</version>
+            <version>${pop-module-queue-aws-sqs.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${fission-aws-base-endpoint.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base-aws</artifactId>
+            <version>${pop-aws-base-endpoint.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -79,9 +79,9 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
         </dependency>
 
         <!-- AWS Dependencies -->

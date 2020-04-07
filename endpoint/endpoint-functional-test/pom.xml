@@ -1,28 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-endpoint</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.endpoint</groupId>
-    <artifactId>fission-endpoint-functional-test</artifactId>
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-functional-test</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Endpoint Functional Tests</name>
 
     <properties>
-        <fission-api.version>1.0.0</fission-api.version>
-        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
-        <fission-http-utils.version>1.0.0</fission-http-utils.version>
-        <fission-http-api.version>1.0.0</fission-http-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-endpoint-client.version>1.0.0</pop-endpoint-client.version>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-http-utils.version>1.0.0</pop-http-utils.version>
+        <pop-http-api.version>1.0.0</pop-http-api.version>
 
-        <fission-test-tools.version>1.0.0-SNAPSHOT</fission-test-tools.version>
-        <fission-test-endpoint-cleanup.version>1.0.0-SNAPSHOT</fission-test-endpoint-cleanup.version>
+        <pop-test-tools.version>1.0.0-SNAPSHOT</pop-test-tools.version>
+        <pop-test-endpoint-cleanup.version>1.0.0-SNAPSHOT</pop-test-endpoint-cleanup.version>
 
         <spring-version>4.3.21.RELEASE</spring-version>
         <commons-http-client.version>3.1</commons-http-client.version>
@@ -35,27 +35,27 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-util</artifactId>
-            <version>${fission-http-utils.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-utils.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-api</artifactId>
-            <version>${fission-http-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-api</artifactId>
+            <version>${pop-http-api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-persistence-api</artifactId>
-            <version>${fission-persistence-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-client</artifactId>
-            <version>${fission-endpoint-client.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-client</artifactId>
+            <version>${pop-endpoint-client.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -75,14 +75,14 @@
 
         <!-- Provided -->
         <dependency>
-            <groupId>com.comcast.fission.test</groupId>
-            <artifactId>fission-test-tools</artifactId>
-            <version>${fission-test-tools.version}</version>
+            <groupId>com.comcast.pop.test</groupId>
+            <artifactId>pop-test-tools</artifactId>
+            <version>${pop-test-tools.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.test</groupId>
-            <artifactId>fission-test-endpoint-cleanup</artifactId>
-            <version>${fission-test-endpoint-cleanup.version}</version>
+            <groupId>com.comcast.pop.test</groupId>
+            <artifactId>pop-test-endpoint-cleanup</artifactId>
+            <version>${pop-test-endpoint-cleanup.version}</version>
         </dependency>
 
         <!-- 3rd party -->
@@ -116,9 +116,9 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
         </dependency>
 
         <!-- Test -->

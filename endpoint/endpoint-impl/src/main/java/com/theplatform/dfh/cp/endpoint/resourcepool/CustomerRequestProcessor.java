@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool;
 
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.validation.RequestValidator;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.endpoint.base.EndpointDataObjectRequestProcessor;
+import com.comcast.pop.endpoint.base.validation.RequestValidator;
 import com.theplatform.dfh.cp.endpoint.validation.CustomerValidator;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 public class CustomerRequestProcessor extends EndpointDataObjectRequestProcessor<Customer>

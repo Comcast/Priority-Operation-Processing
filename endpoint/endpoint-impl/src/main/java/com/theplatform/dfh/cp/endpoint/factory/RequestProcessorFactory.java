@@ -1,24 +1,24 @@
 package com.theplatform.dfh.cp.endpoint.factory;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.agenda.AgendaRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.AgendaTemplateRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.theplatform.dfh.cp.endpoint.base.visibility.AllMatchVisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.base.visibility.ServiceRequestVisibilityFilter;
-import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityMethod;
+import com.comcast.pop.endpoint.base.DataObjectRequestProcessor;
+import com.comcast.pop.endpoint.base.visibility.AllMatchVisibilityFilter;
+import com.comcast.pop.endpoint.base.visibility.ServiceRequestVisibilityFilter;
+import com.comcast.pop.endpoint.base.visibility.VisibilityMethod;
 import com.theplatform.dfh.cp.endpoint.operationprogress.OperationProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.progress.AgendaProgressRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.CustomerRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.InsightRequestProcessor;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightSelector;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.comcast.fission.endpoint.api.ServiceRequest;
+import com.comcast.pop.endpoint.api.ServiceRequest;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 
 /**

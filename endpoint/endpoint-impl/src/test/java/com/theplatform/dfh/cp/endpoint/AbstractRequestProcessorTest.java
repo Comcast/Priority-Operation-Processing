@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint;
 
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.comcast.fission.endpoint.api.auth.AuthorizationResponseBuilder;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.endpoint.base.DataObjectRequestProcessor;
+import com.comcast.pop.endpoint.api.auth.AuthorizationResponseBuilder;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.mockito.Mockito;

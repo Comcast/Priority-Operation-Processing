@@ -1,6 +1,6 @@
 package com.cts.fission.scheduling.queue;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 import java.util.Date;
 import java.util.List;

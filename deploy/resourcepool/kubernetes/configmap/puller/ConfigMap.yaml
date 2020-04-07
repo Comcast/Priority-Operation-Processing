@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fission-puller-01
+  name: pop-puller-01
   namespace: fission
   labels:
    serviceShortName: cppull
@@ -29,10 +29,10 @@ data:
         "pullAlways": true
       },
       "executor": {
-        "configMapName": "fission-executor-01",
+        "configMapName": "pop-executor-01",
         "podConfig": {
           "imageName": "fhexec:1.0.3",
-          "namePrefix": "fission-exec",
+          "namePrefix": "pop-exec",
           "configMapSettings": [
             {
               "volumeName": "config-volume",

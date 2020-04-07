@@ -1,11 +1,11 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
-import com.theplatform.dfh.cp.api.facility.SchedulingAlgorithm;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.ResourcePool;
+import com.comcast.pop.api.facility.SchedulingAlgorithm;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationTypeMapper;
-import com.theplatform.dfh.object.api.UUIDGenerator;
+import com.comcast.pop.object.api.UUIDGenerator;
 
 /**
  */

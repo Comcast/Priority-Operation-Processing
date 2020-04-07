@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool;
 
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.ResourcePool;
 import com.theplatform.dfh.cp.endpoint.AbstractRequestProcessorTest;
-import com.theplatform.dfh.cp.endpoint.base.DataObjectRequestProcessor;
-import com.comcast.fission.endpoint.api.ErrorResponseFactory;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.endpoint.base.DataObjectRequestProcessor;
+import com.comcast.pop.endpoint.api.ErrorResponseFactory;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

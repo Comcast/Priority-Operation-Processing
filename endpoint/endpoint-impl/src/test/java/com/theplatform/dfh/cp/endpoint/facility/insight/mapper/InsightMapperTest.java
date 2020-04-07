@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.facility.insight.mapper;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.params.ParamsMap;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationNameMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationTypeMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.ParamMapMapper;

@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-module</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-module</artifactId>
+        <version>1.0.0</version>
     </parent>
 
-    <groupId>com.comcast.fission.module</groupId>
-    <artifactId>fission-command-builder</artifactId>
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-command-builder</artifactId>
     <version>1.1.2</version>
 
     <build>
@@ -54,8 +54,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission</groupId>
-            <artifactId>fission-api</artifactId>
+            <groupId>com.comcast.pop</groupId>
+            <artifactId>pop-api</artifactId>
             <version>${cp-api.version}</version>
             <scope>provided</scope>
         </dependency>

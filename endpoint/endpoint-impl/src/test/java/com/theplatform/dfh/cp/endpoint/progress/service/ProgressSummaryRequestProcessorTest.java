@@ -1,14 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.progress.service;
 
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.endpoint.base.visibility.VisibilityFilter;
-import com.comcast.fission.endpoint.api.progress.ProgressSummaryResponse;
-import com.comcast.fission.endpoint.api.progress.ProgressSummaryRequest;
-import com.comcast.fission.endpoint.api.DefaultServiceRequest;
-import com.comcast.fission.endpoint.api.ServiceRequest;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.ProcessingState;
+import com.comcast.pop.endpoint.base.visibility.VisibilityFilter;
+import com.comcast.pop.endpoint.api.progress.ProgressSummaryResponse;
+import com.comcast.pop.endpoint.api.progress.ProgressSummaryRequest;
+import com.comcast.pop.endpoint.api.DefaultServiceRequest;
+import com.comcast.pop.endpoint.api.ServiceRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
-import com.theplatform.dfh.cp.api.facility.ResourcePool;
+import com.comcast.pop.api.facility.ResourcePool;
 import org.apache.commons.beanutils.BeanMap;
 import org.testng.Assert;
 import org.testng.annotations.Test;

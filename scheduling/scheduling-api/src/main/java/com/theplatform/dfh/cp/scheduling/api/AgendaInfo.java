@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.scheduling.api;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 import java.util.Date;
 

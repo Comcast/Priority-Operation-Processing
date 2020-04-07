@@ -1,12 +1,12 @@
 package com.theplatform.dfh.cp.endpoint.agenda.factory.template;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
 import com.theplatform.dfh.cp.endpoint.agenda.factory.template.parameters.BasicParametersExtractor;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
-import com.comcast.fission.endpoint.api.RuntimeServiceException;
+import com.comcast.pop.endpoint.api.RuntimeServiceException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.transformrequest.aws.persistence;
 
-import com.theplatform.dfh.cp.api.TransformRequest;
+import com.comcast.pop.api.TransformRequest;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 

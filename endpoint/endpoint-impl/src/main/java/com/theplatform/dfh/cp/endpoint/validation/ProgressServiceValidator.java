@@ -1,9 +1,9 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.endpoint.base.validation.DefaultRequestValidator;
-import com.comcast.fission.endpoint.api.progress.ProgressSummaryRequest;
-import com.comcast.fission.endpoint.api.ServiceRequest;
-import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.pop.endpoint.base.validation.DefaultRequestValidator;
+import com.comcast.pop.endpoint.api.progress.ProgressSummaryRequest;
+import com.comcast.pop.endpoint.api.ServiceRequest;
+import com.comcast.pop.endpoint.api.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 /**

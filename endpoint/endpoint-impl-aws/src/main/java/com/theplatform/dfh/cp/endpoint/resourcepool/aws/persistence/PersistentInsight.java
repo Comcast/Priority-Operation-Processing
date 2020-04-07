@@ -4,8 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTyped;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.SchedulingAlgorithm;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.SchedulingAlgorithm;
 import com.theplatform.dfh.cp.endpoint.persistence.DateConverter;
 
 import java.util.Date;

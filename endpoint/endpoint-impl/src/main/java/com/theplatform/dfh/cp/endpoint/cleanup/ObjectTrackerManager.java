@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.cleanup;
 
-import com.comcast.fission.endpoint.api.RuntimeServiceException;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.endpoint.api.RuntimeServiceException;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;

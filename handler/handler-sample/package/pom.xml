@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-sample-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.handler</groupId>
+    <artifactId>pop-handler-sample-package</artifactId>
+    <version>${application.version}</version>
+    <packaging>pom</packaging>
+    <name>Packaging for Sample Handler</name>
+
+    <properties>
+        <fabric8.docker.maven.plugin.version>0.33.0</fabric8.docker.maven.plugin.version>
+        <application.version>1.0.0</application.version>
+        <docker.image.name>pop-sample</docker.image.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-sample-impl</artifactId>
+            <version>${application.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                sleep 2000
+                                log.info('{}', '\n\n#\n#\n####\n#\n#\n use run.sh to build and run in docker or just dockerRun.sh if you already have an image.\n#\n#\n####\n')
+                                sleep 2000
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- This writes the dependencies into the necessary docker folder so the docker-maven-plugin below can access them -->
+                            <!-- See the src/main/Dockerfile for the ADD line that uses this path -->
+                            <outputDirectory>${project.build.directory}/docker/${docker.image.name}/${application.version}/build/target/dependency</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${fabric8.docker.maven.plugin.version}</version>
+
+                <configuration>
+                    <images>
+                        <!-- A single's image configuration -->
+                        <image>
+                            <!--Define image Id and image tag-->
+                            <name>${docker.image.name}:${application.version}</name>
+                            <build>
+                                <!--By default, definition of a contextDir field indicates that a Dockerfile will be used as the template-->
+                                <!--Use a Dockerfile as the template: default relative location at/src/main/docker-->
+                                <!--Note that all aspects of the Dockerfile can be controlled by property replacement-->
+                                <contextDir>.</contextDir>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+
+                <!-- Connect start/stop to pre- and
+                     post-integration-test phase, respectively if you want to start
+                     your docker containers during integration tests -->
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <!-- "build" should be used to create the images with the
+                                 artifact -->
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+

@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.agenda.aws.persistence;
 
-import com.theplatform.dfh.cp.api.Agenda;
+import com.comcast.pop.api.Agenda;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBConvertedPersisterFactory;
 import com.theplatform.dfh.persistence.aws.dynamodb.TableIndexes;
 

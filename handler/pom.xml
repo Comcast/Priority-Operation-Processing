@@ -2,23 +2,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-root-handler</artifactId>
-    <version>1.0.7</version>
+    <artifactId>pop-root-handler</artifactId>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
     <modules>
         <module>handler-base</module>
         <module>handler-kubernetes-support</module>
-        <module>handler-sample-api</module>
-        <module>handler-sample-impl</module>
+        <module>handler-sample</module>
         <module>handler-executor</module>
         <module>handler-pod-reaper</module>
         <module>handler-puller</module>

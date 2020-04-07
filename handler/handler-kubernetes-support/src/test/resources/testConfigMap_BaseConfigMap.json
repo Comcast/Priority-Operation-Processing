@@ -21,7 +21,7 @@
     "configMapName": "lab-main-t-aor-fhami-t01",
     "podConfig": {
       "imageName": "docker-lab.repo.theplatform.com/fhami:1.0.0",
-      "namePrefix": "fission-analysis"
+      "namePrefix": "pop-analysis"
     }
   }
 }

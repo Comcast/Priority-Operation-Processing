@@ -1,8 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.comcast.pop.api.Agenda;
 
 public class AgendaReporter
 {

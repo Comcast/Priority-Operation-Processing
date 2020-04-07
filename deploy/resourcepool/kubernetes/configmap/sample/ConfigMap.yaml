@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fission-sample-01
+  name: pop-sample-01
   namespace: fission
   labels:
    serviceShortName: fhsamp
@@ -12,8 +12,8 @@ data:
     JAVA_EXTRA=-XX:MaxMetaspaceSize=256m 
   external-properties: |
     fission.kubernetes.namespace=fission
-    fission.kubernetes.podconfig.serviceAccount=fission-service
-    fission.kubernetes.podconfig.namePrefix=fission-sample-ext
+    fission.kubernetes.podconfig.serviceAccount=pop-service
+    fission.kubernetes.podconfig.namePrefix=pop-sample-ext
     fission.kubernetes.podconfig.docker.imageName=alpine:3.11
     fission.kubernetes.podconfig.reapCompletedPods=false
     fission.kubernetes.podconfig.docker.imagePullAlways=false

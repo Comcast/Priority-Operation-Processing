@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.endpoint.base.validation.DataObjectValidator;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;

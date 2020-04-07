@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence;
 
-import com.theplatform.dfh.cp.api.facility.Insight;
+import com.comcast.pop.api.facility.Insight;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

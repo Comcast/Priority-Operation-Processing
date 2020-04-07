@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.test.cleanup.endpoint;
 
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.object.api.IdentifiedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

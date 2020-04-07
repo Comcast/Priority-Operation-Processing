@@ -1,15 +1,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-module</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-module</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
-    <artifactId>fission-monitor-parent</artifactId>
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-monitor-parent</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Alerts and Monitoring Parent Project</name>

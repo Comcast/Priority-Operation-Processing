@@ -1,14 +1,14 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.AbstractStream;
-import com.theplatform.dfh.cp.api.TransformRequest;
-import com.theplatform.dfh.cp.api.input.InputFileResource;
-import com.theplatform.dfh.cp.api.input.InputStream;
-import com.theplatform.dfh.cp.api.output.OutputStream;
-import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
+import com.comcast.pop.api.AbstractStream;
+import com.comcast.pop.api.TransformRequest;
+import com.comcast.pop.api.input.InputFileResource;
+import com.comcast.pop.api.input.InputStream;
+import com.comcast.pop.api.output.OutputStream;
+import com.comcast.pop.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;

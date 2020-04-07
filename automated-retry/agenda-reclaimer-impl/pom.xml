@@ -1,51 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-lambda</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-retry</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.agenda.reclaim</groupId>
-    <artifactId>fission-agenda-reclaimer-impl</artifactId>
+    <groupId>com.comcast.pop.agenda.reclaim</groupId>
+    <artifactId>pop-agenda-reclaimer-impl</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Agenda Reclaimer implementation</name>
 
     <properties>
-        <fission-scheduling-api.version>1.0.0</fission-scheduling-api.version>
-        <fission-persistent-api.version>1.0.0</fission-persistent-api.version>
-        <fission-endpoint-client.version>1.0.0</fission-endpoint-client.version>
-        <fission-api.version>1.0.0</fission-api.version>
-        <fission-producer-consumer-util.version>1.0.0</fission-producer-consumer-util.version>
+        <pop-scheduling-api.version>1.0.0</pop-scheduling-api.version>
+        <pop-persistent-api.version>1.0.0</pop-persistent-api.version>
+        <pop-endpoint-client.version>1.0.0</pop-endpoint-client.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-producer-consumer-util.version>1.0.0</pop-producer-consumer-util.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-producer-consumer-util</artifactId>
-            <version>${fission-producer-consumer-util.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-producer-consumer-util</artifactId>
+            <version>${pop-producer-consumer-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-client</artifactId>
-            <version>${fission-endpoint-client.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-client</artifactId>
+            <version>${pop-endpoint-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-persistence-api</artifactId>
-            <version>${fission-persistent-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistent-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-scheduling-api</artifactId>
-            <version>${fission-scheduling-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-scheduling-api</artifactId>
+            <version>${pop-scheduling-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
             <scope>provided</scope>
         </dependency>
 

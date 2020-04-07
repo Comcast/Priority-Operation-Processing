@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.endpoint;
 
-import com.theplatform.dfh.cp.api.AgendaInsight;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
-import com.comcast.fission.endpoint.api.ErrorResponseFactory;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectResponse;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.api.AgendaInsight;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.ProcessingState;
+import com.comcast.pop.endpoint.api.ErrorResponseFactory;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 import java.util.Arrays;
 

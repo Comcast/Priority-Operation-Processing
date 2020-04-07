@@ -1,7 +1,7 @@
 package com.cts.fission.scheduling.queue.algorithm;
 
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.ObjectPersister;

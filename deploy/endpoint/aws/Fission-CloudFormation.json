@@ -147,35 +147,35 @@
     },
     "LambdaRefPathFissionAuthorizer": {
       "Type": "String",
-      "Default": "fission-deploy/fission-authorizer-sample-aws-1.0.0.zip"
+      "Default": "pop-deploy/pop-authorizer-sample-aws-1.0.0.zip"
     },    
     "LambdaRefPathUnified": {
       "Type": "String",
-      "Default": "fission-deploy/fission-endpoint-impl-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-endpoint-impl-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathRetryCallback": {
       "Type": "String",
-      "Default": "fission-deploy/fission-callback-progress-retry-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-callback-progress-retry-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathSchedulingMaster": {
       "Type": "String",
-      "Default": "fission-deploy/fission-scheduling-master-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-scheduling-master-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathSchedulingQueue": {
       "Type": "String",
-      "Default": "fission-deploy/fission-scheduling-queue-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-scheduling-queue-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathSchedulingMonitor": {
       "Type": "String",
-      "Default": "fission-deploy/fission-scheduling-monitor-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-scheduling-monitor-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathDataObjectReaper": {
       "Type": "String",
-      "Default": "fission-deploy/fission-data-object-reaper-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-data-object-reaper-aws-1.0.0-lambda_deployment_package_assembly.zip"
     },
     "LambdaRefPathAgendaReclaimer": {
       "Type": "String",
-      "Default": "fission-deploy/fission-agenda-reclaimer-aws-1.0.0-lambda_deployment_package_assembly.zip"
+      "Default": "pop-deploy/pop-agenda-reclaimer-aws-1.0.0-lambda_deployment_package_assembly.zip"
     }
   },
   "Resources": {
@@ -1690,7 +1690,7 @@
     "DataObjectReaper": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.comcast.fission.reaper.objects.aws.AWSDataObjectReaperEntry::handleRequest",
+        "Handler": "com.comcast.pop.reaper.objects.aws.AWSDataObjectReaperEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1742,7 +1742,7 @@
     "AgendaReclaimer": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.comcast.fission.agenda.reclaim.aws.AWSDataObjectReaperEntry::handleRequest",
+        "Handler": "com.comcast.pop.agenda.reclaim.aws.AWSDataObjectReaperEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1976,7 +1976,7 @@
         "Role": {
           "Ref": "AuthorizerRole"
         },
-        "Handler": "com.comcast.fission.auth.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.pop.auth.aws.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Timeout": 60,
         "Environment": {

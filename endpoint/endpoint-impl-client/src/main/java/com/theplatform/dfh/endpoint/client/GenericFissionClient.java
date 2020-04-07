@@ -1,8 +1,8 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.comcast.fission.endpoint.api.ErrorResponseFactory;
-import com.comcast.fission.endpoint.api.RuntimeServiceException;
-import com.comcast.fission.endpoint.api.ServiceResponse;
+import com.comcast.pop.endpoint.api.ErrorResponseFactory;
+import com.comcast.pop.endpoint.api.RuntimeServiceException;
+import com.comcast.pop.endpoint.api.ServiceResponse;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;

@@ -3,15 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.comcast.fission.handler</groupId>
-        <artifactId>fission-handler-pod-reaper-parent</artifactId>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-pod-reaper-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.handler</groupId>
-    <artifactId>fission-handler-pod-reaper-package</artifactId>
+    <groupId>com.comcast.pop.handler</groupId>
+    <artifactId>pop-handler-pod-reaper-package</artifactId>
     <version>${application.version}</version>
     <packaging>pom</packaging>
     <name>Handler Pod Reaper Package</name>
@@ -22,8 +22,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.handler</groupId>
-            <artifactId>fission-handler-pod-reaper-impl</artifactId>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-pod-reaper-impl</artifactId>
             <version>${application.version}</version>
         </dependency>
     </dependencies>
@@ -60,7 +60,7 @@
 <!--                    <applicationType>application</applicationType>-->
 <!--                    <dockerRepository>${env.DOCKER_LAB}</dockerRepository>-->
 <!--                    <baseImage>${env.DOCKER_PROD}/agent8:11</baseImage>-->
-<!--                    <appMainClass>com.comcast.fission.handler.reaper.impl.HandlerEntryPoint</appMainClass>-->
+<!--                    <appMainClass>com.comcast.pop.handler.reaper.impl.HandlerEntryPoint</appMainClass>-->
 <!--                </configuration>-->
 <!--                &lt;!&ndash; bind to build phases because Maven doesn't &ndash;&gt;-->
 <!--                <executions>-->

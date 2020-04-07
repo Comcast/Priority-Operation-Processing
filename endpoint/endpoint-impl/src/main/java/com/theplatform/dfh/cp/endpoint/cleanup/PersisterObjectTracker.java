@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.cleanup;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.slf4j.Logger;

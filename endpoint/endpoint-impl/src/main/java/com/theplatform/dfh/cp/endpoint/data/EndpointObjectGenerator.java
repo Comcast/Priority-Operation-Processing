@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.data;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
-import com.theplatform.dfh.cp.api.progress.ProcessingState;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.params.ParamsMap;
+import com.comcast.pop.api.progress.OperationProgress;
+import com.comcast.pop.api.progress.ProcessingState;
 
 public class EndpointObjectGenerator
 {

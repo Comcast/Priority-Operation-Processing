@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.facility.insight.mapper;
 
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.facility.InsightMapper;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.facility.InsightMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.InsightMapperRegistry;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationNameMapper;
 import com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper.OperationTypeMapper;

@@ -1,15 +1,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-module</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-module</artifactId>
         <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.cp</groupId>
-    <artifactId>fission-kube-client-fabric8-tests</artifactId>
+    <groupId>com.comcast.pop.cp</groupId>
+    <artifactId>pop-kube-client-fabric8-tests</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Kube Client Test</name>
@@ -24,8 +24,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.cp</groupId>
-            <artifactId>fission-kube-client-fabric8</artifactId>
+            <groupId>com.comcast.pop.cp</groupId>
+            <artifactId>pop-kube-client-fabric8</artifactId>
             <version>${kubeclient-version}</version>
         </dependency>
 
@@ -50,7 +50,7 @@
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.theplatform.test.dfh.filemanager</groupId>-->
-<!--            <artifactId>fission-filemanager-client</artifactId>-->
+<!--            <artifactId>pop-filemanager-client</artifactId>-->
 <!--            <version>2.0.0</version>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->

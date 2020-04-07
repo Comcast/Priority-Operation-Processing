@@ -2,8 +2,8 @@ package com.theplatform.dfh.modules.queue.aws.sqs.processor;
 
 import com.amazonaws.services.sqs.model.*;
 import com.theplatform.dfh.modules.queue.aws.sqs.SQSRequestContext;
-import com.theplatform.dfh.object.api.IdGenerator;
-import com.theplatform.dfh.object.api.UUIDGenerator;
+import com.comcast.pop.object.api.IdGenerator;
+import com.comcast.pop.object.api.UUIDGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

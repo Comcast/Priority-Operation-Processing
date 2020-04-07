@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.agenda.factory.template;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;

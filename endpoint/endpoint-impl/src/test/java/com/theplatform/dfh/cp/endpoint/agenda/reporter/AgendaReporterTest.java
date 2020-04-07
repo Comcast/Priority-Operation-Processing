@@ -1,20 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
-import org.assertj.core.api.SoftAssertions;
-import org.slf4j.Logger;
+import com.comcast.pop.api.Agenda;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
-
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.testng.Assert.*;
 
 public class AgendaReporterTest extends AgendaBaseTest
 {

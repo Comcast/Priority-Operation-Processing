@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.module</groupId>
-        <artifactId>fission-monitor-parent</artifactId>
+        <groupId>com.comcast.pop.module</groupId>
+        <artifactId>pop-monitor-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-monitor-graphite</artifactId>
+    <artifactId>pop-monitor-graphite</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>graphite metrics</name>
@@ -15,14 +15,14 @@
     <properties>
         <commons-http.version>3.1</commons-http.version>
         <commons-lang3.version>3.1</commons-lang3.version>
-        <fission-monitor.version>1.0.0</fission-monitor.version>
+        <pop-monitor.version>1.0.0</pop-monitor.version>
         <codahale-metrics.version>3.0.2</codahale-metrics.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-monitor</artifactId>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor</artifactId>
             <version>1.0.0</version>
         </dependency>
 

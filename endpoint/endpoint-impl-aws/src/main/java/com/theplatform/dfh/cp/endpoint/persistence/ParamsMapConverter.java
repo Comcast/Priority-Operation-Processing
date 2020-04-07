@@ -1,7 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.persistence;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.params.ParamsMap;
 
 public class ParamsMapConverter extends JsonDynamoDBTypeConverter<ParamsMap>
 {

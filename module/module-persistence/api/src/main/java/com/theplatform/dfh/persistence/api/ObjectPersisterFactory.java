@@ -1,6 +1,6 @@
 package com.theplatform.dfh.persistence.api;
 
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 /**
  * Basic factory interface for object persistence

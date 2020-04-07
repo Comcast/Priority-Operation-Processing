@@ -1,7 +1,7 @@
 package com.theplatform.dfh.endpoint.client;
 
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 public class HttpObjectClientFactory
 {

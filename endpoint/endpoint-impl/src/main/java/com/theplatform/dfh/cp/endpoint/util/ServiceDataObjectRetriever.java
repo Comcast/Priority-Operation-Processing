@@ -1,15 +1,15 @@
 package com.theplatform.dfh.cp.endpoint.util;
 
-import com.theplatform.dfh.cp.api.DefaultEndpointDataObject;
-import com.theplatform.dfh.cp.endpoint.base.EndpointDataObjectRequestProcessor;
-import com.comcast.fission.endpoint.api.ErrorResponse;
-import com.comcast.fission.endpoint.api.ErrorResponseFactory;
-import com.comcast.fission.endpoint.api.ServiceRequest;
-import com.comcast.fission.endpoint.api.ServiceResponse;
-import com.comcast.fission.endpoint.api.auth.AuthorizationResponse;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.DefaultDataObjectRequest;
+import com.comcast.pop.api.DefaultEndpointDataObject;
+import com.comcast.pop.endpoint.base.EndpointDataObjectRequestProcessor;
+import com.comcast.pop.endpoint.api.ErrorResponse;
+import com.comcast.pop.endpoint.api.ErrorResponseFactory;
+import com.comcast.pop.endpoint.api.ServiceRequest;
+import com.comcast.pop.endpoint.api.ServiceResponse;
+import com.comcast.pop.endpoint.api.auth.AuthorizationResponse;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
 
 /**
  * Generic object retriever for use within a request processor to access data from other request processors.

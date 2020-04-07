@@ -1,17 +1,17 @@
 package com.theplatform.dfh.cp.endpoint.transformrequest.aws;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.TransformRequest;
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.theplatform.dfh.cp.api.progress.OperationProgress;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
+import com.comcast.pop.api.TransformRequest;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.OperationProgress;
 import com.theplatform.dfh.cp.endpoint.TableEnvironmentVariableName;
 import com.theplatform.dfh.cp.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.agendatemplate.aws.persistence.DynamoDBAgendaTemplatePersisterFactory;
-import com.theplatform.dfh.cp.endpoint.aws.DataObjectLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.LambdaDataObjectRequest;
+import com.comcast.pop.endpoint.aws.DataObjectLambdaStreamEntry;
+import com.comcast.pop.endpoint.aws.LambdaDataObjectRequest;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBCustomerPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.theplatform.dfh.cp.endpoint.operationprogress.aws.persistence.DynamoDBOperationProgressPersisterFactory;

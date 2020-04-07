@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.progress.aws.persistence;
 
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.AgendaProgress;
 import com.theplatform.dfh.persistence.aws.dynamodb.DynamoDBPersistentObjectConverter;
 
 /**

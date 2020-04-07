@@ -1,9 +1,9 @@
 package com.theplatform.dfh.endpoint.client;
 
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
+import com.comcast.pop.api.progress.AgendaProgress;
 import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.comcast.fission.endpoint.api.ErrorResponse;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.ErrorResponse;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
 import com.theplatform.dfh.http.util.URLRequestPerformer;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;

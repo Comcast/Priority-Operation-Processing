@@ -3,8 +3,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission</groupId>
-    <artifactId>fission-root</artifactId>
+    <groupId>com.comcast.pop</groupId>
+    <artifactId>pop-root</artifactId>
     <version>1.0.7</version>
 
     <packaging>pom</packaging>

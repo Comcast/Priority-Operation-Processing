@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-lambda</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-authorization</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.authorizer</groupId>
-    <artifactId>fission-authorizer-sample-aws</artifactId>
+    <groupId>com.comcast.pop.authorizer</groupId>
+    <artifactId>pop-authorizer-sample-aws</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Sample Authorizer for Fission AWS compatible zip package suitable for Lambda</name>
@@ -18,11 +18,11 @@
         <aws.lambda.version>1.1.0</aws.lambda.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
-        <fission-version-info.version>1.0.0</fission-version-info.version>
-        <fission-http-api.version>1.0.0</fission-http-api.version>
-        <fission-http-utils.version>1.0.0</fission-http-utils.version>
-        <fission-endpoint-base-aws.version>1.0.0</fission-endpoint-base-aws.version>
-        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
+        <pop-version-info.version>1.0.0</pop-version-info.version>
+        <pop-http-api.version>1.0.0</pop-http-api.version>
+        <pop-http-utils.version>1.0.0</pop-http-utils.version>
+        <pop-endpoint-base-aws.version>1.0.0</pop-endpoint-base-aws.version>
+        <pop-endpoint-api.version>1.0.0</pop-endpoint-api.version>
     </properties>
 
     <dependencies>
@@ -33,24 +33,24 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-version-info</artifactId>
-            <version>${fission-version-info.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-version-info.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-api</artifactId>
-            <version>${fission-http-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-api</artifactId>
+            <version>${pop-http-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-base-aws</artifactId>
-            <version>${fission-endpoint-base-aws.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base-aws</artifactId>
+            <version>${pop-endpoint-base-aws.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-util</artifactId>
-            <version>${fission-http-utils.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -82,9 +82,9 @@
 
         <!-- Provided dependencies from intermediate modules -->
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-api</artifactId>
-            <version>${fission-endpoint-api.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-api</artifactId>
+            <version>${pop-endpoint-api.version}</version>
         </dependency>
 
         <!-- logging -->

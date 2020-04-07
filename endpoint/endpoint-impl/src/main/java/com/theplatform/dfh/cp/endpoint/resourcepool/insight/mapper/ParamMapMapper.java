@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.params.ParamsMap;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.params.ParamsMap;
 
 import java.util.List;
 import java.util.Map;

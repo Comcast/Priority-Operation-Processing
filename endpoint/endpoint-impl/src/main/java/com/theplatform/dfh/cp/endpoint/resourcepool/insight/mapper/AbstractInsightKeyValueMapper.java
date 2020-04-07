@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper;
 
-import com.theplatform.dfh.cp.api.Agenda;
+import com.comcast.pop.api.Agenda;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 

@@ -1,8 +1,7 @@
 package com.theplatform.dfh.cp.endpoint.agenda.factory;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.AgendaTemplate;
-import com.theplatform.dfh.cp.api.TransformRequest;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.AgendaTemplate;
 
 public interface AgendaFactory
 {

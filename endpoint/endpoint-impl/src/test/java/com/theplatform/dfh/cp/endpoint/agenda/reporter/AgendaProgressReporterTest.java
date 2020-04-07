@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.agenda.reporter;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.progress.AgendaProgress;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.progress.AgendaProgress;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.theplatform.dfh.persistence.api.ObjectPersister;
 import com.theplatform.dfh.persistence.api.PersistenceException;
 import org.testng.annotations.BeforeTest;

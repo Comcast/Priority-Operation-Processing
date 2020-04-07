@@ -1,10 +1,10 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.tokens.AgendaToken;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.tokens.AgendaToken;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
-import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.pop.endpoint.api.ValidationException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

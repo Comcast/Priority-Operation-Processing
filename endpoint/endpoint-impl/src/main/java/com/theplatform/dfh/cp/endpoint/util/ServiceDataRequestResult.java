@@ -1,8 +1,8 @@
 package com.theplatform.dfh.cp.endpoint.util;
 
-import com.comcast.fission.endpoint.api.ServiceResponse;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.object.api.IdentifiedObject;
+import com.comcast.pop.endpoint.api.ServiceResponse;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.object.api.IdentifiedObject;
 
 /**
  * Wrapper object for request processors that either need a DataObjectResponse(success) or a ServiceResponse(error)

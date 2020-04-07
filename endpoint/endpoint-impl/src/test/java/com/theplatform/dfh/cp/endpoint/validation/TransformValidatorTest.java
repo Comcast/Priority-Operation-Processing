@@ -1,13 +1,13 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.api.TransformRequest;
-import com.theplatform.dfh.cp.api.input.InputFileResource;
-import com.theplatform.dfh.cp.api.input.InputStream;
-import com.theplatform.dfh.cp.api.input.InputStreams;
-import com.theplatform.dfh.cp.api.output.OutputFileResource;
-import com.theplatform.dfh.cp.api.output.OutputStream;
-import com.theplatform.dfh.cp.api.output.OutputStreams;
-import com.comcast.fission.endpoint.api.ValidationException;
+import com.comcast.pop.api.TransformRequest;
+import com.comcast.pop.api.input.InputFileResource;
+import com.comcast.pop.api.input.InputStream;
+import com.comcast.pop.api.input.InputStreams;
+import com.comcast.pop.api.output.OutputFileResource;
+import com.comcast.pop.api.output.OutputStream;
+import com.comcast.pop.api.output.OutputStreams;
+import com.comcast.pop.endpoint.api.ValidationException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

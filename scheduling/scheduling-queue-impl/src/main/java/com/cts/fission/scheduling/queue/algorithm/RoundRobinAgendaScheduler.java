@@ -1,12 +1,12 @@
 package com.cts.fission.scheduling.queue.algorithm;
 
-import com.theplatform.dfh.cp.api.facility.Customer;
-import com.theplatform.dfh.cp.api.facility.Insight;
+import com.comcast.pop.api.facility.Customer;
+import com.comcast.pop.api.facility.Insight;
 import com.cts.fission.scheduling.queue.InsightScheduleInfo;
 import com.theplatform.dfh.cp.scheduling.api.ReadyAgenda;
-import com.comcast.fission.endpoint.api.data.DataObjectResponse;
-import com.comcast.fission.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
-import com.comcast.fission.endpoint.api.data.query.scheduling.ByInsightIdCustomerId;
+import com.comcast.pop.endpoint.api.data.DataObjectResponse;
+import com.comcast.pop.endpoint.api.data.query.resourcepool.insight.ByResourcePoolId;
+import com.comcast.pop.endpoint.api.data.query.scheduling.ByInsightIdCustomerId;
 import com.theplatform.dfh.endpoint.client.ObjectClient;
 import com.theplatform.dfh.persistence.api.DataObjectFeed;
 import com.theplatform.dfh.persistence.api.ObjectPersister;

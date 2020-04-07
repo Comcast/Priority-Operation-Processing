@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="classpath:${propFile:fission-test.properties}" />
+        <property name="locations" value="classpath:${propFile:pop-test.properties}" />
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
     </bean>
 
@@ -81,28 +81,28 @@
     <bean id="agendaProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaProgressUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.progress.AgendaProgress"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.progress.AgendaProgress"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
     <bean id="operationProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="operationProgressUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.progress.OperationProgress"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.progress.OperationProgress"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
     <bean id="agendaTemplateClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaTemplateUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.AgendaTemplate"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.AgendaTemplate"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
     <bean id="agendaClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.Agenda"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.Agenda"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
@@ -124,21 +124,21 @@
     <bean id="resourcePoolClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="resourcePoolUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.ResourcePool"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.ResourcePool"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
     <bean id="customerClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="customerUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.Customer"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.Customer"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
     <bean id="insightClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="insightUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
-        <constructor-arg index="2" type="java.lang.Class" value="com.theplatform.dfh.cp.api.facility.Insight"/>
+        <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.Insight"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 

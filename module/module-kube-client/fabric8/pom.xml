@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission.module</groupId>
-        <artifactId>fission-kube-client-parent</artifactId>
+        <groupId>com.comcast.pop.module</groupId>
+        <artifactId>pop-kube-client-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.module</groupId>
-    <artifactId>fission-kube-client-fabric8</artifactId>
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-kube-client-fabric8</artifactId>
     <version>1.0.4</version>
     <packaging>jar</packaging>
     <name>Kubernetes Client Fabric8 Implementation</name>
 
     <properties>
-        <fission-kube-client-api.version>1.0.4</fission-kube-client-api.version>
+        <pop-kube-client-api.version>1.0.4</pop-kube-client-api.version>
         <!-- WARNING: IF THIS VERSION IS UPDATED PLEASE UPDATE THE HttpClientFactory CLASS ACCORDINGLY -->
         <kubernetes-client.version>4.1.3</kubernetes-client.version>
         <rx-java.version>1.2.3</rx-java.version>
@@ -23,9 +23,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-kube-client-api</artifactId>
-            <version>${fission-kube-client-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-kube-client-api</artifactId>
+            <version>${pop-kube-client-api.version}</version>
         </dependency>
 
         <dependency>

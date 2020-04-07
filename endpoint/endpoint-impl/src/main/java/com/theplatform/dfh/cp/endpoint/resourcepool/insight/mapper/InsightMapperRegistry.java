@@ -1,6 +1,6 @@
 package com.theplatform.dfh.cp.endpoint.resourcepool.insight.mapper;
 
-import com.theplatform.dfh.cp.api.facility.InsightMapper;
+import com.comcast.pop.api.facility.InsightMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

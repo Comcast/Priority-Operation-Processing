@@ -5,11 +5,10 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.cts.fission.scheduling.master.aws.AWSLambdaFactory;
 import com.cts.fission.scheduling.master.aws.AWSLambdaStreamEntry;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentFacade;
-import com.theplatform.dfh.cp.endpoint.aws.EnvironmentLookupUtils;
+import com.comcast.pop.endpoint.aws.EnvironmentFacade;
+import com.comcast.pop.endpoint.aws.EnvironmentLookupUtils;
 import com.theplatform.dfh.endpoint.client.HttpObjectClientFactory;
 import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
-import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -29,7 +28,7 @@ public class AWSLambdaStreamEntryLiveTest
         final Map<String, String> envVars = new HashMap<>();
         envVars.put(AWSLambdaStreamEntry.ENV_ENDPOINT_URL, "https://g9solclg15.execute-api.us-west-2.amazonaws.com");
         envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_ENDPOINT_PATH, "/fission/resourcepool");
-        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-fission-twinkle-SchedulingQueue-HIDXPAS4J9VX");
+        envVars.put(AWSLambdaStreamEntry.ENV_RESOURCEPOOL_LAMBDA_LAUNCH_LIST, "dfh-pop-twinkle-SchedulingQueue-HIDXPAS4J9VX");
 
         EnvironmentFacade environmentFacade = new EnvironmentFacade()
         {

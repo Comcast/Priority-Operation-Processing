@@ -1,60 +1,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.fission</groupId>
-        <artifactId>fission-root-endpoint</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.comcast.fission.endpoint</groupId>
-    <artifactId>fission-endpoint-client</artifactId>
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-client</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Fission Endpoint Client implementation</name>
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>
-        <fission-endpoint-api.version>1.0.0</fission-endpoint-api.version>
-        <fission-http-utils.version>1.0.0</fission-http-utils.version>
-        <fission-http-api.version>1.0.0</fission-http-api.version>
-        <fission-api.version>1.0.0</fission-api.version>
-        <fission-persistence-api.version>1.0.0</fission-persistence-api.version>
+        <pop-endpoint-api.version>1.0.0</pop-endpoint-api.version>
+        <pop-http-utils.version>1.0.0</pop-http-utils.version>
+        <pop-http-api.version>1.0.0</pop-http-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-json-helper</artifactId>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.endpoint</groupId>
-            <artifactId>fission-endpoint-api</artifactId>
-            <version>${fission-endpoint-api.version}</version>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-api</artifactId>
+            <version>${pop-endpoint-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-util</artifactId>
-            <version>${fission-http-utils.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-utils.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-http-api</artifactId>
-            <version>${fission-http-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-api</artifactId>
+            <version>${pop-http-api.version}</version>
         </dependency>
 
         <!-- Provided dependencies -->
         <dependency>
-            <groupId>com.comcast.fission.api</groupId>
-            <artifactId>fission-api</artifactId>
-            <version>${fission-api.version}</version>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comcast.fission.module</groupId>
-            <artifactId>fission-persistence-api</artifactId>
-            <version>${fission-persistence-api.version}</version>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

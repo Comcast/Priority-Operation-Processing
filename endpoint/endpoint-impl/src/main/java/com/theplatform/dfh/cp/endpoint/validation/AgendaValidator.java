@@ -1,15 +1,15 @@
 package com.theplatform.dfh.cp.endpoint.validation;
 
-import com.theplatform.dfh.cp.api.Agenda;
-import com.theplatform.dfh.cp.api.operation.Operation;
-import com.theplatform.dfh.cp.api.operation.OperationReference;
-import com.theplatform.dfh.cp.api.tokens.AgendaToken;
-import com.theplatform.dfh.cp.endpoint.base.validation.DataObjectValidator;
+import com.comcast.pop.api.Agenda;
+import com.comcast.pop.api.operation.Operation;
+import com.comcast.pop.api.operation.OperationReference;
+import com.comcast.pop.api.tokens.AgendaToken;
+import com.comcast.pop.endpoint.base.validation.DataObjectValidator;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
-import com.comcast.fission.endpoint.api.ValidationException;
-import com.comcast.fission.endpoint.api.data.DataObjectRequest;
+import com.comcast.pop.endpoint.api.ValidationException;
+import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 
 import java.util.HashMap;
 import java.util.HashSet;
