@@ -100,7 +100,7 @@
                         </goals>
 
                         <configuration>
-                            <outputDirectory>../../deploy/endpoint/aws/binaries</outputDirectory>
+                            <outputDirectory>../../../deploy/endpoint/aws/binaries</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>

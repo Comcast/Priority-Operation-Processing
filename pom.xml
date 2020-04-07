@@ -22,11 +22,12 @@
     </properties>
 
     <modules>
-        <module>callback-progress-retry-aws</module>
-        <module>lambda</module>
         <module>module</module>
         <module>web-ui</module>
         <module>endpoint</module>
+        <module>authorization</module>
+        <module>data-reaping</module>
+        <module>automated-retry</module>
         <module>scheduling</module>
         <module>handler</module>
     </modules>
