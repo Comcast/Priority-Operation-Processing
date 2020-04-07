@@ -16,10 +16,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 
-/**
- * User: kimberly.todd
- * Date: 8/23/18
- */
 public class KubeClientTestBase
 {
     private static Logger logger = LoggerFactory.getLogger(KubeClientTestBase.class);

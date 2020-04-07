@@ -15,10 +15,6 @@ import org.testng.annotations.Test;
 import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultLogLineObserverFactory.getChattyLogLineObserver;
 import static com.theplatform.dfh.cp.modules.kube.fabric8.test.factory.DefaultLogLineObserverFactory.getLogLineObserver;
 
-/**
- * User: kimberly.todd
- * Date: 8/27/18
- */
 public class SplitAHugeMp4IntoSmallerFileTest extends KubeClientTestBase
 {
 
