@@ -29,6 +29,7 @@
         <fission-monitor-graphite.version>1.0.0</fission-monitor-graphite.version>
 
         <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.26</slf4j.version>
         <dropwizard.version>1.3.19</dropwizard.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-io.version>2.6</commons-io.version>
@@ -50,11 +51,31 @@
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-base</artifactId>
             <version>${fission-handler-base.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-handler-kubernetes-support</artifactId>
             <version>${fission-handler-kubernetes-support.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
          <dependency>
             <groupId>io.dropwizard</groupId>
@@ -87,6 +108,16 @@
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-kube-client-fabric8</artifactId>
             <version>${fission-fabric8-kube-client.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.api</groupId>
@@ -99,11 +130,39 @@
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-monitor</artifactId>
             <version>${fission-monitor.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.comcast.fission.module</groupId>
             <artifactId>fission-monitor-graphite</artifactId>
             <version>${fission-monitor-graphite.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
@@ -143,22 +202,22 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!--testing-->
