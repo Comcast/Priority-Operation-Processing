@@ -12,7 +12,7 @@ public class MetricAliveCheckListener implements AliveCheckListener
 
     public MetricAliveCheckListener(MetricReporter reporter)
     {
-        //@todo babs -- Make the metric value configurable.
+        //@todo -- Make the metric value configurable.
         failedMeter = reporter.getMetricRegistry().meter("AliveCheck.failed");
     }
 

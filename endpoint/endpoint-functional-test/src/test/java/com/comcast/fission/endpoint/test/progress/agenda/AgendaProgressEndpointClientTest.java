@@ -27,7 +27,7 @@ public class AgendaProgressEndpointClientTest extends BaseEndpointObjectClientTe
     private static final Logger logger = LoggerFactory.getLogger(AgendaProgressEndpointClientTest.class);
     private final String UPDATED_JOB_ID = "theUpdate";
     private final ProcessingState UPDATED_PROCESSING_STATE = ProcessingState.EXECUTING;
-    private final String UPDATED_STATE_MESSAGE = "Waiting for Tim to fix it.";
+    private final String UPDATED_STATE_MESSAGE = "ExampleStateMessage";
     private final Date UPDATED_START_TIME = new GregorianCalendar(1998, 1, 15, 12, 30).getTime();
     private final String EXTERNAL_ID = "http://theexternal.id";
     private final String DIAGNOSTIC_MESSAGE = "theDiagnostic";

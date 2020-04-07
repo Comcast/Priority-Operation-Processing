@@ -130,7 +130,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
             for (AgendaProgress agendaProgress : response.getAll())
             {
                 DataObjectResponse<OperationProgress> opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
-                // TODO: babs - tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
+                // TODO - tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
                 //AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
                 if (opProgressResponse.isError())
                 {
@@ -206,7 +206,7 @@ public class AgendaProgressRequestProcessor extends EndpointDataObjectRequestPro
         // delete operationProgress objects
         DataObjectResponse<OperationProgress> opProgressResponse;
         opProgressResponse = getOperationProgressObjects(agendaProgress.getCustomerId(), agendaProgress.getId());
-        // TODO: babs - tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
+        // TODO: tolerate the situation where there are no operation progress objects associated with an AgendaProgress (should not error)
         //AbstractServiceRequestProcessor.addErrorForObjectNotFound(opProgressResponse, OperationProgress.class, agendaProgress.getId(), request.getCID());
         if(opProgressResponse.isError())
         {

@@ -225,7 +225,7 @@ public class ReigniteAgendaTest extends EndpointTestBase
                 };
     }
 
-    // TODO: Tim is declaring on 3-5-2020 that this may never be fixed/supported. The map is free form ... we certainly could validate everything in the map.
+    // TODO: Declaring on 3-5-2020 that this may never be fixed/supported. The map is free form ... we certainly could validate everything in the map.
     @Test(dataProvider = "invalidParamsNameProvider", enabled = false)
     public void testRetryInvalidParamsName(String paramName, int responseCode, String expectedExceptionTitle, String expectedMessageFragment)
     {

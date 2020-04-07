@@ -31,7 +31,7 @@ public class DataGenerator
         Customer customer = new Customer();
         customer.setBillingCode("My billing code");
         customer.setId("982048329048239jfkdsl");
-        customer.setTitle("babs account");
+        customer.setTitle("test account");
         return customer;
     }
 }

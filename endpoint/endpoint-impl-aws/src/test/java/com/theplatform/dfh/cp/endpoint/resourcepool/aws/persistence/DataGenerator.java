@@ -42,13 +42,4 @@ public class DataGenerator
         insight.addMapper(new OperationTypeMapper().withMatchValue("accelerate"));
         return insight;
     }
-
-    public static Customer generateCustomer()
-    {
-        Customer customer = new Customer();
-        customer.setBillingCode("My billing code");
-        customer.setId("982048329048239jfkdsl");
-        customer.setTitle("babs account");
-        return customer;
-    }
 }

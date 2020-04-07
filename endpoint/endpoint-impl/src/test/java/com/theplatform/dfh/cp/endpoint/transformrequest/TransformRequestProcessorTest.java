@@ -143,8 +143,7 @@ public class TransformRequestProcessorTest extends AbstractRequestProcessorTest<
         Assert.assertEquals(errorResponse.getResponseCode(), agendaProgressResponse.getErrorResponse().getResponseCode());
         Assert.assertEquals(errorResponse.getTitle(), agendaProgressResponse.getErrorResponse().getTitle());
 
-        //@todo Tim fix this for babs. I see the delete get called but mock doesn't
-        //verify(getPersister(), times(1)).delete(any());
+        verify(getPersister(), times(1)).delete(any());
     }
 
     @Test

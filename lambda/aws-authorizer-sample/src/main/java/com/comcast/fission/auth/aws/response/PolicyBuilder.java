@@ -150,7 +150,7 @@ public class PolicyBuilder
         List<Statement> statements = new ArrayList<>();
         statements.addAll(allowMethods);
         statements.addAll(denyMethods);
-        //babs -- Not adding the extra 'context' field to the policy that can be passed through to lambda or called resource.
+        //Not adding the extra 'context' field to the policy that can be passed through to lambda or called resource.
         //see : https://github.com/awslabs/aws-apigateway-lambda-authorizer-blueprints/blob/master/blueprints/python/api-gateway-authorizer-python.py
         return new Policy("AWS:authentication:" + principal, statements);
     }
