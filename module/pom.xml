@@ -17,14 +17,11 @@
     <modules>
         <module>module-compression</module>
         <module>module-docker</module>
-        <module>module-handler-base</module>
-        <module>module-handler-kubernetes-support</module>
         <module>module-http-api</module>
         <module>module-http-util</module>
         <module>module-json-helper</module>
         <module>module-kube-client</module>
         <module>module-monitor</module>
-        <module>module-object-api</module>
         <module>module-persistence</module>
         <module>module-process-helper</module>
         <module>module-producer-consumer-util</module>

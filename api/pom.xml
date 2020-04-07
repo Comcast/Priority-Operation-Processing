@@ -16,6 +16,7 @@
 
     <modules>
         <module>main</module>
+        <module>object-api</module>
     </modules>
 
 </project>
