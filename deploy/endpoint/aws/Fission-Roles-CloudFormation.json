@@ -24,7 +24,7 @@
         },
         "Roles": [
           {
-            "Ref": "FissionRoleLambdaUpdate"
+            "Ref": "FissionRoleUnified"
           },
           {
             "Ref": "FissionRoleScheduler"
@@ -59,7 +59,7 @@
         },
         "Roles": [
           {
-            "Ref": "FissionRoleLambdaUpdate"
+            "Ref": "FissionRoleUnified"
           },
           {
             "Ref": "FissionRoleScheduler"
@@ -126,7 +126,7 @@
         ]
       }
     },
-    "FissionRoleLambdaUpdate": {
+    "FissionRoleUnified": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
