@@ -1,11 +1,5 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Parameters": {
-    "ApiGatewayName": {
-      "Type": "String",
-      "Default": "Fission-API"
-    }
-  },
   "Resources": {
     "FissionPolicySQSEditor": {
       "Type": "AWS::IAM::Policy",
@@ -78,27 +72,6 @@
           },
           {
             "Ref": "FissionRoleReaper"
-          }
-        ]
-      }
-    },
-    "FissionPolicyLambdaLauncher": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "CustomerManaged-Fission.LambdaLauncher",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": "lambda:InvokeFunction",
-              "Resource": "*"
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "FissionRoleScheduler"
           }
         ]
       }

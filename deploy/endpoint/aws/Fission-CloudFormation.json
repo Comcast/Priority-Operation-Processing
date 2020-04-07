@@ -123,27 +123,27 @@
     },
     "AuthorizerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.authorizer"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.authorizer"
     },    
     "CallbackRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Callback.trigger"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.Callback.trigger"
     },
     "SchedulerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Scheduler.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.Scheduler.app"
     },
     "ReaperRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Reaper.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.Reaper.app"
     },
     "UnifiedEndpointRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.UnifiedEndpoint.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.UnifiedEndpoint.app"
     },
     "ReclaimerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::703150510220:role/OneCloud/Fission.Reclaimer.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/Fission.Reclaimer.app"
     },
     "LambdaRefPathFissionAuthorizer": {
       "Type": "String",
