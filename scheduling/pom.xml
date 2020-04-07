@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>scheduling-api</module>
         <module>scheduling-master-aws</module>
         <module>scheduling-monitor-aws</module>
         <module>scheduling-monitor-impl</module>

@@ -9,16 +9,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fission-root-lambda</artifactId>
-    <version>1.0.7</version>
+    <artifactId>fission-root-api</artifactId>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>aws-authorizer-sample</module>
-        <module>agenda-reclaimer-aws</module>
-        <module>agenda-reclaimer-impl</module>
-        <module>data-object-reaper-aws</module>
+        <module>main</module>
     </modules>
 
 </project>

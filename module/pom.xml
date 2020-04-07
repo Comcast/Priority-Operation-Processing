@@ -16,7 +16,6 @@
 
     <modules>
         <module>module-compression</module>
-        <module>module-content-processing-api</module>
         <module>module-docker</module>
         <module>module-handler-base</module>
         <module>module-handler-kubernetes-support</module>
