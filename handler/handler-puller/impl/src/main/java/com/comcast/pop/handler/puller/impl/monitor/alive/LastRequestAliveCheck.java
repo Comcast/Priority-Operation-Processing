@@ -1,6 +1,5 @@
 package com.comcast.pop.handler.puller.impl.monitor.alive;
 
-import com.comcast.pop.handler.puller.impl.PullerApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LastRequestAliveCheck implements AliveCheck
 {
-    private static Logger logger = LoggerFactory.getLogger(PullerApp.class);
+    private static Logger logger = LoggerFactory.getLogger(LastRequestAliveCheck.class);
     private static final String NOT_ALIVE_MESSAGE = "Too long since last agenda request.";
     public static String LAST_REQUEST_THRESHOLD_PROPERTY = "monitor.alive.lastRequestMilliseconds";
 

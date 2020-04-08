@@ -2,7 +2,7 @@ package com.comcast.pop.handler.puller.impl.limit;
 
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactoryImpl;
-import com.comcast.pop.handler.puller.impl.config.PullerConfig;
+import com.comcast.pop.handler.puller.impl.config.PullerConfigField;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
 import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
@@ -44,10 +44,9 @@ public class KubernetesResourceCheckerFactory implements ResourceCheckerFactory
         {
             KubeConfig kubeConfig = kubeConfigFactory.createKubeConfig();
             KubernetesClient kubernetesClient = new DefaultKubernetesClient(Fabric8Helper.getFabric8Config(kubeConfig));
-            PullerConfig pullerConfig = pullerContext.getLaunchDataWrapper().getPullerConfig();
             resourceCheckers.add(new KubernetesInsightExecutionResourceChecker(
                 kubernetesClient,
-                pullerConfig.getInsightId(),
+                pullerContext.getLaunchDataWrapper().getPropertyRetriever().getField(PullerConfigField.INSIGHT_ID),
                 insightExecutionLimit));
         }
     }

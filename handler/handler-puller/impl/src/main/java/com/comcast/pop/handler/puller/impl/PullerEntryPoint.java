@@ -6,7 +6,6 @@ import com.comast.pop.handler.base.context.BaseOperationContextFactory;
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
 import com.comast.pop.handler.base.field.retriever.argument.ArgumentRetriever;
 import com.comast.pop.handler.base.messages.HandlerMessages;
-import com.comcast.pop.handler.puller.impl.config.PullerConfig;
 import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.comcast.pop.handler.puller.impl.context.PullerContextFactory;
@@ -68,7 +67,7 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         FieldRetriever argumentRetriever = pullerEntryPoint.getLaunchDataWrapper().getArgumentRetriever();
         String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, DEFAULT_CONF_PATH);
         String[] args2 = new String[] {"server", confPath};
-        new PullerApp(pullerEntryPoint).run(args2);
+        new PullerEntryPoint(args).execute();
     }
 
     /**
@@ -97,16 +96,6 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         }
     }
 
-    public PullerConfig getPullerConfig()
-    {
-        return getLaunchDataWrapper().getPullerConfig();
-    }
-
-    public PullerEntryPoint setPullerConfig(PullerConfig pullerConfig)
-    {
-        getLaunchDataWrapper().setPullerConfig(pullerConfig);
-        return this;
-    }
     public void setMetricReporter(MetricReporter metricReporter)
     {
         if(metricReporter != null)

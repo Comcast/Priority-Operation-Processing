@@ -1,7 +1,8 @@
 package com.comcast.pop.handler.puller.impl.processor;
 
+import com.comast.pop.handler.base.field.retriever.properties.PropertyRetriever;
 import com.comcast.pop.handler.puller.impl.client.agenda.PullerResourcePoolServiceClientFactory;
-import com.comcast.pop.handler.puller.impl.config.PullerConfig;
+import com.comcast.pop.handler.puller.impl.config.PullerConfigField;
 import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.api.Agenda;
 import com.comcast.pop.handler.puller.impl.executor.BaseLauncher;
@@ -52,13 +53,12 @@ public class PullerProcessorTest
 
         int pullWait = 0;
         String insightId = UUID.randomUUID().toString();
-        PullerConfig pullerConfig = new PullerConfig();
-        pullerConfig.setPullWait(pullWait);
-        pullerConfig.setInsightId(insightId);
 
         BaseLauncher launcherMock = mock(BaseLauncher.class);
         PullerLaunchDataWrapper launchDataWrapper = mock(PullerLaunchDataWrapper.class);
-        doReturn(pullerConfig).when(launchDataWrapper).getPullerConfig();
+        PropertyRetriever mockPropertyRetriever = mock(PropertyRetriever.class);
+        doReturn(pullWait).when(mockPropertyRetriever).getInt(PullerConfigField.PULL_WAIT, 30);
+        doReturn(insightId).when(mockPropertyRetriever).getField(PullerConfigField.INSIGHT_ID);
         LauncherFactory launcherFactoryMock = mock(LauncherFactory.class);
         doReturn(launcherMock).when(launcherFactoryMock).createLauncher(any());
 

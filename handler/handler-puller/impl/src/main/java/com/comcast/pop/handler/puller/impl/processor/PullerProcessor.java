@@ -5,6 +5,7 @@ import com.comcast.pop.api.Agenda;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comast.pop.handler.base.processor.AbstractBaseHandlerProcessor;
 import com.comcast.pop.handler.puller.impl.client.agenda.PullerResourcePoolServiceClientFactory;
+import com.comcast.pop.handler.puller.impl.config.PullerConfigField;
 import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.comcast.pop.handler.puller.impl.executor.LauncherFactory;
@@ -42,9 +43,9 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
     public PullerProcessor(PullerContext pullerContext)
     {
         super(pullerContext);
-        this.resourcePoolServiceClientFactory = new PullerResourcePoolServiceClientFactory(getLaunchDataWrapper().getPullerConfig());
+        this.resourcePoolServiceClientFactory = new PullerResourcePoolServiceClientFactory(getLaunchDataWrapper());
         launcherFactory = pullerContext.getLauncherFactory();
-        insightId = getLaunchDataWrapper().getPullerConfig().getInsightId();
+        insightId = getLaunchDataWrapper().getPropertyRetriever().getField(PullerConfigField.INSIGHT_ID, "");
     }
 
     /**
@@ -62,8 +63,8 @@ public class PullerProcessor extends AbstractBaseHandlerProcessor<PullerLaunchDa
      */
     public void execute()
     {
-        pullWaitSeconds = getLaunchDataWrapper().getPullerConfig().getPullWait();
-        agendaRequestCount = getLaunchDataWrapper().getPullerConfig().getAgendaRequestCount();
+        pullWaitSeconds = getLaunchDataWrapper().getPropertyRetriever().getInt(PullerConfigField.PULL_WAIT, 30);
+        agendaRequestCount = getLaunchDataWrapper().getPropertyRetriever().getInt(PullerConfigField.AGENDA_REQUEST_COUNT, 1);
 
         while(true)
         {
