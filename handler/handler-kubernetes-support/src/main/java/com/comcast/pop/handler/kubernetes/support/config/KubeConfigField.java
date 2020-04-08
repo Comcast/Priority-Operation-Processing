@@ -4,9 +4,9 @@ import com.comast.pop.handler.base.field.retriever.api.NamedField;
 
 public enum KubeConfigField implements NamedField
 {
-    MASTER_URL("fission.kubernetes.masterUrl"),
-    NAMESPACE("fission.kubernetes.namespace"),
-    ZONE("fission.kubernetes.zone");
+    MASTER_URL("pop.kubernetes.masterUrl"),
+    NAMESPACE("pop.kubernetes.namespace"),
+    ZONE("pop.kubernetes.zone");
 
     private final String fieldName;
 

@@ -1,11 +1,11 @@
 package com.comcast.pop.handler.kubernetes.support.reporter;
 
 import com.comast.pop.handler.base.reporter.ProgressReporter;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.annotation.PodAnnotationClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.RetryableKubernetesClient;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.Fabric8Helper;
+import com.comcast.pop.modules.kube.fabric8.client.annotation.PodAnnotationClient;
+import com.comcast.pop.modules.kube.fabric8.client.facade.RetryableKubernetesClient;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 
 import java.util.Collections;
@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class KubernetesReporter<T> implements ProgressReporter<T>
 {
-    public static final String REPORT_PROGRESS_ANNOTATION = "dfh.report.progress";
-    public static final String REPORT_PAYLOAD_ANNOTATION = "dfh.report.payload";
+    public static final String REPORT_PROGRESS_ANNOTATION = "pop.report.progress";
+    public static final String REPORT_PAYLOAD_ANNOTATION = "pop.report.payload";
 
     private PodAnnotationClient podAnnotationClient;
     private JsonHelper jsonHelper;

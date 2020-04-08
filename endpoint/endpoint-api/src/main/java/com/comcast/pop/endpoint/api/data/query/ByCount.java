@@ -1,7 +1,7 @@
 package com.comcast.pop.endpoint.api.data.query;
 
-import com.theplatform.dfh.persistence.api.field.CountField;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.field.CountField;
+import com.comcast.pop.persistence.api.query.Query;
 
 /**
  * ByCount only returns the count of entries and not the actual entries

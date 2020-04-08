@@ -5,17 +5,17 @@ import com.comcast.pop.handler.reaper.impl.filter.ReapPodLookupFilter;
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacade;
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacadeImpl;
 import com.comcast.pop.handler.reaper.impl.property.ReaperProperty;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
-import com.theplatform.com.dfh.modules.sync.util.Producer;
-import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
+import com.comcast.pop.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.Producer;
+import com.comcast.pop.modules.sync.util.SynchronousProducerConsumerProcessor;
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
 import com.comast.pop.handler.base.processor.HandlerProcessor;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactoryImpl;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigField;
 import com.comcast.pop.handler.reaper.impl.context.ReaperContext;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.Fabric8Helper;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -31,7 +31,7 @@ public class ReaperProcessor implements HandlerProcessor
 {
     private static Logger logger = LoggerFactory.getLogger(ReapPodLookupFilter.class);
 
-    public static final String DEFAULT_NAMESPACE = "fission";
+    public static final String DEFAULT_NAMESPACE = "pop";
     private static final int DEFAULT_REAPER_RUN_MAX_MINUTES = 5;
     private ReaperContext reaperContext;
 

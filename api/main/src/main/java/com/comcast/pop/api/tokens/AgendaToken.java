@@ -6,7 +6,7 @@ public enum AgendaToken
     OPERATION_NAME("operationName")
     ;
 
-    public static final String TOKEN_PREFIX = "fission.";
+    public static final String TOKEN_PREFIX = "pop.";
     private final String tokenSuffix;
 
     public String getToken()

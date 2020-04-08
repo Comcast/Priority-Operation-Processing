@@ -2,9 +2,9 @@ package com.comcast.pop.handler.kubernetes.support.monitor;
 
 import com.codahale.metrics.MetricFilter;
 import com.comast.pop.handler.base.field.retriever.properties.PropertyRetriever;
-import com.theplatform.dfh.cp.modules.monitor.graphite.GraphiteMetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.graphite.GraphiteMetricReporterFactory;
+import com.comcast.pop.modules.monitor.metric.LoggingMetricReporterFactory;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

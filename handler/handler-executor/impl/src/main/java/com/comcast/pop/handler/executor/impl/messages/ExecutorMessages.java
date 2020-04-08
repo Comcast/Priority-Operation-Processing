@@ -15,7 +15,7 @@ public enum ExecutorMessages implements MessageLookup
     KUBERNETES_FOLLOW_ERROR,
     KUBERNETES_POD_FAILED;
 
-    public static final String RESOURCE_PATH = "com/theplatform/handler/executor/executorMessages";
+    public static final String RESOURCE_PATH = "com/comcast/pop/handler/executor/executorMessages";
     private static final ResourceBundleStringRetriever stringRetriever = new ResourceBundleStringRetriever(RESOURCE_PATH);
 
     private final String key = name().toLowerCase();

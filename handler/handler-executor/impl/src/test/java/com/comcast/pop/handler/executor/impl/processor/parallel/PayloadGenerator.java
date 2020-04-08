@@ -7,7 +7,7 @@ import com.comast.pop.handler.base.field.api.HandlerField;
 import com.comast.pop.handler.base.field.retriever.DefaultLaunchDataWrapper;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
 import com.comast.pop.handler.base.field.retriever.environment.EnvironmentFieldRetriever;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;

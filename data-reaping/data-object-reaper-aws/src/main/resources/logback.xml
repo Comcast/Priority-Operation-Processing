@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration scan="true">
-    <jmxConfigurator contextName="Fission Data Object Reaper" />
+    <jmxConfigurator contextName="POP Data Object Reaper" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -15,7 +15,6 @@
     <logger name="org.apache" level="ERROR" />
     <logger name="org.springframework" level="ERROR" />
     <logger name="net.sf" level="ERROR" />
-    <logger name="com.theplatform.module" level="ERROR" />
     <logger name="httpclient.wire" level="ERROR" />
     <logger name="com.amazonaws" level="INFO"/>
 

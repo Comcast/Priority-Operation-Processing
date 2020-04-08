@@ -5,9 +5,9 @@ import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.api.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.comast.pop.handler.base.BaseHandlerEntryPoint;
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.ConfigMapDetails;
+import com.comcast.pop.modules.kube.client.config.KeyPathPair;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -29,14 +29,6 @@ public class PodConfigRegistryClientTest {
         podConfigRegistryClient = createJsonRegistryClient(POD_REGISTRY_FILE);
     }
 
-    @Test
-    void testDefaultJsonClient() throws PodConfigRegistryClientException
-    {
-        JsonPodConfigRegistryClient client = new JsonPodConfigRegistryClient();
-        PodConfig pConfig = client.getPodConfig("encode");
-
-        Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fheff:1.0.0");
-    }
 
     @Test
     void testBaseOverlayOnSample() throws PodConfigRegistryClientException, IOException
@@ -68,7 +60,6 @@ public class PodConfigRegistryClientTest {
         Assert.assertEquals(configMapDetails.getVolumeMountPath(), VOLUME_MOUNT_PATH);
 
         // validate the json registry values we overlay
-        Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fhsamp:1.0.0");
         Assert.assertEquals(pConfig.getNamePrefix(), "pop-samp");
 
         // validate final overlay from the sample entry
@@ -82,10 +73,7 @@ public class PodConfigRegistryClientTest {
     {
         return new Object[][]
             {
-                {"analysis"},
-                {"encode"},
-                {"thumbnail"},
-                {"package"},
+                {"sample"}
             };
     }
 
@@ -101,14 +89,12 @@ public class PodConfigRegistryClientTest {
         Assert.assertNotNull(pConfig.getConfigMapSettings());
         Assert.assertEquals(pConfig.getConfigMapSettings().size(), 1);
         ConfigMapDetails configMapDetails = pConfig.getConfigMapSettings().get(0);
-        Assert.assertEquals(configMapDetails.getVolumeName(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_NAME);
-        Assert.assertEquals(configMapDetails.getVolumeMountPath(), JsonPodConfigRegistryClient.DEFAULT_VOLUME_MOUNT_PATH);
+        Assert.assertEquals(configMapDetails.getVolumeName(), "config-volume-ex");
+        Assert.assertEquals(configMapDetails.getVolumeMountPath(), "/configex");
 
         // validate the nested fields are set
         Assert.assertNotNull(configMapDetails.getMapKeyPaths());
         Assert.assertEquals(configMapDetails.getMapKeyPaths().size(), 2);
-        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(0), KeyPathZero);
-        verifyKeyPathMatches(configMapDetails.getMapKeyPaths().get(1), KeyPathOne);
     }
 
     // cheapo comparison method
@@ -123,9 +109,8 @@ public class PodConfigRegistryClientTest {
     void testBuiltInFailover() throws PodConfigRegistryClientException
     {
         JsonPodConfigRegistryClient client = new JsonPodConfigRegistryClient("/non/existent/registry.json");
-        PodConfig pConfig = client.getPodConfig("encode");
+        PodConfig pConfig = client.getPodConfig("sample");
 
-        Assert.assertEquals(pConfig.getImageName(), "docker-lab.repo.theplatform.com/fheff:1.0.0");
     }
 
     @Test
@@ -150,7 +135,7 @@ public class PodConfigRegistryClientTest {
     void testPodConfigBaseMapDetails() throws Exception
     {
         JsonPodConfigRegistryClient client = createJsonRegistryClient(POD_REGISTRY_FILE_WITH_BASE_CONFIG_MAP_DETAILS);
-        PodConfig podConfig = client.getPodConfig("analysis");
+        PodConfig podConfig = client.getPodConfig("sample");
 
         Assert.assertNotNull(podConfig.getConfigMapSettings());
         Assert.assertEquals(podConfig.getConfigMapSettings().size(), 1);

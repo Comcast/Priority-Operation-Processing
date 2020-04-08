@@ -1,11 +1,11 @@
 package com.comcast.pop.handler.kubernetes.support.monitor;
 
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodEventListener;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheck;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckListener;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckPoller;
-import com.theplatform.dfh.cp.modules.monitor.config.ConfigurationProperties;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodEventListener;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodPhase;
+import com.comcast.pop.modules.monitor.alive.AliveCheck;
+import com.comcast.pop.modules.monitor.alive.AliveCheckListener;
+import com.comcast.pop.modules.monitor.alive.AliveCheckPoller;
+import com.comcast.pop.modules.monitor.config.ConfigurationProperties;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodStatus;
 import io.fabric8.kubernetes.client.KubernetesClientException;

@@ -3,7 +3,7 @@ package com.comcast.pop.handler.executor.impl.processor;
 import com.comcast.pop.api.operation.Operation;
 import com.comcast.pop.api.operation.OperationReference;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
+import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

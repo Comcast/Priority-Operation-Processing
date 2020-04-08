@@ -2,7 +2,7 @@ package com.comast.pop.handler.base.translator;
 
 import com.comcast.pop.api.progress.DiagnosticEvent;
 import com.comast.pop.handler.base.messages.HandlerMessages;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 
 /**
  * Json translator implementation

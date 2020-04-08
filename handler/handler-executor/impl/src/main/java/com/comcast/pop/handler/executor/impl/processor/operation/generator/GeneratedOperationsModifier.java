@@ -10,7 +10,7 @@ import com.comcast.pop.api.params.ParamsMap;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.processor.parallel.OperationConductor;
 import com.comcast.pop.handler.executor.impl.processor.parallel.OperationConductorModifier;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

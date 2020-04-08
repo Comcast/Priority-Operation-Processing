@@ -11,5 +11,5 @@
     <artifactId>module-queue-aws-sqs-api</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fission Queue AWS SQS API</name>
+    <name>Queue AWS SQS API</name>
 </project>

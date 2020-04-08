@@ -2,9 +2,9 @@ package com.comcast.pop.handler.puller.impl.client.agenda;
 
 import com.comcast.pop.handler.puller.impl.PullerApp;
 import com.comcast.pop.handler.puller.impl.config.PullerConfig;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
-import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClientFactory;
+import com.comcast.pop.http.api.AuthHttpURLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -11,7 +11,7 @@
     <artifactId>pop-queue-api</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fission Queue API</name>
+    <name>POP Queue API</name>
 
     <properties>
     </properties>

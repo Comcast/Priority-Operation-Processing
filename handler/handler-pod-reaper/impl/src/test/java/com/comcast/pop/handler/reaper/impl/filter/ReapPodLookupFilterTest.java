@@ -1,7 +1,7 @@
 package com.comcast.pop.handler.reaper.impl.filter;
 
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacade;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.ContainerState;
 import io.fabric8.kubernetes.api.model.ContainerStateTerminated;
 import io.fabric8.kubernetes.api.model.ContainerStatus;

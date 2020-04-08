@@ -33,7 +33,7 @@ public class ResponseWriter
         Map<String, String> headers = new HashMap<>();
         responseObject.setHeaders(headers);
         headers.put("Access-Control-Expose-Headers", "Access-Control-Allow-Origin");
-        headers.put("Access-Control-Allow-Headers", "X-thePlatform-cid,origin,accept,Content-Type,Authorization,Referer,User-Agent");
+        headers.put("Access-Control-Allow-Headers", "X-pop-cid,origin,accept,Content-Type,Authorization,Referer,User-Agent");
         headers.put("Access-Control-Allow-Origin", "*");
         headers.put("Access-Control-Allow-Credentials", "true");
         headers.put("Access-Control-Allow-Methods", "GET,OPTIONS");

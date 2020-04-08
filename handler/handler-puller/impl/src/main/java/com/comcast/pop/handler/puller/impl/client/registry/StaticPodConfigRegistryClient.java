@@ -3,9 +3,9 @@ package com.comcast.pop.handler.puller.impl.client.registry;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.ConfigMapDetails;
+import com.comcast.pop.modules.kube.client.config.KeyPathPair;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -45,7 +45,7 @@
             <version>${aws.java.jdk}</version>
         </dependency>
 
-        <!-- DFH Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.endpoint</groupId>
             <artifactId>pop-endpoint-base-aws</artifactId>

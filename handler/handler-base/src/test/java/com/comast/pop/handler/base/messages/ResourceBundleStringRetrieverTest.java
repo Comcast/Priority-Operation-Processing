@@ -19,7 +19,7 @@ public class ResourceBundleStringRetrieverTest
     @Test
     public void testGetMessageArgEnum()
     {
-        final String arg = "thePlatform!";
+        final String arg = "pop!";
         Assert.assertEquals(TestMessages.SAMPLE_ARG_MESSAGE.getMessage(arg), "hello " + arg);
     }
 

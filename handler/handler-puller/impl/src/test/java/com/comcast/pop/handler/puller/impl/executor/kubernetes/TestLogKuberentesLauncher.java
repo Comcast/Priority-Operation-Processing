@@ -1,13 +1,13 @@
 package com.comcast.pop.handler.puller.impl.executor.kubernetes;
 
-import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodFollowerFactory;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactory;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
+import com.comcast.pop.modules.kube.client.CpuRequestModulator;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.fabric8.client.PodPushClient;
+import com.comcast.pop.modules.kube.fabric8.client.factory.PodFollowerFactory;
+import com.comcast.pop.modules.kube.fabric8.client.factory.PodPushClientFactory;
+import com.comcast.pop.modules.kube.fabric8.client.follower.PodFollower;
 import org.slf4j.Logger;
 
 public class TestLogKuberentesLauncher extends KubernetesLauncher

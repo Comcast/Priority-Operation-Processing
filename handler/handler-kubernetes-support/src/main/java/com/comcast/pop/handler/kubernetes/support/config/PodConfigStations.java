@@ -2,19 +2,19 @@ package com.comcast.pop.handler.kubernetes.support.config;
 
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
 import com.comast.pop.handler.base.field.retriever.api.NamedField;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 
 import java.util.Optional;
 
 /**
  * Each enum is a 'station' that:
- * - defines a Fission supported configuration key;
+ * - defines a supported configuration key;
  * - defines a default value; and
  * - provides an operation to retrieve a configured value and set it on a PodConfig instance.
  */
 public enum PodConfigStations implements NamedField, ConfigurePod
 {
-    eolIdentifier("fission.kubernetes.podconfig.endOfLogIdentifier")
+    eolIdentifier("pop.kubernetes.podconfig.endOfLogIdentifier")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -22,7 +22,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setEndOfLogIdentifier(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(),DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    namePrefix("fission.kubernetes.podconfig.namePrefix")
+    namePrefix("pop.kubernetes.podconfig.namePrefix")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -30,7 +30,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setNamePrefix(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(),DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    imageName("fission.kubernetes.podconfig.docker.imageName")
+    imageName("pop.kubernetes.podconfig.docker.imageName")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -38,7 +38,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setImageName(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(), DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    dockerImagePullAlways("fission.kubernetes.podconfig.docker.imagePullAlways")
+    dockerImagePullAlways("pop.kubernetes.podconfig.docker.imagePullAlways")
             {
                 private final Boolean DEFAULT_PULL_ALWAYS = false;
 
@@ -49,7 +49,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                 }
             },
 
-    reapCompletedPods("fission.kubernetes.podconfig.reapCompletedPods")
+    reapCompletedPods("pop.kubernetes.podconfig.reapCompletedPods")
             {
                 private final Boolean DEFAULT_REAP_COMPLETED = false;
                 @Override
@@ -58,7 +58,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setReapCompletedPods(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getBoolean(getFieldName(), DEFAULT_REAP_COMPLETED)).orElse(DEFAULT_REAP_COMPLETED));
                 }
             },
-    useTaintedNodes("fission.kubernetes.podconfig.useTaintedNodes")
+    useTaintedNodes("pop.kubernetes.podconfig.useTaintedNodes")
             {
                 private final Boolean DEFAULT_USE_TAINTED_NODES = false;
 
@@ -68,7 +68,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setUseTaintedNodes(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getBoolean(getFieldName(), DEFAULT_USE_TAINTED_NODES)).orElse(DEFAULT_USE_TAINTED_NODES));
                 }
             },
-    useTaintedNodesSelector("fission.kubernetes.podconfig.taintedSelector")
+    useTaintedNodesSelector("pop.kubernetes.podconfig.taintedSelector")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -76,7 +76,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setTaintedNodeSelector(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(), DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    useTaintedNodesToleration("fission.kubernetes.podconfig.taintedToleration")
+    useTaintedNodesToleration("pop.kubernetes.podconfig.taintedToleration")
             {
                 @Override
                 public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)
@@ -84,7 +84,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setTaintedNodeToleration(fieldRetriever.map(fieldRetriever1 -> fieldRetriever1.getField(getFieldName(), DEFAULT_STRING)).orElse(DEFAULT_STRING));
                 }
             },
-    podTimeoutScheduledMS("fission.kubernetes.podconfig.timeout.scheduledMs")
+    podTimeoutScheduledMS("pop.kubernetes.podconfig.timeout.scheduledMs")
             {
                 private long DEFAULT_SCHEDULED_TIMEOUT = 300000L;
                 @Override
@@ -93,7 +93,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setPodScheduledTimeoutMs(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getLong(getFieldName(), DEFAULT_SCHEDULED_TIMEOUT)).orElse(DEFAULT_SCHEDULED_TIMEOUT));
                 }
             },
-    podTimeoutStdOut("fission.kubernetes.podconfig.timeout.stdout")
+    podTimeoutStdOut("pop.kubernetes.podconfig.timeout.stdout")
             {
                 private final long DEFAULT_STDOUT_TIMEOUT = 120000L;
                 @Override
@@ -102,7 +102,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setPodStdoutTimeout(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getLong(getFieldName(), DEFAULT_STDOUT_TIMEOUT)).orElse(DEFAULT_STDOUT_TIMEOUT));
                 }
             },
-    retryCount("fission.kubernetes.podconfig.retry.count")
+    retryCount("pop.kubernetes.podconfig.retry.count")
             {
                 private final int DEFAULT_RETRY_COUNT = 0;
                 @Override
@@ -111,7 +111,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setPodRetryCount(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getInt(getFieldName(), DEFAULT_RETRY_COUNT)).orElse(DEFAULT_RETRY_COUNT));
                 }
             },
-    retryDelay("fission.kubernetes.podconfig.retry.delay")
+    retryDelay("pop.kubernetes.podconfig.retry.delay")
             {
                 private final int DEFAULT_RETRY_DELAY = 3000;
                 @Override
@@ -120,7 +120,7 @@ public enum PodConfigStations implements NamedField, ConfigurePod
                     podConfig.setRetryDelayMilliSecs(fieldRetriever.map(fieldRetriever1 ->  fieldRetriever1.getInt(getFieldName(), DEFAULT_RETRY_DELAY)).orElse(DEFAULT_RETRY_DELAY));
                 }
             },
-    serviceAccount("fission.kubernetes.podconfig.serviceAccount")
+    serviceAccount("pop.kubernetes.podconfig.serviceAccount")
         {
             @Override
             public void setPodConfig(PodConfig podConfig, Optional<FieldRetriever> fieldRetriever)

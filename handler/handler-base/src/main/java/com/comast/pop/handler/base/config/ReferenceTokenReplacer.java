@@ -3,7 +3,7 @@ package com.comast.pop.handler.base.config;
 import com.comcast.pop.api.tokens.AgendaToken;
 import com.comast.pop.handler.base.field.api.HandlerField;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
+import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import org.apache.commons.lang3.StringUtils;
 
 /**

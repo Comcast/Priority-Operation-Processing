@@ -3,7 +3,7 @@ package com.comast.pop.handler.base.progress.reporter.operation;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.progress.ProcessingState;
 import com.comast.pop.handler.base.progress.reporter.BaseReporterThread;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 
 /**
  * Operation progress threaded reporter

@@ -1,11 +1,11 @@
 package com.comcast.pop.agenda.reclaim.factory;
 
 import com.comcast.pop.agenda.reclaim.consumer.AgendaProgressTimeoutConsumer;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.Consumer;
 import com.comcast.pop.agenda.reclaim.config.ReclaimerConfig;
 import com.comcast.pop.api.progress.AgendaProgress;
-import com.theplatform.dfh.endpoint.client.HttpObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import com.comcast.pop.endpoint.client.HttpObjectClient;
+import com.comcast.pop.http.api.HttpURLConnectionFactory;
 
 public class TimeoutConsumerFactory implements AgendaProgressConsumerFactory
 {

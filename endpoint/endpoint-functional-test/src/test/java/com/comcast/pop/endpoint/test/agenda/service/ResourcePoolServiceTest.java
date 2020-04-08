@@ -16,9 +16,9 @@ import com.comcast.pop.api.params.ParamsMap;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.progress.ProcessingState;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
-import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.http.api.NoAuthHTTPUrlConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -80,10 +80,10 @@ public class ResourcePoolServiceTest extends EndpointTestBase
     public void testInvalidAuthGetAgenda()
     {
         NoAuthHTTPUrlConnectionFactory noAuthHTTPUrlConnectionFactory = new NoAuthHTTPUrlConnectionFactory();
-        ResourcePoolServiceClient fissionClient = new ResourcePoolServiceClient(resourcePoolServiceUrl, noAuthHTTPUrlConnectionFactory);
-        GetAgendaResponse getAgendaResponse = fissionClient.getAgenda(new GetAgendaRequest("foo", 1));
+        ResourcePoolServiceClient popClient = new ResourcePoolServiceClient(resourcePoolServiceUrl, noAuthHTTPUrlConnectionFactory);
+        GetAgendaResponse getAgendaResponse = popClient.getAgenda(new GetAgendaRequest("foo", 1));
         Assert.assertTrue(getAgendaResponse.isError());
-        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), "FissionClientException");
+        Assert.assertEquals(getAgendaResponse.getErrorResponse().getTitle(), "POPClientException");
         Assert.assertEquals(getAgendaResponse.getErrorResponse().getResponseCode(), (Integer) 401);
     }
 

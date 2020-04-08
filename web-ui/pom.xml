@@ -12,7 +12,7 @@
     <artifactId>pop-web-ui</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fission Web UI</name>
+    <name>POP Web UI</name>
     
     <build>
         <plugins>

@@ -19,6 +19,7 @@
         <module>api</module>
         <module>impl</module>
         <module>package</module>
+        <module>test/main</module>
     </modules>
 
 </project>

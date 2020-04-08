@@ -3,7 +3,7 @@ package com.comcast.pop.agenda.reclaim;
 import com.comcast.pop.agenda.reclaim.config.ReclaimerConfig;
 import com.comcast.pop.agenda.reclaim.factory.AgendaProgressConsumerFactory;
 import com.comcast.pop.agenda.reclaim.factory.AgendaProgressProducerFactory;
-import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
+import com.comcast.pop.modules.sync.util.SynchronousProducerConsumerProcessor;
 
 public class AgendaReclaimer
 {

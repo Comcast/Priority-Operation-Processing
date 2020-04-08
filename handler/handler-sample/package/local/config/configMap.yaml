@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: lab-main-t-aor-fhsamp-t01
-  namespace: dfh
+  namespace: pop
   labels:
    environmentShortName: lab
    serviceShortName: fhsamp

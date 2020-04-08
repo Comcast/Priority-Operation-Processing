@@ -1,16 +1,16 @@
 package com.comcast.pop.handler.sample.impl.executor.kubernetes;
 
-import com.comcast.pop.handler.sample.impl.exception.FissionSampleHandlerException;
+import com.comcast.pop.handler.sample.impl.exception.SampleHandlerException;
 import com.comcast.pop.handler.sample.impl.executor.BaseExternalExecutor;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.client.logging.LogLineObserver;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.logging.LogLineObserver;
+import com.comcast.pop.modules.kube.fabric8.client.PodPushClient;
+import com.comcast.pop.modules.kube.fabric8.client.follower.PodFollower;
+import com.comcast.pop.modules.kube.fabric8.client.follower.PodFollowerImpl;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class KubernetesExternalExecutor extends BaseExternalExecutor
                 if (finalPodPhaseInfo.phase.isFailed())
                 {
                     logger.error("External execution failed to produce metadata, output was : {}", allStdout);
-                    throw new FissionSampleHandlerException(allStdout.toString());
+                    throw new SampleHandlerException(allStdout.toString());
                 }
             }
 
@@ -116,7 +116,7 @@ public class KubernetesExternalExecutor extends BaseExternalExecutor
         {
             String allStringMetadata = allStdout.toString();
             logger.error("Exception caught {}", allStringMetadata, e);
-            throw new FissionSampleHandlerException("Failed to execute pod. Output from execution: " + allStringMetadata, e);
+            throw new SampleHandlerException("Failed to execute pod. Output from execution: " + allStringMetadata, e);
         }
         return linesForProcessing;
     }

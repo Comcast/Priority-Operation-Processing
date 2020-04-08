@@ -6,9 +6,9 @@ import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.comcast.pop.reaper.objects.aws.BaseBatchedOperation;
-import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
-import com.theplatform.com.dfh.modules.sync.util.Producer;
-import com.theplatform.com.dfh.modules.sync.util.ProducerResult;
+import com.comcast.pop.modules.sync.util.InstantUtil;
+import com.comcast.pop.modules.sync.util.Producer;
+import com.comcast.pop.modules.sync.util.ProducerResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

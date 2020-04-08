@@ -34,7 +34,7 @@ public class LambdaRequest<T> extends DefaultServiceRequest<T>
     protected static final String PATH_PARAMETER_PREFIX_PATH = "/pathParameters/";
     protected static final String HEADER_AUTHORIZATION = "Authorization";
     protected static final String HEADERS = "/headers";
-    protected static final String HEADER_CID = "X-thePlatform-cid";
+    protected static final String HEADER_CID = "X-pop-cid";
 
     static
     {

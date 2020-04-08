@@ -17,5 +17,6 @@
     <modules>
         <module>api</module>
         <module>fabric8</module>
+        <module>test/main</module>
     </modules>
 </project>

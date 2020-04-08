@@ -2,7 +2,7 @@ package com.comcast.pop.endpoint.api.data;
 
 import com.comcast.pop.endpoint.api.ServiceRequest;
 import com.comcast.pop.object.api.IdentifiedObject;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.query.Query;
 
 import java.util.List;
 

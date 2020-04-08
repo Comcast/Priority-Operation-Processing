@@ -1,7 +1,7 @@
 package com.comcast.pop.handler.kubernetes.support.config;
 
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

@@ -8,8 +8,8 @@ import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.object.api.IdentifiedObject;
 import com.comcast.pop.endpoint.api.BadRequestException;
-import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.ObjectPersisterFactory;
+import com.comcast.pop.persistence.api.ObjectPersister;
+import com.comcast.pop.persistence.api.ObjectPersisterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

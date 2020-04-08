@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Fission Endpoint tests" configfailurepolicy="continue">
+<suite name="POP Endpoint tests" configfailurepolicy="continue">
 
-    <test verbose="1" name="Fission Object Endpoint Functional">
+    <test verbose="1" name="POP Object Endpoint Functional">
         <packages>
             <package name="com.comcast.pop.endpoint.test.agenda.*" />
             <package name="com.comcast.pop.endpoint.test.agendatemplate.*" />

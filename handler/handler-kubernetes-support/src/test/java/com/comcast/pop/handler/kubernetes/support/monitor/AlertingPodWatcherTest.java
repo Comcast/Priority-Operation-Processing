@@ -2,18 +2,18 @@ package com.comcast.pop.handler.kubernetes.support.monitor;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.theplatform.dfh.cp.modules.kube.client.LogLineAccumulator;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacade;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.facade.PodResourceFacadeFactory;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.ResetableTimeout;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodWatcherImpl;
-import com.theplatform.dfh.cp.modules.monitor.PropertyLoader;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheckListener;
-import com.theplatform.dfh.cp.modules.monitor.alive.LogAliveCheckListener;
-import com.theplatform.dfh.cp.modules.monitor.metric.LoggingMetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.kube.client.LogLineAccumulator;
+import com.comcast.pop.modules.kube.fabric8.client.facade.PodResourceFacade;
+import com.comcast.pop.modules.kube.fabric8.client.facade.PodResourceFacadeFactory;
+import com.comcast.pop.modules.kube.fabric8.client.follower.ResetableTimeout;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodPhase;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodWatcherImpl;
+import com.comcast.pop.modules.monitor.PropertyLoader;
+import com.comcast.pop.modules.monitor.alive.AliveCheckListener;
+import com.comcast.pop.modules.monitor.alive.LogAliveCheckListener;
+import com.comcast.pop.modules.monitor.metric.LoggingMetricReporterFactory;
+import com.comcast.pop.modules.monitor.metric.MetricLabel;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodStatus;
 import io.fabric8.kubernetes.client.Watch;
@@ -33,7 +33,7 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollowerImpl.LATCH_TIMEOUT;
+import static com.comcast.pop.modules.kube.fabric8.client.follower.PodFollowerImpl.LATCH_TIMEOUT;
 
 public class AlertingPodWatcherTest
 {

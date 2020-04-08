@@ -11,10 +11,10 @@ import com.comast.pop.handler.base.progress.OperationProgressFactory;
 import com.comast.pop.handler.base.resident.BaseResidentHandler;
 import com.comcast.pop.handler.executor.impl.config.ExecutorConfigProperty;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import com.comcast.pop.endpoint.api.agenda.UpdateAgendaRequest;
 import com.comcast.pop.endpoint.api.agenda.UpdateAgendaResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

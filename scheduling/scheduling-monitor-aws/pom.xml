@@ -22,7 +22,6 @@
         <pop-module-version-info.version>1.0.0</pop-module-version-info.version>
         <pop-module-queue-aws-sqs.version>1.0.0</pop-module-queue-aws-sqs.version>
         <pop-aws-base-endpoint.version>1.0.0</pop-aws-base-endpoint.version>
-        <pop-idm-http.version>1.0.0</pop-idm-http.version>
         <pop-monitor.version>1.0.0</pop-monitor.version>
         <pop-monitor-graphite.version>1.0.0</pop-monitor-graphite.version>
         <pop-endpoint-aws.version>1.0.0</pop-endpoint-aws.version>
@@ -30,7 +29,7 @@
     </properties>
 
     <dependencies>
-        <!-- Fission Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.endpoint</groupId>
             <artifactId>pop-endpoint-impl-aws</artifactId>

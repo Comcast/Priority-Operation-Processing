@@ -7,7 +7,7 @@ import com.comcast.pop.api.Agenda;
 import com.comcast.pop.handler.puller.impl.executor.BaseLauncher;
 import com.comcast.pop.handler.puller.impl.executor.LauncherFactory;
 import com.comcast.pop.endpoint.api.resourcepool.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

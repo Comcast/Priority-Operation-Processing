@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.BatchWriteItemRequest;
 import com.amazonaws.services.dynamodbv2.model.BatchWriteItemResult;
 import com.amazonaws.services.dynamodbv2.model.DeleteRequest;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
-import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
+import com.comcast.pop.modules.sync.util.ConsumerResult;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

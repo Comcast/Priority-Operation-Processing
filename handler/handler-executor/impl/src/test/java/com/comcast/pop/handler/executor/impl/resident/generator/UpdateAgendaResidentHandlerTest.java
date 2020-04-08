@@ -10,7 +10,7 @@ import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.processor.operation.generator.ResourcePoolAgendaUpdater;
 import com.comcast.pop.endpoint.api.ErrorResponse;
 import com.comcast.pop.endpoint.api.agenda.UpdateAgendaResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

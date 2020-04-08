@@ -10,7 +10,7 @@
 
     <groupId>com.comcast.pop.module</groupId>
     <artifactId>pop-command-builder</artifactId>
-    <version>1.1.2</version>
+    <version>1.0.0</version>
 
     <build>
         <plugins>
@@ -43,7 +43,7 @@
     <description>Command builder</description>
 
     <properties>
-        <cp-api.version>1.0.0</cp-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -54,9 +54,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.pop</groupId>
+            <groupId>com.comcast.pop.api</groupId>
             <artifactId>pop-api</artifactId>
-            <version>${cp-api.version}</version>
+            <version>${pop-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

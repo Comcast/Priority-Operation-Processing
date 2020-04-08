@@ -48,7 +48,7 @@ public class IgniteAgendaTest extends EndpointTestBase
         return new Object[][]
             {
                 {"Hi!", "{}"}, // no params
-                {"@<fission.payload::/value>", "{\"value\":\"1234\"}"} // a param
+                {"@<pop.payload::/value>", "{\"value\":\"1234\"}"} // a param
             };
     }
 

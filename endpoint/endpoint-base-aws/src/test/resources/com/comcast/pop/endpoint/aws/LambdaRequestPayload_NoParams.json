@@ -1,6 +1,6 @@
 {
-  "resource": "/dfh/idm/progress/agenda/service",
-  "path": "/dfh/idm/progress/agenda/service",
+  "resource": "/pop/progress/agenda/service",
+  "path": "/pop/progress/agenda/service",
   "httpMethod": "POST",
   "headers": {
     "Accept": "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2",
@@ -86,21 +86,19 @@
   },
   "pathParameters": null,
   "stageVariables": {
-    "identityURL": "http://identity.auth.test.corp.theplatform.com",
-    "progressPath": "/dfh/idm/progress/agenda",
-    "agendaPath": "/dfh/idm/agenda",
-    "operationProgressPath": "/dfh/idm/progress/operation"
+    "progressPath": "/pop/progress/agenda",
+    "agendaPath": "/pop/agenda",
+    "operationProgressPath": "/pop/progress/operation"
   },
   "requestContext": {
     "resourceId": "u944hq",
     "authorizer": {
-      "principalId": "user|http://identity.auth.test.corp.theplatform.com/idm/data/User/service/7781533"
     },
-    "resourcePath": "/dfh/idm/progress/agenda/service",
+    "resourcePath": "/pop/progress/agenda/service",
     "httpMethod": "POST",
     "extendedRequestId": "QukjpFQJvHcFs_Q=",
     "requestTime": "21/Nov/2018:19:39:41 +0000",
-    "path": "/dev/dfh/idm/progress/agenda/service",
+    "path": "/dev/pop/progress/agenda/service",
     "accountId": "303027209135",
     "protocol": "HTTP/1.1",
     "stage": "dev",

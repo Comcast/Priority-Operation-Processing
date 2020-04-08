@@ -1,11 +1,11 @@
 package com.comcast.pop.handler.puller.impl.client.agenda;
 
 import com.comcast.pop.api.Agenda;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import com.comcast.pop.endpoint.api.ErrorResponseFactory;
 import com.comcast.pop.endpoint.api.resourcepool.GetAgendaRequest;
 import com.comcast.pop.endpoint.api.resourcepool.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

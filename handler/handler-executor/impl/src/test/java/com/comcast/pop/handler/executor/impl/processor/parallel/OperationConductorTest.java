@@ -13,7 +13,7 @@ import com.comcast.pop.api.progress.CompleteStateMessage;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.progress.ProcessingState;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
+import com.comcast.pop.modules.jsonhelper.replacement.JsonContext;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

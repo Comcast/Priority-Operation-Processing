@@ -192,7 +192,7 @@ public abstract class AbstractLambdaStreamEntry<Res extends ServiceResponse, Req
     {
         // TODO: the request extractor should probably just be static...
         LambdaRequest lambdaRequest = new LambdaRequest(rootRequestNode);
-        String cid = lambdaRequest.getHeader("X-thePlatform-cid");
+        String cid = lambdaRequest.getHeader("X-pop-cid");
         MDC.put(MDC_CID, cid == null ? UUID.randomUUID().toString() : cid);
         MDC.put(MDC_ENDPOINT_NAME, lambdaRequest.getEndpoint());
     }

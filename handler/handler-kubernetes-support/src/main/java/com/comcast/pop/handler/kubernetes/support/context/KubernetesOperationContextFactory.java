@@ -10,8 +10,8 @@ import com.comast.pop.handler.base.reporter.ProgressReporterSet;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactoryImpl;
 import com.comcast.pop.handler.kubernetes.support.reporter.KubernetesReporter;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.Fabric8Helper;
 
 /**
  * Factory that creates a context object for the handler with kubernetes specific support

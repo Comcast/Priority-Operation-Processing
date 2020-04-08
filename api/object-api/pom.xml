@@ -11,6 +11,6 @@
     <artifactId>pop-object-api</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>DFH Object API</name>
+    <name>Object API</name>
 
 </project>

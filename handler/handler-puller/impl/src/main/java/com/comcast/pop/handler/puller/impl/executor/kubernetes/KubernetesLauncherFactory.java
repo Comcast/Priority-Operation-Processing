@@ -11,10 +11,10 @@ import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.api.
 import com.comcast.pop.handler.puller.impl.executor.BaseLauncher;
 import com.comcast.pop.handler.puller.impl.executor.LauncherFactory;
 
-import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.CpuRequestModulator;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

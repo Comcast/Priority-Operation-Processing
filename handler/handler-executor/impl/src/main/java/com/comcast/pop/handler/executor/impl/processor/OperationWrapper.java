@@ -9,7 +9,7 @@ import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.tokens.AgendaToken;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.executor.BaseOperationExecutor;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.ReferenceReplacementResult;
+import com.comcast.pop.modules.jsonhelper.replacement.ReferenceReplacementResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;

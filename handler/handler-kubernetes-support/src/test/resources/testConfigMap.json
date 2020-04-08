@@ -11,7 +11,7 @@
   "sample": {
     "configMapName": "lab-main-t-aor-fhsamp-t01",
     "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhsamp:1.0.0",
+      "imageName": "your.repo.com/fhsamp:1.0.0",
       "namePrefix": "pop-samp",
       "configMapSettings": [
         {
@@ -23,38 +23,6 @@
           ]
         }
       ]
-    }
-  },
-
-  "analysis": {
-    "configMapName": "lab-main-t-aor-fhami-t01",
-    "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhami:1.0.0",
-      "namePrefix": "pop-analysis"
-    }
-  },
-
-  "encode": {
-    "configMapName": "lab-main-t-aor-fheff-t01",
-    "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fheff:1.0.0",
-      "namePrefix": "pop-encode"
-    }
-  },
-
-  "thumbnail": {
-    "configMapName": "lab-main-t-aor-fhtff-t01",
-    "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhtff:1.0.0",
-      "namePrefix": "pop-thumbnail"
-    }
-  },
-
-  "package": {
-    "configMapName": "lab-main-t-aor-fhpkm-t01",
-    "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhpkm:1.0.0",
-      "namePrefix": "pop-package"
     }
   }
 }

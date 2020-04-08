@@ -2,8 +2,8 @@ package com.comcast.pop.handler.kubernetes.support.config;
 
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.factory.OAuthCredentialCapture;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

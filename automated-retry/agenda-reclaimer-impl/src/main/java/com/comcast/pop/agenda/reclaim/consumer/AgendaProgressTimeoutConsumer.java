@@ -1,14 +1,14 @@
 package com.comcast.pop.agenda.reclaim.consumer;
 
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
-import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
-import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
+import com.comcast.pop.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.ConsumerResult;
+import com.comcast.pop.modules.sync.util.InstantUtil;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.CompleteStateMessage;
 import com.comcast.pop.api.progress.DiagnosticEvent;
 import com.comcast.pop.api.progress.ProcessingState;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
-import com.theplatform.dfh.endpoint.client.HttpObjectClient;
+import com.comcast.pop.endpoint.client.HttpObjectClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

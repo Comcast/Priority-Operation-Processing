@@ -5,8 +5,8 @@ import com.comcast.pop.handler.kubernetes.support.monitor.AliveCheckPollerFactor
 import com.comcast.pop.handler.kubernetes.support.monitor.MetricReporterFactory;
 import com.comcast.pop.handler.puller.impl.config.PullerConfig;
 import com.comcast.pop.handler.puller.impl.healthcheck.AliveHealthCheck;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricFilterBuilder;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricFilterBuilder;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import org.slf4j.Logger;

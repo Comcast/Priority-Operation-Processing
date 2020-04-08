@@ -1,6 +1,6 @@
 package com.comast.pop.handler.base.reporter;
 
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

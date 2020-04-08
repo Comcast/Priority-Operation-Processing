@@ -150,7 +150,7 @@ function performRequest(httpVerb, url, data, successFunction){
         headers: {
             'Authorization': "Basic " + btoa(getAccountId() + ":" + getAuthToken()),
             'Content-Type': "application/json",
-            'X-thePlatform-cid': g_requestCid
+            'X-pop-cid': g_requestCid
         },
         success: function (response) {
             toggleSpinner(false);

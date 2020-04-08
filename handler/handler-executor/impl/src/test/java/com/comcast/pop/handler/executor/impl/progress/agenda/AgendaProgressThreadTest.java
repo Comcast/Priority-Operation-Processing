@@ -92,7 +92,7 @@ public class AgendaProgressThreadTest
     @Test
     public void testMultipleProgressToReportOnSameOperation()
     {
-        final String OPERATION_NAME = "thePlatform.encode.1";
+        final String OPERATION_NAME = "pop.encode.1";
         Set<OperationProgressProvider> retrieverSet = createOperationProgressRetrievers(1);
         OperationProgressProvider operationProgressProvider = (OperationProgressProvider)retrieverSet.toArray()[0];
         OperationProgress operationProgress = createOperationProgress(ProcessingState.EXECUTING, OPERATION_NAME);

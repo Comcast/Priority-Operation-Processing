@@ -2,10 +2,10 @@ package com.comcast.pop.endpoint.base.persistence;
 
 import com.comcast.pop.api.DefaultEndpointDataObject;
 import com.comcast.pop.endpoint.base.RequestProcessorUtil;
-import com.theplatform.dfh.persistence.api.DataObjectFeed;
-import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.DataObjectFeed;
+import com.comcast.pop.persistence.api.ObjectPersister;
+import com.comcast.pop.persistence.api.PersistenceException;
+import com.comcast.pop.persistence.api.query.Query;
 
 import java.util.List;
 

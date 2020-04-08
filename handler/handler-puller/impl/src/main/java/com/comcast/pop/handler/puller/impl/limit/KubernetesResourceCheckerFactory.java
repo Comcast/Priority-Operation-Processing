@@ -4,8 +4,8 @@ import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactoryImpl;
 import com.comcast.pop.handler.puller.impl.config.PullerConfig;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.Fabric8Helper;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 

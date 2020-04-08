@@ -2,9 +2,9 @@ package com.comcast.pop.handler.puller.impl.executor.kubernetes;
 
 import com.comcast.pop.handler.puller.impl.CaptureLogger;
 import com.comcast.pop.api.Agenda;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;

@@ -2,11 +2,11 @@ package com.comcast.pop.handler.executor.impl.progress.agenda;
 
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comast.pop.handler.base.reporter.ProgressReporter;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import com.comcast.pop.endpoint.api.ErrorResponse;
 import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressRequest;
 import com.comcast.pop.endpoint.api.resourcepool.UpdateAgendaProgressResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

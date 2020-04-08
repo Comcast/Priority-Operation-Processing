@@ -9,7 +9,7 @@
 
     <groupId>com.comcast.pop.module</groupId>
     <artifactId>pop-kube-client-fabric8</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Kubernetes Client Fabric8 Implementation</name>
 

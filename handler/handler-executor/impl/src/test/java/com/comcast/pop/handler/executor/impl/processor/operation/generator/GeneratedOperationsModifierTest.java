@@ -9,7 +9,7 @@ import com.comcast.pop.api.operation.Operation;
 import com.comcast.pop.api.params.ParamsMap;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
 import com.comast.pop.handler.base.field.retriever.properties.PropertyRetriever;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

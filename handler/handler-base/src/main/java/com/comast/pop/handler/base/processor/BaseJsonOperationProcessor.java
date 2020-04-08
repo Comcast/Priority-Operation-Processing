@@ -5,7 +5,7 @@ import com.comast.pop.handler.base.translator.JsonPayloadTranslator;
 import com.comast.pop.handler.base.translator.PayloadTranslationResult;
 import com.comcast.pop.api.progress.DiagnosticEvent;
 import com.comast.pop.handler.base.context.ProgressOperationContext;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;

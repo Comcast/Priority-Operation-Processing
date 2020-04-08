@@ -5,16 +5,16 @@ import com.comcast.pop.api.Agenda;
 import com.comcast.pop.api.AgendaInsight;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.PodPushClient;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodFollowerFactory;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactory;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.follower.PodFollower;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.kube.client.CpuRequestModulator;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.fabric8.client.PodPushClient;
+import com.comcast.pop.modules.kube.fabric8.client.factory.PodFollowerFactory;
+import com.comcast.pop.modules.kube.fabric8.client.factory.PodPushClientFactory;
+import com.comcast.pop.modules.kube.fabric8.client.factory.PodPushClientFactoryImpl;
+import com.comcast.pop.modules.kube.fabric8.client.follower.PodFollower;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +128,8 @@ public class KubernetesLauncher implements BaseLauncher
             agendaInsight.getInsightId() != null
             && agendaInsight.getResourcePoolId() != null)
         {
-            labels.put(KubernetesFissionConstants.EXECEUTOR_INSIGHT_LABEL, agendaInsight.getInsightId());
-            labels.put(KubernetesFissionConstants.EXECEUTOR_RESOURCEPOOL_LABEL, agendaInsight.getResourcePoolId());
+            labels.put(KubernetesConstants.EXECEUTOR_INSIGHT_LABEL, agendaInsight.getInsightId());
+            labels.put(KubernetesConstants.EXECEUTOR_RESOURCEPOOL_LABEL, agendaInsight.getResourcePoolId());
         }
         podConfig.setLabels(labels);
     }

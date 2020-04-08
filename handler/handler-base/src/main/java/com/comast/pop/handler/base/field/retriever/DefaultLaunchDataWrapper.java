@@ -8,8 +8,8 @@ import com.comast.pop.handler.base.field.retriever.environment.EnvironmentFieldR
 import com.comast.pop.handler.base.field.retriever.properties.PropertyRetriever;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comast.pop.handler.base.field.api.HandlerField;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelperException;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,7 +3,7 @@ package com.comcast.pop.handler.kubernetes.support.payload.compression;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
 import com.comast.pop.handler.base.field.retriever.environment.EnvironmentFieldRetriever;
 import com.comast.pop.handler.base.field.retriever.environment.EnvironmentVariableProvider;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

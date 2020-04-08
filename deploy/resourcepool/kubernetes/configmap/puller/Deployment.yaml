@@ -5,7 +5,7 @@ metadata:
   labels:
     app: cppull
   name: pop-puller-01
-  namespace: fission
+  namespace: pop
 spec:
   progressDeadlineSeconds: 2147483647
   replicas: 1
@@ -21,7 +21,7 @@ spec:
       labels:
         app: cppull
       name: pop-puller-01
-      namespace: fission
+      namespace: pop
     spec:
       containers:
       - env:

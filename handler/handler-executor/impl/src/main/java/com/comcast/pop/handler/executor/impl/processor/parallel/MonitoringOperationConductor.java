@@ -3,8 +3,8 @@ package com.comcast.pop.handler.executor.impl.processor.parallel;
 import com.codahale.metrics.Timer;
 import com.comcast.pop.api.operation.Operation;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricLabel;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 
 import java.util.Collection;
 

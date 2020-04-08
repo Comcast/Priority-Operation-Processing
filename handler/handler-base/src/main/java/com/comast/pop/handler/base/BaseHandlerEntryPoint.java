@@ -12,7 +12,7 @@ import com.comast.pop.handler.base.log.HandlerReporterImpl;
 import com.comast.pop.handler.base.messages.HandlerMessages;
 import com.comast.pop.handler.base.processor.HandlerMetadata;
 import com.comast.pop.handler.base.processor.HandlerProcessor;
-import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
+import com.comcast.pop.version.info.ServiceBuildPropertiesContainer;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

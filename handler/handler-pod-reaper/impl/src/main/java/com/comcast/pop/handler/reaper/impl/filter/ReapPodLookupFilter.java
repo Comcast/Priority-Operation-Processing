@@ -1,11 +1,11 @@
 package com.comcast.pop.handler.reaper.impl.filter;
 
-import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
-import com.theplatform.com.dfh.modules.sync.util.Producer;
-import com.theplatform.com.dfh.modules.sync.util.ProducerResult;
+import com.comcast.pop.modules.sync.util.InstantUtil;
+import com.comcast.pop.modules.sync.util.Producer;
+import com.comcast.pop.modules.sync.util.ProducerResult;
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacade;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.watcher.PodPhase;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.FinalPodPhaseInfo;
+import com.comcast.pop.modules.kube.fabric8.client.watcher.PodPhase;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

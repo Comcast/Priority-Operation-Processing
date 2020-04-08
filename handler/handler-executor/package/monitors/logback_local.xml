@@ -13,7 +13,6 @@
     <logger name="org.springframework" level="ERROR" />
     <logger name="org.apache" level="ERROR" />
     <logger name="httpclient.wire.header" level="ERROR" />
-    <logger name="com.theplatform.web.marshalling" level="ERROR" />
     <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
 
     <root level="${LOG_LEVEL:-INFO}">

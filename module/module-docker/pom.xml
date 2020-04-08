@@ -13,7 +13,7 @@
     <artifactId>pop-docker</artifactId>
     <version>1.0.0</version>
 
-    <name>DFH Docker Module</name>
+    <name>POP Docker Module</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

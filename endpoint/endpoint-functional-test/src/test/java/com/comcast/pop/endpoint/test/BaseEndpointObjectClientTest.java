@@ -4,10 +4,10 @@ import com.comcast.pop.endpoint.api.ValidationException;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.test.base.EndpointTestBase;
 import com.comcast.pop.api.DefaultEndpointDataObject;
-import com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.endpoint.client.HttpObjectClient;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient;
+import com.comcast.pop.http.api.HttpURLConnectionFactory;
+import com.comcast.pop.endpoint.client.HttpObjectClient;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -122,7 +122,6 @@ public abstract class BaseEndpointObjectClientTest<T extends DefaultEndpointData
         verifyError(response, 404, "ObjectNotFoundException");
     }
 
-    // DFH-3914
     @Test
     public void testPutWithoutIdInBody()
     {

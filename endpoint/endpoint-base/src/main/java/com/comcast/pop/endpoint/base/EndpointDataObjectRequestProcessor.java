@@ -4,7 +4,7 @@ import com.comcast.pop.api.DefaultEndpointDataObject;
 import com.comcast.pop.endpoint.base.persistence.EndpointDataObjectPersister;
 import com.comcast.pop.endpoint.base.validation.DataObjectValidator;
 import com.comcast.pop.endpoint.api.data.DataObjectRequest;
-import com.theplatform.dfh.persistence.api.ObjectPersister;
+import com.comcast.pop.persistence.api.ObjectPersister;
 
 /**
  * DefaultEndpointDataObject specific request processor. This wraps the incoming object persister.

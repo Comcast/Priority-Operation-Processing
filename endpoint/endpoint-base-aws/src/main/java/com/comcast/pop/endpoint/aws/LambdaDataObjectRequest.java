@@ -5,7 +5,7 @@ import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
 import com.comcast.pop.object.api.IdentifiedObject;
 import com.comcast.pop.endpoint.api.BadRequestException;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

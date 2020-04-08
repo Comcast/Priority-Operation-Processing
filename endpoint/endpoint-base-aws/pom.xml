@@ -65,7 +65,7 @@
             <artifactId>aws-java-sdk-kms</artifactId>
             <version>${aws.java.jdk}</version>
         </dependency>
-        <!-- Fission Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.endpoint</groupId>
             <artifactId>pop-endpoint-base</artifactId>

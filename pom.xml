@@ -8,7 +8,7 @@
     <version>1.0.7</version>
 
     <packaging>pom</packaging>
-    <name>Parent project for Fission</name>
+    <name>Parent project for POP</name>
 
     <properties>
         <testng.version>6.9.10</testng.version>

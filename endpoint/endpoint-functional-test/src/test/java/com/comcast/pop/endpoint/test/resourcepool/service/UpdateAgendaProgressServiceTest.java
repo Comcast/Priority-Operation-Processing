@@ -7,7 +7,7 @@ import com.comcast.pop.endpoint.test.factory.DataGenerator;
 import com.comcast.pop.api.AgendaInsight;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.endpoint.test.base.EndpointTestBase;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

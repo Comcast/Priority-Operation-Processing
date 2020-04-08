@@ -1,0 +1,294 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "POPPolicySQSEditor": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "CustomerManaged-POP.SQSEditor",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:ChangeMessage*",
+                "sqs:GetQueue*",
+                "sqs:*Message",
+                "sqs:*MessageBatch"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "POPRoleUnified"
+          },
+          {
+            "Ref": "POPRoleScheduler"
+          }
+        ]
+      }
+    },
+    "POPPolicyDynamoDBEditor": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "CustomerManaged-POP.DynamoDBEditor",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:*Table",
+                "dynamodb:*Item",
+                "dynamodb:Get*",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:DescribeStream",
+                "dynamodb:Put*",
+                "dynamodb:List*"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "POPRoleUnified"
+          },
+          {
+            "Ref": "POPRoleScheduler"
+          },
+          {
+            "Ref": "POPRoleCallbackTrigger"
+          },
+          {
+            "Ref": "POPRoleReclaimer"
+          },
+          {
+            "Ref": "POPRoleReaper"
+          }
+        ]
+      }
+    },
+    "POPPolicyLambdaLauncher": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "CustomerManaged-POP.LambdaLauncher",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "lambda:InvokeFunction",
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "POPRoleScheduler"
+          }
+        ]
+      }
+    },
+    "POPPolicyKinesis": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "CustomerManaged-POP.Kinesis",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:ListStreams",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "POPRoleScheduler"
+          }
+        ]
+      }
+    },
+    "POPRoleUnified": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.UnifiedEndpoint.app"
+      }
+    },
+    "POPRoleScheduler": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.Scheduler.app"
+      }
+    },
+    "POPRoleCallbackTrigger": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.Callback.trigger"
+      }
+    },
+    "POPRoleReclaimer": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.Reclaimer.app"
+      }
+    },
+    "POPRoleRetry": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.Retry.app"
+      }
+    },
+    "POPRoleReaper": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.Reaper.app"
+      }
+    },
+    "POPRoleAuthorizer": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "RoleName": "POP.authorizer",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+        ]
+      }
+    }
+  }
+}

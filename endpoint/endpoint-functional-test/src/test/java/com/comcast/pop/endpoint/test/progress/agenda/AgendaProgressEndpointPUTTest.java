@@ -5,7 +5,7 @@ import com.comcast.pop.api.params.GeneralParamKey;
 import com.comcast.pop.api.params.ParamsMap;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.ProcessingState;
-import com.theplatform.dfh.http.util.URLRequestPerformer;
+import com.comcast.pop.http.util.URLRequestPerformer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

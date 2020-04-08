@@ -1,7 +1,7 @@
 package com.comcast.pop.reaper.objects.aws.factory;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.Consumer;
 import com.comcast.pop.reaper.objects.aws.config.DataObjectReaperConfig;
 import com.comcast.pop.reaper.objects.aws.dynamo.BatchedDeleter;
 

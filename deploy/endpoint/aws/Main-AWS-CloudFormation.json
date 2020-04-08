@@ -1,0 +1,5973 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "API Gateway"
+          },
+          "Parameters": [
+            "ApiGatewayName",
+            "ApiStageEnv"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Data Tables"
+          },
+          "Parameters": [
+            "TableNameReadyAgenda",
+            "TableNameAgenda",
+            "TableNameAgendaTemplate",
+            "TableNameResourcePool",
+            "TableNameTransformRequest",
+            "TableNameProgressAgenda",
+            "TableNameProgressOperation",
+            "TableNameCustomer",
+            "TableNameInsight",
+            "TableNameInsightScheduling"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Lambdas"
+          },
+          "Parameters": [
+            "LambdaRefPathPOPAuthorizer",
+            "LambdaRefPathUnified",
+            "LambdaRefPathRetryCallback",
+            "LambdaRefPathSchedulingMaster",
+            "LambdaRefPathSchedulingQueue",
+            "LambdaRefPathSchedulingMonitor",
+            "LambdaRefPathDataObjectReaper",
+            "LambdaRefPathAgendaReclaimer"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Roles"
+          },
+          "Parameters": [
+            "AuthorizerRole",
+            "CallbackRole",
+            "SchedulerRole",
+            "ReaperRole",
+            "UnifiedEndpointRole",
+            "ReclaimerRole"
+          ]
+        }
+      ]
+    }
+  },
+  "Parameters": {
+    "ApiGatewayName": {
+      "Type": "String",
+      "Default": "POP-API"
+    },
+    "ApiStageEnv": {
+      "Type": "String",
+      "Default": "dev"
+    },
+    "TagOwner": {
+      "Type": "String",
+      "Default": "POP"
+    },
+    "TagServiceCode": {
+      "Type": "String",
+      "Default": "POPAPI"
+    },
+    "TableNameReadyAgenda": {
+      "Type": "String",
+      "Default": "POP-ReadyAgenda"
+    },
+    "TableNameAgenda": {
+      "Type": "String",
+      "Default": "POP-Agenda"
+    },
+    "TableNameAgendaTemplate": {
+      "Type": "String",
+      "Default": "POP-AgendaTemplate"
+    },
+    "TableNameResourcePool": {
+      "Type": "String",
+      "Default": "POP-ResourcePool"
+    },
+    "TableNameTransformRequest": {
+      "Type": "String",
+      "Default": "POP-TransformRequest"
+    },
+    "TableNameProgressAgenda": {
+      "Type": "String",
+      "Default": "POP-ProgressAgenda"
+    },
+    "TableNameProgressOperation": {
+      "Type": "String",
+      "Default": "POP-ProgressOperation"
+    },
+    "TableNameCustomer": {
+      "Type": "String",
+      "Default": "POP-Customer"
+    },
+    "TableNameInsight": {
+      "Type": "String",
+      "Default": "POP-Insight"
+    },
+    "TableNameInsightScheduling": {
+      "Type": "String",
+      "Default": "POP-InsightScheduling"
+    },
+    "S3DeployBucket": {
+      "Type": "String",
+      "Default": "pop"
+    },
+    "AuthorizerRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.authorizer"
+    },    
+    "CallbackRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Callback.trigger"
+    },
+    "SchedulerRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Scheduler.app"
+    },
+    "ReaperRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Reaper.app"
+    },
+    "UnifiedEndpointRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.UnifiedEndpoint.app"
+    },
+    "ReclaimerRole": {
+      "Type": "String",
+      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Reclaimer.app"
+    },
+    "LambdaRefPathPOPAuthorizer": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-authorizer-sample-aws-1.0.0.zip"
+    },    
+    "LambdaRefPathUnified": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-endpoint-impl-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathRetryCallback": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-callback-progress-retry-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathSchedulingMaster": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-scheduling-master-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathSchedulingQueue": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-scheduling-queue-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathSchedulingMonitor": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-scheduling-monitor-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathDataObjectReaper": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-data-object-reaper-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    },
+    "LambdaRefPathAgendaReclaimer": {
+      "Type": "String",
+      "Default": "pop-deploy/pop-agenda-reclaimer-aws-1.0.0-lambda_deployment_package_assembly.zip"
+    }
+  },
+  "Resources": {
+    "Unified": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.endpoint.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathUnified"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": {
+          "Ref": "UnifiedEndpointRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPUnifiedEndpoint"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Unified endpoint lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "DB_TABLE_AGENDA": {
+              "Ref": "TableNameAgenda"
+            },
+            "DB_TABLE_AGENDA_TEMPLATE": {
+              "Ref": "TableNameAgendaTemplate"
+            },
+            "DB_TABLE_AGENDA_PROGRESS": {
+              "Ref": "TableNameProgressAgenda"
+            },
+            "DB_TABLE_OPERATION_PROGRESS": {
+              "Ref": "TableNameProgressOperation"
+            },
+            "DB_TABLE_TRANSFORM": {
+              "Ref": "TableNameTransformRequest"
+            },
+            "DB_TABLE_READY_AGENDA": {
+              "Ref": "TableNameReadyAgenda"
+            },
+            "DB_TABLE_RESOURCE_POOL": {
+              "Ref": "TableNameResourcePool"
+            },
+            "DB_TABLE_CUSTOMER": {
+              "Ref": "TableNameCustomer"
+            },
+            "DB_TABLE_INSIGHT": {
+              "Ref": "TableNameInsight"
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "AgendaDynamoDB",
+        "ResourcePoolDynamoDB",
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB",
+        "TransformReqDynamoDB",
+        "ResourcePoolDynamoDB",
+        "InsightDynamoDB",
+        "CustomerDynamoDB"
+      ]
+    },
+    "ResourcePoolUnified": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathUnified"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": {
+          "Ref": "UnifiedEndpointRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPResourcePoolUnifiedEndpoint"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP ResourcePool Unified endpoint lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "DB_TABLE_AGENDA": {
+              "Ref": "TableNameAgenda"
+            },
+            "DB_TABLE_AGENDA_TEMPLATE": {
+              "Ref": "TableNameAgendaTemplate"
+            },
+            "DB_TABLE_AGENDA_PROGRESS": {
+              "Ref": "TableNameProgressAgenda"
+            },
+            "DB_TABLE_OPERATION_PROGRESS": {
+              "Ref": "TableNameProgressOperation"
+            },
+            "DB_TABLE_READY_AGENDA": {
+              "Ref": "TableNameReadyAgenda"
+            },
+            "DB_TABLE_RESOURCE_POOL": {
+              "Ref": "TableNameResourcePool"
+            },
+            "DB_TABLE_CUSTOMER": {
+              "Ref": "TableNameCustomer"
+            },
+            "DB_TABLE_INSIGHT": {
+              "Ref": "TableNameInsight"
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "AgendaDynamoDB",
+        "ResourcePoolDynamoDB",
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB",
+        "ResourcePoolDynamoDB",
+        "InsightDynamoDB",
+        "CustomerDynamoDB"
+      ]
+    },
+    "ReadyAgendaDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "insightId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "added",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "insightIdCustomerIdComposite",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "insightid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "insightId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "insightid_added_index",
+            "KeySchema": [
+              {
+                "AttributeName": "insightId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "added",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "insightIdCustomerIdComposite_added_index",
+            "KeySchema": [
+              {
+                "AttributeName": "insightIdCustomerIdComposite",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "added",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerId_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "insightId_customerId_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "insightId",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameReadyAgenda"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPReadyAgendaDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Ready Agenda dynamodb storage"
+          }
+        ]
+      }
+    },
+    "AgendaDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "linkId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "linkid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "linkId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameAgenda"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPAgendaDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Agenda dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "ReadyAgendaDynamoDB"
+      ]
+    },
+    "AgendaTemplateDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameAgendaTemplate"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPAgendaDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Agenda Template dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "AgendaDynamoDB"
+      ]
+    },
+    "ResourcePoolDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameResourcePool"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPResourcePoolDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP ResourcePool dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "AgendaDynamoDB"
+      ]
+    },
+    "CustomerDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "resourcePoolId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "resourcepoolid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "resourcePoolId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameCustomer"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPCustomerDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Customer dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "ResourcePoolDynamoDB"
+      ]
+    },
+    "InsightDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "resourcePoolId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "resourcepoolid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "resourcePoolId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameInsight"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPInsightDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Insight dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "CustomerDynamoDB"
+      ]
+    },
+    "InsightSchedulingDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameInsightScheduling"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPInsightSchedulingDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Insight Scheduling dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "InsightDynamoDB"
+      ]
+    },
+    "ProgressAgendaDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "linkId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "linkid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "linkId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameProgressAgenda"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPProgressDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Progress dynamodb storage"
+          }
+        ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        }
+      },
+      "DependsOn": [
+        "InsightSchedulingDynamoDB"
+      ]
+    },
+    "ProgressOperationDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "agendaProgressId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "agendaprogressid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "agendaProgressId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameProgressOperation"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPProgressOperationDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Progress Operation dynamodb storage"
+          }
+        ]
+      },
+      "DependsOn": [
+        "ProgressAgendaDynamoDB"
+      ]
+    },
+    "TransformReqDynamoDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "linkId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "customerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "title",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "linkid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "linkId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "customerid_index",
+            "KeySchema": [
+              {
+                "AttributeName": "customerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          },
+          {
+            "IndexName": "title_index",
+            "KeySchema": [
+              {
+                "AttributeName": "title",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "TableNameTransformRequest"
+              },
+              "-",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPTransformReqDB"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Transform Request dynamodb storage"
+          }
+        ]
+      }
+    },
+    "RetryCallback": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.callback.progress.retry.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathRetryCallback"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 300,
+        "Role": {
+          "Ref": "CallbackRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPRetryCallback"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Retry Callback endpoint lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "AGENDA_PROGRESS_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com",
+                  "/",
+                  {
+                    "Ref": "ApiStageEnv"
+                  },
+                  "/pop/idm/progress/agenda"
+                ]
+              ]
+            },
+            "AGENDA_CLIENT_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com",
+                  "/",
+                  {
+                    "Ref": "ApiStageEnv"
+                  },
+                  "/pop/agenda/service"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB"
+      ]
+    },
+    "SchedulingMaster": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.scheduling.master.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathSchedulingMaster"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": {
+          "Ref": "SchedulerRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPSchedulingMaster"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Scheduling Master lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "RESOURCEPOOL_ENDPOINT_PATH": "/pop/resourcepool",
+            "RESOURCEPOOL_LAMBDA_LAUNCH_LIST": {
+              "Fn::Join": [
+                ",",
+                [
+                  {
+                    "Ref": "SchedulingQueue"
+                  },
+                  {
+                    "Ref": "SchedulingMonitor"
+                  }
+                ]
+              ]
+            },
+            "ENDPOINT_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "ResourcePoolDynamoDB"
+      ]
+    },
+    "SchedulingQueue": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.scheduling.queue.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathSchedulingQueue"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": {
+          "Ref": "SchedulerRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPSchedulingQueue"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Scheduling Queue lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "CUSTOMER_ENDPOINT_PATH": "/pop/customer",
+            "INSIGHT_ENDPOINT_PATH": "/pop/insight",
+            "RESOURCEPOOL_ENDPOINT_PATH": "/pop/resourcepool",
+            "INSIGHT_SCHEDULING_INFO_TABLE": {
+              "Ref": "TableNameInsightScheduling"
+            },
+            "READY_AGENDA_TABLE": {
+              "Ref": "TableNameReadyAgenda"
+            },
+            "ENDPOINT_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB"
+      ]
+    },
+    "SchedulingMonitor": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.scheduling.monitor.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathSchedulingMonitor"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": {
+          "Ref": "SchedulerRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPSchedulingMonitor"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Scheduling Monitor lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "INSIGHT_ENDPOINT_PATH": "/pop/insight",
+            "RESOURCEPOOL_ENDPOINT_PATH": "/pop/resourcepool",
+            "INSIGHT_SCHEDULING_INFO_TABLE": {
+              "Ref": "TableNameInsightScheduling"
+            },
+            "READY_AGENDA_TABLE": {
+              "Ref": "TableNameReadyAgenda"
+            },
+            "ENDPOINT_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB"
+      ]
+    },
+    "DataObjectReaper": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.reaper.objects.aws.AWSDataObjectReaperEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathDataObjectReaper"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 180,
+        "Role": {
+          "Ref": "ReaperRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPDataObjectReaper"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Data Object Reaper Lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {}
+        }
+      },
+      "DependsOn": [
+        "AgendaDynamoDB",
+        "ProgressAgendaDynamoDB",
+        "ProgressOperationDynamoDB",
+        "TransformReqDynamoDB"
+      ]
+    },
+    "AgendaReclaimer": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "com.comcast.pop.agenda.reclaim.aws.AWSDataObjectReaperEntry::handleRequest",
+        "Runtime": "java8",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathAgendaReclaimer"
+          }
+        },
+        "Description": "",
+        "MemorySize": 512,
+        "Timeout": 240,
+        "Role": {
+          "Ref": "ReclaimerRole"
+        },
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": {
+              "Ref": "TagOwner"
+            }
+          },
+          {
+            "Key": "ServiceCode",
+            "Value": {
+              "Ref": "TagServiceCode"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "POPAgendaReclaimer"
+          },
+          {
+            "Key": "Info",
+            "Value": "POP Agenda Reclaimer Lambda"
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            "AGENDA_PROGRESS_URL": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "RestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com",
+                  "/",
+                  {
+                    "Ref": "ApiStageEnv"
+                  },
+                  "/pop/progress/agenda"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "DependsOn": [
+        "RestApi"
+      ]
+    },
+    "DataObjectReaperLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DataObjectReaper"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "AgendaReclaimerLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgendaReclaimer"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "RetryCallbackLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "RetryCallback"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "POPAuthorizerLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "POPAuthorizerLambda"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },    
+    "SchedulingMasterLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SchedulingMaster"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "SchedulingQueueLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SchedulingQueue"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "SchedulingMonitorLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SchedulingMonitor"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "UnifiedLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "Unified"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "ResourcePoolUnifiedLambdaAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ResourcePoolUnified"
+        },
+        "FunctionVersion": "$LATEST",
+        "Name": {
+          "Ref": "ApiStageEnv"
+        }
+      }
+    },
+    "RetryCallbackEventSourceMappingDynamoDB": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": "20",
+        "Enabled": true,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "ProgressAgendaDynamoDB",
+            "StreamArn"
+          ]
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "RetryCallback",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "StartingPosition": "LATEST"
+      },
+      "DependsOn": [
+        "RetryCallback",
+        "ProgressAgendaDynamoDB"
+      ]
+    },
+    "RestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": {
+          "Ref": "ApiGatewayName"
+        }
+      }
+    },
+    "POPAuthorizerLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3DeployBucket"
+          },
+          "S3Key": {
+            "Ref": "LambdaRefPathPOPAuthorizer"
+          }
+        },
+        "MemorySize": 256,
+        "Role": {
+          "Ref": "AuthorizerRole"
+        },
+        "Handler": "com.comcast.pop.auth.aws.AWSLambdaStreamEntry::handleRequest",
+        "Runtime": "java8",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "POP_USER_ID": "123456",
+            "POP_USER": "pop_admin",
+            "POP_ACCOUNTS": "*"
+          }
+        }
+      }
+    },
+    "POPAuthorizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "Name": "POPAuthorizer",
+        "Type": "REQUEST",
+        "AuthorizerResultTtlInSeconds": "0",
+        "AuthorizerUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "POPAuthorizerLambda",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              },
+              "/invocations"
+            ]
+          ]
+        },
+        "IdentitySource": "method.request.header.Authorization",
+        "RestApiId": {
+          "Ref": "RestApi"
+        }
+      }
+    },    
+    "RootApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "RestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "pop"
+      }
+    },
+    "AgendaTemplateApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "agendatemplate"
+      }
+    },
+    "AgendaTemplateApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "AgendaTemplateApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "AgendaTemplateMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaTemplateApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "AgendaTemplateMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaTemplateApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "AgendaTemplateMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaTemplateApiResource"
+        },
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true,
+          "method.request.querystring.limit": false,
+          "method.request.querystring.next": false
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ]
+      }
+    },
+    "AgendaTemplateMethodObjectID": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaTemplateApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "CustomerApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "customer"
+      }
+    },
+    "CustomerApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "CustomerApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "CustomerMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "CustomerApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "CustomerMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "CustomerApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "CustomerMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "CustomerApiResource"
+        },
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true,
+          "method.request.querystring.limit": false,
+          "method.request.querystring.next": false
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ]
+      }
+    },
+    "CustomerMethodObjectID": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "CustomerApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "InsightApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "insight"
+      }
+    },
+    "InsightApiResourceANY": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "InsightApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "InsightMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "InsightApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "InsightMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "InsightApiResourceANY"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "InsightMethodPOST": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "InsightApiResource"
+        },
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true,
+          "method.request.querystring.limit": false,
+          "method.request.querystring.next": false
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ]
+      }
+    },
+    "InsightMethodANY": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "InsightApiResourceANY"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ResourcePoolApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "resourcepool"
+      }
+    },
+    "ResourcePoolApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "ResourcePoolMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ResourcePoolMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ResourcePoolMethodPOST": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolApiResource"
+        },
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true,
+          "method.request.querystring.limit": false,
+          "method.request.querystring.next": false
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ]
+      }
+    },
+    "ResourcePoolMethodANY": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "TransformReqApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "transform"
+      }
+    },
+    "TransformReqApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "TransformReqApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "TransformReqMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "TransformReqApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "TransformReqMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "TransformReqApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "TransformReqMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "TransformReqApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "TransformReqMethodObjectID": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "TransformReqApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "AgendaApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "agenda"
+      }
+    },
+    "AgendaApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "AgendaApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "AgendaServiceApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "AgendaApiResource"
+        },
+        "PathPart": "service"
+      }
+    },
+    "AgendaServiceIgniteApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "AgendaServiceApiResource"
+        },
+        "PathPart": "ignite"
+      }
+    },
+    "AgendaServiceReigniteApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "AgendaServiceApiResource"
+        },
+        "PathPart": "reignite"
+      }
+    },
+    "ResourcePoolServiceApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolApiResource"
+        },
+        "PathPart": "service"
+      }
+    },
+    "ResourcePoolServiceCreateAgendaApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolServiceApiResource"
+        },
+        "PathPart": "createAgenda"
+      }
+    },
+    "ResourcePoolServiceGetAgendaApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolServiceApiResource"
+        },
+        "PathPart": "getAgenda"
+      }
+    },
+    "ResourcePoolServiceUpdateAgendaProgressApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolServiceApiResource"
+        },
+        "PathPart": "updateAgendaProgress"
+      }
+    },
+    "ResourcePoolServiceUpdateAgendaApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ResourcePoolServiceApiResource"
+        },
+        "PathPart": "updateAgenda"
+      }
+    },
+    "AgendaMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "AgendaMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "AgendaMethodObjectID": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "AgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "AgendaServiceIgniteAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaServiceIgniteApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "IgniteMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaServiceIgniteApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "AgendaServiceReigniteAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaServiceReigniteApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ReigniteMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "AgendaServiceReigniteApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ResourcePoolServiceCreateAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolServiceCreateAgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResourcePoolUnified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ResourcePoolServiceUpdateAgendaProgressMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolServiceUpdateAgendaProgressApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResourcePoolUnified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ResourcePoolServiceUpdateAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolServiceUpdateAgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResourcePoolUnified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ResourcePoolServiceGetAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourcePoolServiceGetAgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ResourcePoolUnified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ProgressApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "RootApiResource"
+        },
+        "PathPart": "progress"
+      }
+    },
+    "ProgressAgendaApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ProgressApiResource"
+        },
+        "PathPart": "agenda"
+      }
+    },
+    "ProgressAgendaServiceApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ProgressAgendaApiResource"
+        },
+        "PathPart": "service"
+      }
+    },
+    "ProgressAgendaApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ProgressAgendaApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "ProgressAgendaMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressAgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ProgressAgendaMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressAgendaApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ProgressAgendaMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressAgendaApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ProgressOperationApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ProgressApiResource"
+        },
+        "PathPart": "operation"
+      }
+    },
+    "ProgressOperationApiResourceObjectID": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Ref": "ProgressOperationApiResource"
+        },
+        "PathPart": "{objectid}"
+      }
+    },
+    "ProgressOperationMethodOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressOperationApiResource"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ProgressOperationMethodObjectIDOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "OPTIONS",
+        "AuthorizationType": "NONE",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressOperationApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Expose-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            }
+          }
+        ],
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'X-pop-cid,Origin,Accept,Content-Type,Authorization'",
+                "method.response.header.Access-Control-Expose-Headers": "'Access-Control-Allow-Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": 200
+            }
+          ]
+        }
+      }
+    },
+    "ProgressOperationMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressOperationApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ProgressOperationMethodObjectID": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressOperationApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ProgressAgendaServiceMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressAgendaServiceApiResource"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      }
+    },
+    "ProgressAgendaMethodObjectId": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "ANY",
+        "AuthorizationType": "Custom",
+        "AuthorizerId": {
+          "Ref": "POPAuthorizer"
+        },
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ProgressAgendaApiResourceObjectID"
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "StatusCode": 200
+          }
+        ],
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "Unified",
+                    "Arn"
+                  ]
+                },
+                ":${stageVariables.lambdaAlias}/invocations"
+              ]
+            ]
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "StatusCode": 200
+            }
+          ]
+        },
+        "RequestParameters": {
+          "method.request.header.Authorization": true
+        }
+      },
+      "DependsOn": [
+        "ProgressAgendaMethod"
+      ]
+    },
+    "ApiDeployment": {
+      "DependsOn": [
+        "CustomerMethod",
+        "CustomerMethodObjectID",
+        "InsightMethodANY",
+        "ResourcePoolMethodANY",
+        "TransformReqMethod",
+        "TransformReqMethodObjectID",
+        "AgendaMethodObjectID",
+        "ProgressOperationMethod",
+        "ProgressOperationMethodObjectID",
+        "ProgressAgendaServiceMethod",
+        "ProgressAgendaMethodObjectId",
+        "ProgressAgendaMethod",
+        "AgendaMethod",
+        "AgendaServiceIgniteAgendaMethod",
+        "AgendaServiceReigniteAgendaMethod",
+        "ResourcePoolServiceCreateAgendaMethod",
+        "ResourcePoolServiceUpdateAgendaProgressMethod",
+        "ResourcePoolServiceUpdateAgendaMethod",
+        "ResourcePoolServiceGetAgendaMethod",
+        "AgendaMethodObjectID"
+      ],
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "Description": "Priority Operation Processing Deployment"
+      }
+    },
+    "ApiStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "CacheClusterEnabled": false,
+        "DeploymentId": {
+          "Ref": "ApiDeployment"
+        },
+        "Description": "Staging deployment",
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "StageName": {
+          "Ref": "ApiStageEnv"
+        },
+        "Variables": {
+          "serviceName": "POP Service",
+          "lambdaAlias": {
+            "Ref": "ApiStageEnv"
+          }
+        }
+      }
+    },
+    "ReclaimerCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "ScheduledRule",
+        "ScheduleExpression": "rate(5 minutes)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "AgendaReclaimer",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\"maximumExecutionSeconds\": 220,",
+                  "\"idFieldName\": \"id\",",
+                  "\"objectScanLimit\": 50,",
+                  "\"reclaimAgeMinutes\": 5,",
+                  "\"scanDelayMillis\": 500,",
+                  "\"tableName\":",
+                  "\"",
+                  {
+                    "Ref": "TableNameProgressAgenda"
+                  },
+                  "-",
+                  {
+                    "Ref": "ApiStageEnv"
+                  },
+                  "\",",
+                  "\"targetBatchSize\": 50,",
+                  "\"timeFieldName\": \"updatedTime\"",
+                  "}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ReclaimerLambdaStageAliasInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AgendaReclaimer"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "ReclaimerCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "SchedulingMasterCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "ScheduledRule",
+        "ScheduleExpression": "rate(1 minute)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "SchedulingMaster",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{\"stageId\":\"",
+                  {
+                    "Ref": "ApiStageEnv"
+                  },
+                  "\"}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SchedulingMasterLambdaStageAliasInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "SchedulingMaster"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "SchedulingMasterCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "ProgressAgendaReaperCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Progress Agenda Reaper Rule",
+        "ScheduleExpression": "rate(4 hours)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "DataObjectReaper",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{",
+                  "\"deleteCallDelayMillis\": 500,",
+                  "\"idFieldName\": \"id\",",
+                  "\"maximumExecutionSeconds\": 120,",
+                  "\"objectScanLimit\": 25,",
+                  "\"reapAgeMinutes\": 4320,",
+                  "\"scanDelayMillis\": 500,",
+                  "\"tableName\":",
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "\"",
+                        {
+                          "Ref": "TableNameProgressAgenda"
+                        },
+                        "-",
+                        {
+                          "Ref": "ApiStageEnv"
+                        },
+                        "\","
+                      ]
+                    ]
+                  },
+                  "\"targetBatchSize\": 50,",
+                  "\"timeFieldName\": \"updatedTime\"",
+                  "}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ProgressAgendaReaperStageAliasLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "DataObjectReaper"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "ProgressAgendaReaperCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "ProgressOperationReaperCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Progress Operation Reaper Rule",
+        "ScheduleExpression": "rate(4 hours)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "DataObjectReaper",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{",
+                  "\"deleteCallDelayMillis\": 500,",
+                  "\"idFieldName\": \"id\",",
+                  "\"maximumExecutionSeconds\": 120,",
+                  "\"objectScanLimit\": 25,",
+                  "\"reapAgeMinutes\": 4320,",
+                  "\"scanDelayMillis\": 500,",
+                  "\"tableName\":",
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "\"",
+                        {
+                          "Ref": "TableNameProgressOperation"
+                        },
+                        "-",
+                        {
+                          "Ref": "ApiStageEnv"
+                        },
+                        "\","
+                      ]
+                    ]
+                  },
+                  "\"targetBatchSize\": 50,",
+                  "\"timeFieldName\": \"updatedTime\"",
+                  "}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ProgressOperationReaperStageAliasLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "DataObjectReaper"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "ProgressOperationReaperCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "TransformRequestReaperCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Transform Request Reaper Rule",
+        "ScheduleExpression": "rate(4 hours)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "DataObjectReaper",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{",
+                  "\"deleteCallDelayMillis\": 500,",
+                  "\"idFieldName\": \"id\",",
+                  "\"maximumExecutionSeconds\": 120,",
+                  "\"objectScanLimit\": 25,",
+                  "\"reapAgeMinutes\": 4320,",
+                  "\"scanDelayMillis\": 500,",
+                  "\"tableName\":",
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "\"",
+                        {
+                          "Ref": "TableNameTransformRequest"
+                        },
+                        "-",
+                        {
+                          "Ref": "ApiStageEnv"
+                        },
+                        "\","
+                      ]
+                    ]
+                  },
+                  "\"targetBatchSize\": 50,",
+                  "\"timeFieldName\": \"updatedTime\"",
+                  "}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "TransformRequestReaperStageAliasLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "DataObjectReaper"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "TransformRequestReaperCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "AgendaReaperCloudWatchRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Agenda Reaper Rule",
+        "ScheduleExpression": "rate(4 hours)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "DataObjectReaper",
+                      "Arn"
+                    ]
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiStageEnv"
+                  }
+                ]
+              ]
+            },
+            "Id": "TargetFunctionV1",
+            "Input": {
+              "Fn::Join": [
+                "",
+                [
+                  "{",
+                  "\"deleteCallDelayMillis\": 500,",
+                  "\"idFieldName\": \"id\",",
+                  "\"maximumExecutionSeconds\": 120,",
+                  "\"objectScanLimit\": 25,",
+                  "\"reapAgeMinutes\": 4320,",
+                  "\"scanDelayMillis\": 500,",
+                  "\"tableName\":",
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "\"",
+                        {
+                          "Ref": "TableNameAgenda"
+                        },
+                        "-",
+                        {
+                          "Ref": "ApiStageEnv"
+                        },
+                        "\","
+                      ]
+                    ]
+                  },
+                  "\"targetBatchSize\": 50,",
+                  "\"timeFieldName\": \"updatedTime\"",
+                  "}"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "AgendaReaperLambdaStageAliasInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "DataObjectReaper"
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "AgendaReaperCloudWatchRule",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "ResourcePoolLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/resourcepool"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ResourcePoolObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/resourcepool/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "TransformReqLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/transform"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "TransformReqObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/transform/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "AgendaLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/agenda"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "AgendaANYLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/agenda/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "AgendaTemplateLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/agendatemplate"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "AgendaTemplateObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/agendatemplate/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ProgressOperationLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/progress/operation"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ProgressOperationObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/progress/operation/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ResourcePoolServiceLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "ResourcePoolUnified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/resourcepool/service/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "ResourcePoolUnifiedLambdaAlias"
+      ]
+    },
+    "CustomerLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/customer"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "CustomerObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/customer/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "InsightLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/insight"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "InsightObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/insight/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ProgressAgendaLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/progress/agenda"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ProgressAgendaObjectIDLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/progress/agenda/*"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "ProgressAgendaServiceLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "Unified",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/*/*/pop/progress/agenda/service"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "UnifiedLambdaAlias"
+      ]
+    },
+    "AuthorizerLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "POPAuthorizerLambda",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/authorizers/",
+              {
+                "Ref": "POPAuthorizer"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "AuthorizerLambdaAliasInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "POPAuthorizerLambda",
+                  "Arn"
+                ]
+              },
+              ":",
+              {
+                "Ref": "ApiStageEnv"
+              }
+            ]
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "RestApi"
+              },
+              "/authorizers/",
+              {
+                "Ref": "POPAuthorizer"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "POPAuthorizerLambda"
+      ]
+    }
+  }
+}

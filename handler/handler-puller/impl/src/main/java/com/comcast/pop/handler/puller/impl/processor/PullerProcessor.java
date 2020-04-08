@@ -9,12 +9,12 @@ import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.comcast.pop.handler.puller.impl.executor.LauncherFactory;
 import com.comcast.pop.handler.puller.impl.limit.ResourceChecker;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.monitor.metric.MetricLabel;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 import com.comcast.pop.endpoint.api.resourcepool.GetAgendaRequest;
 import com.comcast.pop.endpoint.api.resourcepool.GetAgendaResponse;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

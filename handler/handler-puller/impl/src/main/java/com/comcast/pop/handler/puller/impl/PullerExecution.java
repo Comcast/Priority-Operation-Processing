@@ -1,7 +1,7 @@
 package com.comcast.pop.handler.puller.impl;
 
 import com.comcast.pop.handler.puller.impl.context.ExecutionContext;
-import com.theplatform.dfh.cp.modules.monitor.alive.AliveCheck;
+import com.comcast.pop.modules.monitor.alive.AliveCheck;
 
 public class PullerExecution implements AliveCheck
 {

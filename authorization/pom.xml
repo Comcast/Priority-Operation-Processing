@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>aws-authorizer-sample</module>
+        <module>authorizer-sample-aws</module>
     </modules>
 
 </project>

@@ -4,9 +4,9 @@ import com.comast.pop.handler.base.BaseHandlerEntryPoint;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.ConfigMapDetails;
+import com.comcast.pop.modules.kube.client.config.KeyPathPair;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClient
 {
-    private static final String FISSION_SERVICE_ACCOUNT_NAME = "pop-service";
+    private static final String POP_SERVICE_ACCOUNT_NAME = "pop-service";
     private static PodConfigFactory podConfigFactory = new PodConfigFactoryImpl();
     private static Map<String, PodConfig> podConfigMap = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
                 .setVolumeName("config-volume")
                 .setVolumeMountPath("/app/config");
         return podConfigFactory.createPodConfig()
-                .setServiceAccountName(FISSION_SERVICE_ACCOUNT_NAME)
+                .setServiceAccountName(POP_SERVICE_ACCOUNT_NAME)
                 .setMemoryRequestCount("1000m")
                 .setCpuMinRequestCount("1000m")
                 .setCpuMaxRequestCount("1000m")

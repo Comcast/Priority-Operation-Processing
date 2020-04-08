@@ -7,11 +7,11 @@ import com.comcast.pop.handler.kubernetes.support.config.NfsDetailsFactory;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactory;
 import com.comcast.pop.handler.kubernetes.support.config.PodConfigFactoryImpl;
 import com.comcast.pop.handler.sample.impl.executor.ExternalExecutorFactory;
-import com.theplatform.dfh.cp.modules.kube.client.CpuRequestModulator;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.client.config.NfsDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.CpuRequestModulator;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.client.config.NfsDetails;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ import java.util.Collections;
  */
 public class KubernetesExternalExecutorFactory implements ExternalExecutorFactory
 {
-    private static final String NFS_PROPERTIES_PREFIX = "fission.handler.sample.nfs.";
+    private static final String NFS_PROPERTIES_PREFIX = "pop.handler.sample.nfs.";
     private static Logger logger = LoggerFactory.getLogger(KubernetesExternalExecutorFactory.class);
 
     private KubeConfigFactory kubeConfigFactory;

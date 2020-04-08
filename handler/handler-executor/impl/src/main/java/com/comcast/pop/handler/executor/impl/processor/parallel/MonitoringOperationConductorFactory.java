@@ -4,7 +4,7 @@ import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.processor.runner.MonitoringOperationRunnerFactory;
 import com.comcast.pop.api.operation.Operation;
 import com.comcast.pop.handler.kubernetes.support.monitor.MetricReporterFactory;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 
 import java.util.Collection;
 

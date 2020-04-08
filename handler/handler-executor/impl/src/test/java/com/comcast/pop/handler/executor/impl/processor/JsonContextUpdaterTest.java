@@ -1,6 +1,6 @@
 package com.comcast.pop.handler.executor.impl.processor;
 
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonReferenceReplacer;
+import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

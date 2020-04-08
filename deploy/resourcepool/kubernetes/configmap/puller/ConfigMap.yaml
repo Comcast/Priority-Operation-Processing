@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: pop-puller-01
-  namespace: fission
+  namespace: pop
   labels:
    serviceShortName: cppull
 data:
@@ -14,7 +14,7 @@ data:
   external-properties: |
     alive.check.enabled=true
   conf-yaml: |
-    agendaProviderUrl: '<endpoint url>/fission/resourcepool/service'
+    agendaProviderUrl: '<endpoint url>/pop/resourcepool/service'
     pullWait: 10
     insightId: '<your insight id>'
     agendaRequestCount: 1

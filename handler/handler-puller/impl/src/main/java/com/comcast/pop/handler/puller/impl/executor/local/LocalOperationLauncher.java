@@ -3,7 +3,7 @@ package com.comcast.pop.handler.puller.impl.executor.local;
 import com.comcast.pop.api.Agenda;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.handler.puller.impl.executor.BaseLauncher;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.comast.pop.handler.base.BaseHandlerEntryPoint;
-import com.theplatform.dfh.cp.modules.kube.client.config.ConfigMapDetails;
-import com.theplatform.dfh.cp.modules.kube.client.config.KeyPathPair;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.ConfigMapDetails;
+import com.comcast.pop.modules.kube.client.config.KeyPathPair;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
     private static final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static final String CONFIG_MAP_NAME_NODE = "configMapName";
-    public static final String FISSION_SERVICE_ACCOUNT_NAME = "pop-service";
+    public static final String POP_SERVICE_ACCOUNT_NAME = "pop-service";
     public static final String DEFAULT_CONFIG_MAP_JSON = "defaultConfigMap.json";
     public static final String BASE_POD_CONFIG_KEY = "basePodConfig";
     public static final String DEFAULT_VOLUME_NAME = "config-volume";
@@ -41,7 +41,7 @@ public class JsonPodConfigRegistryClient implements PodConfigRegistryClient {
 
         configMapDetails.setMapKeyPaths(keyPaths);
 
-        corePodConfig.setServiceAccountName(FISSION_SERVICE_ACCOUNT_NAME)
+        corePodConfig.setServiceAccountName(POP_SERVICE_ACCOUNT_NAME)
                 .setEndOfLogIdentifier(BaseHandlerEntryPoint.POD_TERMINATION_STRING)
                 .setConfigMapSettings(Collections.singletonList(configMapDetails));
 

@@ -8,10 +8,10 @@ import com.amazonaws.services.dynamodbv2.model.DeleteRequest;
 import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.comcast.pop.reaper.objects.aws.BaseBatchedOperation;
-import com.theplatform.com.dfh.modules.sync.util.CollectionUtil;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
-import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
-import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
+import com.comcast.pop.modules.sync.util.CollectionUtil;
+import com.comcast.pop.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.ConsumerResult;
+import com.comcast.pop.modules.sync.util.InstantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

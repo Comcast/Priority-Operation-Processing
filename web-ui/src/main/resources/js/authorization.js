@@ -56,7 +56,7 @@ function performAuthorizeRequest(authURL, username, password, cid, successCallba
                 "Authorization": buildIDMAuthHeader(username, password),
                 "Accept": "*/*",
                 "Content-Type": "application/json"
-                // TODO: if CID is included CORS fails -- 'X-thePlatform-cid': cid
+                // TODO: if CID is included CORS fails -- 'X-pop-cid': cid
             },
             data: "{\"signIn\": {\"duration\": 86400000, \"idleTimeout\": 14400000}}",
 

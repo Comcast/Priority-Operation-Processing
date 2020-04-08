@@ -2,7 +2,7 @@ package com.comcast.pop.handler.reaper.impl.delete;
 
 import com.comcast.pop.handler.reaper.impl.ReaperTestUtil;
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacade;
-import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
+import com.comcast.pop.modules.sync.util.ConsumerResult;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

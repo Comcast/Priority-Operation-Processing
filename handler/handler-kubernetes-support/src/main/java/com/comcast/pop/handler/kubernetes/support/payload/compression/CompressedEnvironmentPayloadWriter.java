@@ -3,7 +3,7 @@ package com.comcast.pop.handler.kubernetes.support.payload.compression;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
 import com.comcast.pop.handler.kubernetes.support.payload.BaseExecutionConfigPayloadWriter;
 import com.comcast.pop.handler.kubernetes.support.payload.PayloadType;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

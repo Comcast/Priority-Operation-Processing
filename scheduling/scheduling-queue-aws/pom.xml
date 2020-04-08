@@ -28,7 +28,7 @@
     </properties>
 
     <dependencies>
-        <!-- DFH Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.endpoint</groupId>
             <artifactId>pop-endpoint-impl-aws</artifactId>

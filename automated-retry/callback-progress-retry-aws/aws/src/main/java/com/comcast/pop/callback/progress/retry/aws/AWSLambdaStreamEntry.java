@@ -14,12 +14,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.ProcessingState;
-import com.theplatform.dfh.endpoint.client.AgendaServiceClientFactory;
-import com.theplatform.dfh.endpoint.client.HttpObjectClient;
-import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import com.theplatform.dfh.http.api.NoAuthHTTPUrlConnectionFactory;
-import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
+import com.comcast.pop.endpoint.client.AgendaServiceClientFactory;
+import com.comcast.pop.endpoint.client.HttpObjectClient;
+import com.comcast.pop.http.api.AuthHttpURLConnectionFactory;
+import com.comcast.pop.http.api.HttpURLConnectionFactory;
+import com.comcast.pop.version.info.ServiceBuildPropertiesContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +40,8 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final String VAR_FISSION_ENCRYPTED_PASS = "FISSION_ENCRYPTED_PASS";
-    private static final String VAR_FISSION_USER = "FISSION_USER";
-    private static final String VAR_IDENTITY_URL = "IDENTITY_URL";
+    private static final String VAR_AUTH_ENCRYPTED_PASS = "AUTH_ENCRYPTED_PASS";
+    private static final String VAR_AUTH_USER = "AUTH_USER";
     private static final String VAR_AGENDA_CLIENT_PROVIDER_URL = "AGENDA_CLIENT_URL";
     private static final String VAR_AGENDA_PROGRESS_URL = "AGENDA_PROGRESS_URL";
     private static final String CID = "CID";
@@ -139,17 +137,15 @@ public class AWSLambdaStreamEntry implements RequestStreamHandler
         // all logs from this point forward will include the cid
         MDC.put(CID, cid);
 
-        String identityUrl = System.getenv(VAR_IDENTITY_URL);
-        String fissionUser = System.getenv(VAR_FISSION_USER);
-        String fissionEncryptedPass = getEncryptedVarFromEnvironment(VAR_FISSION_ENCRYPTED_PASS);
+        String authUser = System.getenv(VAR_AUTH_USER);
+        String authEncryptedPass = getEncryptedVarFromEnvironment(VAR_AUTH_ENCRYPTED_PASS);
         String agendaClientUrl = System.getenv(VAR_AGENDA_CLIENT_PROVIDER_URL);
         String agendaProgressUrl = System.getenv(VAR_AGENDA_PROGRESS_URL);
 
         // test logging (no we don't want to log the password)
-        /*logger.info("idm: {} user: {} pass: {} agendaClientURL: {}, agendaProgressUrl: {}",
-            identityUrl,
-            fissionUser,
-            fissionEncryptedPass == null ? null : fissionEncryptedPass.substring(0, 1),
+        /*logger.info("user: {} pass: {} agendaClientURL: {}, agendaProgressUrl: {}",
+            authUser,
+            authEncryptedPass == null ? null : authEncryptedPass.substring(0, 1),
             agendaClientUrl,
             agendaProgressUrl);*/
 

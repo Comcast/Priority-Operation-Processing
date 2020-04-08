@@ -1,7 +1,7 @@
 package com.comcast.pop.endpoint.api.data.query;
 
-import com.theplatform.dfh.persistence.api.field.IdField;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.field.IdField;
+import com.comcast.pop.persistence.api.query.Query;
 
 /**
  * ById field equality query.

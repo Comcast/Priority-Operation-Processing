@@ -17,11 +17,11 @@ import com.comcast.pop.handler.executor.impl.progress.agenda.AgendaProgressRepor
 import com.comcast.pop.handler.executor.impl.progress.agenda.AgendaProgressThread;
 import com.comcast.pop.handler.executor.impl.progress.agenda.AgendaProgressThreadConfig;
 import com.comcast.pop.handler.kubernetes.support.payload.PayloadWriterFactoryImpl;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
-import com.theplatform.dfh.cp.modules.jsonhelper.replacement.JsonContext;
-import com.theplatform.dfh.cp.modules.kube.client.config.ExecutionConfig;
-import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
-import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.replacement.JsonContext;
+import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
+import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
+import com.comcast.pop.http.api.HttpURLConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

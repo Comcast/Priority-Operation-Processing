@@ -3,7 +3,7 @@ package com.comcast.pop.handler.executor.impl.processor.runner;
 import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.comcast.pop.handler.executor.impl.processor.OperationWrapper;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 
 public class MonitoringOperationRunnerFactory extends OperationRunnerFactory
 {

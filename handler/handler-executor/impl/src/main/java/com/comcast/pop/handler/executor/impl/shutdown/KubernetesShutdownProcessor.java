@@ -2,8 +2,8 @@ package com.comcast.pop.handler.executor.impl.shutdown;
 
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
 import com.comcast.pop.handler.kubernetes.support.config.KubeConfigFactory;
-import com.theplatform.dfh.cp.modules.kube.client.config.KubeConfig;
-import com.theplatform.dfh.cp.modules.kube.fabric8.client.Fabric8Helper;
+import com.comcast.pop.modules.kube.client.config.KubeConfig;
+import com.comcast.pop.modules.kube.fabric8.client.Fabric8Helper;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;

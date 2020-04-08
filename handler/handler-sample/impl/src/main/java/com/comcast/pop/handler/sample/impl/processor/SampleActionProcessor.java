@@ -13,10 +13,10 @@ import com.comcast.pop.handler.sample.api.SampleAction;
 import com.comcast.pop.handler.sample.api.SampleActions;
 import com.comcast.pop.handler.sample.api.SampleInput;
 import com.comcast.pop.handler.sample.impl.action.BaseAction;
-import com.comcast.pop.handler.sample.impl.exception.FissionSampleHandlerException;
+import com.comcast.pop.handler.sample.impl.exception.SampleHandlerException;
 import com.comcast.pop.handler.sample.impl.executor.kubernetes.KubernetesExternalExecutorFactory;
 import com.comcast.pop.handler.sample.impl.progress.SampleJobInfo;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class SampleActionProcessor extends BaseJsonOperationProcessor<SampleInpu
         }
         else
         {
-            throw new FissionSampleHandlerException(String.format("Invalid action specified: %1$s", sampleAction.getAction()));
+            throw new SampleHandlerException(String.format("Invalid action specified: %1$s", sampleAction.getAction()));
         }
     }
 

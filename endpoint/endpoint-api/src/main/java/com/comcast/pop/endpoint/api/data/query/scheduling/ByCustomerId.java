@@ -1,7 +1,7 @@
 package com.comcast.pop.endpoint.api.data.query.scheduling;
 
-import com.theplatform.dfh.persistence.api.field.DataObjectField;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.field.DataObjectField;
+import com.comcast.pop.persistence.api.query.Query;
 
 /**
  * ByCustomerId field equality query.

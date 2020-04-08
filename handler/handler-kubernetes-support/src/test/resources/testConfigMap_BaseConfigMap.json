@@ -17,11 +17,11 @@
     ]
   },
 
-  "analysis": {
-    "configMapName": "lab-main-t-aor-fhami-t01",
+  "sample": {
+    "configMapName": "lab-main-t-aor-fhsamp-t01",
     "podConfig": {
-      "imageName": "docker-lab.repo.theplatform.com/fhami:1.0.0",
-      "namePrefix": "pop-analysis"
+      "imageName": "your.repo.com/fhsamp:1.0.0",
+      "namePrefix": "pop-samp"
     }
   }
 }

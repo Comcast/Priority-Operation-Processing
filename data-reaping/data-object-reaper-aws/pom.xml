@@ -25,7 +25,7 @@
     </properties>
 
     <dependencies>
-        <!-- Fission Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.module</groupId>
             <artifactId>pop-producer-consumer-util</artifactId>

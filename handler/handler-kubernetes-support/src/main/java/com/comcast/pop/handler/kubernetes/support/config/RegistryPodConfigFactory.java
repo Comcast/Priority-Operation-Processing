@@ -2,7 +2,7 @@ package com.comcast.pop.handler.kubernetes.support.config;
 
 import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.PodConfigRegistryClient;
 import com.comcast.pop.handler.kubernetes.support.podconfig.client.registry.api.PodConfigRegistryClientException;
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

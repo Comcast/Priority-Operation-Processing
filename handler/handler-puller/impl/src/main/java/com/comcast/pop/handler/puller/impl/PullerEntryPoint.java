@@ -11,7 +11,7 @@ import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.comcast.pop.handler.puller.impl.context.PullerContextFactory;
 import com.comcast.pop.handler.puller.impl.processor.PullerProcessor;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

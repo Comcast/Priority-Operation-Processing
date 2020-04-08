@@ -7,11 +7,11 @@ import com.comcast.pop.reaper.objects.aws.config.DataObjectReaperConfig;
 import com.comcast.pop.reaper.objects.aws.factory.ConsumerFactory;
 import com.comcast.pop.reaper.objects.aws.factory.ProducerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
-import com.theplatform.com.dfh.modules.sync.util.Producer;
-import com.theplatform.com.dfh.modules.sync.util.SynchronousProducerConsumerProcessor;
-import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
-import com.theplatform.dfh.version.info.ServiceBuildPropertiesContainer;
+import com.comcast.pop.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.Producer;
+import com.comcast.pop.modules.sync.util.SynchronousProducerConsumerProcessor;
+import com.comcast.pop.persistence.aws.dynamodb.AWSDynamoDBFactory;
+import com.comcast.pop.version.info.ServiceBuildPropertiesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

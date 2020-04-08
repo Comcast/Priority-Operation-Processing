@@ -1,6 +1,6 @@
 package com.comcast.pop.handler.kubernetes.support.config;
 
-import com.theplatform.dfh.cp.modules.kube.client.config.PodConfig;
+import com.comcast.pop.modules.kube.client.config.PodConfig;
 
 public interface PodConfigFactory
 {

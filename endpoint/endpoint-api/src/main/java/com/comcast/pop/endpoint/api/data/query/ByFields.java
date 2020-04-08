@@ -1,7 +1,7 @@
 package com.comcast.pop.endpoint.api.data.query;
 
-import com.theplatform.dfh.persistence.api.field.FieldsField;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.field.FieldsField;
+import com.comcast.pop.persistence.api.query.Query;
 
 /**
  * ByFields query to specify the fields you want returned from the query.

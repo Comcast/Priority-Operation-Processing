@@ -13,10 +13,10 @@ import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import com.comcast.pop.endpoint.api.data.query.ById;
 import com.comcast.pop.object.api.IdentifiedObject;
-import com.theplatform.dfh.persistence.api.DataObjectFeed;
-import com.theplatform.dfh.persistence.api.ObjectPersister;
-import com.theplatform.dfh.persistence.api.PersistenceException;
-import com.theplatform.dfh.persistence.api.query.Query;
+import com.comcast.pop.persistence.api.DataObjectFeed;
+import com.comcast.pop.persistence.api.ObjectPersister;
+import com.comcast.pop.persistence.api.PersistenceException;
+import com.comcast.pop.persistence.api.query.Query;
 
 import java.util.LinkedList;
 import java.util.List;

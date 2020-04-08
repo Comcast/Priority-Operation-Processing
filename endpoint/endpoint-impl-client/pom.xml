@@ -11,7 +11,7 @@
     <artifactId>pop-endpoint-client</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fission Endpoint Client implementation</name>
+    <name>POP Endpoint Client implementation</name>
 
     <properties>
         <json-helper.version>1.0.0</json-helper.version>

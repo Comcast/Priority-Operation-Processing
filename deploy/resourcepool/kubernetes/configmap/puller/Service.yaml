@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: pop-puller-01
-  namespace: fission
+  namespace: pop
   annotations:
     # AWS to get X-Forwarded-For headers and other things
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http

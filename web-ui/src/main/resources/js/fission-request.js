@@ -60,7 +60,7 @@ function makeServiceRequest(httpVerb, url, data, successCallback, failCallback){
         headers: {
             'Authorization': "Basic " + btoa(getAccountId() + ":" + getAuthToken()),
             'Content-Type': "application/json",
-            'X-thePlatform-cid': g_requestCid
+            'X-pop-cid': g_requestCid
         },
         success: function (response) {
             if(successCallback != null)

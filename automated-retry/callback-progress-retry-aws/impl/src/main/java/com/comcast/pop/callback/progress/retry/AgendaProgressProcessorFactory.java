@@ -1,8 +1,8 @@
 package com.comcast.pop.callback.progress.retry;
 
 import com.comcast.pop.api.progress.AgendaProgress;
-import com.theplatform.dfh.endpoint.client.AgendaServiceClient;
-import com.theplatform.dfh.endpoint.client.ObjectClient;
+import com.comcast.pop.endpoint.client.AgendaServiceClient;
+import com.comcast.pop.endpoint.client.ObjectClient;
 
 public class AgendaProgressProcessorFactory
 {

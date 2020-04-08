@@ -72,80 +72,80 @@
         <constructor-arg value="#{cidGenerator.generateCid()}" />
     </bean>
 
-    <bean id="cidGenerator" class="com.cts.fission.test.CidGenerator" />
+    <bean id="cidGenerator" class="com.comcast.pop.test.CidGenerator" />
 
-    <bean id="identifiedObjectCreateTracker" class="com.theplatform.dfh.cp.test.cleanup.endpoint.IdentifiedObjectCreateTracker"/>
+    <bean id="identifiedObjectCreateTracker" class="com.comcast.pop.test.cleanup.endpoint.IdentifiedObjectCreateTracker"/>
 
-    <bean id="httpUrlConnectionFactory" class="com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory"/>
+    <bean id="httpUrlConnectionFactory" class="com.comcast.pop.http.api.AuthHttpURLConnectionFactory"/>
 
-    <bean id="agendaProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="agendaProgressClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaProgressUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.progress.AgendaProgress"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="operationProgressClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="operationProgressClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="operationProgressUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.progress.OperationProgress"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="agendaTemplateClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="agendaTemplateClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaTemplateUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.AgendaTemplate"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="agendaClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="agendaClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="agendaUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.Agenda"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="progressServiceClient" class="com.theplatform.dfh.endpoint.client.ProgressServiceClient">
+    <bean id="progressServiceClient" class="com.comcast.pop.endpoint.client.ProgressServiceClient">
         <constructor-arg index="0" ref="httpUrlConnectionFactory"/>
         <property name="progressSummaryUrl" ref="progressProviderUrl"/>
     </bean>
 
-    <bean id="agendaServiceClient" class="com.theplatform.dfh.endpoint.client.AgendaServiceClient">
+    <bean id="agendaServiceClient" class="com.comcast.pop.endpoint.client.AgendaServiceClient">
         <constructor-arg index="0" ref="httpUrlConnectionFactory"/>
         <property name="agendaServiceUrl" ref="agendaServiceUrl"/>
     </bean>
 
-    <bean id="resourcePoolServiceClient" class="com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient">
+    <bean id="resourcePoolServiceClient" class="com.comcast.pop.endpoint.client.ResourcePoolServiceClient">
         <constructor-arg index="0" ref="resourcePoolServiceUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
     </bean>
 
-    <bean id="resourcePoolClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="resourcePoolClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="resourcePoolUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.ResourcePool"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="customerClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="customerClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="customerUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.Customer"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="insightClient" class="com.theplatform.dfh.cp.test.cleanup.endpoint.TrackedHttpObjectClient">
+    <bean id="insightClient" class="com.comcast.pop.test.cleanup.endpoint.TrackedHttpObjectClient">
         <constructor-arg index="0" ref="insightUrl"/>
         <constructor-arg index="1" ref="httpUrlConnectionFactory"/>
         <constructor-arg index="2" type="java.lang.Class" value="com.comcast.pop.api.facility.Insight"/>
         <property name="onCreateListener" ref="identifiedObjectCreateTracker"/>
     </bean>
 
-    <bean id="identifiedObjectCleanupManager" class="com.theplatform.dfh.cp.test.cleanup.endpoint.IdentifiedObjectCleanupManager">
+    <bean id="identifiedObjectCleanupManager" class="com.comcast.pop.test.cleanup.endpoint.IdentifiedObjectCleanupManager">
         <constructor-arg index="0" ref="identifiedObjectCreateTracker"/>
         <constructor-arg index="1">
-            <util:list id="clientsForCleanup" value-type="com.theplatform.dfh.endpoint.client.HttpObjectClient">
+            <util:list id="clientsForCleanup" value-type="com.comcast.pop.endpoint.client.HttpObjectClient">
                 <ref bean="agendaProgressClient"/>
                 <ref bean="operationProgressClient"/>
                 <ref bean="agendaTemplateClient"/>

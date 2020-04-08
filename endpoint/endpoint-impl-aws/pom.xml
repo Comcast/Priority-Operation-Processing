@@ -58,17 +58,12 @@
             <version>${aws.java.jdk}</version>
         </dependency>
 
-        <!-- Fission Dependencies -->
+        <!-- POP Dependencies -->
         <dependency>
             <groupId>com.comcast.pop.endpoint</groupId>
             <artifactId>pop-endpoint-base-aws</artifactId>
             <version>${pop-endpoint-base-aws.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.comcast.pop.module</groupId>-->
-<!--            <artifactId>pop-http-idm</artifactId>-->
-<!--            <version>${pop-http-idm.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.comcast.pop.module</groupId>
             <artifactId>pop-persistence-impl-dynamodb</artifactId>

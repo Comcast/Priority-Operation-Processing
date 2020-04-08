@@ -1,9 +1,9 @@
 package com.comcast.pop.agenda.reclaim.aws.dynamo;
 
-import com.theplatform.com.dfh.modules.sync.util.Producer;
+import com.comcast.pop.modules.sync.util.Producer;
 import com.comcast.pop.agenda.reclaim.aws.config.AWSReclaimerConfig;
 import com.comcast.pop.agenda.reclaim.factory.AgendaProgressProducerFactory;
-import com.theplatform.dfh.persistence.aws.dynamodb.AWSDynamoDBFactory;
+import com.comcast.pop.persistence.aws.dynamodb.AWSDynamoDBFactory;
 
 import java.time.Instant;
 

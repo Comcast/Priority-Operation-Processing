@@ -13,7 +13,7 @@ import com.comcast.pop.api.progress.DiagnosticEvent;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.progress.ProcessingState;
 import com.comast.pop.handler.base.field.api.HandlerField;
-import com.theplatform.dfh.cp.modules.jsonhelper.JsonHelper;
+import com.comcast.pop.modules.jsonhelper.JsonHelper;
 
 import java.util.Collections;
 import java.util.List;

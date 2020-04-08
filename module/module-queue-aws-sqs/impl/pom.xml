@@ -11,7 +11,7 @@
     <artifactId>module-queue-aws-sqs-impl</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fission Queue AWS SQS Impl</name>
+    <name>Queue AWS SQS Impl</name>
 
     <properties>
         <aws-java-jdk.version>1.11.100</aws-java-jdk.version>

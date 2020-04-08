@@ -5,8 +5,8 @@ import com.comcast.pop.handler.executor.impl.context.ExecutorContext;
 import com.comcast.pop.handler.executor.impl.processor.OnOperationCompleteListener;
 import com.comcast.pop.handler.executor.impl.processor.OperationWrapper;
 import com.comcast.pop.handler.executor.impl.processor.runner.event.OperationCompleteLog;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricLabel;
-import com.theplatform.dfh.cp.modules.monitor.metric.MetricReporter;
+import com.comcast.pop.modules.monitor.metric.MetricLabel;
+import com.comcast.pop.modules.monitor.metric.MetricReporter;
 
 public class MonitoringOperationRunner extends OperationRunner
 {

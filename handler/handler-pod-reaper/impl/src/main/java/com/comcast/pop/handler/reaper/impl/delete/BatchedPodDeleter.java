@@ -1,10 +1,10 @@
 package com.comcast.pop.handler.reaper.impl.delete;
 
 import com.comcast.pop.handler.reaper.impl.kubernetes.KubernetesPodFacade;
-import com.theplatform.com.dfh.modules.sync.util.CollectionUtil;
-import com.theplatform.com.dfh.modules.sync.util.Consumer;
-import com.theplatform.com.dfh.modules.sync.util.ConsumerResult;
-import com.theplatform.com.dfh.modules.sync.util.InstantUtil;
+import com.comcast.pop.modules.sync.util.CollectionUtil;
+import com.comcast.pop.modules.sync.util.Consumer;
+import com.comcast.pop.modules.sync.util.ConsumerResult;
+import com.comcast.pop.modules.sync.util.InstantUtil;
 import com.comcast.pop.handler.reaper.impl.messages.ReaperMessages;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;

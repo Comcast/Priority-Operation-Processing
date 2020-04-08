@@ -15,7 +15,6 @@
     <logger name="org.apache" level="ERROR" />
     <logger name="org.springframework" level="ERROR" />
     <logger name="net.sf" level="ERROR" />
-    <logger name="com.theplatform.module" level="ERROR" />
     <logger name="httpclient.wire" level="ERROR" />
     <logger name="com.amazonaws" level="INFO"/>
 
