@@ -2,7 +2,7 @@ var testAuthURL = null;
 var serverInfo =
         [
             {
-                name:"Fission(Sample)",
+                name:"POP(Sample)",
                 // This should be the url to your API Gateway (do not include the stage!)
                 endpointServerURL:"https://[your url here WITHOUT the stage]",
                 endpointStage:"dev",
@@ -55,8 +55,8 @@ var serviceEndpopints =
                 path:"agenda/service/ignite"
             },
             {
-                name:"Reignite",
-                path:"agenda/service/reignite"
+                name:"rerun",
+                path:"agenda/service/rerun"
             }
         ];
 

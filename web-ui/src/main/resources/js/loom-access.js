@@ -1,19 +1,5 @@
 let consoleJs = new ConsoleJS();
 
-/*
-// example positive response IN Loom (non error path)
-{
-  "account": "http://access.auth.theplatform.com/data/Account/2702193141",
-  "token": "theToken"
-}
-
-// example negative reponse Outside of Loom (error path)
-{
-  "method": "getContext",
-  "error": "method \"getContext\" cannot be executed. Window must be in a console iframe or opened by a console custom command"
-}
- */
-
 function attemptLoomGetContext() {
     consoleJs
             .getContext()

@@ -68,7 +68,7 @@ function processIgniteCall(event){
         agendaTemplateId: agendaTemplateId
     };
 
-    var spinner = $("#fission_spinner_ignite");
+    var spinner = $("#pop_spinner_submit");
     toggleSpinnerObject(spinner, true);
 
     makeAuthorizedRequest(event,
@@ -95,21 +95,21 @@ function processIgniteCall(event){
     );
 }
 
-function processReigniteCall(event){
+function processrerunCall(event){
     var server = getServer();
-    var serviceEndpoint = serviceEndpointsByName["Reignite"];
+    var serviceEndpoint = serviceEndpointsByName["rerun"];
     var params = [];
 
-    var spinner = $("#fission_spinner_reignite");
+    var spinner = $("#pop_spinner_rerun");
     toggleSpinnerObject(spinner, true);
 
-    pushParamValueIfSpecified(params, $("#reignite_reset_operations"), "operationsToReset");
-    pushParamIfChecked(params, $("#reignite_reset_all"), "resetAll");
-    pushParamIfChecked(params, $("#reignite_continue"), "continue");
-    pushParamIfChecked(params, $("#reignite_skip_execution"), "skipExecution");
+    pushParamValueIfSpecified(params, $("#rerun_reset_operations"), "operationsToReset");
+    pushParamIfChecked(params, $("#rerun_reset_all"), "resetAll");
+    pushParamIfChecked(params, $("#rerun_continue"), "continue");
+    pushParamIfChecked(params, $("#rerun_skip_execution"), "skipExecution");
 
-    var reigniteRequest = {
-        agendaId: $("#reignite_agenda_id").val(),
+    var rerunRequest = {
+        agendaId: $("#rerun_agenda_id").val(),
         params: params
     };
     makeAuthorizedRequest(event,
@@ -118,7 +118,7 @@ function processReigniteCall(event){
             makeServiceRequest(
                     "POST",
                     getEndpointURL(server, serviceEndpoint),
-                    JSON.stringify(reigniteRequest),
+                    JSON.stringify(rerunRequest),
                     function(response){
                         toggleSpinnerObject(spinner, false);
                         $("#response").val(JSON.stringify(response, null, 2));

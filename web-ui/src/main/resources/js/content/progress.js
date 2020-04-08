@@ -356,7 +356,7 @@ function setupAgendaNetwork(agenda, agendaProgress) {
             .append(d => loadLiquidFillGaugeSVG(nodeMap.get(d.data.name)).node())
 .attr("transform", `translate(-25,-25)`);
 
-    var text = node.append("text")
+    var text = node.append("text") bsh-
             .attr("dy", "25")
             // .attr("dx", "5")
             // .attr("x", d => d.children ? -6 : 6)
@@ -461,8 +461,8 @@ function seekDependencies(dependencies, obj) {
             for(const match of matches){
                 if(match.length > 1){
                     var reference = match[1];
-                    if(reference !== "fission.agendaId"
-                            && reference !== "fission.operationName"){
+                    if(reference !== "pop.agendaId"
+                            && reference !== "pop.operationName"){
                         dependencies[reference.replace(".out", "")] = true;
                     }
                 }
