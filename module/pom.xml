@@ -16,7 +16,6 @@
 
     <modules>
         <module>module-compression</module>
-        <module>module-docker</module>
         <module>module-http-api</module>
         <module>module-http-util</module>
         <module>module-json-helper</module>

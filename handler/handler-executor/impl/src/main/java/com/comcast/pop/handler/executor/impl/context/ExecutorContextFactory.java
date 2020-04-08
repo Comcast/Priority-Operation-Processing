@@ -21,7 +21,7 @@ import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
 import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
 import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
