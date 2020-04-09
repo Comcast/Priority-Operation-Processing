@@ -6,7 +6,6 @@ import com.comast.pop.handler.base.context.BaseOperationContextFactory;
 import com.comast.pop.handler.base.field.retriever.api.FieldRetriever;
 import com.comast.pop.handler.base.field.retriever.argument.ArgumentRetriever;
 import com.comast.pop.handler.base.messages.HandlerMessages;
-import com.comcast.pop.handler.puller.impl.config.PullerConfig;
 import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
 import com.comcast.pop.handler.puller.impl.context.PullerContext;
 import com.comcast.pop.handler.puller.impl.context.PullerContextFactory;
@@ -50,25 +49,22 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
      * Be sure to specify -Dlogback.configurationFile=./handler/main/package/monitors/logback_local.xml (VM option)
      *
      * Debugging/running with a local-only build use these args:
-     * -launchType local -externalLaunchType local -propFile ./handler/main/package/local/config/external.properties -confPath ./handler/main/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType local -propFile ./handler/handler-puller/package/local/config/external.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
      *
      * Debugging running local with minikube for pod launches
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external-minikube.properties -confPath ./handler/main/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external-minikube.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
      *
      * NOTE! For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
      *
      * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/main/package/local/config/external.properties -confPath ./handler/main/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
      *
      * @param args command line args
      */
     public static void main( String[] args ) throws Exception
     {
-        PullerEntryPoint pullerEntryPoint = new PullerEntryPoint(args);
-        FieldRetriever argumentRetriever = pullerEntryPoint.getLaunchDataWrapper().getArgumentRetriever();
-        String confPath = argumentRetriever.getField(PullerArgumentProvider.CONF_PATH, DEFAULT_CONF_PATH);
-        String[] args2 = new String[] {"server", confPath};
-        new PullerApp(pullerEntryPoint).run(args2);
+        //logger.debug(System.getProperty("user.dir"));
+        new PullerEntryPoint(args).execute();
     }
 
     /**
@@ -97,16 +93,6 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
         }
     }
 
-    public PullerConfig getPullerConfig()
-    {
-        return getLaunchDataWrapper().getPullerConfig();
-    }
-
-    public PullerEntryPoint setPullerConfig(PullerConfig pullerConfig)
-    {
-        getLaunchDataWrapper().setPullerConfig(pullerConfig);
-        return this;
-    }
     public void setMetricReporter(MetricReporter metricReporter)
     {
         if(metricReporter != null)

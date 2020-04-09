@@ -1,10 +1,10 @@
 package com.comcast.pop.handler.puller.impl.client.agenda;
 
-import com.comcast.pop.handler.puller.impl.PullerApp;
-import com.comcast.pop.handler.puller.impl.config.PullerConfig;
-import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
-import com.comcast.pop.endpoint.client.ResourcePoolServiceClientFactory;
-import com.comcast.pop.http.api.AuthHttpURLConnectionFactory;
+import com.comcast.pop.handler.puller.impl.config.PullerConfigField;
+import com.comcast.pop.handler.puller.impl.config.PullerLaunchDataWrapper;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,21 +15,23 @@ import org.slf4j.LoggerFactory;
  */
 public class PullerResourcePoolServiceClientFactory
 {
-    private static Logger logger = LoggerFactory.getLogger(PullerApp.class);
-    private PullerConfig pullerConfig;
+    private static Logger logger = LoggerFactory.getLogger(PullerResourcePoolServiceClientFactory.class);
     private ResourcePoolServiceClientFactory resourcePoolServiceClientFactory;
+    private PullerLaunchDataWrapper launchDataWrapper;
 
-    public PullerResourcePoolServiceClientFactory(PullerConfig config)
+    public PullerResourcePoolServiceClientFactory(PullerLaunchDataWrapper launchDataWrapper)
     {
-        this.pullerConfig = config;
+        this.launchDataWrapper = launchDataWrapper;
         this.resourcePoolServiceClientFactory = new ResourcePoolServiceClientFactory();
     }
+
+
 
     public ResourcePoolServiceClient getClient()
     {
         // If there's a local agenda file path, it means we are using that
         // local file as input, not calling the agenda service.
-        if (pullerConfig.getLocalAgendaRelativePath() != null)
+        if (launchDataWrapper.getPropertyRetriever().getField(PullerConfigField.LOCAL_AGENDA_RELATIVE_PATH) != null)
         {
             return getLocalFileClient();
         }
@@ -38,53 +40,15 @@ public class PullerResourcePoolServiceClientFactory
 
     private ResourcePoolServiceClient getLocalFileClient()
     {
-        logger.info("AgendaClientFactory: Using Local agenda provider [" +
-            pullerConfig.getLocalAgendaRelativePath() + "]");
-        return new LocalResourcePoolServiceClient(pullerConfig.getLocalAgendaRelativePath());
+        String localAgendaPath = launchDataWrapper.getPropertyRetriever().getField(PullerConfigField.LOCAL_AGENDA_RELATIVE_PATH);
+        logger.info("AgendaClientFactory: Using Local agenda provider [" + localAgendaPath + "]");
+        return new LocalResourcePoolServiceClient(localAgendaPath);
     }
 
     private ResourcePoolServiceClient getHTTPServiceClient()
     {
-        logger.debug("AgendaClientFactory: URL: [" + pullerConfig.getIdentityUrl() +
-            "], Username: [" + pullerConfig.getUsername());
-
-        /** TODO: the NoAuthFactory should support the proxy+config stuff
-        IDMHTTPClientConfig idmhttpClientConfig = new IDMHTTPClientConfig();
-        idmhttpClientConfig.setIdentityUrl(pullerConfig.getIdentityUrl());
-        idmhttpClientConfig.setUsername(pullerConfig.getUsername());
-        idmhttpClientConfig.setEncryptedPassword(pullerConfig.getEncryptedPassword());
-
-        // Verify if the proxy host/port is defined in the configuration. This
-        // is required when we need to access the agenda service in a different
-        // network zone, such as the green zone when running in RDEI
-        // Example proxyHost: 'greenproxy-po-vip.sys.comcast.net'
-        // Example proxyPort: '3128'
-        // Proxies are documented here:
-        //   https://wiki.sys.comcast.net/pages/viewpage.action?spaceKey=ContentOperations&title=Proxies
-        if (pullerConfig.getProxyHost() != null && pullerConfig.getProxyPort() != null)
-        {
-            logger.info("AgendaClientFactory: Using AWS Agenda provider with proxy [" + pullerConfig.getProxyHost() +
-                ":" + pullerConfig.getProxyPort() + "]");
-            idmhttpClientConfig.setProxyHost(pullerConfig.getProxyHost());
-            idmhttpClientConfig.setProxyPort(pullerConfig.getProxyPort());
-        }
-
-        logger.debug("AgendaClientFactory: Identity URL: [" + pullerConfig.getIdentityUrl() +
-            "], Username: [" + pullerConfig.getUsername() +
-            "AgendaProviderURL: " + pullerConfig.getAgendaProviderUrl());
-
-
-        return resourcePoolServiceClientFactory.create(pullerConfig.getAgendaProviderUrl(),
-            new IDMHTTPUrlConnectionFactory(idmhttpClientConfig));
-        **/
-        return resourcePoolServiceClientFactory.create(pullerConfig.getAgendaProviderUrl(),
+        return resourcePoolServiceClientFactory.create(launchDataWrapper.getPropertyRetriever().getField(PullerConfigField.POP_RESOURCE_POOL_SERVICE_URL),
             new AuthHttpURLConnectionFactory());
-    }
-
-    public PullerResourcePoolServiceClientFactory setPullerConfig(PullerConfig pullerConfig)
-    {
-        this.pullerConfig = pullerConfig;
-        return this;
     }
 
     public PullerResourcePoolServiceClientFactory setResourcePoolServiceClientFactory(

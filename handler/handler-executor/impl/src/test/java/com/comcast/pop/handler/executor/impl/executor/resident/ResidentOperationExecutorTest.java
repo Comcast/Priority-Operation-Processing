@@ -7,7 +7,7 @@ import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.api.progress.ProcessingState;
 import com.comast.pop.handler.base.ResidentHandler;
 import com.comast.pop.handler.base.field.retriever.LaunchDataWrapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

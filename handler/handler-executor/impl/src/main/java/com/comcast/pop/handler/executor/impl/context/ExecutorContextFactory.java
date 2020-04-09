@@ -17,11 +17,11 @@ import com.comast.pop.handler.base.reporter.ProgressReporter;
 import com.comcast.pop.handler.executor.impl.executor.OperationExecutorFactory;
 import com.comcast.pop.handler.executor.impl.progress.agenda.ResourcePoolServiceAgendaProgressReporter;
 import com.comcast.pop.handler.kubernetes.support.context.KubernetesOperationContextFactory;
-import com.comcast.pop.endpoint.client.ResourcePoolServiceClient;
-import com.comcast.pop.endpoint.client.ResourcePoolServiceClientFactory;
-import com.comcast.pop.http.api.AuthHttpURLConnectionFactory;
-import com.comcast.pop.http.api.HttpURLConnectionFactory;
-import org.apache.commons.lang.StringUtils;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClient;
+import com.theplatform.dfh.endpoint.client.ResourcePoolServiceClientFactory;
+import com.theplatform.dfh.http.api.AuthHttpURLConnectionFactory;
+import com.theplatform.dfh.http.api.HttpURLConnectionFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

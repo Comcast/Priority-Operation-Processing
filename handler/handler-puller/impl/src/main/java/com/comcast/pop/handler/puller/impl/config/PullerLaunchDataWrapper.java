@@ -11,7 +11,6 @@ import com.comcast.pop.modules.kube.client.config.ExecutionConfig;
  */
 public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
 {
-    private PullerConfig pullerConfig;
     private LastRequestAliveCheck lastRequestAliveCheck = new LastRequestAliveCheck();
 
     private PayloadWriterFactory<ExecutionConfig> payloadWriterFactory = new PayloadWriterFactoryImpl(this);
@@ -36,17 +35,6 @@ public class PullerLaunchDataWrapper extends KubernetesLaunchDataWrapper
     public void setLastRequestAliveCheck(LastRequestAliveCheck lastRequestAliveCheck)
     {
         this.lastRequestAliveCheck = lastRequestAliveCheck;
-    }
-
-    public PullerConfig getPullerConfig()
-    {
-        return pullerConfig;
-    }
-
-    public PullerLaunchDataWrapper setPullerConfig(PullerConfig pullerConfig)
-    {
-        this.pullerConfig = pullerConfig;
-        return this;
     }
 
     public PayloadWriterFactory<ExecutionConfig> getPayloadWriterFactory()
