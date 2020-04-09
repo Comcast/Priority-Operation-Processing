@@ -32,7 +32,7 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry<ServiceRespo
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
-        ServiceBuildPropertiesContainer.logServiceBuildString(logger);
+        ServiceBuildPropertiesContainer.logServiceBuildString(logger, false);
 
         JsonNode jsonNode = getObjectMapper().readTree(inputStream);
         logObject("Received request: ", jsonNode);
