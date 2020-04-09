@@ -266,7 +266,7 @@
     "ResourcePoolUnified": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.comcast.pop.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.pop.cp.endpoint.resourcepool.service.aws.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
