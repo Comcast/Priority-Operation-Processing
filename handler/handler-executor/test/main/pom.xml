@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.comcast.pop</groupId>
-        <artifactId>pop-root-handler</artifactId>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-executor-parent</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.comcast.pop.cp</groupId>
     <artifactId>pop-handler-executor-functional</artifactId>
     <version>1.0.0</version>
     <description>Executor Functional Tests</description>
