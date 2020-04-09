@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.comcast.pop.handler</groupId>
-        <artifactId>pop-handler-sample-parent</artifactId>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-handler-sample</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -24,7 +24,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.pop.handler</groupId>
+            <groupId>com.comcast.pop</groupId>
             <artifactId>pop-handler-sample-impl</artifactId>
             <version>${application.version}</version>
         </dependency>
