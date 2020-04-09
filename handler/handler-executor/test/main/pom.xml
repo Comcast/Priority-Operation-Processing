@@ -8,6 +8,7 @@
         <groupId>com.comcast.pop.handler</groupId>
         <artifactId>pop-handler-executor-parent</artifactId>
         <version>1.0.0</version>
+        <relativePath/>
     </parent>
 
     <artifactId>pop-handler-executor-functional</artifactId>

@@ -4,6 +4,7 @@
         <groupId>com.comcast.pop.module</groupId>
         <artifactId>pop-kube-client-parent</artifactId>
         <version>1.0.0</version>
+        <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
