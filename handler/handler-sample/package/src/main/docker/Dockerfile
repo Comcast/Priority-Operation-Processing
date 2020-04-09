@@ -5,7 +5,7 @@
 # In pom.xml - comment out the use of the maven-dependency-plugin and docker-maven-plugin
 # Navigate to the /package folder
 # mvn clean dependency:copy-dependencies
-# docker build -t pop-sample:1.0.2 .
+# docker build -t pop-sample:1.0.0 .
 
 ########
 #Dockerfile Contents

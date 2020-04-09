@@ -29,7 +29,7 @@ data:
       "sample": {
         "configMapName": "pop-sample-01",
         "podConfig": {
-          "imageName": "pop-sample:1.0.2",
+          "imageName": "pop-sample:1.0.0",
           "namePrefix": "pop-sample",
           "cpuMinRequestCount":"100m",
           "cpuMaxRequestCount":"250m"

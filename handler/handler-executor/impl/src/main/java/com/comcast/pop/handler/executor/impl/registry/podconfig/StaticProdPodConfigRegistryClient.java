@@ -26,7 +26,7 @@ public class StaticProdPodConfigRegistryClient implements PodConfigRegistryClien
     {
         podConfigMap.put("sample",
                 makeBasePod("pop-sample-01")
-                        .setImageName("pop-sample:1.0.2")
+                        .setImageName("pop-sample:1.0.0")
                         .setNamePrefix("pop-sample")
         );
     }
