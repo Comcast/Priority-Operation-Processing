@@ -1,9 +1,9 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.comcast.pop.module</groupId>
-        <artifactId>pop-kube-client-parent</artifactId>
-        <version>1.0.0</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-module</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -24,7 +24,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.pop.module</groupId>
+            <groupId>com.comcast.pop.cp</groupId>
             <artifactId>pop-kube-client-fabric8</artifactId>
             <version>${kubeclient-version}</version>
         </dependency>
@@ -43,12 +43,6 @@
         </dependency>
 
         <!-- testing -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.13.1</version>
-        </dependency>
-
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>failsafe</artifactId>
