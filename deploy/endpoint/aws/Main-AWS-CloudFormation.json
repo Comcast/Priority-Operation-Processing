@@ -182,7 +182,7 @@
     "Unified": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Handler": "com.comcast.pop.endpoint.AWSLambdaStreamEntry::handleRequest",
+        "Handler": "com.comcast.pop.cp.endpoint.AWSLambdaStreamEntry::handleRequest",
         "Runtime": "java8",
         "Code": {
           "S3Bucket": {
@@ -1981,9 +1981,9 @@
         "Timeout": 60,
         "Environment": {
           "Variables": {
-            "POP_USER_ID": "123456",
-            "POP_USER": "pop_admin",
-            "POP_ACCOUNTS": "*"
+            "AUTH_USER_ID": "123456",
+            "AUTH_USER": "pop_admin",
+            "AUTH_ACCOUNTS": "*"
           }
         }
       }
