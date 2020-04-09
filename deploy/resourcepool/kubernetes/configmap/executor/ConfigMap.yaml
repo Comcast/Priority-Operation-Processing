@@ -15,7 +15,7 @@ data:
     pop.kubernetes.namespace=pop
     metrics.enabled=false
     executor.reap.self=false
-    agenda.progress.url=https://localhost/resourcepool/service
+    agenda.progress.url=https://<endpoint url including stage>/pop/resourcepool/service
   registry-json: |
     {
       "basePodConfig": {

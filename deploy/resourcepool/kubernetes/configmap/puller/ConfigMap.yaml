@@ -13,11 +13,11 @@ data:
     JAVA_EXTRA="$JAVA_EXTRA"
   external-properties: |
     alive.check.enabled=true
+    pop.puller.resourcePoolServiceUrl=https://<endpoint url including stage>/pop/resourcepool/service
+    pop.puller.pullWait=10
+    pop.puller.insightId=<your insight id>
+    pop.puller.agendaRequestCount=1
   conf-yaml: |
-    agendaProviderUrl: '<endpoint url>/pop/resourcepool/service'
-    pullWait: 10
-    insightId: '<your insight id>'
-    agendaRequestCount: 1
   registry-json: |
     {
       "basePodConfig": {
@@ -26,7 +26,7 @@ data:
         "cpuMaxRequestCount": "1000m",
         "podScheduledTimeoutMs": 600000,
         "reapCompletedPods": true,
-        "pullAlways": true
+        "pullAlways": false
       },
       "executor": {
         "configMapName": "pop-executor-01",
