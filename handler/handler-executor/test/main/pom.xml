@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.comcast.pop.build</groupId>
-        <artifactId>pop-build-parent</artifactId>
-        <version>1.0.7</version>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-handler</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>com.comcast.pop.cp</groupId>
@@ -25,12 +25,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.comcast.pop.cp</groupId>
+            <groupId>com.comcast.pop.module</groupId>
             <artifactId>pop-json-helper</artifactId>
             <version>${json-helper.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.comcast.pop.cp</groupId>
+            <groupId>com.comcast.pop.module</groupId>
             <artifactId>pop-kube-client-fabric8</artifactId>
             <version>${pop-fabric8-kube-client.version}</version>
         </dependency>
@@ -48,6 +48,18 @@
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>bsh</artifactId>
+                    <groupId>org.beanshell</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- spring -->

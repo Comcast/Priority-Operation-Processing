@@ -1,6 +1,5 @@
 package com.comcast.pop.handler.executor.test;
 
-import com.comcast.pop.modules.jsonhelper.JsonHelper;
 import com.comcast.pop.modules.kube.client.config.KubeConfig;
 import com.comcast.pop.modules.kube.client.config.PodConfig;
 import org.apache.commons.io.IOUtils;
@@ -13,8 +12,6 @@ import java.io.IOException;
 @ContextConfiguration(locations = "classpath:spring-cp-handler-executor.xml")
 public class ExecutorHandlerTestBase extends AbstractTestNGSpringContextTests
 {
-    protected JsonHelper jsonHelper = new JsonHelper();
-
     @Resource
     KubeConfig kubeConfig;
 
