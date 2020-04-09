@@ -31,7 +31,7 @@ data:
       "executor": {
         "configMapName": "pop-executor-01",
         "podConfig": {
-          "imageName": "fhexec:1.0.3",
+          "imageName": "fhexec:1.0.0",
           "namePrefix": "pop-exec",
           "configMapSettings": [
             {

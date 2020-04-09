@@ -5,7 +5,7 @@
 # In pom.xml - comment out the use of the maven-dependency-plugin and docker-maven-plugin
 # Navigate to the /package folder
 # mvn clean dependency:copy-dependencies
-# docker build -t fhexec:1.0.2 .
+# docker build -t fhexec:1.0.0 .
 
 ########
 #Dockerfile Contents
@@ -28,4 +28,4 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 ENV LANG="C.UTF-8" JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 ADD target/dependency /app
-CMD java -classpath app/pop-handler-executor-impl-${application.version}.jar HandlerEntryPoint
+CMD java -classpath app/pop-handler-executor-impl-${application.version}.jar com.comcast.pop.handler.executor.impl.HandlerEntryPoint

@@ -28,7 +28,7 @@ public class StaticPodConfigRegistryClient implements PodConfigRegistryClient
                 .setPodScheduledTimeoutMs(600000L)
                 .setReapCompletedPods(true)
                 .setPullAlways(false) // for now
-                .setImageName("fhexec:1.0.3")
+                .setImageName("fhexec:1.0.0")
                 .setNamePrefix("pop-exec")
                 .setConfigMapSettings(Collections.singletonList(
                     new ConfigMapDetails()

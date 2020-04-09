@@ -49,15 +49,15 @@ public class PullerEntryPoint extends BaseHandlerEntryPoint<PullerContext, Pulle
      * Be sure to specify -Dlogback.configurationFile=./handler/main/package/monitors/logback_local.xml (VM option)
      *
      * Debugging/running with a local-only build use these args:
-     * -launchType local -externalLaunchType local -propFile ./handler/handler-puller/package/local/config/external.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType local -propFile ./handler/handler-puller/package/local/config/external.properties
      *
      * Debugging running local with minikube for pod launches
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external-minikube.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external-minikube.properties
      *
      * NOTE! For kubernetes external execution use -oauthCertPath [full file path] -oauthTokenPath [full file path]
      *
      * Debugging/running local with kubernetes for pod launches: (requires environment vars for k8s auth)
-     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external.properties -confPath ./handler/handler-puller/package/local/config/conf.yaml
+     * -launchType local -externalLaunchType kubernetes -propFile ./handler/handler-puller/package/local/config/external.properties
      *
      * @param args command line args
      */
