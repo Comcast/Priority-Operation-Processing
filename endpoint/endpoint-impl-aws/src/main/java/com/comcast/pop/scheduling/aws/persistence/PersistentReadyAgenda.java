@@ -2,7 +2,7 @@ package com.comcast.pop.scheduling.aws.persistence;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.comcast.pop.cp.endpoint.persistence.DateConverter;
+import com.comcast.pop.endpoint.persistence.DateConverter;
 import com.comcast.pop.scheduling.api.ReadyAgenda;
 
 import java.util.Date;
