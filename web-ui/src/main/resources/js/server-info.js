@@ -51,11 +51,11 @@ var endpoints =
 var serviceEndpopints =
         [
             {
-                name:"Ignite",
-                path:"agenda/service/ignite"
+                name:"Run",
+                path:"agenda/service/run"
             },
             {
-                name:"rerun",
+                name:"Rerun",
                 path:"agenda/service/rerun"
             }
         ];

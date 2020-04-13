@@ -1,8 +1,8 @@
 package com.comcast.pop.callback.progress.retry;
 
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.CompleteStateMessage;
@@ -81,14 +81,14 @@ public class AgendaProgressProcessor
 
     protected void retryAgenda(AgendaProgress agendaProgress)
     {
-        ReigniteAgendaRequest reigniteAgendaRequest = new ReigniteAgendaRequest();
-        reigniteAgendaRequest.setAgendaId(agendaProgress.getAgendaId());
+        RerunAgendaRequest rerunAgendaRequest = new RerunAgendaRequest();
+        rerunAgendaRequest.setAgendaId(agendaProgress.getAgendaId());
         // continue, not reset all
-        reigniteAgendaRequest.setParams(Collections.singletonList(ReigniteAgendaParameter.CONTINUE.getParameterName()));
+        rerunAgendaRequest.setParams(Collections.singletonList(RerunAgendaParameter.CONTINUE.getParameterName()));
         try
         {
             logInfo(agendaProgress, "Reigniting");
-            ReigniteAgendaResponse response = agendaServiceClient.reigniteAgenda(reigniteAgendaRequest);
+            RerunAgendaResponse response = agendaServiceClient.rerunAgenda(rerunAgendaRequest);
             if(response.isError())
             {
                 // if there is an error we likely would be unable to fix it anyway from the perspective of this component, so just log

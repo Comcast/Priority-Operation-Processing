@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Parameters and mapping utility for the AgendaRetry
  */
-public enum ReigniteAgendaParameter
+public enum RerunAgendaParameter
 {
     RESET_ALL("resetAll"), // all ops reset
     SKIP_EXECUTION("skipExecution"), // do not submit a ready agenda
@@ -20,10 +20,10 @@ public enum ReigniteAgendaParameter
     public static final String VALUE_DELIMITER = ",";
     private final String parameterName;
 
-    ReigniteAgendaParameter(String parameterName)
+    RerunAgendaParameter(String parameterName)
     {
         this.parameterName = parameterName;
-        AgendaReigniteParameters.parameterMap.put(parameterName, this);
+        RerunAgendaParameters.parameterMap.put(parameterName, this);
     }
 
     public String getParameterName()
@@ -46,14 +46,14 @@ public enum ReigniteAgendaParameter
             );
     }
 
-    private static class AgendaReigniteParameters
+    private static class RerunAgendaParameters
     {
-        private static final Map<String, ReigniteAgendaParameter> parameterMap = new HashMap<>();
+        private static final Map<String, RerunAgendaParameter> parameterMap = new HashMap<>();
     }
 
-    public static Map<ReigniteAgendaParameter, String> getParametersMap(List<String> parameters)
+    public static Map<RerunAgendaParameter, String> getParametersMap(List<String> parameters)
     {
-        Map<ReigniteAgendaParameter, String> paramatersMap = new HashMap<>();
+        Map<RerunAgendaParameter, String> paramatersMap = new HashMap<>();
         if(parameters != null)
         {
             parameters.stream()
@@ -68,10 +68,10 @@ public enum ReigniteAgendaParameter
                     {
                         parameterValue = split[1];
                     }
-                    ReigniteAgendaParameter reigniteAgendaParameter = AgendaReigniteParameters.parameterMap.get(parameterName);
-                    if(reigniteAgendaParameter != null)
+                    RerunAgendaParameter rerunAgendaParameter = RerunAgendaParameters.parameterMap.get(parameterName);
+                    if(rerunAgendaParameter != null)
                     {
-                        paramatersMap.put(reigniteAgendaParameter, parameterValue);
+                        paramatersMap.put(rerunAgendaParameter, parameterValue);
                     }
                 });
         }

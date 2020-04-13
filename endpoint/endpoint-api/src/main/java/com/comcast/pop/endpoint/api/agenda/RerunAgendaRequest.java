@@ -2,16 +2,16 @@ package com.comcast.pop.endpoint.api.agenda;
 
 import java.util.List;
 
-public class ReigniteAgendaRequest
+public class RerunAgendaRequest
 {
     private String agendaId;
     private List<String> params;
 
-    public ReigniteAgendaRequest()
+    public RerunAgendaRequest()
     {
     }
 
-    public ReigniteAgendaRequest(String agendaId, List<String> params)
+    public RerunAgendaRequest(String agendaId, List<String> params)
     {
         this.agendaId = agendaId;
         this.params = params;

@@ -1,7 +1,7 @@
 package com.comcast.pop.endpoint.test.agenda.service;
 
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.test.base.EndpointTestBase;
 import com.comcast.pop.api.Agenda;
@@ -33,12 +33,12 @@ public class IgniteAgendaTest extends EndpointTestBase
     @Test(enabled = false)
     public void simpleIgniteAgenda()
     {
-        IgniteAgendaRequest generateAgendaRequest = createRequest(
+        RunAgendaRequest generateAgendaRequest = createRequest(
             "899f2241-3877-4301-b3d2-aa7e4274e499",
             "{\"logMessage\":\"This is the message from the input payload.\"}"
         );
 
-        IgniteAgendaResponse response = agendaServiceClient.igniteAgenda(generateAgendaRequest);
+        RunAgendaResponse response = agendaServiceClient.runAgenda(generateAgendaRequest);
         logger.info(jsonHelper.getPrettyJSONString(response));
     }
 
@@ -56,7 +56,7 @@ public class IgniteAgendaTest extends EndpointTestBase
     public void testValidTemplateParams(String logMessage, String payload)
     {
         String agendaTemplateId = createTestAgendaTemplate(logMessage);
-        IgniteAgendaResponse response = agendaServiceClient.igniteAgenda(createRequest(agendaTemplateId, payload));
+        RunAgendaResponse response = agendaServiceClient.runAgenda(createRequest(agendaTemplateId, payload));
         verifyNoError(response);
         Assert.assertNotNull(response.getAgendas());
         Assert.assertEquals(response.getAgendas().size(), 1);
@@ -80,16 +80,16 @@ public class IgniteAgendaTest extends EndpointTestBase
     }
 
     @Test(dataProvider = "invalidParametersProvider")
-    public void testInvalidParameters(IgniteAgendaRequest igniteAgendaRequest, String expectedMessageFragment)
+    public void testInvalidParameters(RunAgendaRequest igniteAgendaRequest, String expectedMessageFragment)
     {
-        IgniteAgendaResponse response = agendaServiceClient.igniteAgenda(igniteAgendaRequest);
+        RunAgendaResponse response = agendaServiceClient.runAgenda(igniteAgendaRequest);
         Assert.assertTrue(response.isError());
         Assert.assertTrue(StringUtils.containsIgnoreCase(response.getErrorResponse().getDescription(), expectedMessageFragment));
     }
 
-    private IgniteAgendaRequest createRequest(String agendaTemplateId, String payload)
+    private RunAgendaRequest createRequest(String agendaTemplateId, String payload)
     {
-        IgniteAgendaRequest request = new IgniteAgendaRequest();
+        RunAgendaRequest request = new RunAgendaRequest();
         request.setAgendaTemplateId(agendaTemplateId);
         request.setPayload(payload);
         return request;

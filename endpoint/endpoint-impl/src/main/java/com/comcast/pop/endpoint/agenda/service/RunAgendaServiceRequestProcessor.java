@@ -23,8 +23,8 @@ import com.comcast.pop.endpoint.api.ErrorResponse;
 import com.comcast.pop.endpoint.api.ErrorResponseFactory;
 import com.comcast.pop.endpoint.api.RuntimeServiceException;
 import com.comcast.pop.endpoint.api.ServiceRequest;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectRequest;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
@@ -51,16 +51,16 @@ import java.util.Collections;
  * We first try to create the Agenda using the Agenda.customerId visibility against the Insight
  * Then we verify the calling user has visibility to that Insight
  */
-public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<IgniteAgendaResponse, ServiceRequest<IgniteAgendaRequest>>
+public class RunAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<RunAgendaResponse, ServiceRequest<RunAgendaRequest>>
 {
-    private static final Logger logger = LoggerFactory.getLogger(IgniteAgendaServiceRequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(RunAgendaServiceRequestProcessor.class);
 
     public static final String INVALID_JSON_PAYLOAD = "Unable to parse input payload as JSON";
 
-    private RequestValidator<ServiceRequest<IgniteAgendaRequest>> requestValidator = new IgniteAgendaServiceRequestValidator();
+    private RequestValidator<ServiceRequest<RunAgendaRequest>> requestValidator = new RunAgendaServiceRequestValidator();
     private RequestProcessorFactory requestProcessorFactory;
-    private ServiceResponseFactory<IgniteAgendaResponse> responseFactory;
-    private ServiceDataObjectRetriever<IgniteAgendaResponse> dataObjectRetriever;
+    private ServiceResponseFactory<RunAgendaResponse> responseFactory;
+    private ServiceDataObjectRetriever<RunAgendaResponse> dataObjectRetriever;
 
     private JsonHelper jsonHelper = new JsonHelper();
 
@@ -73,7 +73,7 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
     private ObjectPersister<AgendaTemplate> agendaTemplatePersister;
     private AgendaFactory agendaFactory;
 
-    public IgniteAgendaServiceRequestProcessor(ObjectPersister<Insight> insightPersister,
+    public RunAgendaServiceRequestProcessor(ObjectPersister<Insight> insightPersister,
         ObjectPersister<Agenda> agendaPersister,
         ObjectPersister<Customer> customerPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister,
@@ -89,14 +89,14 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
         this.agendaTemplatePersister = agendaTemplatePersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        responseFactory = new ServiceResponseFactory<>(IgniteAgendaResponse.class);
+        responseFactory = new ServiceResponseFactory<>(RunAgendaResponse.class);
         dataObjectRetriever = new ServiceDataObjectRetriever<>(responseFactory);
     }
 
     @Override
-    public IgniteAgendaResponse processPOST(ServiceRequest<IgniteAgendaRequest> serviceRequest)
+    public RunAgendaResponse processPOST(ServiceRequest<RunAgendaRequest> serviceRequest)
     {
-        IgniteAgendaRequest igniteAgendaRequest = serviceRequest.getPayload();
+        RunAgendaRequest igniteAgendaRequest = serviceRequest.getPayload();
 
         JsonNode payloadNode;
         try
@@ -112,7 +112,7 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
         AgendaTemplateRequestProcessor agendaTemplateRequestProcessor = requestProcessorFactory.createAgendaTemplateRequestProcessor(agendaTemplatePersister);
 
         // retrieve the AgendaTemplate
-        ServiceDataRequestResult<AgendaTemplate, IgniteAgendaResponse> agendaTemplateResult = dataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<AgendaTemplate, RunAgendaResponse> agendaTemplateResult = dataObjectRetriever.performObjectRetrieve(
             serviceRequest, agendaTemplateRequestProcessor, igniteAgendaRequest.getAgendaTemplateId(), AgendaTemplate.class);
         if(agendaTemplateResult.getServiceResponse() != null)
             return agendaTemplateResult.getServiceResponse();
@@ -150,14 +150,14 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
         return createIgniteAgendaResponse(serviceRequest, createdAgenda, null, null);
     }
 
-    private IgniteAgendaResponse createIgniteAgendaResponse(ServiceRequest<IgniteAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse, String errorPrefix)
+    private RunAgendaResponse createIgniteAgendaResponse(ServiceRequest<RunAgendaRequest> serviceRequest, Agenda agenda, ErrorResponse errorResponse, String errorPrefix)
     {
-        IgniteAgendaResponse igniteAgendaResponse = responseFactory.createResponse(serviceRequest, errorResponse, errorPrefix);
-        igniteAgendaResponse.setAgendas(Collections.singletonList(agenda));
-        return igniteAgendaResponse;
+        RunAgendaResponse runAgendaResponse = responseFactory.createResponse(serviceRequest, errorResponse, errorPrefix);
+        runAgendaResponse.setAgendas(Collections.singletonList(agenda));
+        return runAgendaResponse;
     }
 
-    public RequestValidator<ServiceRequest<IgniteAgendaRequest>> getRequestValidator()
+    public RequestValidator<ServiceRequest<RunAgendaRequest>> getRequestValidator()
     {
         return requestValidator;
     }
@@ -173,7 +173,7 @@ public class IgniteAgendaServiceRequestProcessor extends AbstractServiceRequestP
     }
 
     public void setDataObjectRetriever(
-        ServiceDataObjectRetriever<IgniteAgendaResponse> dataObjectRetriever)
+        ServiceDataObjectRetriever<RunAgendaResponse> dataObjectRetriever)
     {
         this.dataObjectRetriever = dataObjectRetriever;
     }

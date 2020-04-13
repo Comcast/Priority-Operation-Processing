@@ -1,7 +1,7 @@
 package com.comcast.pop.callback.progress.retry;
 
 import com.comcast.pop.endpoint.api.ErrorResponseFactory;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import com.comcast.pop.api.progress.AgendaProgress;
@@ -54,11 +54,11 @@ public class AgendaProgressProcessorTest
     {
         doReturn(createDataObjectResponse(agendaProgress)).when(mockAgendaProgressClient).getObject(any());
         processor.process(agendaProgress);
-        verify(mockAgendaServiceClient, times(0)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(0)).rerunAgenda(any());
     }
 
     @DataProvider
-    public Object[][] reignitedProgressStateProvider()
+    public Object[][] rerunProgressStateProvider()
     {
         return new Object[][]
             {
@@ -68,13 +68,13 @@ public class AgendaProgressProcessorTest
             };
     }
 
-    @Test(dataProvider = "reignitedProgressStateProvider")
-    public void testReignitedAgendaProgressState(AgendaProgress agendaProgress)
+    @Test(dataProvider = "rerunProgressStateProvider")
+    public void testRerunAgendaProgressState(AgendaProgress agendaProgress)
     {
         doReturn(createDataObjectResponse(agendaProgress)).when(mockAgendaProgressClient).getObject(any());
-        doReturn(new ReigniteAgendaResponse()).when(mockAgendaServiceClient).reigniteAgenda(any());
+        doReturn(new RerunAgendaResponse()).when(mockAgendaServiceClient).rerunAgenda(any());
         processor.process(agendaProgress);
-        verify(mockAgendaServiceClient, times(1)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(1)).rerunAgenda(any());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class AgendaProgressProcessorTest
         doReturn(response).when(mockAgendaProgressClient).getObject(any());
         processor.process(agendaProgress);
         // basically just check that nothing was done
-        verify(mockAgendaServiceClient, times(0)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(0)).rerunAgenda(any());
     }
 
     @Test
@@ -96,31 +96,31 @@ public class AgendaProgressProcessorTest
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressClient).getObject(any());
         processor.process(agendaProgress);
         // basically just check that nothing was done
-        verify(mockAgendaServiceClient, times(0)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(0)).rerunAgenda(any());
     }
 
     @Test
     public void testReigniteCallError()
     {
         AgendaProgress agendaProgress = createAgendaProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString(), 0, 3);
-        ReigniteAgendaResponse reigniteAgendaResponse = new ReigniteAgendaResponse();
-        reigniteAgendaResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", ""));
+        RerunAgendaResponse rerunAgendaResponse = new RerunAgendaResponse();
+        rerunAgendaResponse.setErrorResponse(ErrorResponseFactory.runtimeServiceException("", ""));
         doReturn(createDataObjectResponse(agendaProgress)).when(mockAgendaProgressClient).getObject(any());
-        doReturn(reigniteAgendaResponse).when(mockAgendaServiceClient).reigniteAgenda(any());
+        doReturn(rerunAgendaResponse).when(mockAgendaServiceClient).rerunAgenda(any());
         processor.process(agendaProgress);
         // basically just check that nothing was done
-        verify(mockAgendaServiceClient, times(1)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(1)).rerunAgenda(any());
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*Failed to call reignite for Agenda.*")
-    public void testReigniteException()
+    public void testRerunException()
     {
         AgendaProgress agendaProgress = createAgendaProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString(), 0, 3);
         doReturn(createDataObjectResponse(agendaProgress)).when(mockAgendaProgressClient).getObject(any());
-        doThrow(new RuntimeException("ReigniteException")).when(mockAgendaServiceClient).reigniteAgenda(any());
+        doThrow(new RuntimeException("RerunException")).when(mockAgendaServiceClient).rerunAgenda(any());
         processor.process(agendaProgress);
         // basically just check that nothing was done
-        verify(mockAgendaServiceClient, times(1)).reigniteAgenda(any());
+        verify(mockAgendaServiceClient, times(1)).rerunAgenda(any());
     }
 
     private <T extends IdentifiedObject> DataObjectResponse<T> createDataObjectResponse(T object)

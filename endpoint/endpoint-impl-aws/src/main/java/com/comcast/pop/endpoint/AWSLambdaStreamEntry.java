@@ -3,8 +3,8 @@ package com.comcast.pop.endpoint;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.util.IOUtils;
 import com.comcast.pop.endpoint.agenda.aws.AgendaLambdaStreamEntry;
-import com.comcast.pop.endpoint.agenda.service.aws.IgniteAgendaLambdaStreamEntry;
-import com.comcast.pop.endpoint.agenda.service.aws.ReigniteAgendaLambdaStreamEntry;
+import com.comcast.pop.endpoint.agenda.service.aws.RunAgendaLambdaStreamEntry;
+import com.comcast.pop.endpoint.agenda.service.aws.RerunAgendaLambdaStreamEntry;
 import com.comcast.pop.endpoint.progress.aws.ProgressLambdaStreamEntry;
 import com.comcast.pop.endpoint.progress.service.aws.ProgressServiceLambdaStreamEntry;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,8 +54,8 @@ public class AWSLambdaStreamEntry extends AbstractLambdaStreamEntry
         endpointHandlers.put("/pop/resourcepool", new ResourcePoolLambdaStreamEntry());
         endpointHandlers.put("/pop/insight", new InsightLambdaStreamEntry());
         endpointHandlers.put("/pop/customer", new CustomerLambdaStreamEntry());
-        endpointHandlers.put("/pop/agenda/service/ignite", new IgniteAgendaLambdaStreamEntry());
-        endpointHandlers.put("/pop/agenda/service/reignite", new ReigniteAgendaLambdaStreamEntry());
+        endpointHandlers.put("/pop/agenda/service/run", new RunAgendaLambdaStreamEntry());
+        endpointHandlers.put("/pop/agenda/service/rerun", new RerunAgendaLambdaStreamEntry());
     }
 
     @Override

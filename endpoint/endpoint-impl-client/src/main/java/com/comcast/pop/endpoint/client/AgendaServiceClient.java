@@ -1,15 +1,15 @@
 package com.comcast.pop.endpoint.client;
 
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaResponse;
 import com.comcast.pop.http.api.HttpURLConnectionFactory;
 
 public class AgendaServiceClient extends POPServiceClient
 {
-    private static final String IGNITE_AGENDA_ENDPOINT = "ignite";
-    private static final String REIGNITE_AGENDA_ENDPOINT = "reignite";
+    private static final String RUN_AGENDA_ENDPOINT = "run";
+    private static final String RERUN_AGENDA_ENDPOINT = "rerun";
 
     private String agendaServiceUrl;
 
@@ -24,18 +24,18 @@ public class AgendaServiceClient extends POPServiceClient
         this.agendaServiceUrl = agendaServiceUrl;
     }
 
-    public IgniteAgendaResponse igniteAgenda(IgniteAgendaRequest igniteAgendaRequest)
+    public RunAgendaResponse runAgenda(RunAgendaRequest igniteAgendaRequest)
     {
         return new GenericPOPClient<>(
-            String.join("/", agendaServiceUrl, IGNITE_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), IgniteAgendaResponse.class)
+            String.join("/", agendaServiceUrl, RUN_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), RunAgendaResponse.class)
             .getObjectFromPOST(igniteAgendaRequest);
     }
 
-    public ReigniteAgendaResponse reigniteAgenda(ReigniteAgendaRequest reigniteAgendaRequest)
+    public RerunAgendaResponse rerunAgenda(RerunAgendaRequest rerunAgendaRequest)
     {
         return new GenericPOPClient<>(
-            String.join("/", agendaServiceUrl, REIGNITE_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), ReigniteAgendaResponse.class)
-            .getObjectFromPOST(reigniteAgendaRequest);
+            String.join("/", agendaServiceUrl, RERUN_AGENDA_ENDPOINT), getHttpUrlConnectionFactory(), RerunAgendaResponse.class)
+            .getObjectFromPOST(rerunAgendaRequest);
     }
 
     public AgendaServiceClient setAgendaServiceUrl(String agendaServiceUrl)

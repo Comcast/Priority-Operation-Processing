@@ -3212,7 +3212,7 @@
         "PathPart": "service"
       }
     },
-    "AgendaServiceIgniteApiResource": {
+    "AgendaServiceRunApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
@@ -3221,10 +3221,10 @@
         "ParentId": {
           "Ref": "AgendaServiceApiResource"
         },
-        "PathPart": "ignite"
+        "PathPart": "run"
       }
     },
-    "AgendaServiceReigniteApiResource": {
+    "AgendaServiceRerunApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
@@ -3233,7 +3233,7 @@
         "ParentId": {
           "Ref": "AgendaServiceApiResource"
         },
-        "PathPart": "reignite"
+        "PathPart": "rerun"
       }
     },
     "ResourcePoolServiceApiResource": {
@@ -3498,7 +3498,7 @@
         }
       }
     },
-    "AgendaServiceIgniteAgendaMethod": {
+    "AgendaServiceRunAgendaMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
@@ -3510,7 +3510,7 @@
           "Ref": "RestApi"
         },
         "ResourceId": {
-          "Ref": "AgendaServiceIgniteApiResource"
+          "Ref": "AgendaServiceRunApiResource"
         },
         "MethodResponses": [
           {
@@ -3556,7 +3556,7 @@
         }
       }
     },
-    "IgniteMethodOptions": {
+    "RunMethodOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "OPTIONS",
@@ -3565,7 +3565,7 @@
           "Ref": "RestApi"
         },
         "ResourceId": {
-          "Ref": "AgendaServiceIgniteApiResource"
+          "Ref": "AgendaServiceRunApiResource"
         },
         "MethodResponses": [
           {
@@ -3599,7 +3599,7 @@
         }
       }
     },
-    "AgendaServiceReigniteAgendaMethod": {
+    "AgendaServiceRerunAgendaMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "ANY",
@@ -3611,7 +3611,7 @@
           "Ref": "RestApi"
         },
         "ResourceId": {
-          "Ref": "AgendaServiceReigniteApiResource"
+          "Ref": "AgendaServiceRerunApiResource"
         },
         "MethodResponses": [
           {
@@ -3657,7 +3657,7 @@
         }
       }
     },
-    "ReigniteMethodOptions": {
+    "RerunMethodOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "OPTIONS",
@@ -3666,7 +3666,7 @@
           "Ref": "RestApi"
         },
         "ResourceId": {
-          "Ref": "AgendaServiceReigniteApiResource"
+          "Ref": "AgendaServiceRerunApiResource"
         },
         "MethodResponses": [
           {
@@ -4484,8 +4484,8 @@
         "ProgressAgendaMethodObjectId",
         "ProgressAgendaMethod",
         "AgendaMethod",
-        "AgendaServiceIgniteAgendaMethod",
-        "AgendaServiceReigniteAgendaMethod",
+        "AgendaServiceRunAgendaMethod",
+        "AgendaServiceRerunAgendaMethod",
         "ResourcePoolServiceCreateAgendaMethod",
         "ResourcePoolServiceUpdateAgendaProgressMethod",
         "ResourcePoolServiceUpdateAgendaMethod",

@@ -1,15 +1,15 @@
 package com.comcast.pop.endpoint.api.agenda;
 
-public class IgniteAgendaRequest
+public class RunAgendaRequest
 {
     private String payload;
     private String agendaTemplateId;
 
-    public IgniteAgendaRequest()
+    public RunAgendaRequest()
     {
     }
 
-    public IgniteAgendaRequest(String payload, String agendaTemplateId)
+    public RunAgendaRequest(String payload, String agendaTemplateId)
     {
         this.payload = payload;
         this.agendaTemplateId = agendaTemplateId;

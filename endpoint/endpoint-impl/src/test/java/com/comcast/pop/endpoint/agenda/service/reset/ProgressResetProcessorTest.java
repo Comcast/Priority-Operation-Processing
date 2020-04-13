@@ -14,7 +14,7 @@ import com.comcast.pop.api.tokens.AgendaToken;
 import com.comcast.pop.modules.jsonhelper.replacement.JsonContext;
 import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.comcast.pop.endpoint.api.ValidationException;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -52,7 +52,7 @@ public class ProgressResetProcessorTest
         ));
         AgendaProgress agendaProgress = createAgendaProgressWithAgendaOps(
             ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString(), agenda);
-        Map<ReigniteAgendaParameter, String> retryParameters = new HashMap<>();
+        Map<RerunAgendaParameter, String> retryParameters = new HashMap<>();
         progressResetProcessor.resetProgress(agenda, agendaProgress, retryParameters);
         Assert.assertEquals(agendaProgress.getProcessingState(), ProcessingState.WAITING);
         Assert.assertEquals(agendaProgress.getProcessingStateMessage(), WaitingStateMessage.PENDING.toString());
@@ -95,10 +95,10 @@ public class ProgressResetProcessorTest
         operationProgress.setOperation(VALID_OP_NAME);
         agendaProgress.setOperationProgress(new OperationProgress[] {operationProgress});
 
-        String param = ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(VALID_OP_NAME);
+        String param = RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(VALID_OP_NAME);
 
         Set<String> opsToReset = progressResetProcessor.getSpecifiedOperationsToReset(
-            ReigniteAgendaParameter.getParametersMap(Collections.singletonList(param)),
+            RerunAgendaParameter.getParametersMap(Collections.singletonList(param)),
             agendaProgress);
 
         Assert.assertEquals(opsToReset.size(), 1);
@@ -121,15 +121,15 @@ public class ProgressResetProcessorTest
     public void getSpecifiedOperationsToResetInvalid(List<String> opsToReset)
     {
         String param = opsToReset == null
-                       ? ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterName()
-                       : ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(opsToReset);
+                       ? RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterName()
+                       : RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(opsToReset);
         AgendaProgress agendaProgress = new AgendaProgress();
         OperationProgress operationProgress = new OperationProgress();
         operationProgress.setOperation(VALID_OP_NAME);
         agendaProgress.setOperationProgress(new OperationProgress[] {operationProgress});
 
         progressResetProcessor.getSpecifiedOperationsToReset(
-            ReigniteAgendaParameter.getParametersMap(Collections.singletonList(param)),
+            RerunAgendaParameter.getParametersMap(Collections.singletonList(param)),
             agendaProgress);
     }
 

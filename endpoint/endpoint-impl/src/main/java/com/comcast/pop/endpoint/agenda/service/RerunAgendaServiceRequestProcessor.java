@@ -19,15 +19,15 @@ import com.comcast.pop.endpoint.progress.AgendaProgressRequestProcessor;
 import com.comcast.pop.endpoint.util.ServiceDataObjectRetriever;
 import com.comcast.pop.endpoint.util.ServiceDataRequestResult;
 import com.comcast.pop.endpoint.util.ServiceResponseFactory;
-import com.comcast.pop.endpoint.validation.AgendaServiceReigniteValidator;
+import com.comcast.pop.endpoint.validation.AgendaServiceRerunValidator;
 import com.comcast.pop.scheduling.api.ReadyAgenda;
 import com.comcast.pop.endpoint.api.ErrorResponse;
 import com.comcast.pop.endpoint.api.ErrorResponseFactory;
 import com.comcast.pop.endpoint.api.RuntimeServiceException;
 import com.comcast.pop.endpoint.api.ServiceRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectRequest;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
@@ -42,17 +42,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Processor for the retry/rerun/reignite  method for running an agenda that was already run before.
+ * Processor for the retry/rerun  method for running an agenda that was already run before.
  */
-public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<ReigniteAgendaResponse, ServiceRequest<ReigniteAgendaRequest>>
+public class RerunAgendaServiceRequestProcessor extends AbstractServiceRequestProcessor<RerunAgendaResponse, ServiceRequest<RerunAgendaRequest>>
 {
-    private static final Logger logger = LoggerFactory.getLogger(ReigniteAgendaServiceRequestProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(RerunAgendaServiceRequestProcessor.class);
 
     private RequestProcessorFactory requestProcessorFactory;
-    private ServiceDataObjectRetriever<ReigniteAgendaResponse> serviceDataObjectRetriever;
+    private ServiceDataObjectRetriever<RerunAgendaResponse> serviceDataObjectRetriever;
 
     private ProgressResetProcessor progressResetProcessor = new ProgressResetProcessor();
-    private RequestValidator<ServiceRequest<ReigniteAgendaRequest>> requestValidator = new AgendaServiceReigniteValidator();
+    private RequestValidator<ServiceRequest<RerunAgendaRequest>> requestValidator = new AgendaServiceRerunValidator();
 
     private ObjectPersister<Agenda> agendaPersister;
     private ObjectPersister<AgendaProgress> agendaProgressPersister;
@@ -61,7 +61,7 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
     private ObjectPersister<Insight> insightPersister;
     private ObjectPersister<Customer> customerPersister;
 
-    public ReigniteAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
+    public RerunAgendaServiceRequestProcessor(ObjectPersister<Agenda> agendaPersister, ObjectPersister<AgendaProgress> agendaProgressPersister,
         ObjectPersister<OperationProgress> operationProgressPersister, ObjectPersister<ReadyAgenda> readyAgendaPersister, ObjectPersister<Insight> insightPersister,
         ObjectPersister<Customer> customerPersister)
     {
@@ -73,14 +73,14 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         this.customerPersister = customerPersister;
 
         requestProcessorFactory = new RequestProcessorFactory();
-        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(ReigniteAgendaResponse.class));
+        serviceDataObjectRetriever = new ServiceDataObjectRetriever<>(new ServiceResponseFactory<>(RerunAgendaResponse.class));
     }
 
     @Override
-    public ReigniteAgendaResponse processPOST(ServiceRequest<ReigniteAgendaRequest> serviceRequest)
+    public RerunAgendaResponse processPOST(ServiceRequest<RerunAgendaRequest> serviceRequest)
     {
-        ReigniteAgendaRequest reigniteAgendaRequest = serviceRequest.getPayload();
-        Map<ReigniteAgendaParameter, String> agendaRetryParams = ReigniteAgendaParameter.getParametersMap(reigniteAgendaRequest.getParams());
+        RerunAgendaRequest rerunAgendaRequest = serviceRequest.getPayload();
+        Map<RerunAgendaParameter, String> agendaRetryParams = RerunAgendaParameter.getParametersMap(rerunAgendaRequest.getParams());
 
         AgendaRequestProcessor agendaRequestProcessor = requestProcessorFactory.createAgendaRequestProcessor(agendaPersister, agendaProgressPersister, readyAgendaPersister,
             operationProgressPersister, insightPersister, customerPersister);
@@ -94,14 +94,14 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         // TODO: Reignite may require the insight lookup to determine visibility (as this could be used by services or direct users)
 
         // Get the Agenda
-        ServiceDataRequestResult<Agenda, ReigniteAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
-            serviceRequest, agendaRequestProcessor, reigniteAgendaRequest.getAgendaId(), Agenda.class);
+        ServiceDataRequestResult<Agenda, RerunAgendaResponse> agendaRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+            serviceRequest, agendaRequestProcessor, rerunAgendaRequest.getAgendaId(), Agenda.class);
         if(agendaRequestResult.getServiceResponse() != null)
             return agendaRequestResult.getServiceResponse();
         Agenda agenda = agendaRequestResult.getDataObjectResponse().getFirst();
 
         // Get the AgendaProgress
-        ServiceDataRequestResult<AgendaProgress, ReigniteAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
+        ServiceDataRequestResult<AgendaProgress, RerunAgendaResponse> agendaProgressRequestResult = serviceDataObjectRetriever.performObjectRetrieve(
             serviceRequest, agendaProgressRequestProcessor, agenda.getProgressId(), AgendaProgress.class);
         if(agendaProgressRequestResult.getServiceResponse() != null)
             return agendaProgressRequestResult.getServiceResponse();
@@ -176,7 +176,7 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
             }
         }
 
-        boolean skipExecution = agendaRetryParams.containsKey(ReigniteAgendaParameter.SKIP_EXECUTION)
+        boolean skipExecution = agendaRetryParams.containsKey(RerunAgendaParameter.SKIP_EXECUTION)
             || (agenda.getParams() != null && agenda.getParams().containsKey(GeneralParamKey.doNotRun));
 
         if(!skipExecution)
@@ -225,20 +225,20 @@ public class ReigniteAgendaServiceRequestProcessor extends AbstractServiceReques
         }
     }
 
-    private ReigniteAgendaResponse createReigniteAgendaResponse(ServiceRequest<ReigniteAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
+    private RerunAgendaResponse createReigniteAgendaResponse(ServiceRequest<RerunAgendaRequest> serviceRequest, ErrorResponse errorResponse, String errorResponsePrefix)
     {
         if(errorResponsePrefix != null && errorResponse != null && errorResponse.getDescription() != null)
         {
             errorResponse.setDescription(errorResponsePrefix + " " + errorResponse.getDescription());
         }
-        ReigniteAgendaResponse reigniteAgendaResponse = new ReigniteAgendaResponse();
-        reigniteAgendaResponse.setCID(serviceRequest.getCID());
-        reigniteAgendaResponse.setErrorResponse(errorResponse);
-        return reigniteAgendaResponse;
+        RerunAgendaResponse rerunAgendaResponse = new RerunAgendaResponse();
+        rerunAgendaResponse.setCID(serviceRequest.getCID());
+        rerunAgendaResponse.setErrorResponse(errorResponse);
+        return rerunAgendaResponse;
     }
 
     @Override
-    protected RequestValidator<ServiceRequest<ReigniteAgendaRequest>> getRequestValidator()
+    protected RequestValidator<ServiceRequest<RerunAgendaRequest>> getRequestValidator()
     {
         return requestValidator;
     }

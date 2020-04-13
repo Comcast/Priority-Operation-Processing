@@ -15,7 +15,7 @@ import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceComponents;
 import com.comcast.pop.modules.jsonhelper.replacement.JsonReferenceReplacer;
 import com.comcast.pop.modules.jsonhelper.replacement.ReferenceReplacementResult;
 import com.comcast.pop.endpoint.api.ValidationException;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +36,11 @@ public class ProgressResetProcessor
     private static final Logger logger = LoggerFactory.getLogger(ProgressResetProcessor.class);
     protected static final String RESET_OP_PAYLOAD = "{}";
 
-    public ProgressResetResult resetProgress(Agenda agenda, AgendaProgress agendaProgress, Map<ReigniteAgendaParameter, String> retryParameters)
+    public ProgressResetResult resetProgress(Agenda agenda, AgendaProgress agendaProgress, Map<RerunAgendaParameter, String> retryParameters)
     {
 
-        boolean resetAll = retryParameters.containsKey(ReigniteAgendaParameter.RESET_ALL);
-        boolean continueOnly = retryParameters.containsKey(ReigniteAgendaParameter.CONTINUE);
+        boolean resetAll = retryParameters.containsKey(RerunAgendaParameter.RESET_ALL);
+        boolean continueOnly = retryParameters.containsKey(RerunAgendaParameter.CONTINUE);
         Set<String> operationsToReset = getSpecifiedOperationsToReset(retryParameters, agendaProgress);
 
         if (!resetAll
@@ -262,22 +262,22 @@ public class ProgressResetProcessor
     }
 
 
-    protected Set<String> getSpecifiedOperationsToReset(Map<ReigniteAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
+    protected Set<String> getSpecifiedOperationsToReset(Map<RerunAgendaParameter, String> retryParameters, AgendaProgress agendaProgress)
     {
-        if (!retryParameters.containsKey(ReigniteAgendaParameter.OPERATIONS_TO_RESET))
+        if (!retryParameters.containsKey(RerunAgendaParameter.OPERATIONS_TO_RESET))
             return new HashSet<>();
 
         // validate the incoming ops to reset are valid (requires the AgendaProgress so this cannot be performed up front)
-        String delimitedOps = retryParameters.get(ReigniteAgendaParameter.OPERATIONS_TO_RESET);
-        String[] opsToReset = StringUtils.split(delimitedOps, ReigniteAgendaParameter.VALUE_DELIMITER);
+        String delimitedOps = retryParameters.get(RerunAgendaParameter.OPERATIONS_TO_RESET);
+        String[] opsToReset = StringUtils.split(delimitedOps, RerunAgendaParameter.VALUE_DELIMITER);
         if (opsToReset == null || opsToReset.length == 0)
-            throw new ValidationException(String.format("params is invalid - %1$s has no operations specified", ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterName()));
+            throw new ValidationException(String.format("params is invalid - %1$s has no operations specified", RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterName()));
         Set<String> operationNames = Arrays.stream(agendaProgress.getOperationProgress()).map(OperationProgress::getOperation).collect(Collectors.toSet());
         List<String> invalidOpNames = Arrays.stream(opsToReset).filter(resetOpName -> !operationNames.contains(resetOpName)).collect(Collectors.toList());
         if (invalidOpNames.size() > 0)
             throw new ValidationException(String.format(
                 "params is invalid - %1$s has the following invalid operation names: %2$s",
-                ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterName(),
+                RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterName(),
                 String.join(",", invalidOpNames)));
 
         return Arrays.stream(opsToReset).collect(Collectors.toSet());

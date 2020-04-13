@@ -17,9 +17,9 @@ import com.comcast.pop.endpoint.factory.RequestProcessorFactory;
 import com.comcast.pop.endpoint.progress.AgendaProgressRequestProcessor;
 import com.comcast.pop.scheduling.api.ReadyAgenda;
 import com.comcast.pop.endpoint.api.DefaultServiceRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DefaultDataObjectResponse;
 import com.comcast.pop.persistence.api.ObjectPersister;
 import com.comcast.pop.persistence.api.PersistenceException;
@@ -38,13 +38,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ReigniteAgendaServiceRequestProcessorTest
+public class RerunAgendaServiceRequestProcessorTest
 {
     final String ERROR_MESSAGE = "theError";
 
-    private ReigniteAgendaServiceRequestProcessor requestProcessor;
+    private RerunAgendaServiceRequestProcessor requestProcessor;
 
-    private ReigniteAgendaRequest reigniteAgendaRequest;
+    private RerunAgendaRequest rerunAgendaRequest;
     private Agenda agenda;
 
     private RequestProcessorFactory mockRequestProcessorFactory;
@@ -62,8 +62,8 @@ public class ReigniteAgendaServiceRequestProcessorTest
         agenda = new Agenda();
         agenda.setAgendaInsight(TestUtil.createAgendaInsight("", ""));
 
-        reigniteAgendaRequest = new ReigniteAgendaRequest();
-        reigniteAgendaRequest.setAgendaId("");
+        rerunAgendaRequest = new RerunAgendaRequest();
+        rerunAgendaRequest.setAgendaId("");
 
         mockRequestProcessorFactory = mock(RequestProcessorFactory.class);
 
@@ -80,7 +80,7 @@ public class ReigniteAgendaServiceRequestProcessorTest
         doReturn(mockAgendaRequestProcessor).when(mockRequestProcessorFactory).createAgendaRequestProcessor(any(), any(), any(), any(), any(), any());
         doReturn(mockAgendaProgressRequestProcessor).when(mockRequestProcessorFactory).createAgendaProgressRequestProcessor(any(), any(), any());
 
-        requestProcessor = new ReigniteAgendaServiceRequestProcessor(mock(ObjectPersister.class), mock(ObjectPersister.class), mock(ObjectPersister.class),
+        requestProcessor = new RerunAgendaServiceRequestProcessor(mock(ObjectPersister.class), mock(ObjectPersister.class), mock(ObjectPersister.class),
             mockReadyAgendaPersister, mockInsightPersister, mockCustomerPersister);
         requestProcessor.setProgressResetProcessor(mockProgressResetProcessor);
         requestProcessor.setRequestProcessorFactory(mockRequestProcessorFactory);
@@ -89,7 +89,7 @@ public class ReigniteAgendaServiceRequestProcessorTest
     @Test
     public void testCompleteReset() throws Throwable
     {
-        reigniteAgendaRequest.setParams(Collections.singletonList(ReigniteAgendaParameter.RESET_ALL.getParameterName()));
+        rerunAgendaRequest.setParams(Collections.singletonList(RerunAgendaParameter.RESET_ALL.getParameterName()));
 
         doReturn(TestUtil.createDataObjectResponse(agenda)).when(mockAgendaRequestProcessor).handleGET(any());
 
@@ -106,7 +106,7 @@ public class ReigniteAgendaServiceRequestProcessorTest
 
         doReturn(new DefaultDataObjectResponse<>()).when(mockAgendaProgressRequestProcessor).handlePUT(any());
 
-        requestProcessor.processPOST(new DefaultServiceRequest<>(reigniteAgendaRequest));
+        requestProcessor.processPOST(new DefaultServiceRequest<>(rerunAgendaRequest));
         verify(mockAgendaProgressRequestProcessor, times(1)).handlePUT(any());
         verify(mockReadyAgendaPersister, times(1)).persist(any());
     }
@@ -122,10 +122,10 @@ public class ReigniteAgendaServiceRequestProcessorTest
     public void testNoAgendaFoundOnLookup()
     {
         doReturn(TestUtil.createDataObjectResponse()).when(mockAgendaRequestProcessor).handleGET(any());
-        ReigniteAgendaResponse reigniteAgendaResponse = testExecute(1, 0, 0, 0);
-        Assert.assertNotNull(reigniteAgendaResponse);
-        Assert.assertTrue(reigniteAgendaResponse.isError());
-        Assert.assertTrue(StringUtils.containsIgnoreCase(reigniteAgendaResponse.getErrorResponse().getDescription(), "not found"));
+        RerunAgendaResponse rerunAgendaResponse = testExecute(1, 0, 0, 0);
+        Assert.assertNotNull(rerunAgendaResponse);
+        Assert.assertTrue(rerunAgendaResponse.isError());
+        Assert.assertTrue(StringUtils.containsIgnoreCase(rerunAgendaResponse.getErrorResponse().getDescription(), "not found"));
     }
 
     @Test
@@ -141,10 +141,10 @@ public class ReigniteAgendaServiceRequestProcessorTest
     {
         doReturn(TestUtil.createDataObjectResponse(agenda)).when(mockAgendaRequestProcessor).handleGET(any());
         doReturn(TestUtil.createDataObjectResponse()).when(mockAgendaProgressRequestProcessor).handleGET(any());
-        ReigniteAgendaResponse reigniteAgendaResponse = testExecute(1, 1, 0, 0);
-        Assert.assertNotNull(reigniteAgendaResponse);
-        Assert.assertTrue(reigniteAgendaResponse.isError());
-        Assert.assertTrue(StringUtils.containsIgnoreCase(reigniteAgendaResponse.getErrorResponse().getDescription(), "not found"));
+        RerunAgendaResponse rerunAgendaResponse = testExecute(1, 1, 0, 0);
+        Assert.assertNotNull(rerunAgendaResponse);
+        Assert.assertTrue(rerunAgendaResponse.isError());
+        Assert.assertTrue(StringUtils.containsIgnoreCase(rerunAgendaResponse.getErrorResponse().getDescription(), "not found"));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class ReigniteAgendaServiceRequestProcessorTest
     @Test
     public void testSkipExecution()
     {
-        reigniteAgendaRequest.setParams(Collections.singletonList(ReigniteAgendaParameter.SKIP_EXECUTION.getParameterName()));
+        rerunAgendaRequest.setParams(Collections.singletonList(RerunAgendaParameter.SKIP_EXECUTION.getParameterName()));
 
         AgendaProgress agendaProgress = TestUtil.createAgendaProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.name());
         agendaProgress.setOperationProgress(new OperationProgress[] { TestUtil.createOperationProgress(ProcessingState.COMPLETE, CompleteStateMessage.FAILED.name())});
@@ -204,17 +204,17 @@ public class ReigniteAgendaServiceRequestProcessorTest
     private void testErrorExecute(int expectedAgendaGets, int expectedAgendaProgressGets, int expectedAgendaProgressPuts,
         int expectedReadyAgendaPersists)
     {
-        ReigniteAgendaResponse response = testExecute(expectedAgendaGets, expectedAgendaProgressGets, expectedAgendaProgressPuts, expectedReadyAgendaPersists);
+        RerunAgendaResponse response = testExecute(expectedAgendaGets, expectedAgendaProgressGets, expectedAgendaProgressPuts, expectedReadyAgendaPersists);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.isError());
     }
 
-    private ReigniteAgendaResponse testExecute(int expectedAgendaGets, int expectedAgendaProgressGets, int expectedAgendaProgressPuts,
+    private RerunAgendaResponse testExecute(int expectedAgendaGets, int expectedAgendaProgressGets, int expectedAgendaProgressPuts,
         int expectedReadyAgendaPersists)
     {
         try
         {
-            ReigniteAgendaResponse response = requestProcessor.processPOST(new DefaultServiceRequest<>(reigniteAgendaRequest));
+            RerunAgendaResponse response = requestProcessor.processPOST(new DefaultServiceRequest<>(rerunAgendaRequest));
             verify(mockAgendaRequestProcessor, times(expectedAgendaGets)).handleGET(any());
             verify(mockAgendaProgressRequestProcessor, times(expectedAgendaProgressGets)).handleGET(any());
             verify(mockAgendaProgressRequestProcessor, times(expectedAgendaProgressPuts)).handlePUT(any());

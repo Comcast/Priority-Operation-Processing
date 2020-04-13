@@ -7,18 +7,18 @@ import com.comcast.pop.endpoint.api.ErrorResponse;
 
 import java.util.Collection;
 
-public class IgniteAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
+public class RunAgendaResponse extends DataObjectFeedServiceResponse<Agenda>
 {
-    public IgniteAgendaResponse()
+    public RunAgendaResponse()
     {
     }
 
-    public IgniteAgendaResponse(ErrorResponse errorResponse)
+    public RunAgendaResponse(ErrorResponse errorResponse)
     {
         super(errorResponse);
     }
 
-    public IgniteAgendaResponse(Collection<Agenda> dataObjects)
+    public RunAgendaResponse(Collection<Agenda> dataObjects)
     {
         super(dataObjects);
     }

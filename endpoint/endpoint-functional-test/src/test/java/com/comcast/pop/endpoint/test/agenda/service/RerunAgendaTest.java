@@ -1,8 +1,8 @@
 package com.comcast.pop.endpoint.test.agenda.service;
 
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.endpoint.api.data.DataObjectResponse;
 import com.comcast.pop.endpoint.test.base.EndpointTestBase;
 import com.comcast.pop.endpoint.test.factory.DataGenerator;
@@ -23,23 +23,23 @@ import java.util.*;
 /**
  * Test the rerun of Agendas
  */
-public class ReigniteAgendaTest extends EndpointTestBase
+public class RerunAgendaTest extends EndpointTestBase
 {
-    private static final Logger logger = LoggerFactory.getLogger(ReigniteAgendaTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RerunAgendaTest.class);
     private final String OP_NAME_1 = "Log.1";
     private final String OP_NAME_2 = "Log.2";
     private final String OP_NAME_3 = "Log.3";
 
     @Test(enabled = false)
-    public void simpleReigniteAgenda()
+    public void simpleRerunAgenda()
     {
         final String AGENDA_ID = "86e2a373-9c16-4052-8580-a90ee5684962";
         List<String> params = Arrays.asList(
-            ReigniteAgendaParameter.RESET_ALL.getParameterName()
-            //,ReigniteAgendaParameter.SKIP_EXECUTION.getParameterName()
+            RerunAgendaParameter.RESET_ALL.getParameterName()
+            //,RerunAgendaParameter.SKIP_EXECUTION.getParameterName()
         );
 
-        ReigniteAgendaResponse response = agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(AGENDA_ID, params));
+        RerunAgendaResponse response = agendaServiceClient.rerunAgenda(new RerunAgendaRequest(AGENDA_ID, params));
         logger.info(jsonHelper.getPrettyJSONString(response));
     }
 
@@ -58,14 +58,14 @@ public class ReigniteAgendaTest extends EndpointTestBase
     @Test(dataProvider = "hasResetALLParamsProvider")
     public void testResetAll(boolean hasResetALLParams)
     {
-        List<String> params = hasResetALLParams ? Collections.singletonList(ReigniteAgendaParameter.RESET_ALL.getParameterName()) : null;
+        List<String> params = hasResetALLParams ? Collections.singletonList(RerunAgendaParameter.RESET_ALL.getParameterName()) : null;
 
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2));
         adjustOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString());
         adjustOperationProgress(agenda, OP_NAME_2, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(), params)));
+        verifyNoError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(), params)));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_2, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
@@ -91,8 +91,8 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_3, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(),
-            Collections.singletonList(ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(resetOpNames))
+        verifyNoError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(),
+            Collections.singletonList(RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue(resetOpNames))
             )));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString());
@@ -115,8 +115,8 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_2, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(),
-            Collections.singletonList(ReigniteAgendaParameter.CONTINUE.getParameterName())
+        verifyNoError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(),
+            Collections.singletonList(RerunAgendaParameter.CONTINUE.getParameterName())
         )));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, CompleteStateMessage.FAILED.toString());
@@ -136,8 +136,9 @@ public class ReigniteAgendaTest extends EndpointTestBase
     @Test(dataProvider = "skipExecutionStateProvider")
     public void testSkipExecutionAndResetAll(CompleteStateMessage state)
     {
-        List<String> params = Arrays.asList(ReigniteAgendaParameter.SKIP_EXECUTION.getParameterName(),
-                ReigniteAgendaParameter.RESET_ALL.getParameterName());
+        List<String> params = Arrays.asList(
+            RerunAgendaParameter.SKIP_EXECUTION.getParameterName(),
+                RerunAgendaParameter.RESET_ALL.getParameterName());
 
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2, OP_NAME_3));
         adjustOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, state.toString());
@@ -145,8 +146,8 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_3, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(
-                new ReigniteAgendaRequest(agenda.getId(), params)));
+        verifyNoError(agendaServiceClient.rerunAgenda(
+                new RerunAgendaRequest(agenda.getId(), params)));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_2, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
@@ -156,8 +157,9 @@ public class ReigniteAgendaTest extends EndpointTestBase
     @Test(dataProvider = "skipExecutionStateProvider")
     public void testSkipExecutionAndContinue(CompleteStateMessage state)
     {
-        List<String> params = Arrays.asList(ReigniteAgendaParameter.SKIP_EXECUTION.getParameterName(),
-                ReigniteAgendaParameter.CONTINUE.getParameterName());
+        List<String> params = Arrays.asList(
+            RerunAgendaParameter.SKIP_EXECUTION.getParameterName(),
+                RerunAgendaParameter.CONTINUE.getParameterName());
 
 
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2, OP_NAME_3));
@@ -166,8 +168,8 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_3, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(
-                new ReigniteAgendaRequest(agenda.getId(), params)));
+        verifyNoError(agendaServiceClient.rerunAgenda(
+                new RerunAgendaRequest(agenda.getId(), params)));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, state.toString());
         verifyOperationProgress(agenda, OP_NAME_2, ProcessingState.COMPLETE, state.toString());
@@ -177,8 +179,9 @@ public class ReigniteAgendaTest extends EndpointTestBase
     @Test(dataProvider = "skipExecutionStateProvider")
     public void testSkipExecutionAndResetSpecificOps(CompleteStateMessage state)
     {
-        List<String> params = Arrays.asList(ReigniteAgendaParameter.SKIP_EXECUTION.getParameterName(),
-                ReigniteAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue( OP_NAME_2 + "," + OP_NAME_3));
+        List<String> params = Arrays.asList(
+            RerunAgendaParameter.SKIP_EXECUTION.getParameterName(),
+                RerunAgendaParameter.OPERATIONS_TO_RESET.getParameterNameWithValue( OP_NAME_2 + "," + OP_NAME_3));
 
 
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2, OP_NAME_3));
@@ -187,8 +190,8 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_3, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(
-                new ReigniteAgendaRequest(agenda.getId(), params)));
+        verifyNoError(agendaServiceClient.rerunAgenda(
+                new RerunAgendaRequest(agenda.getId(), params)));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
         verifyOperationProgress(agenda, OP_NAME_1, ProcessingState.COMPLETE, state.toString());
         verifyOperationProgress(agenda, OP_NAME_2, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
@@ -209,7 +212,7 @@ public class ReigniteAgendaTest extends EndpointTestBase
     @Test(dataProvider = "invalidAgendaIdProvider")
     public void testRetryInvalidAgendaId(String agendaId, int responseCode, String expectedExceptionTitle, String expectedMessageFragment)
     {
-        verifyError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agendaId, null)), responseCode, expectedExceptionTitle, expectedMessageFragment);
+        verifyError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agendaId, null)), responseCode, expectedExceptionTitle, expectedMessageFragment);
     }
 
     @DataProvider
@@ -232,7 +235,7 @@ public class ReigniteAgendaTest extends EndpointTestBase
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2, OP_NAME_3));
         List<String> params = Collections.singletonList(paramName);
 
-        verifyError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(), params)), responseCode, expectedExceptionTitle, expectedMessageFragment);
+        verifyError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(), params)), responseCode, expectedExceptionTitle, expectedMessageFragment);
     }
 
 
@@ -257,13 +260,13 @@ public class ReigniteAgendaTest extends EndpointTestBase
         Agenda agenda = persistDataObject(agendaClient, Agenda.class, DataGenerator.createNonRunningLogAgenda(testCustomerId, OP_NAME_1, OP_NAME_2, OP_NAME_3));
         List<String> params = Collections.singletonList(invalidOperationsToReset);
 
-        verifyError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(), params)), responseCode, expectedExceptionTitle, expectedMessageFragment);
+        verifyError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(), params)), responseCode, expectedExceptionTitle, expectedMessageFragment);
     }
 
     @Test
     public void testRetryNullRequest()
     {
-        verifyError(agendaServiceClient.reigniteAgenda(null), 422, "ValidationException");
+        verifyError(agendaServiceClient.rerunAgenda(null), 422, "ValidationException");
     }
 
     @DataProvider
@@ -293,7 +296,7 @@ public class ReigniteAgendaTest extends EndpointTestBase
         adjustOperationProgress(agenda, OP_NAME_2, ProcessingState.EXECUTING, "doing stuff");
         adjustAgendaProgress(agenda, ProcessingState.EXECUTING, "agenda doing stuff");
 
-        verifyNoError(agendaServiceClient.reigniteAgenda(new ReigniteAgendaRequest(agenda.getId(), params)));
+        verifyNoError(agendaServiceClient.rerunAgenda(new RerunAgendaRequest(agenda.getId(), params)));
         verifyAgendaProgress(agenda, ProcessingState.WAITING, WaitingStateMessage.PENDING.toString());
     }
 

@@ -53,17 +53,17 @@ function addAgendaTemplates(agendaTemplates){
     }
 }
 
-function processIgniteCall(event){
+function processRunCall(event){
 
     var server = getServer();
-    var serviceEndpoint = serviceEndpointsByName["Ignite"];
+    var serviceEndpoint = serviceEndpointsByName["Run"];
     var payloadJson = $("#ignite_payload").val();
     var agendaTemplateName = $("#ignite_agenda_template_name").val();
     var agendaTemplateId = g_VisibleAgendaTemplates[agendaTemplateName].id;
     if(!verifyJson(payloadJson)){
         return;
     }
-    var igniteRequest = {
+    var runRequest = {
         payload: payloadJson,
         agendaTemplateId: agendaTemplateId
     };
@@ -77,7 +77,7 @@ function processIgniteCall(event){
             makeServiceRequest(
                 "POST",
                 getEndpointURL(server, serviceEndpoint),
-                JSON.stringify(igniteRequest),
+                JSON.stringify(runRequest),
                 function(response){
                     toggleSpinnerObject(spinner, false);
                     $("#response").val(JSON.stringify(response, null, 2));
@@ -95,9 +95,9 @@ function processIgniteCall(event){
     );
 }
 
-function processrerunCall(event){
+function processRerunCall(event){
     var server = getServer();
-    var serviceEndpoint = serviceEndpointsByName["rerun"];
+    var serviceEndpoint = serviceEndpointsByName["Rerun"];
     var params = [];
 
     var spinner = $("#pop_spinner_rerun");

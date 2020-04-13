@@ -1,8 +1,8 @@
 package com.comcast.pop.endpoint.test.factory;
 
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaParameter;
-import com.comcast.pop.endpoint.api.agenda.ReigniteAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaParameter;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
 import com.comcast.pop.api.Agenda;
 import com.comcast.pop.api.AgendaTemplate;
 import com.comcast.pop.api.TransformRequest;
@@ -105,22 +105,22 @@ public class DataGenerator
 
     public static final String AGENDA_ID = "86e2a373-9c16-4052-8580-a90ee5684962";
 
-    public static ReigniteAgendaRequest generateSimpleReigniteAgendaRequest(String agendId)
+    public static RerunAgendaRequest generateSimpleReigniteAgendaRequest(String agendId)
     {
 
         List<String> params = Arrays.asList(
-                ReigniteAgendaParameter.RESET_ALL.getParameterName()
+                RerunAgendaParameter.RESET_ALL.getParameterName()
         );
 
-        return new ReigniteAgendaRequest(agendId, params);
+        return new RerunAgendaRequest(agendId, params);
     }
 
     public static final String AGENDA_TEMPLATE_ID = "899f2241-3877-4301-b3d2-aa7e4274e499";
 
-    public static IgniteAgendaRequest generateSimpleIgniteAgendaRequest(String agendaTemplateId)
+    public static RunAgendaRequest generateSimpleIgniteAgendaRequest(String agendaTemplateId)
     {
 
-        IgniteAgendaRequest request = new IgniteAgendaRequest();
+        RunAgendaRequest request = new RunAgendaRequest();
         request.setAgendaTemplateId(agendaTemplateId);
         request.setPayload("{\"logMessage\":\"This is the message from the input payload.\"}");
 

@@ -1,17 +1,15 @@
 package com.comcast.pop.endpoint.agenda.service.aws;
 
 import com.comcast.pop.endpoint.agenda.aws.persistence.DynamoDBAgendaPersisterFactory;
-import com.comcast.pop.endpoint.agenda.service.IgniteAgendaServiceRequestProcessor;
 import com.comcast.pop.endpoint.progress.aws.persistence.DynamoDBAgendaProgressPersisterFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.comcast.pop.api.Agenda;
-import com.comcast.pop.api.AgendaTemplate;
 import com.comcast.pop.api.facility.Customer;
 import com.comcast.pop.api.facility.Insight;
 import com.comcast.pop.api.progress.AgendaProgress;
 import com.comcast.pop.api.progress.OperationProgress;
 import com.comcast.pop.endpoint.TableEnvironmentVariableName;
-import com.comcast.pop.endpoint.agendatemplate.aws.persistence.DynamoDBAgendaTemplatePersisterFactory;
+import com.comcast.pop.endpoint.agenda.service.RerunAgendaServiceRequestProcessor;
 import com.comcast.pop.endpoint.aws.AbstractLambdaStreamEntry;
 import com.comcast.pop.endpoint.aws.EnvironmentLookupUtils;
 import com.comcast.pop.endpoint.aws.LambdaRequest;
@@ -21,15 +19,15 @@ import com.comcast.pop.endpoint.resourcepool.aws.persistence.DynamoDBCustomerPer
 import com.comcast.pop.endpoint.resourcepool.aws.persistence.DynamoDBInsightPersisterFactory;
 import com.comcast.pop.scheduling.api.ReadyAgenda;
 import com.comcast.pop.endpoint.api.BadRequestException;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaRequest;
-import com.comcast.pop.endpoint.api.agenda.IgniteAgendaResponse;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaRequest;
+import com.comcast.pop.endpoint.api.agenda.RerunAgendaResponse;
 import com.comcast.pop.persistence.api.ObjectPersisterFactory;
 import com.comcast.pop.scheduling.aws.persistence.DynamoDbReadyAgendaPersisterFactory;
 
 /**
- * Main entry point class for the AWS Agenda+payload submit endpoint
+ * Main entry point class for the AWS Agenda retry endpoint
  */
-public class IgniteAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<IgniteAgendaResponse, LambdaRequest<IgniteAgendaRequest>>
+public class RerunAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<RerunAgendaResponse, LambdaRequest<RerunAgendaRequest>>
 {
     private EnvironmentLookupUtils environmentLookupUtils = new EnvironmentLookupUtils();
 
@@ -39,28 +37,27 @@ public class IgniteAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Ign
     private ObjectPersisterFactory<OperationProgress> operationProgressPersisterFactory;
     private ObjectPersisterFactory<ReadyAgenda> readyAgendaPersisterFactory;
     private ObjectPersisterFactory<Customer> customerPersisterFactory;
-    private ObjectPersisterFactory<AgendaTemplate> agendaTemplatePersisterFactory;
 
     @Override
-    public RequestProcessor getRequestProcessor(LambdaRequest<IgniteAgendaRequest> lambdaRequest)
+    public RequestProcessor getRequestProcessor(LambdaRequest<RerunAgendaRequest> lambdaRequest)
     {
-        return new IgniteAgendaServiceRequestProcessor(
-            insightPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT)),
+        return new RerunAgendaServiceRequestProcessor(
             agendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA)),
-            customerPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.CUSTOMER)),
             agendaProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_PROGRESS)),
             operationProgressPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.OPERATION_PROGRESS)),
             readyAgendaPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.READY_AGENDA)),
-            agendaTemplatePersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.AGENDA_TEMPLATE)));
+            insightPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.INSIGHT)),
+            customerPersisterFactory.getObjectPersister(environmentLookupUtils.getTableName(lambdaRequest, TableEnvironmentVariableName.CUSTOMER))
+        );
     }
 
     @Override
-    public LambdaRequest<IgniteAgendaRequest> getRequest(JsonNode node) throws BadRequestException
+    public LambdaRequest<RerunAgendaRequest> getRequest(JsonNode node) throws BadRequestException
     {
-        return new LambdaRequest<>(node, IgniteAgendaRequest.class);
+        return new LambdaRequest<>(node, RerunAgendaRequest.class);
     }
 
-    public IgniteAgendaLambdaStreamEntry()
+    public RerunAgendaLambdaStreamEntry()
     {
         this.agendaPersisterFactory = new DynamoDBAgendaPersisterFactory();
         this.insightPersisterFactory = new DynamoDBInsightPersisterFactory();
@@ -68,7 +65,6 @@ public class IgniteAgendaLambdaStreamEntry extends AbstractLambdaStreamEntry<Ign
         this.operationProgressPersisterFactory = new DynamoDBOperationProgressPersisterFactory();
         this.readyAgendaPersisterFactory = new DynamoDbReadyAgendaPersisterFactory();
         this.customerPersisterFactory = new DynamoDBCustomerPersisterFactory();
-        this.agendaTemplatePersisterFactory = new DynamoDBAgendaTemplatePersisterFactory();
     }
 }
 
