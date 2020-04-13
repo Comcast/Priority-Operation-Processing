@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class IntermediatePathComposer
 {
-    protected static final String INTERMEDIATE_PATH_KEY = "cp.handler.intermediate.path";
-    protected static final String INTERMEDIATE_REQUIRED_PATH_TOKENS_KEY = "cp.handler.intermediate.requiredPathTokens";
+    protected static final String INTERMEDIATE_PATH_KEY = "pop.handler.intermediate.path";
+    protected static final String INTERMEDIATE_REQUIRED_PATH_TOKENS_KEY = "pop.handler.intermediate.requiredPathTokens";
     protected static final String REQUIRED_PATH_TOKEN_DELIMITER = ",";
 
     private ReferenceTokenReplacer referenceTokenReplacer;
