@@ -38,7 +38,6 @@ public class DynamoDBLiveTest
         final String TABLE_NAME = "POP-Agenda-dev";
         DynamoDBObjectPersister<TestTrackedObject> objectPersister = new DynamoDBObjectPersister<>(TABLE_NAME,
             "id", dynamoDBFactory, TestTrackedObject.class, tableIndexes);
-        //Query<String> query = new Query<>("customerId", "http://access.auth.test.corp.theplatform.com/data/Account/3515465101");
         Query<String> query = new Query<>("linkId", "e9e29289-e3f2-47fe-a6c2-1500a9376732");
 
         Query<Integer> limitQuery = new Query<>(new LimitField(), 5);

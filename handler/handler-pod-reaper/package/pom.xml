@@ -64,36 +64,6 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <profiles>
-        <profile>
-            <id>dockerLabDefault</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!env.DOCKER_LAB</name>
-                </property>
-            </activation>
-            <properties>
-                <!-- Override only if necessary -->
-                <env.DOCKER_LAB>docker-lab.repo.theplatform.com</env.DOCKER_LAB>
-            </properties>
-        </profile>
-        <profile>
-            <id>dockerProdDefault</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!env.DOCKER_PROD</name>
-                </property>
-            </activation>
-            <properties>
-                <!-- Override only if necessary -->
-                <env.DOCKER_PROD>docker-prod.repo.theplatform.com</env.DOCKER_PROD>
-            </properties>
-        </profile>
-    </profiles>
 </project>
 
 
