@@ -123,27 +123,27 @@
     },
     "AuthorizerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.authorizer"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.authorizer"
     },    
     "CallbackRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Callback.trigger"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.Callback.trigger"
     },
     "SchedulerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Scheduler.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.Scheduler.app"
     },
     "ReaperRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Reaper.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.Reaper.app"
     },
     "UnifiedEndpointRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.UnifiedEndpoint.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.UnifiedEndpoint.app"
     },
     "ReclaimerRole": {
       "Type": "String",
-      "Default": "arn:aws:iam::[add your accountID]:role/OneCloud/POP.Reclaimer.app"
+      "Default": "arn:aws:iam::[add your accountID]:role/POP.Reclaimer.app"
     },
     "LambdaRefPathPOPAuthorizer": {
       "Type": "String",

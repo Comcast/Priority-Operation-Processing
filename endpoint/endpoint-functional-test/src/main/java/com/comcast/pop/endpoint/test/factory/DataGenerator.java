@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class DataGenerator
 {
+    private static final String OPERATION_TYPE = "sample";
     public static ResourcePool generateResourcePool(String customerId)
     {
         ResourcePool resourcePool = new ResourcePool();
@@ -71,7 +72,7 @@ public class DataGenerator
         agenda.setCid("testCid" + UUID.randomUUID().toString());
         Operation operation = new Operation();
         operation.setId("op1.id");
-        operation.setType("testOperation");
+        operation.setType(OPERATION_TYPE);
         operation.setName("op1.name");
         operation.setPayload(new HashMap<>());
         agenda.setOperations(Collections.singletonList(operation));
@@ -95,7 +96,7 @@ public class DataGenerator
             {
                 Operation operation = new Operation();
                 operation.setName(name);
-                operation.setType("testOperation");
+                operation.setType(OPERATION_TYPE);
                 return operation;
             }).collect(Collectors.toList()));
         }
