@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pop-sample-01
+  namespace: pop
+  labels:
+   serviceShortName: fhsamp
+data:
+  env-properties: |
+    JAVA_HEAP=256M
+    LOG_LEVEL=DEBUG
+    JAVA_EXTRA=-XX:MaxMetaspaceSize=256m 
+  external-properties: |
+    pop.kubernetes.namespace=pop
+    pop.kubernetes.podconfig.serviceAccount=pop-service
+    pop.kubernetes.podconfig.namePrefix=pop-sample-ext
+    pop.kubernetes.podconfig.docker.imageName=alpine:3.11
+    pop.kubernetes.podconfig.reapCompletedPods=false
+    pop.kubernetes.podconfig.docker.imagePullAlways=false

@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-executor-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.handler</groupId>
+    <artifactId>pop-handler-executor-api</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Executor Handler API</name>
+
+    <properties>
+        <pop-api.version>1.0.0</pop-api.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+			<scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

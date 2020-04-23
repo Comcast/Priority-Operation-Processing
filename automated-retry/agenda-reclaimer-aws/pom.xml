@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-retry</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.agenda.reclaim</groupId>
+    <artifactId>pop-agenda-reclaimer-aws</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Agenda Reclaimer AWS compatible zip package suitable for Lambda</name>
+
+    <properties>
+        <aws-java-jdk>1.11.100</aws-java-jdk>
+        <aws-lambda-jdk.version>1.11.100</aws-lambda-jdk.version>
+        <aws-lambda-java-core.version>1.2.0</aws-lambda-java-core.version>
+        <pop-agenda-reclaimer.version>1.0.0</pop-agenda-reclaimer.version>
+        <pop-version-info.version>1.0.0</pop-version-info.version>
+        <pop-aws-base-endpoint.version>1.0.0</pop-aws-base-endpoint.version>
+        <pop-idm-http.version>1.0.0</pop-idm-http.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-data-object-reaper-aws.version>1.0.0</pop-data-object-reaper-aws.version>
+    </properties>
+
+    <dependencies>
+        <!-- POP Dependencies -->
+        <dependency>
+            <groupId>com.comcast.pop.reaper</groupId>
+            <artifactId>pop-data-object-reaper-aws</artifactId>
+            <version>${pop-data-object-reaper-aws.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.agenda.reclaim</groupId>
+            <artifactId>pop-agenda-reclaimer-impl</artifactId>
+            <version>${pop-agenda-reclaimer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-version-info.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base-aws</artifactId>
+            <version>${pop-aws-base-endpoint.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+        </dependency>
+
+        <!-- AWS Dependencies -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws-java-jdk}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws-lambda-java-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-lambda</artifactId>
+            <version>${aws-lambda-jdk.version}</version>
+        </dependency>
+
+        <!-- External provided dependencies (intentionally last so they override any nested dependencies) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!--  Note: Normally, this plugin would be run using
+                "mvn compile assembly:single" but the execution
+                clause below binds it to the normal 'package' lifecycle phase
+                -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/lambda_deployment_package_assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>lambda_deployment_package_execution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resource-one</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+
+                        <configuration>
+                            <outputDirectory>../../deploy/endpoint/aws/binaries</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target</directory>
+                                    <includes>
+                                        <include>*.zip</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

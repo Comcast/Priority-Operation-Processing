@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-impl</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Endpoint implementation</name>
+
+    <properties>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-endpoint-base.version>1.0.0</pop-endpoint-base.version>
+        <pop-scheduling-api.version>1.0.0</pop-scheduling-api.version>
+        <pop-json-helper.version>1.0.0</pop-json-helper.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-http-util.version>1.0.0</pop-http-util.version>
+        <pop-endpoint-client.version>1.0.0</pop-endpoint-client.version>
+        <pop-http-request-handler-api.version>1.0.0</pop-http-request-handler-api.version>
+        <pop-endpoint-api.version>1.0.0</pop-endpoint-api.version>
+        <pop-queue-api.version>1.0.0</pop-queue-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-base</artifactId>
+            <version>${pop-endpoint-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-api</artifactId>
+            <version>${pop-endpoint-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-queue-api</artifactId>
+            <version>${pop-queue-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-scheduling-api</artifactId>
+            <version>${pop-scheduling-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-json-helper</artifactId>
+            <version>${pop-json-helper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-client</artifactId>
+            <version>${pop-endpoint-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--testing-->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

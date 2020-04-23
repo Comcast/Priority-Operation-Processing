@@ -1,0 +1,33 @@
+{
+  "someObject" : {
+    "mediainforef" : {
+      "mediaProperties" : {
+        "width" : 720,
+        "height" : 480
+      }
+    },
+    "mediainforefwidth" : 720
+  },
+  "arrayRef" : [ {
+    "id" : "package",
+    "payload" : {
+      "setting" : "value"
+    }
+  }, {
+    "id" : "encode",
+    "payload" : {
+      "setting" : "value"
+    }
+  } ],
+  "anotherItem" : {
+    "subitem" : {
+      "childitem" : "encode"
+    }
+  },
+  "stringref":"a value",
+  "numberRef":42,
+  "tokenNumber":42,
+  "tokenString":"a value",
+  "compositeString":"xa valuey",
+  "agendaId":"456-789"
+}

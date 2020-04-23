@@ -1,0 +1,8 @@
+.rotate{
+    transform-origin:50% 50%;
+    animation:2s rotateRight infinite linear;
+}
+
+@keyframes rotateRight{
+    100%{ transform:rotate(360deg); }
+}

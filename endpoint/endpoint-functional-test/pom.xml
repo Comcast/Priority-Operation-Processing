@@ -1,0 +1,193 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-functional-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Endpoint Functional Tests</name>
+
+    <properties>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-endpoint-client.version>1.0.0</pop-endpoint-client.version>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-http-utils.version>1.0.0</pop-http-utils.version>
+        <pop-http-api.version>1.0.0</pop-http-api.version>
+
+        <pop-test-tools.version>1.0.0-SNAPSHOT</pop-test-tools.version>
+        <pop-test-endpoint-cleanup.version>1.0.0-SNAPSHOT</pop-test-endpoint-cleanup.version>
+
+        <spring-version>4.3.21.RELEASE</spring-version>
+        <commons-http-client.version>3.1</commons-http-client.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <commons-io.version>2.6</commons-io.version>
+        <skipITTests>true</skipITTests>
+        <test-suite>testng.xml</test-suite>
+        <surefireReportDir>surefire-reports</surefireReportDir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-utils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-api</artifactId>
+            <version>${pop-http-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-client</artifactId>
+            <version>${pop-endpoint-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-http-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+
+        <!-- Provided -->
+        <dependency>
+            <groupId>com.comcast.pop.test</groupId>
+            <artifactId>pop-test-tools</artifactId>
+            <version>${pop-test-tools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.test</groupId>
+            <artifactId>pop-test-endpoint-cleanup</artifactId>
+            <version>${pop-test-endpoint-cleanup.version}</version>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>bsh</artifactId>
+                    <groupId>org.beanshell</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.9.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <!-- prevent surefire from running integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <includes>
+                        <include>**/unit/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Integration Test Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <!-- By default we skip IT tests -->
+                    <skipTests>${skipITTests}</skipTests>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${test-suite}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <includes>
+                        <include>**/*Test*.*</include>
+                    </includes>
+
+                    <testSourceDirectory>${basedir}/src/test/groovy</testSourceDirectory>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <reportsDirectory>${basedir}/target/${surefireReportDir}</reportsDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>integration-test</goal>
+                            <!--suppress MavenModelInspection -->
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

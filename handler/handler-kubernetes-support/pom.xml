@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-handler</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-handler-kubernetes-support</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Content Processing Handler Kubernetes</name>
+
+    <properties>
+        <pop-fabric8-kube-client.version>1.0.0</pop-fabric8-kube-client.version>
+        <pop-handler-base.version>1.0.0</pop-handler-base.version>
+        <pop-monitor.version>1.0.0</pop-monitor.version>
+        <pop-monitor-graphite.version>1.0.0</pop-monitor-graphite.version>
+        <pop-monitor-bananas.version>1.0.0</pop-monitor-bananas.version>
+        <pop-compression.version>1.0.0</pop-compression.version>
+        <pop-api.version>1.0.0</pop-api.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-compression</artifactId>
+            <version>${pop-compression.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-kube-client-fabric8</artifactId>
+            <version>${pop-fabric8-kube-client.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-handler-base</artifactId>
+            <version>${pop-handler-base.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- monitoring -->
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor</artifactId>
+            <version>${pop-monitor.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor-graphite</artifactId>
+            <version>${pop-monitor-graphite.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

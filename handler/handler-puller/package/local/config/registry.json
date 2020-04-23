@@ -1,0 +1,23 @@
+{
+  "basePodConfig": {
+    "memoryRequestCount": "1000m",
+    "cpuMinRequestCount": "1000m",
+    "cpuMaxRequestCount": "1000m",
+    "podScheduledTimeoutMs": 600000,
+    "reapCompletedPods": true,
+    "pullAlways": true
+  },
+  "executor": {
+    "configMapName": "pop-executor-01",
+    "podConfig": {
+      "imageName": "you.docker.repo/fhexec:1.0.0",
+      "namePrefix": "pop-exec",
+      "configMapDetails": {
+        "mapKeyPaths":[
+          { "key": "external-properties", "path": "external.properties"},
+          { "key": "registry-json", "path": "registry.json"}
+        ]
+      }
+    }
+  }
+}

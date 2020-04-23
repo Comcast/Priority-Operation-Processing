@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d ${HOSTNAME} %X{CID} %-5p [%t] %c{15}: %replace(%m){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'}%n</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="syslogServiceAppender" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>localhost</syslogHost>
+        <facility>LOCAL0</facility>
+        <suffixPattern>%thread: %-5level %logger{36} - %msg%n</suffixPattern>
+    </appender>
+
+    <appender name="asyncLogAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="syslogServiceAppender" />
+    </appender>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="httpclient.wire.header" level="ERROR" />
+    <logger name="io.fabric8.kubernetes.client.Config" level="INFO" />
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="asyncLogAppender" />
+    </root>
+
+</configuration>

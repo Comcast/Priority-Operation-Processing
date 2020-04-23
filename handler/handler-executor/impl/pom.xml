@@ -1,0 +1,214 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-executor-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pop-handler-executor-impl</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Executor Handler Impl</name>
+
+    <properties>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-logging-extension.version>1.2.0</pop-logging-extension.version>
+        <pop-executor-handler-api.version>1.0.0</pop-executor-handler-api.version>
+
+        <pop-handler-base.version>1.0.0</pop-handler-base.version>
+        <pop-fabric8-kube-client.version>1.0.0</pop-fabric8-kube-client.version>
+        <pop-handler-kubernetes-support.version>1.0.0</pop-handler-kubernetes-support.version>
+        <pop-http-api.version>1.0.0</pop-http-api.version>
+        <pop-http-util.version>1.0.0</pop-http-util.version>
+        <pop-endpoint-client.version>1.0.0</pop-endpoint-client.version>
+        <!-- Resident Handlers-->
+        <pop-http-request-util-handler.version>1.0.0</pop-http-request-util-handler.version>
+
+        <pop-monitor.version>1.0.0</pop-monitor.version>
+        <pop-monitor-graphite.version>1.0.0</pop-monitor-graphite.version>
+
+        <commons-collections4.version>4.3</commons-collections4.version>
+        <json-helper.version>1.0.0</json-helper.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-json-helper</artifactId>
+            <version>${json-helper.version}</version>
+        </dependency>
+
+        <!-- Resident Handlers -->
+        <!-- provides the createAgenda call -->
+        <!--
+        <dependency>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-util-http-impl</artifactId>
+            <version>${http-request-util-handler.version}</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-executor-api</artifactId>
+            <version>${pop-executor-handler-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-handler-kubernetes-support</artifactId>
+            <version>${pop-handler-kubernetes-support.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-client</artifactId>
+            <version>${pop-endpoint-client.version}</version>
+        </dependency>
+
+        <!-- Provided dependencies from intermediate modules -->
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-util</artifactId>
+            <version>${pop-http-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-http-api</artifactId>
+            <version>${pop-http-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-handler-base</artifactId>
+            <version>${pop-handler-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-kube-client-fabric8</artifactId>
+            <version>${pop-fabric8-kube-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+        </dependency>
+
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor</artifactId>
+            <version>${pop-monitor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-monitor-graphite</artifactId>
+            <version>${pop-monitor-graphite.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+<!--        <dependency>-->
+<!--            <groupId>com.comcast.pop.module</groupId>-->
+<!--            <artifactId>pl-logging-extension-logback</artifactId>-->
+<!--            <version>${logging-extension.version}</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
+
+        <!-- External provided dependencies -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check_jdk_compatibility</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>com.comcast.pop.handler.executor.impl.HandlerEntryPoint</Main-Class>
+                                        <Build-Number>1</Build-Number>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+
+    </reporting>
+</project>

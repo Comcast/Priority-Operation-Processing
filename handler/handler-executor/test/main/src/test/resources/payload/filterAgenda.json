@@ -1,0 +1,53 @@
+{
+  "operations" : [ {
+    "payload" : {
+      "inputs" : [ {
+        "type" : "mezzanine",
+        "url" : "/testFiles/immortals_trailerHigh.mp4",
+        "label" : null,
+        "credentials" : { },
+        "params" : { }
+      } ],
+      "outputs" : [ {
+        "type" : "mezzanine",
+        "url" : "/testFiles/demux/immortals_trailerHigh_video_0.mp4",
+        "label" : null,
+        "credentials" : { },
+        "params" : { },
+        "outputStreamRefs" : null
+      } ],
+      "params" : {
+        "source_streams" : [ 0 ]
+      }
+    },
+    "type" : "encode",
+    "id" : "fd89079e-e992-4dab-88e9-26488681e567",
+    "name" : "ffmpeg.demux.video.0"
+  }, {
+    "payload" : {
+      "inputs" : [ {
+        "type" : "mezzanine",
+        "url" : "/testFiles/immortals_trailerHigh.mp4",
+        "label" : null,
+        "credentials" : { },
+        "params" : { }
+      } ],
+      "outputs" : [ {
+        "type" : "mezzanine",
+        "url" : "/testFiles/demux/immortals_trailerHigh_audio_1.mp4",
+        "label" : null,
+        "credentials" : { },
+        "params" : { },
+        "outputStreamRefs" : null
+      } ],
+      "params" : {
+        "source_streams" : [ 1 ]
+      }
+    },
+    "type" : "encode",
+    "id" : "4c88156a-2c8e-4f87-a6f2-bb3de2c0f539",
+    "name" : "ffmpeg.demux.audio.1"
+  } ],
+  "params" : null,
+  "id" : null
+}

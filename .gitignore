@@ -1,0 +1,8 @@
+*.log
+target/
+*.iml
+.idea/
+.DS_Store
+._*
+dependency-reduced-pom.xml
+deploy/endpoint/aws/binaries

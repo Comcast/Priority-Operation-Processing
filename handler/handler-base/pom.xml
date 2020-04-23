@@ -1,0 +1,100 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-handler</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.module</groupId>
+    <artifactId>pop-handler-base</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Content Processing Handler Base</name>
+
+    <properties>
+        <json-helper.version>1.0.0</json-helper.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <commons-lang3.version>3.7</commons-lang3.version>
+        <failsafe.version>2.0.1</failsafe.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <pop-version-info.version>1.0.0</pop-version-info.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-json-helper</artifactId>
+            <version>${json-helper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>failsafe</artifactId>
+            <version>${failsafe.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-version-info</artifactId>
+            <version>${pop-version-info.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

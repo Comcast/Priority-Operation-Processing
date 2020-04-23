@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root-endpoint</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.endpoint</groupId>
+    <artifactId>pop-endpoint-base</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>TransformRequest endpoint implementation</name>
+
+    <properties>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-api.version>1.0.0</pop-api.version>
+        <pop-endpoint-api.version>1.0.0</pop-endpoint-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.api</groupId>
+            <artifactId>pop-api</artifactId>
+            <version>${pop-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.endpoint</groupId>
+            <artifactId>pop-endpoint-api</artifactId>
+            <version>${pop-endpoint-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 3rd party -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

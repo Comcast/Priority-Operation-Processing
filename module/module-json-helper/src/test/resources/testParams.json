@@ -1,0 +1,31 @@
+{
+  "mediainfo.1.out":
+  {
+    "mediaProperties":
+    {
+      "width":720,
+      "height":480
+    }
+  },
+  "analysis.1.out":
+  {
+    "operations":[
+      {
+        "id":"encode",
+        "payload":
+        {
+          "setting":"value"
+        }
+      },
+      {
+        "id":"package",
+        "payload":
+        {
+          "setting":"value"
+        }
+      }
+    ]
+  },
+  "basicString":"a value",
+  "theNumber":42
+}

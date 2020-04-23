@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.comcast.pop.handler</groupId>
+        <artifactId>pop-handler-pod-reaper-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.comcast.pop.handler</groupId>
+    <artifactId>pop-handler-pod-reaper-package</artifactId>
+    <version>${application.version}</version>
+    <packaging>pom</packaging>
+    <name>Handler Pod Reaper Package</name>
+
+    <properties>
+        <application.version>1.0.0</application.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.handler</groupId>
+            <artifactId>pop-handler-pod-reaper-impl</artifactId>
+            <version>${application.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                sleep 2000
+                                log.info('{}', '\n\n#\n#\n####\n#\n#\n use run.sh to build and run in docker or just dockerRun.sh if you already have an image.\n#\n#\n####\n')
+                                sleep 2000
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.18</version>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>1.8</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+

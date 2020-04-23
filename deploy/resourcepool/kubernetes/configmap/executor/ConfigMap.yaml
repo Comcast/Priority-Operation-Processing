@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pop-executor-01
+  namespace: pop
+  labels:
+   serviceShortName: fhexec
+data:
+  env-properties: |
+    JAVA_HEAP=256M
+    LOG_LEVEL=DEBUG
+    JAVA_EXTRA=-XX:MaxMetaspaceSize=256m 
+    JAVA_EXTRA="$JAVA_EXTRA"
+  external-properties: |
+    pop.kubernetes.namespace=pop
+    metrics.enabled=false
+    executor.reap.self=false
+    agenda.progress.url=https://<endpoint url including stage>/pop/resourcepool/service
+  registry-json: |
+    {
+      "basePodConfig": {
+        "memoryRequestCount": "1000m",
+        "cpuMinRequestCount": "1000m",
+        "cpuMaxRequestCount": "1000m",
+        "podScheduledTimeoutMs": 600000,
+        "reapCompletedPods": false,
+        "pullAlways": false
+      },
+      "sample": {
+        "configMapName": "pop-sample-01",
+        "podConfig": {
+          "imageName": "pop-sample:1.0.0",
+          "namePrefix": "pop-sample",
+          "cpuMinRequestCount":"100m",
+          "cpuMaxRequestCount":"250m"
+        }
+      }
+    }

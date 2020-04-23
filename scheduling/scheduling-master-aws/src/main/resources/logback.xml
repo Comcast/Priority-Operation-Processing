@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true">
+    <jmxConfigurator contextName="POP Scheduler" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d %X{CID} %-5p [%t] component=scheduler %c{15}: %replace(%replace(%m){'(?=[\"\\])','\\'}){'[\\]{0,3}\"password[\\]{0,3}\"[\s]{0,1}:[\s]{0,1}[\\]{0,3}\".*?[\\]{0,3}\"','\"password\":\"****\"'} %replace(%ex){'[\r\n]+', '\\n'}%nopex%n</Pattern>
+        </layout>
+    </appender>
+
+    <!-- ====================================================================================================== -->
+    <!-- Other/default logging -->
+    <!-- ====================================================================================================== -->
+    <logger name="org.mortbay" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="net.sf" level="ERROR" />
+    <logger name="httpclient.wire" level="ERROR" />
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

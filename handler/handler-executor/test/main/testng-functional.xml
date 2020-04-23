@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Executor Functional Test Suite" configfailurepolicy="continue" parallel="false">
+    <test verbose="5" name="Executor Handler Functional Test" annotations="JDK">
+        <packages>
+            <package name="com.comcast.pop.handler.executor.test.*" />
+        </packages>
+    </test>
+</suite>

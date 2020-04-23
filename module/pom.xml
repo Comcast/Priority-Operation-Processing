@@ -1,0 +1,35 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.comcast.pop</groupId>
+        <artifactId>pop-root</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pop-root-module</artifactId>
+    <version>1.0.0</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>module-compression</module>
+        <module>module-http-api</module>
+        <module>module-http-util</module>
+        <module>module-json-helper</module>
+        <module>module-kube-client</module>
+        <module>module-monitor</module>
+        <module>module-persistence</module>
+        <module>module-process-helper</module>
+        <module>module-producer-consumer-util</module>
+        <module>module-queue-api</module>
+        <module>module-queue-aws-sqs</module>
+        <module>module-test-cleanup</module>
+        <module>module-test-tools</module>
+        <module>module-version-info</module>
+        <module>module-xml-helper</module>
+    </modules>
+
+</project>

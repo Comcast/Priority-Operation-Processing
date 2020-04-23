@@ -1,0 +1,28 @@
+{
+  "actions": [
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 5000,
+        "logMessage": "This is a custom log message"
+      }
+    },
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 4000,
+        "logMessage": "This is another custom log message"
+      }
+    },
+    {
+      "action": "log",
+      "paramsMap": {
+        "sleepMilliseconds": 4000,
+        "logMessage": "This is the last custom log message"
+      }
+    }
+  ],
+  "resultPayload": {
+    "data": "someData"
+  }
+}

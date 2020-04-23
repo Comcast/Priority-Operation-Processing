@@ -1,0 +1,18 @@
+{
+  "actions": [
+    {
+      "action": "externalExecute",
+      "paramsMap": {
+        "externalArgs": [
+          "ash",
+          "-c",
+          "ls",
+          "-la"
+        ]
+      }
+    }
+  ],
+  "resultPayload": {
+    "data": "someData"
+  }
+}

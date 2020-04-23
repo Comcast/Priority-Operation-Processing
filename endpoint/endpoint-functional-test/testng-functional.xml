@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="POP Endpoint tests" configfailurepolicy="continue">
+
+    <test verbose="1" name="POP Object Endpoint Functional">
+        <packages>
+            <package name="com.comcast.pop.endpoint.test.agenda.*" />
+            <package name="com.comcast.pop.endpoint.test.agendatemplate.*" />
+            <package name="com.comcast.pop.endpoint.test.facility.*" />
+            <package name="com.comcast.pop.endpoint.test.messages.*" />
+            <package name="com.comcast.pop.endpoint.test.progress.*" />
+            <package name="com.comcast.pop.endpoint.test.resourcepool.*" />
+        </packages>
+    </test>
+</suite>

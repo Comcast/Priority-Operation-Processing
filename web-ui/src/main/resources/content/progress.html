@@ -1,0 +1,60 @@
+<!-- see js/content/progress.js for the script -->
+<div class="well-small ">
+    <h3 class="topic-header">AGENDA PROGRESS</h3>
+</div>
+
+<div id="singleAgendaView">
+    <div id="singleAgendaTitle"></div>
+    <div id="progressTable" class="table-bordered"></div>
+    <div class="tabcontent">
+        <br/>
+        <input type="submit" value="Return to List" name="submit_return_list" onClick="updateViewState(false);" class="btn btn-primary submit-button"/>
+        <label for="auto_refresh"  class="sub-topic-header">Auto Refresh</label>
+        <input type="checkbox" id="auto_refresh" name="auto_refresh" class="input-xxlarge"/>
+    </div>
+    <!--TODO  when toggled on the height of the network view ends up super small (aka invisible) so this div needs some tuning... not a fixed height! -->
+    <div id="mynetwork" style="overflow: scroll; height: 400px;"></div>
+</div>
+
+<div id="agendaStatusView">
+    <div class="sub-topic-header">
+        <select name="get_query_type" id="get_query_type" class="dropdown-query">
+            <option value="byId">byId</option>
+            <option value="bycid">byCid</option>
+            <option value="bycustomeriId">byCustomerId</option>
+            <option value="bylinkId">byLinkId</option>
+            <option value="byresourcePoolId">byResourcePoolId</option>
+            <option value="bytitle">byTitle</option>
+            <option value="other">other</option>
+        </select>
+        <input id="get_query_value" name="get_query_value" class="input-xxlarge" required>
+        <label for="get_limit_value" class="sub-topic-header">Limit: </label>
+        <input id="get_limit_value" name="get_limit_value" class="input-small" value="20">
+        <br/>
+        <div>
+            <!-- TODO: this is performing an AgendaProgress lookup so the query lookup is slightly awkward but we could do byagendaId in javascript if necessary-->
+            <br>
+            <table><td>
+                <td><input type="submit" value="Submit Request" name="request_button" onclick="showAgendaStatusList(event);" class="btn btn-primary submit-button"/></td>
+                <td align="left">
+                    <div style="margin-left: 20px;height: 40px;width: 40px">
+                        <img id="fission_spinner" src="images/fission.png" class="rotate" style="display: none;">
+                    </div>
+                </td>
+                </tr></table>
+        </div>
+    </div>
+    <div id="agendaStatusTable" class="table-bordered"></div>
+</div>
+
+<div class="expandable">
+    <input id="toggle" type="checkbox" hidden>
+    <label for="toggle" class="expand-label">SHOW RESPONSE</label>
+    <div id="expand">
+        <textarea id="response" name="response" style="width:100%;height:100%;"></textarea>
+    </div>
+</div>
+
+<script>
+updateViewState(false);
+</script>

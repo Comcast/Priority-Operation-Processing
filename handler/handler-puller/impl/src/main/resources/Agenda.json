@@ -1,0 +1,39 @@
+{
+  "id": "theAgenda",
+  "params": {
+    "param.1": "one",
+    "param.2": "two"
+  },
+  "operations": [
+    {
+      "id": "01",
+      "name": "sample.1",
+      "type": "sample",
+      "payload": {
+        "actions": [
+          {
+            "action": "log",
+            "paramsMap": {
+              "sleepMilliseconds": 4000,
+              "logMessage": "This is a custom log message"
+            }
+          },
+          {
+            "action": "externalExecute",
+            "paramsMap": {
+              "externalArgs": [
+                "ash",
+                "-c",
+                "ls",
+                "-la"
+              ]
+            }
+          }
+        ],
+        "resultPayload": {
+          "actionData": "firstAction"
+        }
+      }
+    }
+  ]
+}

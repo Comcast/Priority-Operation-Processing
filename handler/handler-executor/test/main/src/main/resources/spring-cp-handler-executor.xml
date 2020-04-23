@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:${propFile:test.properties}" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+
+    <bean id="kubeConfig"
+          class="KubeConfig">
+        <property name="nameSpace" value="${pop.kubernetes.kubernatesNameSpace}" />
+        <property name="masterUrl" value="${pop.kubernetes.kubernetesMasterUrl}" />
+    </bean>
+
+    <bean id="podConfig" class="PodConfig">
+        <property name="pullAlways" value="true"/>
+        <property name="cpuMaxRequestCount" value="${pop.kubernetes.podconfig.cpuRequestCount}" />
+        <property name="cpuMinRequestCount" value="${pop.kubernetes.podconfig.cpuMinRequestCount}" />
+        <property name="memoryRequestCount" value="${pop.kubernetes.podconfig.memoryRequestCount}" />
+        <property name="reapCompletedPods" value="${pop.kubernetes.podconfig.reapCompletedPods}" />
+        <property name="podScheduledTimeoutMs" value="${pop.kubernetes.podconfig.podScheduledTimeoutMs}" />
+        <property name="imageName" value="${pop.kubernetes.podconfig.imageName}"/>
+        <property name="namePrefix" value="${pop.kubernetes.podconfig.namePrefix}"/>
+        <property name="endOfLogIdentifier" value="${pop.kubernetes.podconfig.endOfLogIdentifier}"/>
+        <property name="serviceAccountName" value="${pop.kubernetes.podconfig.serviceAccountName}"/>
+        <property name="aliveCheckDetails">
+            <bean class="AliveCheckDetails">
+                <property name="alivePath" value="${pop.kubernetes.podconfig.alivecheck.path}" />
+                <property name="aliveCheckHost" value="${pop.kubernetes.podconfig.alivecheck.host}" />
+                <property name="aliveCheckLinking" value="${pop.kubernetes.podconfig.alivecheck.linking}" />
+                <property name="alivePort" value="${pop.kubernetes.podconfig.alivecheck.port}" />
+            </bean>
+        </property>
+        <property name="nfsDetails">
+            <bean class="NfsDetails">
+                <property name="nfsMountPaths"><util:list value-type="java.lang.String"/></property>
+            </bean>
+        </property>
+        <property name="configMapDetails" ref="configMapDetails"/>
+    </bean>
+
+    <bean id="configMapDetails" class="ConfigMapDetails">
+        <property name="volumeName" value="config-volume"/>
+        <property name="volumeMountPath" value="/config"/>
+        <property name="mapPath" value="external.properties"/>
+        <property name="mapKey" value="external-properties"/>
+        <property name="configMapName" value="${pop.kubernetes.podconfig.configmap.name}"/>
+    </bean>
+
+</beans>

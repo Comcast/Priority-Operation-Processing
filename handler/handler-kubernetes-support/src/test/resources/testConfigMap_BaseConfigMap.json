@@ -1,0 +1,27 @@
+{
+  "basePodConfig": {
+    "memoryRequestCount": "1000m",
+    "cpuMinRequestCount": "1000m",
+    "cpuMaxRequestCount": "1000m",
+    "podScheduledTimeoutMs": 600000,
+    "reapCompletedPods": true,
+    "pullAlways": true,
+    "configMapSettings": [
+      {
+        "volumeName":"config-volume-ex",
+        "volumeMountPath":"/configex",
+        "mapKeyPaths":[
+          { "key": "X", "path": "Y"}
+        ]
+      }
+    ]
+  },
+
+  "sample": {
+    "configMapName": "lab-main-t-aor-fhsamp-t01",
+    "podConfig": {
+      "imageName": "your.repo.com/fhsamp:1.0.0",
+      "namePrefix": "pop-samp"
+    }
+  }
+}

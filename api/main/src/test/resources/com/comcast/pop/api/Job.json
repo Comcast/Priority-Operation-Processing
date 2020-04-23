@@ -1,0 +1,127 @@
+{
+  "inputs": [
+    {
+      "type" : "mezzanine",
+      "url": "/mount/path/filename.mov",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
+      "params": {"externalId": "http://myexternalId/35235"}
+    },
+    {
+      "type": "text track sidecar",
+      "url": "/mount/path/filename-en.srt",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
+      "params": {
+        "languageCode": "en",
+        "intent": "closedCaptions"
+      }
+    },
+    {
+      "type": "text track sidecar",
+      "url": "/mount/path/filename-es.srt",
+      "credentials" :
+      {
+        "username": "myid",
+        "password": "mypassword"
+      },
+      "params": {
+        "languageCode": "es",
+        "intent": "subtitles"
+      }
+    }
+  ],
+  "inputStreams": {
+    "video": [
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 0 }
+      }
+    ],
+    "audio": [
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 0 }
+      },
+      {
+        "inputRef": "/inputs/0",
+        "params": {"trackId": 1 }
+      }
+    ]
+  },
+  "outputStreams": {
+    "video": [
+      {
+        "inputStreamRef": "/inputStreams/0",
+        "params": {
+          "width": 1920,
+          "height": 1020,
+          "bitrate": 8000000,
+          "codec": "h264",
+          "profile": "high",
+          "level": "4.1"
+        }
+      },
+      {
+        "type": "video",
+        "inputStreamRef": "inputStreams.video[0]",
+        "params": {
+          "width": 1280,
+          "height": 720,
+          "bitrate": 2400000,
+          "codec": "h264",
+          "profile": "high",
+          "level": "4.0"
+        }
+      }
+    ],
+    "audio": [
+      {
+        "inputStreamRef": "inputStreams/0",
+        "params": {
+          "bitrate": 128000,
+          "language": "English"
+        }
+      },
+      {
+        "inputStreamRef": "inputStreams.audio[0]",
+        "params": {
+          "bitrate": 128000,
+          "language": "English"
+        }
+      }
+    ]
+  },
+  "outputs": [
+    {
+      "type": "video",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_278000.mp4",
+      "outputStreamRefs": [
+        "/outputStreams/0",
+        "/outputStreams/2"
+      ],
+      "params": { "externalId": "http://myexternalId/8980t5ee4" }
+    },
+    {
+      "type": "video",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.mp4",
+      "outputStreamRefs": [  "/outputStreams/1" ]
+    },
+    {
+      "type": "image",
+      "url": "working/Fox_Deportes/89/263//ARCHIVO_R18_MEXICO_1_1528743270031_428000.jpg",
+      "outputStreamRefs": [  "/outputStreams/1" ],
+      "params": {
+        "adjustment": "24%",
+        "startTime": 8943058203892,
+        "cropHeight": "240px"
+      }
+    }
+  ]
+}

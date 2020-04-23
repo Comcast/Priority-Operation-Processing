@@ -1,0 +1,97 @@
+<div class="well-small ">
+    <h3 class="topic-header">SUBMISSION</h3>
+</div>
+
+<! -- so much html /css garbage to center vert/horizontal, NOTE: tweak the div height ... -->
+<div id="loading_templates" style="position: relative;height: 200px;">
+    <img id="fission_spinner_submission" src="images/fission.png" height="40px" width="40px" class="rotate"
+         style="position:absolute;margin: auto;top: 0;left:0;right: 0; bottom:0;">
+</div>
+
+<div id="submission_content">
+    <div class="page-header">
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'RUN')" id="igniteOpen">RUN</button>
+            <button class="tablinks" onclick="openTab(event, 'RERUN')">RERUN</button>
+            <button class="tablinks" onclick="openTab(event, 'EVALUATE')">EVALUATE</button>
+        </div>
+    </div>
+
+    <div id="IGNITE" class="tabcontent">
+        <label for="ignite_agenda_template_name"  class="sub-topic-header">Agenda Template</label>
+        <select name="ignite_agenda_template_name" id="ignite_agenda_template_name" class="dropdown-query"/>
+        <!--
+    private String payload;
+    private String agendaTemplateId;
+         -->
+        <br>
+        <label for="ignite_payload"  class="sub-topic-header">Payload</label>
+        <textarea id="ignite_payload" class="input-block-level"  name="ignite_payload" rows="10"></textarea>
+        <table><tr>
+            <td><input type="submit" value="Submit Request" name="request_button" onclick="processRunCall(event)" class="btn btn-primary submit-button"/></td>
+            <td height="50px"><img id="pop_spinner_submit" src="images/fission.png" height="40px" width="40px" class="rotate" style="display: none;"></td>
+        </tr></table>
+    </div>
+
+    <div id="rerun" class="tabcontent">
+        <!--
+        private String agendaId;
+        private List<String> params;
+         -->
+        <label for="rerun_agenda_id"  class="sub-topic-header">Agenda Id</label>
+        <input id="rerun_agenda_id" name="rerun_agenda_id" class="input-xxlarge" required/>
+        <br/>
+        <label for="rerun_reset_operations"  class="sub-topic-header">Reset Operations</label>
+        <input id="rerun_reset_operations" name="rerun_reset_operations" class="input-large" placeholder="ie: analysis,encode"/>
+        <br/>
+        <label for="rerun_reset_all"  class="sub-topic-header">Reset All</label>
+        <input type="checkbox" id="rerun_reset_all" name="rerun_reset_all" class="input-xxlarge"/>
+        <br/>
+        <label for="rerun_continue"  class="sub-topic-header">Run</label>
+        <input type="checkbox" id="rerun_continue" name="rerun_continue" class="input-xxlarge" required checked/><!--
+        <br>
+        <label for="rerun_skip_execution"  class="sub-topic-header">Reset, No Execution</label>
+        <input type="checkbox" id="rerun_skip_execution" name="rerun_skip_execution" class="input-xxlarge" required/>-->
+        <div>
+            <br/>
+            <table>
+                <tr>
+                    <td><input type="submit" value="Submit Request" name="request_button" onclick="processRerunCall(event)" class="btn btn-primary submit-button"/></td>
+                    <td height="50px"><img id="pop_spinner_rerun" src="images/fission.png" height="40px" width="40px" class="rotate" style="display: none;"></td>
+                </tr>
+                <tr><td colspan="2">* <i>Default behavior resets all operations</i></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="EVALUATE" class="tabcontent">
+        <!--
+        private String payload;
+        private String agenda template;
+         -->
+        <label for="eval_payload"  class="sub-topic-header">Payload</label>
+        <textarea id="eval_payload" name="eval_payload" class="input-block-level" rows="10"></textarea>
+
+        <div>
+            <label for="eval_agendatemp"  class="sub-topic-header">Agenda Template</label>
+            <textarea id="eval_agendatemp" class="input-block-level"  name="eval_agendatemp" rows="10"></textarea>
+        </div>
+        <div>
+            <input type="submit" value="Submit Request" name="request_button" onclick="processEvaluationCall(event)" class="btn btn-primary submit-button"/>
+        </div>
+    </div>
+
+    <div class="expandable">
+        <input id="toggle" type="checkbox" checked hidden>
+        <label for="toggle" class="expand-label">SHOW RESPONSE</label>
+        <div id="expand">
+            <textarea id="response" name="response" style="width:100%;height:100%;"></textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the element with id="defaultOpen" and click on it, this sets GET pane to selected
+    document.getElementById("igniteOpen").click();
+    getAgendaTemplates(new Event('submission_load'));
+</script>

@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.comcast.pop.module</groupId>
+        <artifactId>pop-peristence-base</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pop-persistence-impl</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Persistence impl</name>
+
+    <properties>
+        <pop-persistence-api.version>1.0.0</pop-persistence-api.version>
+        <pop-object-api.version>1.0.0</pop-object-api.version>
+        <apache.commons.collections4>4.1</apache.commons.collections4>
+        <apache.commons.beanutils>1.9.4</apache.commons.beanutils>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.comcast.pop.module</groupId>
+            <artifactId>pop-persistence-api</artifactId>
+            <version>${pop-persistence-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast.pop.object</groupId>
+            <artifactId>pop-object-api</artifactId>
+            <version>${pop-object-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${apache.commons.beanutils}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${apache.commons.collections4}</version>
+        </dependency>
+
+    </dependencies>
+</project>

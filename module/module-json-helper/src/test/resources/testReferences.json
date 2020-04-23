@@ -1,0 +1,24 @@
+{
+  "someObject":
+  {
+    "mediainforef":"@<mediainfo.1.out::/>",
+    "mediainforefwidth":"@<mediainfo.1.out::/mediaProperties/width>"
+  },
+  "arrayRef":[
+    "@<analysis.1.out::/operations/1>",
+    "@<analysis.1.out::/operations/0>"
+  ],
+  "anotherItem":
+  {
+    "subitem":
+    {
+      "childitem":"@<analysis.1.out::/operations/0/id>"
+    }
+  },
+  "stringref":"@<basicString>",
+  "numberRef":"@<theNumber>",
+  "tokenNumber":"@<theNumber>",
+  "tokenString":"@<basicString>",
+  "compositeString":"x@<basicString>y",
+  "agendaId":"@<agendaId>"
+}
