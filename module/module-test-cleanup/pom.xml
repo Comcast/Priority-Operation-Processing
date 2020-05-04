@@ -10,7 +10,7 @@
 
     <groupId>com.comcast.pop.test</groupId>
     <artifactId>pop-test-endpoint-cleanup</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>POP Endpoint Test Clean-Up Module</name>
 

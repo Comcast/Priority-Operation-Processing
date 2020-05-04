@@ -10,7 +10,7 @@
 
     <groupId>com.comcast.pop.endpoint</groupId>
     <artifactId>pop-endpoint-functional-test</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Endpoint Functional Tests</name>
 
@@ -21,8 +21,8 @@
         <pop-http-utils.version>1.0.0</pop-http-utils.version>
         <pop-http-api.version>1.0.0</pop-http-api.version>
 
-        <pop-test-tools.version>1.0.0-SNAPSHOT</pop-test-tools.version>
-        <pop-test-endpoint-cleanup.version>1.0.0-SNAPSHOT</pop-test-endpoint-cleanup.version>
+        <pop-test-tools.version>1.0.0</pop-test-tools.version>
+        <pop-test-endpoint-cleanup.version>1.0.0</pop-test-endpoint-cleanup.version>
 
         <spring-version>4.3.21.RELEASE</spring-version>
         <commons-http-client.version>3.1</commons-http-client.version>
