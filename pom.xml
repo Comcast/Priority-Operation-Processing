@@ -18,7 +18,8 @@
         <slf4j-api.version>1.7.13</slf4j-api.version>
         <jackson.databind.version>2.10.3</jackson.databind.version>
         <jackson.version>2.10.3</jackson.version>
-        <commons-http.version>3.1-atlassian-2</commons-http.version>
+<!--        <commons-http.version>3.1-atlassian-2</commons-http.version>-->
+        <commons-http.version>3.1</commons-http.version>
     </properties>
 
     <modules>
@@ -32,7 +33,6 @@
         <module>scheduling</module>
         <module>handler</module>
     </modules>
-
     <build>
         <plugins>
             <plugin>
