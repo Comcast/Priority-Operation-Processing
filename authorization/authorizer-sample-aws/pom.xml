@@ -16,7 +16,7 @@
     <properties>
         <aws.java.jdk>1.11.100</aws.java.jdk>
         <aws.lambda.version>1.1.0</aws.lambda.version>
-        <commons-io.version>2.5</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
         <pop-version-info.version>1.0.0</pop-version-info.version>
         <pop-http-api.version>1.0.0</pop-http-api.version>
