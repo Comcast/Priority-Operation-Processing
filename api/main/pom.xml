@@ -14,7 +14,7 @@
     <name>Content Processing API</name>
 
     <properties>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <pop-object-api.version>1.0.0</pop-object-api.version>
     </properties>
     
