@@ -16,8 +16,8 @@
         <assertj.version>3.12.2</assertj.version>
         <logback.version>1.2.3</logback.version>
         <slf4j-api.version>1.7.13</slf4j-api.version>
-        <jackson.databind.version>2.10.3</jackson.databind.version>
-        <jackson.version>2.10.3</jackson.version>
+        <jackson.databind.version>2.12.6.1</jackson.databind.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <commons-http.version>3.1-atlassian-2</commons-http.version>
     </properties>
 
